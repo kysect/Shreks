@@ -3,9 +3,60 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32611.2
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{6BC0B5E6-94B2-4984-B201-7ACD167E783A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Abstractions", "Domain\Kysect.Shreks.Abstractions\Kysect.Shreks.Abstractions.csproj", "{62A93622-EF0E-4353-AAA9-A0034ECD1D81}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integrations", "Integrations", "{D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentations", "Presentations", "{7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D6F2860A-2B15-465E-B1BB-B8B3AE829A9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Playground", "Tests\Kysect.Shreks.Playground\Kysect.Shreks.Playground.csproj", "{DE47A0F5-9E5D-4086-88AB-33850DA4EFAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.GithubIntegration", "Integrations\Kysect.Shreks.GithubIntegration\Kysect.Shreks.GithubIntegration.csproj", "{2D8C7DC4-E72C-4F6C-B361-576576E44EFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.GoogleIntegration", "Integrations\Kysect.Shreks.GoogleIntegration\Kysect.Shreks.GoogleIntegration.csproj", "{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Core", "Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj", "{D23139A5-29A9-449E-8AD3-2FC8BC5E8086}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{62A93622-EF0E-4353-AAA9-A0034ECD1D81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62A93622-EF0E-4353-AAA9-A0034ECD1D81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62A93622-EF0E-4353-AAA9-A0034ECD1D81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62A93622-EF0E-4353-AAA9-A0034ECD1D81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE47A0F5-9E5D-4086-88AB-33850DA4EFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE47A0F5-9E5D-4086-88AB-33850DA4EFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE47A0F5-9E5D-4086-88AB-33850DA4EFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE47A0F5-9E5D-4086-88AB-33850DA4EFAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D8C7DC4-E72C-4F6C-B361-576576E44EFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D8C7DC4-E72C-4F6C-B361-576576E44EFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D8C7DC4-E72C-4F6C-B361-576576E44EFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D8C7DC4-E72C-4F6C-B361-576576E44EFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D23139A5-29A9-449E-8AD3-2FC8BC5E8086}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D23139A5-29A9-449E-8AD3-2FC8BC5E8086}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D23139A5-29A9-449E-8AD3-2FC8BC5E8086}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D23139A5-29A9-449E-8AD3-2FC8BC5E8086}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{62A93622-EF0E-4353-AAA9-A0034ECD1D81} = {6BC0B5E6-94B2-4984-B201-7ACD167E783A}
+		{DE47A0F5-9E5D-4086-88AB-33850DA4EFAE} = {D6F2860A-2B15-465E-B1BB-B8B3AE829A9C}
+		{2D8C7DC4-E72C-4F6C-B361-576576E44EFB} = {D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}
+		{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8} = {D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}
+		{D23139A5-29A9-449E-8AD3-2FC8BC5E8086} = {6BC0B5E6-94B2-4984-B201-7ACD167E783A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD5C67DB-70F8-4C47-A3F4-7C94BECE1657}
