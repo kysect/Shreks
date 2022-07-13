@@ -6,8 +6,8 @@ namespace Kysect.Shreks.Core.Study;
 
 public partial class Assignment : IEntity<Guid>
 {
-    private readonly List<GroupAssignment> _assignments;
-    private readonly List<DeadlineSpan> _deadlineSpans;
+    private readonly HashSet<GroupAssignment> _assignments;
+    private readonly HashSet<DeadlineSpan> _deadlineSpans;
 
     public Assignment(string title, double minPoints, double maxPoints)
         : this(Guid.NewGuid())
@@ -20,15 +20,15 @@ public partial class Assignment : IEntity<Guid>
         Title = title;
         MinPoints = minPoints;
         MaxPoints = maxPoints;
-        _assignments = new List<GroupAssignment>();
-        _deadlineSpans = new List<DeadlineSpan>();
+        _assignments = new HashSet<GroupAssignment>();
+        _deadlineSpans = new HashSet<DeadlineSpan>();
     }
 
     public string Title { get; set; }
     public double MinPoints { get; protected set; }
     public double MaxPoints { get; protected set; }
-    public IReadOnlyCollection<GroupAssignment> GroupAssignments => _assignments.AsReadOnly();
-    public IReadOnlyCollection<DeadlineSpan> DeadlineSpans => _deadlineSpans.AsReadOnly();
+    public IReadOnlyCollection<GroupAssignment> GroupAssignments => _assignments;
+    public IReadOnlyCollection<DeadlineSpan> DeadlineSpans => _deadlineSpans;
 
     public Result UpdateMinPoints(double value)
     {
@@ -50,19 +50,17 @@ public partial class Assignment : IEntity<Guid>
     
     public Result AddDeadlineSpan(DeadlineSpan span)
     {
-        if (_deadlineSpans.Contains(span))
+        if (!_deadlineSpans.Add(span))
             return Result.Error($"Deadline span {span} already exists");
         
-        _deadlineSpans.Add(span);
         return Result.Success();
     }
     
     public Result RemoveDeadlineSpan(DeadlineSpan span)
     {
-        if (!_deadlineSpans.Contains(span))
-            return Result.Error($"Deadline span {span} does not exist");
+        if (!_deadlineSpans.Remove(span))
+            return Result.Error($"Deadline span {span} cannot be removed");
         
-        _deadlineSpans.Remove(span);
         return Result.Success();
     }
 }

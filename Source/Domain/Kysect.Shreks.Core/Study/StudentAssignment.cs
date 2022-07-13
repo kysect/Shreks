@@ -6,7 +6,7 @@ namespace Kysect.Shreks.Core.Study;
 
 public partial class StudentAssignment : IEntity
 {
-    private readonly List<Submission> _submissions;
+    private readonly HashSet<Submission> _submissions;
 
     public StudentAssignment(Student student, Assignment assignment)
         : this(studentId: student.Id, assignmentId: assignment.Id)
@@ -17,7 +17,7 @@ public partial class StudentAssignment : IEntity
         Student = student;
         Assignment = assignment;
 
-        _submissions = new List<Submission>();
+        _submissions = new HashSet<Submission>();
     }
 
     [KeyProperty]
@@ -26,26 +26,22 @@ public partial class StudentAssignment : IEntity
     [KeyProperty]
     public virtual Assignment Assignment { get; protected init; }
     
-    public IReadOnlyCollection<Submission> Submissions => _submissions.AsReadOnly();
+    public IReadOnlyCollection<Submission> Submissions => _submissions;
     
     public Result AddSubmission(Submission submission)
     {
         ArgumentNullException.ThrowIfNull(submission);
         
-        if (_submissions.Contains(submission))
+        if (!_submissions.Add(submission))
             return Result.Error($"Submission {submission} already exists");
         
-        _submissions.Add(submission);
         return Result.Success();
     }
     
     public Result RemoveSubmission(Submission submission)
     {
         ArgumentNullException.ThrowIfNull(submission);
-        
-        if (!_submissions.Contains(submission))
-            return Result.Error($"Submission {submission} does not exist");
-        
+
         if (!_submissions.Remove(submission))
             return Result.Error($"Submission {submission} could not be removed");
         

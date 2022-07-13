@@ -6,7 +6,7 @@ namespace Kysect.Shreks.Core.Study;
 
 public partial class SubjectCourseGroup : IEntity
 {
-    private readonly List<Mentor> _practiceMentors;
+    private readonly HashSet<Mentor> _practiceMentors;
 
     public SubjectCourseGroup(SubjectCourse subjectCourse, StudentGroup studentGroup)
         : this(subjectCourseId: subjectCourse.Id, studentGroupId: studentGroup.Id)
@@ -16,7 +16,7 @@ public partial class SubjectCourseGroup : IEntity
 
         SubjectCourse = subjectCourse;
         StudentGroup = studentGroup;
-        _practiceMentors = new List<Mentor>();
+        _practiceMentors = new HashSet<Mentor>();
     }
 
     [KeyProperty]
@@ -25,7 +25,7 @@ public partial class SubjectCourseGroup : IEntity
     [KeyProperty]
     public virtual StudentGroup StudentGroup { get; protected init; }
 
-    public virtual IReadOnlyCollection<Mentor> PracticeMentors => _practiceMentors.AsReadOnly();
+    public virtual IReadOnlyCollection<Mentor> PracticeMentors => _practiceMentors;
 
     public override string ToString()
         => StudentGroup.ToString();
@@ -34,20 +34,16 @@ public partial class SubjectCourseGroup : IEntity
     {
         ArgumentNullException.ThrowIfNull(mentor);
         
-        if (_practiceMentors.Contains(mentor))
+        if (!_practiceMentors.Add(mentor))
             return Result.Error($"Mentor {mentor.Id} is already assigned to this group");
         
-        _practiceMentors.Add(mentor);
         return Result.Success();
     }
     
     public Result RemovePracticeMentor(Mentor mentor)
     {
         ArgumentNullException.ThrowIfNull(mentor);
-        
-        if (!_practiceMentors.Contains(mentor))
-            return Result.Error($"Mentor {mentor.Id} is not assigned to this group");
-        
+
         if (!_practiceMentors.Remove(mentor))
             return Result.Error($"Mentor {mentor.Id} could not be removed from this group");
         
