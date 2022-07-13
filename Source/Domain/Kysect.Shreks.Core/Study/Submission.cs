@@ -12,6 +12,7 @@ public partial class Submission : IEntity<Guid>
         StudentAssignment = studentAssignment;
     }
 
+    public DateTime SubmissionDateTime { get; protected init; }
     public virtual Rating Rating { get; set; }
     public virtual StudentAssignment StudentAssignment { get; protected init; }
 }
