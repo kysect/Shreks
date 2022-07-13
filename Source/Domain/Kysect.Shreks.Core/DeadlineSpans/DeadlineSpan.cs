@@ -1,3 +1,5 @@
+using Kysect.Shreks.Core.ValueObject;
+
 namespace Kysect.Shreks.Core.DeadlineSpans;
 
 public abstract class DeadlineSpan : IEquatable<DeadlineSpan>
@@ -9,7 +11,7 @@ public abstract class DeadlineSpan : IEquatable<DeadlineSpan>
 
     public TimeSpan SpanAfterDeadline { get; protected init; }
     
-    public abstract double ProcessPoints(double points);
+    public abstract Rating ProcessRating(Rating points);
 
     public virtual bool Equals(DeadlineSpan? other)
     {

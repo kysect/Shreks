@@ -1,4 +1,4 @@
-using Kysect.Shreks.Core.Study.ValueObject;
+using Kysect.Shreks.Core.ValueObject;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Study;

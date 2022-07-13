@@ -1,3 +1,5 @@
+using Kysect.Shreks.Core.ValueObject;
+
 namespace Kysect.Shreks.Core.DeadlineSpans;
 
 public class CappingDeadlineSpan : DeadlineSpan
@@ -9,7 +11,7 @@ public class CappingDeadlineSpan : DeadlineSpan
 
     public double Cap { get; set; }
 
-    public override double ProcessPoints(double points)
+    public override Rating ProcessRating(Rating points)
         => Math.Max(points, Cap);
 
     public override bool Equals(DeadlineSpan? other)
