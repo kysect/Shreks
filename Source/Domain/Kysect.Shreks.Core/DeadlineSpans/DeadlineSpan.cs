@@ -1,10 +1,8 @@
-using RichEntity.Annotations;
-
 namespace Kysect.Shreks.Core.DeadlineSpans;
 
-public abstract partial class DeadlineSpan : IEntity<Guid>
+public abstract class DeadlineSpan : IEquatable<DeadlineSpan>
 {
-    protected DeadlineSpan(TimeSpan spanAfterDeadline) : this(Guid.NewGuid())
+    protected DeadlineSpan(TimeSpan spanAfterDeadline)
     {
         SpanAfterDeadline = spanAfterDeadline;
     }
@@ -12,4 +10,17 @@ public abstract partial class DeadlineSpan : IEntity<Guid>
     public TimeSpan SpanAfterDeadline { get; protected init; }
     
     public abstract double ProcessPoints(double points);
+
+    public virtual bool Equals(DeadlineSpan? other)
+    {
+        return other?.SpanAfterDeadline.Equals(SpanAfterDeadline) ?? false;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return Equals(obj as DeadlineSpan);
+    }
+
+    public override int GetHashCode()
+        => SpanAfterDeadline.GetHashCode();
 }

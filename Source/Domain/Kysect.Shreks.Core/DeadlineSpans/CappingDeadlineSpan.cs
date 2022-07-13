@@ -1,6 +1,6 @@
 namespace Kysect.Shreks.Core.DeadlineSpans;
 
-public partial class CappingDeadlineSpan : DeadlineSpan
+public class CappingDeadlineSpan : DeadlineSpan
 {
     public CappingDeadlineSpan(TimeSpan spanAfterDeadline, double cap) : base(spanAfterDeadline)
     {
@@ -11,4 +11,11 @@ public partial class CappingDeadlineSpan : DeadlineSpan
 
     public override double ProcessPoints(double points)
         => Math.Max(points, Cap);
+
+    public override bool Equals(DeadlineSpan? other)
+    {
+        return other is CappingDeadlineSpan cappingDeadlineSpan &&
+               cappingDeadlineSpan.Cap.Equals(Cap) &&
+               base.Equals(cappingDeadlineSpan);
+    }
 }

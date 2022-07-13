@@ -1,6 +1,6 @@
 namespace Kysect.Shreks.Core.DeadlineSpans;
 
-public partial class AbsoluteDeadlineSpan : DeadlineSpan
+public class AbsoluteDeadlineSpan : DeadlineSpan
 {
     public AbsoluteDeadlineSpan(TimeSpan spanAfterDeadline, double absoluteValue) : base(spanAfterDeadline)
     {
@@ -11,4 +11,11 @@ public partial class AbsoluteDeadlineSpan : DeadlineSpan
 
     public override double ProcessPoints(double points)
         => points - AbsoluteValue;
+
+    public override bool Equals(DeadlineSpan? other)
+    {
+        return other is AbsoluteDeadlineSpan absoluteDeadlineSpan &&
+               absoluteDeadlineSpan.AbsoluteValue.Equals(AbsoluteValue) &&
+               base.Equals(absoluteDeadlineSpan);
+    }
 }
