@@ -1,4 +1,4 @@
-using Ardalis.Result;
+using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;
 
@@ -28,23 +28,19 @@ public partial class StudentAssignment : IEntity
     
     public IReadOnlyCollection<Submission> Submissions => _submissions;
     
-    public Result AddSubmission(Submission submission)
+    public void AddSubmission(Submission submission)
     {
         ArgumentNullException.ThrowIfNull(submission);
-        
+
         if (!_submissions.Add(submission))
-            return Result.Error($"Submission {submission} already exists");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Submission {submission} already exists");
     }
     
-    public Result RemoveSubmission(Submission submission)
+    public void RemoveSubmission(Submission submission)
     {
         ArgumentNullException.ThrowIfNull(submission);
 
         if (!_submissions.Remove(submission))
-            return Result.Error($"Submission {submission} could not be removed");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Submission {submission} could not be removed");
     }
 }

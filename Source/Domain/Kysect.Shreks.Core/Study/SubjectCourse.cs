@@ -1,4 +1,4 @@
-using Ardalis.Result;
+using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;
@@ -27,63 +27,51 @@ public partial class SubjectCourse : IEntity<Guid>
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
 
-    public Result AddGroup(SubjectCourseGroup group)
+    public void AddGroup(SubjectCourseGroup group)
     {
         ArgumentNullException.ThrowIfNull(group);
 
         if (!_groups.Add(group))
-            return Result.Error($"Group {group} is already assigned to this course");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Group {group} is already assigned to this course");
     }
 
-    public Result RemoveGroup(SubjectCourseGroup group)
+    public void RemoveGroup(SubjectCourseGroup group)
     {
         ArgumentNullException.ThrowIfNull(group);
 
         if (!_groups.Remove(group))
-            return Result.Error($"Group {group} is not assigned to this course");
-
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Group {group} is not assigned to this course");
     }
 
-    public Result AddAssignment(Assignment assignment)
+    public void AddAssignment(Assignment assignment)
     {
         ArgumentNullException.ThrowIfNull(assignment);
 
         if (!_assignments.Add(assignment))
-            return Result.Error($"Assignment {assignment} is already assigned to this course");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Assignment {assignment} is already assigned to this course");
     }
 
-    public Result RemoveAssignment(Assignment assignment)
+    public void RemoveAssignment(Assignment assignment)
     {
         ArgumentNullException.ThrowIfNull(assignment);
 
         if (!_assignments.Remove(assignment))
-            return Result.Error($"Assignment {assignment} is not assigned to this course");
-
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Assignment {assignment} is not assigned to this course");
     }
     
-    public Result AddAssociation(SubjectCourseAssociation association)
+    public void AddAssociation(SubjectCourseAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
 
         if (!_associations.Add(association))
-            return Result.Error($"Association {association} is already assigned to this course");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Association {association} is already assigned to this course");
     }
     
-    public Result RemoveAssociation(SubjectCourseAssociation association)
+    public void RemoveAssociation(SubjectCourseAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
 
         if (!_associations.Remove(association))
-            return Result.Error($"Association {association} is not assigned to this course");
-
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Association {association} is not assigned to this course");
     }
 }

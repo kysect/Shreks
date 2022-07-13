@@ -1,4 +1,4 @@
-using Ardalis.Result;
+using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;
 
@@ -23,23 +23,19 @@ public partial class StudentGroup : IEntity<Guid>
     public override string ToString()
         => Name;
 
-    public Result AddStudent(Student student)
+    public void AddStudent(Student student)
     {
         ArgumentNullException.ThrowIfNull(student);
 
         if (!_students.Add(student))
-            return Result.Error($"Student {student} already a member of group {this}.");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Student {student} already a member of group {this}");
     }
 
-    public Result RemoveStudent(Student student)
+    public void RemoveStudent(Student student)
     {
         ArgumentNullException.ThrowIfNull(student);
 
         if (!_students.Remove(student))
-            return Result.Error($"Removing student {student} from group {this} failed.");
-
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Removing student {student} from group {this} failed");
     }
 }

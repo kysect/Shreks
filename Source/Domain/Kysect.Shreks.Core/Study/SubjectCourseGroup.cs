@@ -1,4 +1,4 @@
-using Ardalis.Result;
+using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;
 
@@ -30,23 +30,19 @@ public partial class SubjectCourseGroup : IEntity
     public override string ToString()
         => StudentGroup.ToString();
 
-    public Result AddPracticeMentor(Mentor mentor)
+    public void AddPracticeMentor(Mentor mentor)
     {
         ArgumentNullException.ThrowIfNull(mentor);
-        
+
         if (!_practiceMentors.Add(mentor))
-            return Result.Error($"Mentor {mentor.Id} is already assigned to this group");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Mentor {mentor.Id} is already assigned to this group");
     }
-    
-    public Result RemovePracticeMentor(Mentor mentor)
+
+    public void RemovePracticeMentor(Mentor mentor)
     {
         ArgumentNullException.ThrowIfNull(mentor);
 
         if (!_practiceMentors.Remove(mentor))
-            return Result.Error($"Mentor {mentor.Id} could not be removed from this group");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Mentor {mentor.Id} could not be removed from this group");
     }
 }

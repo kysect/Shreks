@@ -1,4 +1,4 @@
-using Ardalis.Result;
+using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.UserAssociations;
 using RichEntity.Annotations;
 
@@ -31,23 +31,19 @@ public partial class User : IEntity<Guid>
     public override string ToString()
         => $"{FirstName} {MiddleName} {LastName}";
 
-    public Result AddAssociation(UserAssociation association)
+    public void AddAssociation(UserAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
 
         if (!_associations.Add(association))
-            return Result.Error($"User {this} already has association {association}");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"User {this} already has association {association}");
     }
 
-    public Result RemoveAssociation(UserAssociation association)
+    public void RemoveAssociation(UserAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
 
         if (!_associations.Remove(association))
-            return Result.Error($"User {this} could not remove association {association}");
-
-        return Result.Success();
+            throw new DomainInvalidOperationException($"User {this} could not remove association {association}");
     }
 }

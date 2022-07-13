@@ -1,5 +1,5 @@
-using Ardalis.Result;
 using Kysect.Shreks.Core.DeadlinePolicies;
+using Kysect.Shreks.Core.Exceptions;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Study;
@@ -30,37 +30,37 @@ public partial class Assignment : IEntity<Guid>
     public IReadOnlyCollection<GroupAssignment> GroupAssignments => _assignments;
     public IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
-    public Result UpdateMinPoints(double value)
+    public void UpdateMinPoints(double value)
     {
         if (value > MaxPoints)
-            return Result.Error($"New minimal points ({value}) are greater than maximal points ({MaxPoints})");
+        {
+            var message = $"New minimal points ({value}) are greater than maximal points ({MaxPoints})";
+            throw new DomainInvalidOperationException(message);
+        }
         
         MinPoints = value;
-        return Result.Success();
     }
     
-    public Result UpdateMaxPoints(double value)
+    public void UpdateMaxPoints(double value)
     {
         if (value < MinPoints)
-            return Result.Error($"New maximal points ({value}) are less than minimal points ({MinPoints})");
+        {
+            var message = $"New maximal points ({value}) are less than minimal points ({MinPoints})";
+            throw new DomainInvalidOperationException(message);
+        }
         
         MaxPoints = value;
-        return Result.Success();
     }
     
-    public Result AddDeadlinePolicy(DeadlinePolicy policy)
+    public void AddDeadlinePolicy(DeadlinePolicy policy)
     {
         if (!_deadlinePolicies.Add(policy))
-            return Result.Error($"Deadline span {policy} already exists");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Deadline span {policy} already exists");
     }
     
-    public Result RemoveDeadlinePolicy(DeadlinePolicy policy)
+    public void RemoveDeadlinePolicy(DeadlinePolicy policy)
     {
         if (!_deadlinePolicies.Remove(policy))
-            return Result.Error($"Deadline span {policy} cannot be removed");
-        
-        return Result.Success();
+            throw new DomainInvalidOperationException($"Deadline span {policy} cannot be removed");
     }
 }
