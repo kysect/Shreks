@@ -141,12 +141,14 @@ User --{ UserAssociation
 
 StudentGroup "one" o--{ "many" Student
 
-Assignment "one" o-right-{ "many" DeadlineSpan
+Assignment "one" o-right-{ "many" DeadlineSpan 
 Assignment "one" o--{ "many" GroupAssignment
 
 GroupAssignment o-left- StudentGroup
 
 StudentAssignment "one" o--{ "many" Submission
+StudentAssignment "many" }-left-o "one" Student
+StudentAssignment "many" }-up-o "one" Assignment
 
 SubjectCourse "one" o--{ "many" SubjectCourseGroup
 SubjectCourse "many" }-right- "one" Subject
