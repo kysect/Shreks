@@ -27,11 +27,9 @@ public partial class User : IEntity<Guid>
     public string LastName { get; set; }
 
     public virtual IReadOnlyCollection<UserAssociation> Associations => _associations.AsReadOnly();
-
-    public string FullName => $"{FirstName} {MiddleName} {LastName}";
-
+    
     public override string ToString()
-        => FullName;
+        => $"{FirstName} {MiddleName} {LastName}";
 
     public Result AddAssociation(UserAssociation association)
     {
