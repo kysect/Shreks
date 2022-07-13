@@ -2,9 +2,9 @@ using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Core.DeadlineSpans;
 
-public class FractionDeadlineSpan : DeadlineSpan
+public class FractionDeadlinePolicy : DeadlinePolicy
 {
-    public FractionDeadlineSpan(TimeSpan spanAfterDeadline, Fraction fraction) : base(spanAfterDeadline)
+    public FractionDeadlinePolicy(TimeSpan spanBeforeActivation, Fraction fraction) : base(spanBeforeActivation)
     {
         Fraction = fraction;
     }
@@ -14,9 +14,9 @@ public class FractionDeadlineSpan : DeadlineSpan
     public override Rating ProcessRating(Rating points)
         => points * Fraction;
 
-    public override bool Equals(DeadlineSpan? other)
+    public override bool Equals(DeadlinePolicy? other)
     {
-        return other is FractionDeadlineSpan fractionDeadlineSpan &&
+        return other is FractionDeadlinePolicy fractionDeadlineSpan &&
                fractionDeadlineSpan.Fraction.Equals(Fraction) &&
                base.Equals(fractionDeadlineSpan);
     }

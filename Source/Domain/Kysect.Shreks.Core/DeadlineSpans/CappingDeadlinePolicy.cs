@@ -2,9 +2,9 @@ using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Core.DeadlineSpans;
 
-public class CappingDeadlineSpan : DeadlineSpan
+public class CappingDeadlinePolicy : DeadlinePolicy
 {
-    public CappingDeadlineSpan(TimeSpan spanAfterDeadline, double cap) : base(spanAfterDeadline)
+    public CappingDeadlinePolicy(TimeSpan spanBeforeActivation, double cap) : base(spanBeforeActivation)
     {
         Cap = cap;
     }
@@ -14,9 +14,9 @@ public class CappingDeadlineSpan : DeadlineSpan
     public override Rating ProcessRating(Rating points)
         => Math.Max(points, Cap);
 
-    public override bool Equals(DeadlineSpan? other)
+    public override bool Equals(DeadlinePolicy? other)
     {
-        return other is CappingDeadlineSpan cappingDeadlineSpan &&
+        return other is CappingDeadlinePolicy cappingDeadlineSpan &&
                cappingDeadlineSpan.Cap.Equals(Cap) &&
                base.Equals(cappingDeadlineSpan);
     }

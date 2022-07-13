@@ -7,7 +7,7 @@ namespace Kysect.Shreks.Core.Study;
 public partial class Assignment : IEntity<Guid>
 {
     private readonly HashSet<GroupAssignment> _assignments;
-    private readonly HashSet<DeadlineSpan> _deadlineSpans;
+    private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
 
     public Assignment(string title, double minPoints, double maxPoints)
         : this(Guid.NewGuid())
@@ -21,14 +21,14 @@ public partial class Assignment : IEntity<Guid>
         MinPoints = minPoints;
         MaxPoints = maxPoints;
         _assignments = new HashSet<GroupAssignment>();
-        _deadlineSpans = new HashSet<DeadlineSpan>();
+        _deadlinePolicies = new HashSet<DeadlinePolicy>();
     }
 
     public string Title { get; set; }
     public double MinPoints { get; protected set; }
     public double MaxPoints { get; protected set; }
     public IReadOnlyCollection<GroupAssignment> GroupAssignments => _assignments;
-    public IReadOnlyCollection<DeadlineSpan> DeadlineSpans => _deadlineSpans;
+    public IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
     public Result UpdateMinPoints(double value)
     {
@@ -48,18 +48,18 @@ public partial class Assignment : IEntity<Guid>
         return Result.Success();
     }
     
-    public Result AddDeadlineSpan(DeadlineSpan span)
+    public Result AddDeadlinePolicy(DeadlinePolicy policy)
     {
-        if (!_deadlineSpans.Add(span))
-            return Result.Error($"Deadline span {span} already exists");
+        if (!_deadlinePolicies.Add(policy))
+            return Result.Error($"Deadline span {policy} already exists");
         
         return Result.Success();
     }
     
-    public Result RemoveDeadlineSpan(DeadlineSpan span)
+    public Result RemoveDeadlinePolicy(DeadlinePolicy policy)
     {
-        if (!_deadlineSpans.Remove(span))
-            return Result.Error($"Deadline span {span} cannot be removed");
+        if (!_deadlinePolicies.Remove(policy))
+            return Result.Error($"Deadline span {policy} cannot be removed");
         
         return Result.Success();
     }

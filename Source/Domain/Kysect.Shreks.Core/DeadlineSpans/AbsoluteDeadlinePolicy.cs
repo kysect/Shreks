@@ -2,9 +2,9 @@ using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Core.DeadlineSpans;
 
-public class AbsoluteDeadlineSpan : DeadlineSpan
+public class AbsoluteDeadlinePolicy : DeadlinePolicy
 {
-    public AbsoluteDeadlineSpan(TimeSpan spanAfterDeadline, Rating absoluteValue) : base(spanAfterDeadline)
+    public AbsoluteDeadlinePolicy(TimeSpan spanBeforeActivation, Rating absoluteValue) : base(spanBeforeActivation)
     {
         AbsoluteValue = absoluteValue;
     }
@@ -14,9 +14,9 @@ public class AbsoluteDeadlineSpan : DeadlineSpan
     public override Rating ProcessRating(Rating points)
         => points - AbsoluteValue;
 
-    public override bool Equals(DeadlineSpan? other)
+    public override bool Equals(DeadlinePolicy? other)
     {
-        return other is AbsoluteDeadlineSpan absoluteDeadlineSpan &&
+        return other is AbsoluteDeadlinePolicy absoluteDeadlineSpan &&
                absoluteDeadlineSpan.AbsoluteValue.Equals(AbsoluteValue) &&
                base.Equals(absoluteDeadlineSpan);
     }
