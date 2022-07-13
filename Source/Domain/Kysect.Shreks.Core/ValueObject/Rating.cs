@@ -27,5 +27,10 @@ public readonly record struct Rating
         => new Rating(a.Value * b.Value);
 
     public static Rating operator /(Rating a, Rating b)
-        => new Rating(a.Value / b.Value);
+    {
+        if (b.Value is 0)
+            throw new DivideByZeroException();
+        
+        return new Rating(a.Value / b.Value);
+    }
 }
