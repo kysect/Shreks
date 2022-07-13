@@ -1,5 +1,5 @@
 using Ardalis.Result;
-using Kysect.Shreks.Core.DeadlineSpans;
+using Kysect.Shreks.Core.DeadlinePolicies;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Study;

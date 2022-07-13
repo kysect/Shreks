@@ -1,6 +1,6 @@
 using Kysect.Shreks.Core.ValueObject;
 
-namespace Kysect.Shreks.Core.DeadlineSpans;
+namespace Kysect.Shreks.Core.DeadlinePolicies;
 
 public class FractionDeadlinePolicy : DeadlinePolicy
 {
