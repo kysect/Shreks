@@ -70,12 +70,16 @@ public partial class Assignment : IEntity<Guid>
     
     public void AddDeadlinePolicy(DeadlinePolicy policy)
     {
+        ArgumentNullException.ThrowIfNull(policy);
+
         if (!_deadlinePolicies.Add(policy))
             throw new DomainInvalidOperationException($"Deadline span {policy} already exists");
     }
     
     public void RemoveDeadlinePolicy(DeadlinePolicy policy)
     {
+        ArgumentNullException.ThrowIfNull(policy);
+        
         if (!_deadlinePolicies.Remove(policy))
             throw new DomainInvalidOperationException($"Deadline span {policy} cannot be removed");
     }
