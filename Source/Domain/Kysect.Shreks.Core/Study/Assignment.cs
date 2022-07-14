@@ -52,6 +52,22 @@ public partial class Assignment : IEntity<Guid>
         MaxPoints = value;
     }
     
+    public void AddGroupAssignment(GroupAssignment assignment)
+    {
+        ArgumentNullException.ThrowIfNull(assignment);
+        
+        if (!_assignments.Add(assignment))
+            throw new DomainInvalidOperationException($"Assignment {assignment} already exists");
+    }
+    
+    public void RemoveGroupAssignment(GroupAssignment assignment)
+    {
+        ArgumentNullException.ThrowIfNull(assignment);
+        
+        if (!_assignments.Remove(assignment))
+            throw new DomainInvalidOperationException($"Assignment {assignment} cannot be removed");
+    }
+    
     public void AddDeadlinePolicy(DeadlinePolicy policy)
     {
         if (!_deadlinePolicies.Add(policy))
