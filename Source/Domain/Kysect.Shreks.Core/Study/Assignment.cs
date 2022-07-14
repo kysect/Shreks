@@ -1,5 +1,6 @@
 using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Core.ValueObject;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Study;
@@ -9,7 +10,7 @@ public partial class Assignment : IEntity<Guid>
     private readonly HashSet<GroupAssignment> _assignments;
     private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
 
-    public Assignment(string title, double minPoints, double maxPoints)
+    public Assignment(string title, Points minPoints, Points maxPoints)
         : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(title);
@@ -25,12 +26,12 @@ public partial class Assignment : IEntity<Guid>
     }
 
     public string Title { get; set; }
-    public double MinPoints { get; protected set; }
-    public double MaxPoints { get; protected set; }
+    public Points MinPoints { get; protected set; }
+    public Points MaxPoints { get; protected set; }
     public IReadOnlyCollection<GroupAssignment> GroupAssignments => _assignments;
     public IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
-    public void UpdateMinPoints(double value)
+    public void UpdateMinPoints(Points value)
     {
         if (value > MaxPoints)
         {
@@ -41,7 +42,7 @@ public partial class Assignment : IEntity<Guid>
         MinPoints = value;
     }
     
-    public void UpdateMaxPoints(double value)
+    public void UpdateMaxPoints(Points value)
     {
         if (value < MinPoints)
         {

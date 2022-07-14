@@ -8,11 +8,11 @@ public partial class Submission : IEntity<Guid>
     public Submission(StudentAssignment studentAssignment)
         : this(Guid.NewGuid())
     {
-        Rating = Rating.None;
+        Points = Points.None;
         StudentAssignment = studentAssignment;
     }
 
     public DateTime SubmissionDateTime { get; protected init; }
-    public virtual Rating Rating { get; set; }
+    public virtual Points Points { get; set; }
     public virtual StudentAssignment StudentAssignment { get; protected init; }
 }
