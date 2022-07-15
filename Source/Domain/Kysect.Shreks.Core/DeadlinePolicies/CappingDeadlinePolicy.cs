@@ -11,7 +11,7 @@ public class CappingDeadlinePolicy : DeadlinePolicy
 
     public double Cap { get; set; }
 
-    public override Points ProcessPoints(Points points)
+    public override Points Apply(Points points)
         => Math.Max(points, Cap);
 
     public override bool Equals(DeadlinePolicy? other)

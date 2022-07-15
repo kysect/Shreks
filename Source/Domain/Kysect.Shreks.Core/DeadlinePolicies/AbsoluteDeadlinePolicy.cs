@@ -11,7 +11,7 @@ public class AbsoluteDeadlinePolicy : DeadlinePolicy
 
     public Points AbsoluteValue { get; set; }
 
-    public override Points ProcessPoints(Points points)
+    public override Points Apply(Points points)
         => points - AbsoluteValue;
 
     public override bool Equals(DeadlinePolicy? other)
