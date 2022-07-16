@@ -1,0 +1,162 @@
+@startuml
+!theme mars
+
+class User
+{
+    + Guid Id
+    + string FirstName
+    + string MiddleName
+    + string LastName
+    + string FullName
+    + UserAssociation[] Associations
+}
+
+User <|-- Student
+class Student
+{
+    + StudentGroup Group
+}
+
+User <|- Mentor
+class Mentor 
+{
+
+}
+
+class StudentGroup
+{
+    + Guid Id
+    + string Name
+    + Student[] Students
+}
+
+class Assignment
+{
+    + Guid Id
+    + string Title
+    + double MinPoints
+    + double MaxPoints
+    + GroupAssignment[] GroupAssignments
+    + DeadlineSpan[] DeadlineSpans
+}
+
+class StudentAssignment
+{
+    + Student Student
+    + Assignment Assignment
+    + Submission[] Submissions
+}
+
+class Submission
+{
+    + Rating Rating
+    + StudentAssignment StudentAssignment
+}
+
+class GroupAssignment
+{
+    + StudentGroup Group
+    + Assignment Assignment
+    + DateOnly Deadline
+}
+
+class SubjectCourse
+{
+    + Guid Id
+    + Subject Subject
+    + SubjectCourseGroup[] Groups
+    + Assignment[] Assignments
+    + SubjectCourseAssociation[] Associations
+}
+
+class SubjectCourseGroup
+{
+    + SubjectCourse SubjectCourse
+    + StudentGroup Group
+    + Mentor[] PracticeMentors
+}
+
+class Subject 
+{
+    + Guid Id
+    + string Title
+    + SubjectCourse[] Courses
+}
+
+abstract class DeadlineSpan
+{
+    + Guid Id
+    + TimeSpan SpanAfterDeadline
+    --
+    double ProcessPoints(double)
+}
+
+DeadlineSpan <|-- AbsoluteDeadlineSpan
+class AbsoluteDeadlineSpan
+{
+    + double AbsoluteValue
+}
+
+DeadlineSpan <|-- CappingDeadlineSpan
+class CappingDeadlineSpan
+{
+    + double Cap
+}
+
+DeadlineSpan <|-- FractionalDeadlineSpan
+class FractionalDeadlineSpan
+{
+    + double Fraction
+}
+
+abstract class UserAssociation
+{
+    + User User
+}
+
+UserAssociation <|-- IsuUserAssociation
+class IsuUserAssociation
+{
+    + int UniversityId
+}
+
+UserAssociation <|-- GithubUserAssociation
+class GithubUserAssociation
+{
+    + string GithubUsername
+}
+
+abstract class SubjectCourseAssociation
+{
+    + SubjectCourse SubjectCourse
+}
+
+SubjectCourseAssociation <|-left- GithubSubjectCourseAssociation
+class GithubSubjectCourseAssociation
+{
+    + string GithubOrganizationName
+}
+
+User --{ UserAssociation
+
+StudentGroup "one" o--{ "many" Student
+
+Assignment "one" o-right-{ "many" DeadlineSpan 
+Assignment "one" o--{ "many" GroupAssignment
+
+GroupAssignment o-left- StudentGroup
+
+StudentAssignment "one" o--{ "many" Submission
+StudentAssignment "many" }-left-o "one" Student
+StudentAssignment "many" }-up-o "one" Assignment
+
+SubjectCourse "one" o--{ "many" SubjectCourseGroup
+SubjectCourse "many" }-right- "one" Subject
+SubjectCourse "one" o--{ "many" Assignment
+SubjectCourse "one" o-left-{ "many" SubjectCourseAssociation
+
+SubjectCourseGroup "many" }-- "one" StudentGroup
+SubjectCourseGroup "many" }--left--{ "many" Mentor
+
+
+@enduml
