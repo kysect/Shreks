@@ -9,6 +9,8 @@ public class FractionDeadlinePolicy : DeadlinePolicy
         Fraction = fraction;
     }
 
+    protected FractionDeadlinePolicy() { }
+
     public Fraction Fraction { get; set; }
 
     public override Points Apply(Points points)

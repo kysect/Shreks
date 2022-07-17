@@ -9,8 +9,10 @@ public abstract class DeadlinePolicy : IEquatable<DeadlinePolicy>
         SpanBeforeActivation = spanBeforeActivation;
     }
 
+    protected DeadlinePolicy() { }
+
     public TimeSpan SpanBeforeActivation { get; protected init; }
-    
+
     public abstract Points Apply(Points points);
 
     public virtual bool Equals(DeadlinePolicy? other)

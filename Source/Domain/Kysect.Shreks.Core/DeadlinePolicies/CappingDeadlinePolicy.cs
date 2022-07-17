@@ -9,6 +9,8 @@ public class CappingDeadlinePolicy : DeadlinePolicy
         Cap = cap;
     }
 
+    protected CappingDeadlinePolicy() { }
+
     public double Cap { get; set; }
 
     public override Points Apply(Points points)
