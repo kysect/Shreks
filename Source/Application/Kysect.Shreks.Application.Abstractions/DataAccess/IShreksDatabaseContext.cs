@@ -10,7 +10,7 @@ public interface IShreksDatabaseContext
 {
     DbSet<User> Users { get; }
     DbSet<Student> Students { get; }
-    DbSet<Mentor> Teachers { get; }
+    DbSet<Mentor> Mentors { get; }
 
     DbSet<Assignment> Assignments { get; }
     DbSet<GroupAssignment> GroupAssignments { get; }
