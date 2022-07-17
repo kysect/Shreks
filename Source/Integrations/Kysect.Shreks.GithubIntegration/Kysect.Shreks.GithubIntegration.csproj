@@ -4,6 +4,26 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="GitHubJwt" Version="0.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Octokit" Version="1.0.0" />
+    <PackageReference Include="Octokit.Webhooks.AspNetCore" Version="1.2.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domain\Kysect.Shreks.Abstractions\Kysect.Shreks.Abstractions.csproj" />
+  </ItemGroup>
 
 </Project>
