@@ -26,6 +26,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />
     </ItemGroup>
 
 </Project>
