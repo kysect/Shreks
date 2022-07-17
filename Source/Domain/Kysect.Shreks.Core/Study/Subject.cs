@@ -16,7 +16,7 @@ public partial class Subject : IEntity<Guid>
     }
 
     public string Title { get; set; }
-    public IReadOnlyCollection<SubjectCourse> Courses => _courses;
+    public virtual IReadOnlyCollection<SubjectCourse> Courses => _courses;
 
     public void AddCourse(SubjectCourse course)
     {

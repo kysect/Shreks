@@ -7,7 +7,7 @@ namespace Kysect.Shreks.Core.Study;
 
 public partial class Assignment : IEntity<Guid>
 {
-    private readonly HashSet<GroupAssignment> _assignments;
+    private readonly HashSet<GroupAssignment> _groupAssignments;
     private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
 
     public Assignment(string title, Points minPoints, Points maxPoints)
@@ -21,15 +21,15 @@ public partial class Assignment : IEntity<Guid>
         Title = title;
         MinPoints = minPoints;
         MaxPoints = maxPoints;
-        _assignments = new HashSet<GroupAssignment>();
+        _groupAssignments = new HashSet<GroupAssignment>();
         _deadlinePolicies = new HashSet<DeadlinePolicy>();
     }
 
     public string Title { get; set; }
     public Points MinPoints { get; protected set; }
     public Points MaxPoints { get; protected set; }
-    public IReadOnlyCollection<GroupAssignment> GroupAssignments => _assignments;
-    public IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
+    public virtual IReadOnlyCollection<GroupAssignment> GroupGroupAssignments => _groupAssignments;
+    public virtual IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
     public void UpdateMinPoints(Points value)
     {
@@ -57,7 +57,7 @@ public partial class Assignment : IEntity<Guid>
     {
         ArgumentNullException.ThrowIfNull(assignment);
         
-        if (!_assignments.Add(assignment))
+        if (!_groupAssignments.Add(assignment))
             throw new DomainInvalidOperationException($"Assignment {assignment} already exists");
     }
     
@@ -65,7 +65,7 @@ public partial class Assignment : IEntity<Guid>
     {
         ArgumentNullException.ThrowIfNull(assignment);
         
-        if (!_assignments.Remove(assignment))
+        if (!_groupAssignments.Remove(assignment))
             throw new DomainInvalidOperationException($"Assignment {assignment} cannot be removed");
     }
     
