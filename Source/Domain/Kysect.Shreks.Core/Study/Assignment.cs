@@ -28,7 +28,7 @@ public partial class Assignment : IEntity<Guid>
     public string Title { get; set; }
     public Points MinPoints { get; protected set; }
     public Points MaxPoints { get; protected set; }
-    public virtual IReadOnlyCollection<GroupAssignment> GroupGroupAssignments => _groupAssignments;
+    public virtual IReadOnlyCollection<GroupAssignment> GroupAssignments => _groupAssignments;
     public virtual IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
     public void UpdateMinPoints(Points value)
