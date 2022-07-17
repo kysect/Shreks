@@ -36,7 +36,6 @@ public class Startup
         if (env.IsDevelopment())
             app.UseDeveloperExceptionPage();
 
-        app.UseRouting()
-            .UseEndpoints(endpoints => endpoints.MapGitHubWebhooks(secret: GithubConfiguration.Secret));
+        app.UseGithubIntegration(GithubConfiguration);
     }
 }
