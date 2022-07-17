@@ -30,11 +30,11 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         var installationClient = await GetAuthenticatedInstallationClient(pullRequestEvent);
 
-        switch (pullRequestEvent.Action)
+        switch (action)
         {
-            case "synchronize":
+            case PullRequestActionValue.Synchronize:
                 break;
-            case "opened":
+            case PullRequestActionValue.Opened:
                 break;
         }
 
@@ -54,13 +54,13 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         var installationClient = await GetAuthenticatedInstallationClient(pullRequestReviewEvent);
 
-        switch (pullRequestReviewEvent.Action)
+        switch (action)
         {
-            case "submitted":
+            case PullRequestReviewActionValue.Submitted:
                 break;
-            case "edited":
+            case PullRequestReviewActionValue.Edited:
                 break;
-            case "dismissed":
+            case PullRequestReviewActionValue.Dismissed:
                 break;
         }
 
@@ -81,13 +81,13 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         var installationClient = await GetAuthenticatedInstallationClient(issueCommentEvent);
 
-        switch (issueCommentEvent.Action)
+        switch (action)
         {
-            case "created":
+            case IssueCommentActionValue.Edited:
                 break;
-            case "edited":
+            case IssueCommentActionValue.Created:
                 break;
-            case "deleted":
+            case IssueCommentActionValue.Deleted:
                 break;
         }
 
