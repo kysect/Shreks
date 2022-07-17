@@ -26,7 +26,7 @@ public partial class StudentAssignment : IEntity
     [KeyProperty]
     public virtual Assignment Assignment { get; protected init; }
     
-    public IReadOnlyCollection<Submission> Submissions => _submissions;
+    public virtual IReadOnlyCollection<Submission> Submissions => _submissions;
     
     public void AddSubmission(Submission submission)
     {

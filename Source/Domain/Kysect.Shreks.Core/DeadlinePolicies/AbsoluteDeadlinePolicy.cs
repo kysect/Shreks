@@ -9,6 +9,8 @@ public class AbsoluteDeadlinePolicy : DeadlinePolicy
         AbsoluteValue = absoluteValue;
     }
 
+    protected AbsoluteDeadlinePolicy() { }
+
     public Points AbsoluteValue { get; set; }
 
     public override Points Apply(Points points)
