@@ -1,4 +1,5 @@
 using GitHubJwt;
+using Kysect.Shreks.GithubIntegration.CredentialStores;
 using Kysect.Shreks.GithubIntegration.Helpers;
 using Kysect.Shreks.GithubIntegration.Processors;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,14 +21,14 @@ public static class ServiceCollectionExtensions
                     ExpirationSeconds = githubConf.ExpirationSeconds // 10 minutes is the maximum time allowed
                 }));
 
-        services.AddScoped<GitHubClient>(_ =>
+        services.AddSingleton<GitHubClient>(_ =>
         {
             var githubJwtFactory = _.GetService<GitHubJwtFactory>();
 
-            return new GitHubClient(new ProductHeaderValue(githubConf.Organization))
-            {
-                Credentials = new Credentials(githubJwtFactory.CreateEncodedJwtToken(), AuthenticationType.Bearer)
-            };
+            var appClient =  new GitHubClient(new ProductHeaderValue(githubConf.Organization), new GithubAppCredentialStore(githubJwtFactory));
+
+            return new GitHubClient(new ProductHeaderValue($"Installation-{githubConf.AppInstallationId}"),
+                new IntegrationCredentialStore(appClient, githubConf.AppInstallationId));
         });
 
         return services;
@@ -35,7 +36,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddWebhookProcessors(this IServiceCollection services)
     {
-        services.AddScoped<WebhookEventProcessor, CustomWebhookEventProcessor>();
+        services.AddSingleton<WebhookEventProcessor, CustomWebhookEventProcessor>();
 
         return services;
     }
