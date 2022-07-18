@@ -16,7 +16,7 @@ public static class RegistrationExtensions
     {
         var generationOptions = new EntityGenerationOptions(collection);
         action?.Invoke(generationOptions);
-        
+
         collection.AddSingleton(typeof(EntityGeneratorOptions<>));
         collection.AddSingleton(generationOptions.Faker);
 
@@ -42,11 +42,13 @@ public static class RegistrationExtensions
             .AreAssignableTo<IDatabaseSeeder>()
             .AreNotAbstractClasses()
             .AreNotInterfaces();
-        
+
         return collection;
     }
 
-    public static IServiceProvider UseDatabaseSeeders(this IServiceProvider provider)
+    public static async Task UseDatabaseSeeders(
+        this IServiceProvider provider,
+        CancellationToken cancellationToken = default)
     {
         using var scope = provider.CreateScope();
 
@@ -58,6 +60,6 @@ public static class RegistrationExtensions
             seeder.Seed(context);
         }
 
-        return provider;
+        await context.SaveChangesAsync(cancellationToken);
     }
 }
