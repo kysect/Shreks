@@ -1,5 +1,6 @@
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,6 +9,7 @@ namespace Kysect.Shreks.Tests.DataAccess;
 public abstract class DataAccessTestBase : IDisposable
 {
     protected readonly ShreksDatabaseContext Context;
+    protected readonly IServiceProvider Provider;
 
     protected DataAccessTestBase()
     {
@@ -17,9 +19,11 @@ public abstract class DataAccessTestBase : IDisposable
             x.UseLazyLoadingProxies().UseSqlite("Data Source=test.db");
         });
 
-        var provider = collection.BuildServiceProvider();
+        collection.AddEntityGenerators();
+
+        Provider = collection.BuildServiceProvider();
         
-        Context = provider.GetRequiredService<ShreksDatabaseContext>();
+        Context = Provider.GetRequiredService<ShreksDatabaseContext>();
         Context.Database.EnsureCreated();
     }
 
