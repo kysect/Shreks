@@ -1,3 +1,4 @@
+using Kysect.Shreks.GithubIntegration.client;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using Octokit.Webhooks;
@@ -12,13 +13,12 @@ namespace Kysect.Shreks.GithubIntegration.Processors;
 
 public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 {
-    private readonly GitHubClient _installationClient;
+    private readonly IInstallationClientFactory _installationClientFactory;
     private readonly ILogger<CustomWebhookEventProcessor> _logger;
 
-    public CustomWebhookEventProcessor(GitHubClient installationClient, ILogger<CustomWebhookEventProcessor> logger)
+    public CustomWebhookEventProcessor(IInstallationClientFactory installationClientFactory, ILogger<CustomWebhookEventProcessor> logger)
     {
-        _installationClient = installationClient;
-        logger.LogError(installationClient.GitHubApps.GetAllInstallationsForCurrent().ToString());
+        _installationClientFactory = installationClientFactory;
         _logger = logger;
     }
 
@@ -29,6 +29,8 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         if (IsSenderBot(pullRequestEvent)) return;
 
+        var installationClient = _installationClientFactory.GetClient(pullRequestEvent.Installation.Id);
+
         switch (action)
         {
             case PullRequestActionValue.Synchronize:
@@ -37,7 +39,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
                 break;
         }
 
-        await _installationClient.Issue.Comment.Create(
+        await installationClient.Issue.Comment.Create(
             pullRequestEvent.Repository.Owner.Login,
             pullRequestEvent.Repository.Name,
             (int) pullRequestEvent.PullRequest.Number, 
@@ -51,6 +53,8 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         if (IsSenderBot(pullRequestReviewEvent)) return;
 
+        var installationClient = _installationClientFactory.GetClient(pullRequestReviewEvent.Installation.Id);
+
         switch (action)
         {
             case PullRequestReviewActionValue.Submitted:
@@ -61,7 +65,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
                 break;
         }
 
-        await _installationClient.Issue.Comment.Create(
+        await installationClient.Issue.Comment.Create(
             pullRequestReviewEvent.Repository.Owner.Login,
             pullRequestReviewEvent.Repository.Name,
             (int) pullRequestReviewEvent.PullRequest.Number,
@@ -76,6 +80,8 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         if (IsSenderBot(issueCommentEvent)) return;
 
+        var installationClient = _installationClientFactory.GetClient(issueCommentEvent.Installation.Id);
+
         switch (action)
         {
             case IssueCommentActionValue.Edited:
@@ -86,7 +92,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
                 break;
         }
 
-        await _installationClient.Issue.Comment.Create(
+        await installationClient.Issue.Comment.Create(
             issueCommentEvent.Repository.Owner.Login,
             issueCommentEvent.Repository.Name,
             (int) issueCommentEvent.Issue.Number, 

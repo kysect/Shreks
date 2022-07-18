@@ -2,7 +2,7 @@ using Octokit;
 
 namespace Kysect.Shreks.GithubIntegration.CredentialStores;
 
-public class IntegrationCredentialStore : ICredentialStore
+public class InstallationCredentialStore : ICredentialStore
 {
     private enum TokenRefreshState
     {
@@ -19,7 +19,7 @@ public class IntegrationCredentialStore : ICredentialStore
 
     private volatile int _tokenRefreshState;
 
-    public IntegrationCredentialStore(IGitHubClient gitHubAppClient, long installationId)
+    public InstallationCredentialStore(IGitHubClient gitHubAppClient, long installationId)
     {
         _gitHubAppClient = gitHubAppClient;
         _installationId = installationId;

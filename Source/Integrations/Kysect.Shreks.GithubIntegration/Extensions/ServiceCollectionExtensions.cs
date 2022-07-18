@@ -1,4 +1,5 @@
 using GitHubJwt;
+using Kysect.Shreks.GithubIntegration.client;
 using Kysect.Shreks.GithubIntegration.CredentialStores;
 using Kysect.Shreks.GithubIntegration.Helpers;
 using Kysect.Shreks.GithubIntegration.Processors;
@@ -21,14 +22,12 @@ public static class ServiceCollectionExtensions
                     ExpirationSeconds = githubConf.ExpirationSeconds // 10 minutes is the maximum time allowed
                 }));
 
-        services.AddSingleton<GitHubClient>(_ =>
+        services.AddSingleton<IInstallationClientFactory>(_ =>
         {
             var githubJwtFactory = _.GetService<GitHubJwtFactory>();
 
             var appClient =  new GitHubClient(new ProductHeaderValue(githubConf.Organization), new GithubAppCredentialStore(githubJwtFactory));
-
-            return new GitHubClient(new ProductHeaderValue($"Installation-{githubConf.AppInstallationId}"),
-                new IntegrationCredentialStore(appClient, githubConf.AppInstallationId));
+            return new InstallationClientFactory(appClient);
         });
 
         return services;
