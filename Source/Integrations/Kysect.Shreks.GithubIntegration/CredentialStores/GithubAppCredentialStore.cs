@@ -14,6 +14,6 @@ public class GithubAppCredentialStore : ICredentialStore
 
     public Task<Credentials> GetCredentials()
     {
-        return Task.FromResult(new Credentials(_gitHubJwtFactory.CreateEncodedJwtToken()));
+        return Task.FromResult(new Credentials(_gitHubJwtFactory.CreateEncodedJwtToken(), AuthenticationType.Bearer));
     }
 }

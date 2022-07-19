@@ -29,7 +29,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         if (IsSenderBot(pullRequestEvent)) return;
 
-        var installationClient = _installationClientFactory.GetClient(pullRequestEvent.Installation.Id);
+        var installationClient = await _installationClientFactory.GetClient(pullRequestEvent.Installation.Id);
 
         switch (action)
         {
@@ -53,7 +53,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         if (IsSenderBot(pullRequestReviewEvent)) return;
 
-        var installationClient = _installationClientFactory.GetClient(pullRequestReviewEvent.Installation.Id);
+        var installationClient = await _installationClientFactory.GetClient(pullRequestReviewEvent.Installation.Id);
 
         switch (action)
         {
@@ -80,7 +80,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 
         if (IsSenderBot(issueCommentEvent)) return;
 
-        var installationClient = _installationClientFactory.GetClient(issueCommentEvent.Installation.Id);
+        var installationClient = await _installationClientFactory.GetClient(issueCommentEvent.Installation.Id);
 
         switch (action)
         {
