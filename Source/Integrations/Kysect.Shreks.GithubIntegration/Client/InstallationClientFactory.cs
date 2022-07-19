@@ -14,7 +14,10 @@ public class InstallationClientFactory : IInstallationClientFactory
 
     public GitHubClient GetClient(long installationId)
     {
-        return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"),
-            new InstallationCredentialStore(_gitHubAppClient, installationId));
+        return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"))
+        {
+            Credentials = new Credentials(_gitHubAppClient.GitHubApps.CreateInstallationToken(installationId).Result.Token)
+        };
+        
     }
 }

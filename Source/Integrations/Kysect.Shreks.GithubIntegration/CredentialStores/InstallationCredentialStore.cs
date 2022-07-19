@@ -10,10 +10,10 @@ public class InstallationCredentialStore : ICredentialStore
         StartRefreshing,
         Refreshing
     }
-    
+
     private readonly IGitHubClient _gitHubAppClient;
     private readonly long _installationId;
-    
+
     private long _expirationUnixTimestamp;
     private volatile Task<Credentials> _task;
 
@@ -33,30 +33,40 @@ public class InstallationCredentialStore : ICredentialStore
         try
         {
             var token = await _gitHubAppClient.GitHubApps.CreateInstallationToken(_installationId);
-            Thread.VolatileWrite(ref _expirationUnixTimestamp, token.ExpiresAt.AddMinutes(-1).ToUnixTimeSeconds());
+            Volatile.Write(ref _expirationUnixTimestamp, token.ExpiresAt.AddMinutes(-1).ToUnixTimeSeconds());
             return new Credentials(token.Token);
         }
         catch
         {
-            Thread.VolatileWrite(ref _expirationUnixTimestamp, DateTimeOffset.Now.ToUnixTimeSeconds());
+            Volatile.Write(ref _expirationUnixTimestamp, DateTimeOffset.Now.ToUnixTimeSeconds());
             throw;
         }
         finally
         {
-            _tokenRefreshState = (int) TokenRefreshState.NotRefreshing;
+            _tokenRefreshState = (int)TokenRefreshState.NotRefreshing;
         }
     }
-    
+
     public Task<Credentials> GetCredentials()
     {
-        if (Thread.VolatileRead(ref _expirationUnixTimestamp) <= DateTimeOffset.Now.ToUnixTimeSeconds() && _tokenRefreshState != (int)TokenRefreshState.Refreshing)
+        if (Volatile.Read(ref _expirationUnixTimestamp) <= DateTimeOffset.Now.ToUnixTimeSeconds() &&
+            _tokenRefreshState != (int)TokenRefreshState.Refreshing)
         {
             lock (this)
             {
-                if (Thread.VolatileRead(ref _expirationUnixTimestamp) <= DateTimeOffset.Now.ToUnixTimeSeconds() && 
-                    Interlocked.CompareExchange(ref _tokenRefreshState, (int) TokenRefreshState.StartRefreshing, (int) TokenRefreshState.NotRefreshing) == (int)TokenRefreshState.NotRefreshing)
+                if (Interlocked.CompareExchange(ref _tokenRefreshState, (int)TokenRefreshState.StartRefreshing,
+                        (int)TokenRefreshState.NotRefreshing) == (int)TokenRefreshState.NotRefreshing)
                 {
-                    _task = GetTask();
+                    if (Volatile.Read(ref _expirationUnixTimestamp) <= DateTimeOffset.Now.ToUnixTimeSeconds())
+                    {
+                        _task = GetTask();
+                        Interlocked.CompareExchange(ref _tokenRefreshState, (int)TokenRefreshState.Refreshing,
+                            (int)TokenRefreshState.StartRefreshing);
+                    }
+                    else
+                    {
+                        _tokenRefreshState = (int)TokenRefreshState.NotRefreshing;
+                    }
                 }
             }
         }
