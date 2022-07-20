@@ -1,6 +1,5 @@
 using Kysect.Shreks.GithubIntegration.Client;
 using Microsoft.Extensions.Logging;
-using Octokit;
 using Octokit.Webhooks;
 using Octokit.Webhooks.Events;
 using Octokit.Webhooks.Events.IssueComment;
