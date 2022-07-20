@@ -1,5 +1,5 @@
 using GitHubJwt;
-using Kysect.Shreks.GithubIntegration.client;
+using Kysect.Shreks.GithubIntegration.Client;
 using Kysect.Shreks.GithubIntegration.CredentialStores;
 using Kysect.Shreks.GithubIntegration.Helpers;
 using Kysect.Shreks.GithubIntegration.Processors;

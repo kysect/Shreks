@@ -1,6 +1,6 @@
 using Octokit;
 
-namespace Kysect.Shreks.GithubIntegration.client;
+namespace Kysect.Shreks.GithubIntegration.Client;
 
 public interface IInstallationClientFactory
 {
