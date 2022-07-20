@@ -25,7 +25,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     protected override async Task ProcessPullRequestWebhookAsync(WebhookHeaders headers,
         PullRequestEvent pullRequestEvent, PullRequestAction action)
     {
-        _logger.Log(LogLevel.Debug, $"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name}");
+        _logger.LogDebug($"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name}");
 
         if (IsSenderBot(pullRequestEvent)) return;
 
@@ -49,7 +49,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     protected override async Task ProcessPullRequestReviewWebhookAsync(WebhookHeaders headers,
         PullRequestReviewEvent pullRequestReviewEvent, PullRequestReviewAction action)
     {
-        _logger.Log(LogLevel.Debug, $"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name}");
+        _logger.LogDebug($"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name}");
 
         if (IsSenderBot(pullRequestReviewEvent)) return;
 
@@ -76,7 +76,7 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     protected override async Task ProcessIssueCommentWebhookAsync(WebhookHeaders headers,
         IssueCommentEvent issueCommentEvent, IssueCommentAction action)
     {
-        _logger.Log(LogLevel.Debug, $"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name}");
+        _logger.LogDebug($"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name}");
 
         if (IsSenderBot(issueCommentEvent)) return;
 
