@@ -10,12 +10,12 @@ using PullRequestReviewEvent = Octokit.Webhooks.Events.PullRequestReviewEvent;
 
 namespace Kysect.Shreks.GithubIntegration.Processors;
 
-public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
+public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 {
     private readonly IActionNotifier _actionNotifier;
-    private readonly ILogger<CustomWebhookEventProcessor> _logger;
+    private readonly ILogger<ShreksWebhookEventProcessor> _logger;
 
-    public CustomWebhookEventProcessor(IActionNotifier actionNotifier, ILogger<CustomWebhookEventProcessor> logger)
+    public ShreksWebhookEventProcessor(IActionNotifier actionNotifier, ILogger<ShreksWebhookEventProcessor> logger)
     {
         _actionNotifier = actionNotifier;
         _logger = logger;

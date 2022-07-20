@@ -38,7 +38,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddWebhookProcessors(this IServiceCollection services)
     {
-        services.AddSingleton<WebhookEventProcessor, CustomWebhookEventProcessor>();
+        services.AddSingleton<WebhookEventProcessor, ShreksWebhookEventProcessor>();
 
         return services;
     }
