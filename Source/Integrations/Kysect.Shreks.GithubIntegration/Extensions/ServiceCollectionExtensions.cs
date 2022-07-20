@@ -1,6 +1,7 @@
 using GitHubJwt;
 using Kysect.Shreks.GithubIntegration.Client;
 using Kysect.Shreks.GithubIntegration.CredentialStores;
+using Kysect.Shreks.GithubIntegration.Entities;
 using Kysect.Shreks.GithubIntegration.Helpers;
 using Kysect.Shreks.GithubIntegration.Processors;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,8 @@ public static class ServiceCollectionExtensions
             var appClient =  new GitHubClient(new ProductHeaderValue(githubConf.Organization), new GithubAppCredentialStore(githubJwtFactory));
             return new InstallationClientFactory(appClient);
         });
+
+        services.AddSingleton<IActionNotifier, ActionNotifier>();
 
         return services;
     }

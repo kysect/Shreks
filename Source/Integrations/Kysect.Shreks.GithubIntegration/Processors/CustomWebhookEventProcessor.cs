@@ -1,4 +1,4 @@
-using Kysect.Shreks.GithubIntegration.Client;
+using Kysect.Shreks.GithubIntegration.Entities;
 using Microsoft.Extensions.Logging;
 using Octokit.Webhooks;
 using Octokit.Webhooks.Events;
@@ -12,12 +12,12 @@ namespace Kysect.Shreks.GithubIntegration.Processors;
 
 public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
 {
-    private readonly IInstallationClientFactory _installationClientFactory;
+    private readonly IActionNotifier _actionNotifier;
     private readonly ILogger<CustomWebhookEventProcessor> _logger;
 
-    public CustomWebhookEventProcessor(IInstallationClientFactory installationClientFactory, ILogger<CustomWebhookEventProcessor> logger)
+    public CustomWebhookEventProcessor(IActionNotifier actionNotifier, ILogger<CustomWebhookEventProcessor> logger)
     {
-        _installationClientFactory = installationClientFactory;
+        _actionNotifier = actionNotifier;
         _logger = logger;
     }
 
@@ -32,8 +32,6 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
             return;
         }
 
-        var installationClient = await _installationClientFactory.GetClient(pullRequestEvent.Installation.Id);
-
         switch (action)
         {
             case PullRequestActionValue.Synchronize:
@@ -42,11 +40,10 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
                 break;
         }
 
-        await installationClient.Issue.Comment.Create(
-            pullRequestEvent.Repository.Owner.Login,
-            pullRequestEvent.Repository.Name,
-            (int) pullRequestEvent.PullRequest.Number, 
-            $"**Hook**: `{nameof(ProcessPullRequestWebhookAsync)}`" + $"**Action**: `{pullRequestEvent.Action}`\n");
+        await _actionNotifier.ApplyInComments(
+            pullRequestEvent, 
+            (int) pullRequestEvent.PullRequest.Number,
+            nameof(ProcessPullRequestWebhookAsync));
     }
 
     protected override async Task ProcessPullRequestReviewWebhookAsync(WebhookHeaders headers,
@@ -60,8 +57,6 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
             return;
         }
 
-        var installationClient = await _installationClientFactory.GetClient(pullRequestReviewEvent.Installation.Id);
-
         switch (action)
         {
             case PullRequestReviewActionValue.Submitted:
@@ -72,14 +67,12 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
                 break;
         }
 
-        await installationClient.Issue.Comment.Create(
-            pullRequestReviewEvent.Repository.Owner.Login,
-            pullRequestReviewEvent.Repository.Name,
+        await _actionNotifier.ApplyInComments(
+            pullRequestReviewEvent,
             (int) pullRequestReviewEvent.PullRequest.Number,
-            $"**Hook**: `{nameof(ProcessPullRequestWebhookAsync)}`\n" + $"**Action**: `{pullRequestReviewEvent.Action}`\n" + $"**Content**: `{pullRequestReviewEvent.Review.Body}`");
+            nameof(ProcessPullRequestWebhookAsync));
     }
 
-    // PR comments
     protected override async Task ProcessIssueCommentWebhookAsync(WebhookHeaders headers,
         IssueCommentEvent issueCommentEvent, IssueCommentAction action)
     {
@@ -91,8 +84,6 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
             return;
         }
 
-        var installationClient = await _installationClientFactory.GetClient(issueCommentEvent.Installation.Id);
-
         switch (action)
         {
             case IssueCommentActionValue.Edited:
@@ -103,11 +94,10 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
                 break;
         }
 
-        await installationClient.Issue.Comment.Create(
-            issueCommentEvent.Repository.Owner.Login,
-            issueCommentEvent.Repository.Name,
-            (int) issueCommentEvent.Issue.Number, 
-            $"**Hook**: `{nameof(ProcessIssueCommentWebhookAsync)}`\n" + $"**Action**: `{issueCommentEvent.Action}`\n" + $"**Content**: `{issueCommentEvent.Comment.Body}`");
+        await _actionNotifier.ApplyInComments(
+            issueCommentEvent,
+            (int) issueCommentEvent.Issue.Number,
+            nameof(ProcessIssueCommentWebhookAsync));
     }
 
     private bool IsSenderBot(WebhookEvent webhookEvent) => webhookEvent.Sender?.Type == UserType.Bot;
