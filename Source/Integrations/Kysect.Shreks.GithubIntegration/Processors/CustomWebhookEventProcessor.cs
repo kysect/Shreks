@@ -26,9 +26,9 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name}");
 
-        if (IsSenderBot(pullRequestEvent))
+        if (IsSenderBotOrNull(pullRequestEvent))
         {
-            _logger.LogTrace($"{nameof(ProcessPullRequestWebhookAsync)} skipped because sender is bot");
+            _logger.LogTrace($"{nameof(ProcessPullRequestWebhookAsync)} skipped because sender is bot or null");
             return;
         }
 
@@ -51,9 +51,9 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name}");
 
-        if (IsSenderBot(pullRequestReviewEvent))
+        if (IsSenderBotOrNull(pullRequestReviewEvent))
         {
-            _logger.LogTrace($"{nameof(ProcessPullRequestReviewWebhookAsync)} skipped because sender is bot");
+            _logger.LogTrace($"{nameof(ProcessPullRequestReviewWebhookAsync)} skipped because sender is bot or null");
             return;
         }
 
@@ -78,9 +78,9 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name}");
 
-        if (IsSenderBot(issueCommentEvent))
+        if (IsSenderBotOrNull(issueCommentEvent))
         {
-            _logger.LogTrace($"{nameof(ProcessIssueCommentWebhookAsync)} skipped because sender is bot");
+            _logger.LogTrace($"{nameof(ProcessIssueCommentWebhookAsync)} skipped because sender is bot or null");
             return;
         }
 
@@ -100,5 +100,5 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
             nameof(ProcessIssueCommentWebhookAsync));
     }
 
-    private bool IsSenderBot(WebhookEvent webhookEvent) => webhookEvent.Sender?.Type == UserType.Bot;
+    private bool IsSenderBotOrNull(WebhookEvent webhookEvent) => webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
 }
