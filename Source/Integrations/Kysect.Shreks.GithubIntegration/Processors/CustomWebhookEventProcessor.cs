@@ -27,7 +27,11 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name}");
 
-        if (IsSenderBot(pullRequestEvent)) return;
+        if (IsSenderBot(pullRequestEvent))
+        {
+            _logger.LogTrace($"{nameof(ProcessPullRequestWebhookAsync)} skipped because sender is bot");
+            return;
+        }
 
         var installationClient = await _installationClientFactory.GetClient(pullRequestEvent.Installation.Id);
 
@@ -51,7 +55,11 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name}");
 
-        if (IsSenderBot(pullRequestReviewEvent)) return;
+        if (IsSenderBot(pullRequestReviewEvent))
+        {
+            _logger.LogTrace($"{nameof(ProcessPullRequestReviewWebhookAsync)} skipped because sender is bot");
+            return;
+        }
 
         var installationClient = await _installationClientFactory.GetClient(pullRequestReviewEvent.Installation.Id);
 
@@ -78,7 +86,11 @@ public sealed class CustomWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name}");
 
-        if (IsSenderBot(issueCommentEvent)) return;
+        if (IsSenderBot(issueCommentEvent))
+        {
+            _logger.LogTrace($"{nameof(ProcessIssueCommentWebhookAsync)} skipped because sender is bot");
+            return;
+        }
 
         var installationClient = await _installationClientFactory.GetClient(issueCommentEvent.Installation.Id);
 
