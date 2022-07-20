@@ -30,12 +30,14 @@ public class InstallationCredentialStore : ICredentialStore
             _state = (int)State.NotRefreshing;
         }
 
-        public bool TrySetStartRefresing()
+        //if not refreshing, advance to starting refreshing (creating refreshing task)
+        public bool TrySetStartRefreshing()
         {
             return Interlocked.CompareExchange(ref _state, (int)State.StartRefreshing,
                 (int)State.NotRefreshing) == (int)State.NotRefreshing;
         }
-        public bool TrySetRefresing()
+        //if started refreshing, advance to actually refreshing (task is running)
+        public bool TrySetRefreshing()
         {
             return Interlocked.CompareExchange(ref _state, (int)State.Refreshing,
                 (int)State.StartRefreshing) == (int)State.StartRefreshing;
@@ -63,14 +65,19 @@ public class InstallationCredentialStore : ICredentialStore
 
     public Task<Credentials> GetCredentials()
     {
-        if (!IsTokenExpired() || _tokenRefreshState.IsRefreshing()) return _task;
+        //check if token has expired or is already refreshing in async task
+        if (!IsTokenExpired() || _tokenRefreshState.IsRefreshing())
+            return _task;
         lock (this)
         {
-            if (!_tokenRefreshState.TrySetStartRefresing()) return _task;
+            //check if while waiting for lock token was already set refreshing
+            if (!_tokenRefreshState.TrySetStartRefreshing()) 
+                return _task;
+            //check if it is not refreshing because it was successfully refreshed while we were waiting for lock
             if (IsTokenExpired())
             {
                 _task = RefreshToken();
-                _tokenRefreshState.TrySetRefresing();
+                _tokenRefreshState.TrySetRefreshing();
             }
             else
             {
