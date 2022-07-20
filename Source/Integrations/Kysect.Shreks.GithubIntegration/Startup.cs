@@ -18,15 +18,17 @@ public class Startup
             .Build();
 
         GithubConfiguration = Configuration.GetSection(nameof(GithubConfiguration)).Get<GithubConfiguration>();
+        CacheConfiguration = Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
     }
 
     public IConfiguration Configuration { get; init; }
     public GithubConfiguration GithubConfiguration { get; init; }
+    public CacheConfiguration CacheConfiguration { get; init; }
 
     public void ConfigureServices(IServiceCollection services)
     {
         services
-            .AddGithubServices(GithubConfiguration)
+            .AddGithubServices(GithubConfiguration, CacheConfiguration)
             .AddWebhookProcessors();
     }
 
