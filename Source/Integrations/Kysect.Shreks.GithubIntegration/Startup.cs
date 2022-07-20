@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Octokit.Webhooks.Models;
 
 namespace Kysect.Shreks.GithubIntegration;
 
@@ -17,18 +18,16 @@ public class Startup
             .AddEnvironmentVariables()
             .Build();
 
-        GithubConfiguration = Configuration.GetSection(nameof(GithubConfiguration)).Get<GithubConfiguration>();
-        CacheConfiguration = Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
+        ShreksConfiguration = Configuration.GetSection(nameof(ShreksConfiguration)).Get<ShreksConfiguration>();
     }
 
     public IConfiguration Configuration { get; init; }
-    public GithubConfiguration GithubConfiguration { get; init; }
-    public CacheConfiguration CacheConfiguration { get; init; }
+    public ShreksConfiguration ShreksConfiguration { get; init; }
 
     public void ConfigureServices(IServiceCollection services)
     {
         services
-            .AddGithubServices(GithubConfiguration, CacheConfiguration)
+            .AddGithubServices(ShreksConfiguration)
             .AddWebhookProcessors();
     }
 
@@ -37,6 +36,6 @@ public class Startup
         if (env.IsDevelopment())
             app.UseDeveloperExceptionPage();
 
-        app.UseGithubIntegration(GithubConfiguration);
+        app.UseGithubIntegration(ShreksConfiguration);
     }
 }

@@ -13,22 +13,26 @@ namespace Kysect.Shreks.GithubIntegration.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddGithubServices(this IServiceCollection services, GithubConfiguration githubConf, CacheConfiguration cacheConfiguration)
+    public static IServiceCollection AddGithubServices(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
     {
+        shreksConfiguration.Verify();
+        var gitHubConf = shreksConfiguration.GithubConfiguration;
+        var cacheConf = shreksConfiguration.CacheConfiguration;
+
         services.AddSingleton<GitHubJwtFactory>(
             new GitHubJwtFactory(
-                new FilePrivateKeySource(githubConf.PrivateKeySource),
+                new FilePrivateKeySource(gitHubConf.PrivateKeySource),
                 new GitHubJwtFactoryOptions
                 {
-                    AppIntegrationId = githubConf.AppIntegrationId, // The GitHub App Id
-                    ExpirationSeconds = githubConf.ExpirationSeconds // 10 minutes is the maximum time allowed
+                    AppIntegrationId = gitHubConf.AppIntegrationId, // The GitHub App Id
+                    ExpirationSeconds = gitHubConf.ExpirationSeconds // 10 minutes is the maximum time allowed
                 }));
 
         services.AddSingleton<IShreksMemoryCache, ShreksMemoryCache>(_
             => new ShreksMemoryCache(new MemoryCacheOptions
             {
-                SizeLimit = cacheConfiguration.SizeLimit,
-                ExpirationScanFrequency = TimeSpan.FromMinutes(cacheConfiguration.ExpirationMinutes)
+                SizeLimit = cacheConf.SizeLimit,
+                ExpirationScanFrequency = TimeSpan.FromMinutes(cacheConf.ExpirationMinutes)
             }));
 
         services.AddSingleton<IInstallationClientFactory>(_ =>
@@ -36,7 +40,7 @@ public static class ServiceCollectionExtensions
             var githubJwtFactory = _.GetService<GitHubJwtFactory>()!;
             var memoryCache = _.GetService<IShreksMemoryCache>()!;
 
-            var appClient = new GitHubClient(new ProductHeaderValue(githubConf.Organization),
+            var appClient = new GitHubClient(new ProductHeaderValue(gitHubConf.Organization),
                 new GithubAppCredentialStore(githubJwtFactory));
             return new InstallationClientFactory(appClient, memoryCache);
         });
