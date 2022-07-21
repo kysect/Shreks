@@ -2,6 +2,6 @@ namespace Kysect.Shreks.GithubIntegration.Helpers;
 
 public class CacheConfiguration
 {
-    public int SizeLimit { get; set; }
-    public int ExpirationMinutes { get; set; }
+    public int SizeLimit { get; init; }
+    public int ExpirationMinutes { get; init; }
 }
