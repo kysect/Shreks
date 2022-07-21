@@ -2,9 +2,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace Kysect.Shreks.GithubIntegration.Entities;
 
-public interface IShreksMemoryCache : IMemoryCache, IDisposable
+public interface IShreksMemoryCache : IMemoryCache
 {
-    void Set<T>(string key, T value, TimeSpan expiration);
-    T Get<T>(string key);
-    void Remove(string key);
+    public Task<TItem> GetOrCreateAsync<TItem>(object key, Func<ICacheEntry, Task<TItem>> factory);
 }
