@@ -1,5 +1,4 @@
 using Kysect.Shreks.GithubIntegration.Entities;
-using Microsoft.Extensions.Caching.Memory;
 using Octokit;
 
 namespace Kysect.Shreks.GithubIntegration.Client;
@@ -17,22 +16,16 @@ public class InstallationClientFactory : IInstallationClientFactory
 
     public async Task<GitHubClient> GetClient(long installationId)
     {
-        return await GetClientFromCache(installationId);
+        return await _memoryCache.GetOrCreateAsync(installationId, async _ => await CreateInstallationClient(installationId));
     }
 
-    private async Task<GitHubClient> GetClientFromCache(long installationId)
+    private async Task<GitHubClient> CreateInstallationClient(long installationId)
     {
-        if (_memoryCache.TryGetValue(installationId, out GitHubClient client)) return client;
-
         var accessToken = await _gitHubAppClient.GitHubApps.CreateInstallationToken(installationId);
 
-        client = new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"))
+        return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"))
         {
             Credentials = new Credentials(accessToken.Token)
         };
-
-        _memoryCache.Set(installationId, client, new MemoryCacheEntryOptions().SetSize(1));
-
-        return client;
     }
 }

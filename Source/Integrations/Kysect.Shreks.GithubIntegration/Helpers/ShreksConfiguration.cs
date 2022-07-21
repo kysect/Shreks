@@ -3,11 +3,13 @@ namespace Kysect.Shreks.GithubIntegration.Helpers;
 public sealed class ShreksConfiguration
 {
     public CacheConfiguration CacheConfiguration { get; init; }
+    public CacheEntryConfiguration CacheEntryConfiguration { get; init; }
     public GithubConfiguration GithubConfiguration { get; init; }
 
     public void Verify()
     {
         VerifyGithubConfiguration(GithubConfiguration);
+        VerifyCacheEntryConfiguration(CacheEntryConfiguration);
         VerifyCacheConfiguration(CacheConfiguration);
     }
     
@@ -34,5 +36,19 @@ public sealed class ShreksConfiguration
         
         if (cacheConfiguration.SizeLimit <= 0)
             throw new ArgumentException($"SizeLimit in {nameof(cacheConfiguration)} must be greater than 0");
+    }
+
+    private void VerifyCacheEntryConfiguration(CacheEntryConfiguration cacheEntryConfiguration)
+    {
+        ArgumentNullException.ThrowIfNull(cacheEntryConfiguration);
+
+        if (cacheEntryConfiguration.EntrySize <= 0)
+            throw new ArgumentException($"EntrySize in {nameof(cacheEntryConfiguration)} must be greater than 0");
+        
+        if (cacheEntryConfiguration.AbsoluteExpirationMinutes <= 0)
+            throw new ArgumentException($"AbsoluteExpirationMinutes in {nameof(cacheEntryConfiguration)} must be greater than 0");
+
+        if (cacheEntryConfiguration.SlidingExpirationMinutes <= 0)
+            throw new ArgumentException($"SlidingExpirationMinutes in {nameof(cacheEntryConfiguration)} must be greater than 0");
     }
 }

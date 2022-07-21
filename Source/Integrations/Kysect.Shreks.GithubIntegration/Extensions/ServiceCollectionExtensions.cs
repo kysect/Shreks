@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
         shreksConfiguration.Verify();
         var gitHubConf = shreksConfiguration.GithubConfiguration;
         var cacheConf = shreksConfiguration.CacheConfiguration;
+        var cacheEntryConf = shreksConfiguration.CacheEntryConfiguration;
 
         services.AddSingleton<GitHubJwtFactory>(
             new GitHubJwtFactory(
@@ -28,12 +29,17 @@ public static class ServiceCollectionExtensions
                     ExpirationSeconds = gitHubConf.ExpirationSeconds // 10 minutes is the maximum time allowed
                 }));
 
-        services.AddSingleton<IShreksMemoryCache, ShreksMemoryCache>(_
-            => new ShreksMemoryCache(new MemoryCacheOptions
+        services.AddSingleton<IShreksMemoryCache, ShreksMemoryCache>(_ => new ShreksMemoryCache(
+            new MemoryCacheOptions
             {
                 SizeLimit = cacheConf.SizeLimit,
-                ExpirationScanFrequency = TimeSpan.FromMinutes(cacheConf.ExpirationMinutes)
-            }));
+                ExpirationScanFrequency = TimeSpan.FromMinutes(cacheConf.ExpirationMinutes),
+            },
+            new MemoryCacheEntryOptions()
+                .SetSize(cacheEntryConf.EntrySize)
+                .SetAbsoluteExpiration(TimeSpan.FromMinutes(cacheEntryConf.AbsoluteExpirationMinutes))
+                .SetSlidingExpiration(TimeSpan.FromMinutes(cacheEntryConf.SlidingExpirationMinutes))
+            ));
 
         services.AddSingleton<IInstallationClientFactory>(_ =>
         {
