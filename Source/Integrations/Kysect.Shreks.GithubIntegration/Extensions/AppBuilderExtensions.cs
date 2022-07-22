@@ -8,7 +8,6 @@ public static class AppBuilderExtensions
 {
     public static IApplicationBuilder UseGithubIntegration(this IApplicationBuilder app, ShreksConfiguration shreksConfiguration)
     {
-        shreksConfiguration.Verify();
         var gitHubConf = shreksConfiguration.GithubConfiguration;
 
         app.UseRouting()

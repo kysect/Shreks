@@ -15,7 +15,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddGithubServices(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
     {
-        shreksConfiguration.Verify();
         var gitHubConf = shreksConfiguration.GithubConfiguration;
         var cacheConf = shreksConfiguration.CacheConfiguration;
         var cacheEntryConf = shreksConfiguration.CacheEntryConfiguration;

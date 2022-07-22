@@ -18,6 +18,7 @@ public class Startup
             .Build();
 
         ShreksConfiguration = Configuration.GetSection(nameof(ShreksConfiguration)).Get<ShreksConfiguration>();
+        ShreksConfiguration.Verify();
     }
 
     public IConfiguration Configuration { get; init; }
