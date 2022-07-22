@@ -4,7 +4,6 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,12 +13,6 @@
     <PackageReference Include="Octokit" Version="1.0.0" />
     <PackageReference Include="Octokit.Webhooks.AspNetCore" Version="1.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
