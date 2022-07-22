@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.DataAccess", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Tests", "Tests\Kysect.Shreks.Tests\Kysect.Shreks.Tests.csproj", "{6B4F926D-8DE4-4204-8B18-5EC5D42D5576}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Seeding", "Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj", "{5DCD0DCE-A3B4-425A-A691-F001DA77D209}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.GithubIntegration.Host", "Kysect.Shreks.GithubIntegration.Host\Kysect.Shreks.GithubIntegration.Host.csproj", "{9CE8224C-7446-4FB0-AA53-28FE4A668848}"
 EndProject
 Global
@@ -75,6 +77,10 @@ Global
 		{9CE8224C-7446-4FB0-AA53-28FE4A668848}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CE8224C-7446-4FB0-AA53-28FE4A668848}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CE8224C-7446-4FB0-AA53-28FE4A668848}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DCD0DCE-A3B4-425A-A691-F001DA77D209}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DCD0DCE-A3B4-425A-A691-F001DA77D209}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DCD0DCE-A3B4-425A-A691-F001DA77D209}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DCD0DCE-A3B4-425A-A691-F001DA77D209}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{DDF7FF3A-29B3-4AF1-831A-869AB641B9EE} = {C578EF62-E40C-42E7-AB9D-E7BA215F342C}
 		{6B4F926D-8DE4-4204-8B18-5EC5D42D5576} = {D6F2860A-2B15-465E-B1BB-B8B3AE829A9C}
 		{9CE8224C-7446-4FB0-AA53-28FE4A668848} = {7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}
+		{5DCD0DCE-A3B4-425A-A691-F001DA77D209} = {C578EF62-E40C-42E7-AB9D-E7BA215F342C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD5C67DB-70F8-4C47-A3F4-7C94BECE1657}
