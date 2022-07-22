@@ -33,7 +33,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Tests", "Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Seeding", "Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj", "{5DCD0DCE-A3B4-425A-A691-F001DA77D209}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.GithubIntegration.Host", "Kysect.Shreks.GithubIntegration.Host\Kysect.Shreks.GithubIntegration.Host.csproj", "{9CE8224C-7446-4FB0-AA53-28FE4A668848}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.GithubIntegration.Host", "Presentations\Kysect.Shreks.GithubIntegration.Host\Kysect.Shreks.GithubIntegration.Host.csproj", "{9CE8224C-7446-4FB0-AA53-28FE4A668848}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
