@@ -1,16 +1,16 @@
-﻿namespace Kysect.Shreks.Abstractions;
+﻿using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Users;
 
-public record SubjectHomeworkInfo();
-public record GroupQueue();
+namespace Kysect.Shreks.Abstractions;
 
-public record AddStudentSubmitArgument();
-public record AddStudentToQueueArguments();
+public record AssignmentPoints(Assignment Assignment, DateOnly Date, double Points);
+
+public record StudentPoints(Student Student, IEnumerable<AssignmentPoints> Points);
 
 
 public interface IGoogleTableAccessor
 {
-    SubjectHomeworkInfo ReadSubjectHomeworkInfo();
-    GroupQueue ReadGroupQueue();
-    void AddStudentSubmit(AddStudentSubmitArgument arguments);
-    void AddStudentToQueue(AddStudentToQueueArguments arguments);
+    Task UpdateQueueAsync(IEnumerable<Submission> submissions, CancellationToken token = default);
+    Task UpdatePointsAsync(IEnumerable<StudentPoints> points, CancellationToken token = default);
+    Task UpdateStudentPointsAsync(StudentPoints studentPoints, CancellationToken token = default);
 }

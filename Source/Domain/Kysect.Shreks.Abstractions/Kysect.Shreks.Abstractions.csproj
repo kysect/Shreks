@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj" />
+  </ItemGroup>
+
 </Project>
