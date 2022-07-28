@@ -19,7 +19,8 @@ public class GoogleTableEditor
     
     public async Task SetAlignmentAsync(
         SheetRange sheetRange,
-        HorizontalAlignment alignment,
+        HorizontalAlignment horizontalAlignment,
+        VerticalAlignment verticalAlignment,
         CancellationToken token)
         => await ExecuteBatchUpdateAsync(new Request 
         {
@@ -29,8 +30,8 @@ public class GoogleTableEditor
                 {
                     UserEnteredFormat = new CellFormat
                     {
-                        HorizontalAlignment = alignment,
-                        VerticalAlignment = VerticalAlignment.Middle
+                        HorizontalAlignment = horizontalAlignment,
+                        VerticalAlignment = verticalAlignment
                     }
                 },
                 Range = sheetRange.GridRange,
