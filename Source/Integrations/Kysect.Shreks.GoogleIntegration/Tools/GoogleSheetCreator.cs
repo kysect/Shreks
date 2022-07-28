@@ -44,8 +44,7 @@ public class GoogleSheetCreator
             .Get(_spreadsheetId)
             .ExecuteAsync(token);
 
-        Sheet? sheet = spreadSheet.Sheets.FirstOrDefault(s =>
-            s.Properties.Title == title);
+        Sheet? sheet = spreadSheet.Sheets.FirstOrDefault(s => s.Properties.Title == title);
 
         return sheet?.Properties.SheetId;
     }
