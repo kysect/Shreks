@@ -52,26 +52,33 @@ public class GoogleSheetCreator
 
     public async Task<int> CreateSheetAsync(string title, CancellationToken token)
     {
-        int sheetId = RandomUtilities.GetRandomId();
-
         var addSheetRequest = new Request
         {
             AddSheet = new AddSheetRequest
             {
                 Properties = new SheetProperties
                 {
-                    Title = title,
-                    SheetId = sheetId
+                    Title = title
                 }
             }
         };
 
-        await _service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest 
-            {
-                Requests = new List<Request> { addSheetRequest }
-            }, _spreadsheetId)
+        BatchUpdateSpreadsheetResponse response = await _service.Spreadsheets.BatchUpdate(
+                new BatchUpdateSpreadsheetRequest 
+                { 
+                    Requests = new List<Request>
+                    { 
+                        addSheetRequest
+                    }
+                }, _spreadsheetId)
             .ExecuteAsync(token);
 
-        return sheetId;
+        return response
+            .Replies
+            .First()
+            .AddSheet
+            .Properties
+            .SheetId!
+            .Value;
     }
 }
