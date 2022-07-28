@@ -12,7 +12,7 @@ public record UserFullNameFormatter(User User) : IFullNameFormatter
             .Append(' ')
             .Append(User.FirstName);
 
-        if (User.MiddleName is not null)
+        if (User.MiddleName != "")
         {
             fullNameBuilder
                 .Append(' ')
