@@ -1,9 +1,12 @@
-﻿using Kysect.Shreks.Abstractions;
+﻿using System.Globalization;
+using Kysect.Shreks.Abstractions;
 
 namespace Kysect.Shreks.GoogleIntegration.Extensions.Entities;
 
 internal static class StudentPointsExtensions
 {
+    private static readonly CultureInfo CurrentCultureInfo = new("ru-RU");
+
     public static IList<object> ToSheetData(this StudentPoints studentPoints)
     {
         var data = new List<object>
@@ -18,14 +21,22 @@ internal static class StudentPointsExtensions
 
         points.ForEach(p =>
         {
-            double assignmentPoints = Math.Round(p.Points, 2);
-            data.Add(assignmentPoints != 0 ? assignmentPoints : "");
-            data.Add(p.Date?.ToString("dd.MM.yyyy") ?? "");
+            data.Add(PointsToSheetData(p.Points));
+            data.Add(DateToSheetData(p.Date));
         });
 
-        var totalPoints = Math.Round(points.Sum(p => p.Points), 2);
-        data.Add(totalPoints);
+        double totalPoints = points.Sum(p => p.Points);
+        data.Add(PointsToString(totalPoints));
 
         return data;
     }
+
+    private static string PointsToSheetData(double points)
+        => points == 0 ? "" : PointsToString(points);
+
+    private static string PointsToString(double points)
+        => Math.Round(points, 2).ToString(CurrentCultureInfo);
+
+    private static string DateToSheetData(DateOnly? dateOnly)
+        => dateOnly?.ToString("dd.MM.yyyy") ?? "";
 }
