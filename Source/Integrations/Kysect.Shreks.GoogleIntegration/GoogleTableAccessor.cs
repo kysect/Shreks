@@ -15,9 +15,7 @@ public class GoogleTableAccessor : IGoogleTableAccessor
     private readonly PointsSheet _pointsSheet;
     private readonly QueueSheet _queueSheet;
 
-    private GoogleTableAccessor(
-        PointsSheet pointsSheet,
-        QueueSheet queueSheet)
+    private GoogleTableAccessor(PointsSheet pointsSheet, QueueSheet queueSheet)
     {
         _pointsSheet = pointsSheet;
         _queueSheet = queueSheet;
@@ -27,8 +25,7 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         string spreadsheetId,
         CancellationToken token = default)
     {
-        var credential = await GoogleCredential
-            .FromFileAsync(ClientSecretsPath, token);
+        var credential = await GoogleCredential.FromFileAsync(ClientSecretsPath, token);
 
         var service = new SheetsService(
             new BaseClientService.Initializer
@@ -45,12 +42,12 @@ public class GoogleTableAccessor : IGoogleTableAccessor
     }
 
     public async Task UpdateQueueAsync(
-        IEnumerable<Submission> submissions,
+        IReadOnlyCollection<Submission> submissions,
         CancellationToken token = default)
         => await _queueSheet.UpdateQueueAsync(submissions, token);
 
     public async Task UpdatePointsAsync(
-        IEnumerable<StudentPoints> points,
+        IReadOnlyCollection<StudentPoints> points,
         CancellationToken token = default)
         => await _pointsSheet.UpdatePointsAsync(points, token);
     

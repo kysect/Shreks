@@ -18,7 +18,7 @@ public class QueueSheet : ISheet
             "GitHub"
         };
 
-    private static readonly IEnumerable<int> ColumnLengths = new[]
+    private static readonly IReadOnlyCollection<int> ColumnLengths = new[]
     {
         240,
         100,
@@ -35,7 +35,7 @@ public class QueueSheet : ISheet
 
     public GoogleTableEditor Editor { get; init; } = null!;
 
-    public async Task UpdateQueueAsync(IEnumerable<Submission> submissions, CancellationToken token)
+    public async Task UpdateQueueAsync(IReadOnlyCollection<Submission> submissions, CancellationToken token)
     {
         if (!_sheetFormatted)
         {

@@ -5,12 +5,12 @@ namespace Kysect.Shreks.Abstractions;
 
 public record AssignmentPoints(Assignment Assignment, DateOnly? Date, double Points);
 
-public record StudentPoints(Student Student, IEnumerable<AssignmentPoints> Points);
+public record StudentPoints(Student Student, IReadOnlyCollection<AssignmentPoints> Points);
 
 
 public interface IGoogleTableAccessor
 {
-    Task UpdateQueueAsync(IEnumerable<Submission> submissions, CancellationToken token = default);
-    Task UpdatePointsAsync(IEnumerable<StudentPoints> points, CancellationToken token = default);
+    Task UpdateQueueAsync(IReadOnlyCollection<Submission> submissions, CancellationToken token = default);
+    Task UpdatePointsAsync(IReadOnlyCollection<StudentPoints> points, CancellationToken token = default);
     Task UpdateStudentPointsAsync(StudentPoints studentPoints, CancellationToken token = default);
 }

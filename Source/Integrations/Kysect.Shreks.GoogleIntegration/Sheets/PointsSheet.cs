@@ -22,13 +22,13 @@ public class PointsSheet : ISheet
         "Лабораторные работы"
     };
 
-    private static readonly IEnumerable<string> InitialMergeRanges = new[]
+    private static readonly IReadOnlyCollection<string> InitialMergeRanges = new[]
     {
         "A1:A3",
         "B1:B3"
     };
 
-    private static readonly IEnumerable<int> ColumnLengths = new[] { 240 };
+    private static readonly IReadOnlyCollection<int> ColumnLengths = new[] { 240 };
 
     public int Id { get; init; }
 
@@ -37,7 +37,7 @@ public class PointsSheet : ISheet
 
     public GoogleTableEditor Editor { get; init; } = null!;
 
-    public async Task UpdatePointsAsync(IEnumerable<StudentPoints> points, CancellationToken token)
+    public async Task UpdatePointsAsync(IReadOnlyCollection<StudentPoints> points, CancellationToken token)
     {
         await Editor.ClearValuesAsync(DataRange, token);
 
