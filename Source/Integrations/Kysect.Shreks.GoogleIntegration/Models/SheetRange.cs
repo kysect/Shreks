@@ -8,8 +8,7 @@ namespace Kysect.Shreks.GoogleIntegration.Models;
 
 public class SheetRange
 {
-    private static readonly Regex AlphabeticRegex =
-        new("^[a-zA-Z0-9]*$", RegexOptions.Compiled);
+    private static readonly Regex AlphabeticRegex = new("^[a-zA-Z0-9]*$", RegexOptions.Compiled);
 
     public SheetRange(string title, int id, string range)
         : this(id, range)
