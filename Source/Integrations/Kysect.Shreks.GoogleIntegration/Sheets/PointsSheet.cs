@@ -5,7 +5,6 @@ using Kysect.Shreks.GoogleIntegration.Attributes;
 using Kysect.Shreks.GoogleIntegration.Exceptions;
 using Kysect.Shreks.GoogleIntegration.Extensions.Entities;
 using Kysect.Shreks.GoogleIntegration.Models;
-using Kysect.Shreks.GoogleIntegration.SheetEnums;
 using Kysect.Shreks.GoogleIntegration.Tools;
 
 namespace Kysect.Shreks.GoogleIntegration.Sheets;
