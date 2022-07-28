@@ -2,7 +2,7 @@
 
 namespace Kysect.Shreks.GoogleIntegration.Extensions.Entities;
 
-public static class StudentPointsExtensions
+internal static class StudentPointsExtensions
 {
     public static IList<object> ToSheetData(this StudentPoints studentPoints)
     {
@@ -28,7 +28,4 @@ public static class StudentPointsExtensions
 
         return data;
     }
-
-    public static string GetStudentIdentifier(this StudentPoints studentPoints)
-        => $"{studentPoints.Student.GetFullName()}{studentPoints.Student.Group.Name}";
 }

@@ -64,7 +64,7 @@ public class PointsSheet : ISheet
 
     public async Task UpdateStudentPointsAsync(StudentPoints studentPoints, CancellationToken token)
     {
-        string studentIdentifier = studentPoints.GetStudentIdentifier();
+        string studentIdentifier = studentPoints.Student.GetSheetIdentifier();
         IList<object> newStudentRow = studentPoints.ToSheetData();
 
         IList<IList<object>> values = await Editor.GetValuesAsync(DataRange, token);

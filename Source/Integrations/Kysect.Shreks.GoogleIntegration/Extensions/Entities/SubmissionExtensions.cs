@@ -1,9 +1,10 @@
-﻿using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Formatters;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.GoogleIntegration.Extensions.Entities;
 
-public static class SubmissionExtensions
+internal static class SubmissionExtensions
 {
     public static IList<object> ToSheetData(this Submission submission)
     {
