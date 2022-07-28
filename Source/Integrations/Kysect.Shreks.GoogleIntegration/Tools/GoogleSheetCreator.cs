@@ -54,22 +54,21 @@ public class GoogleSheetCreator
     {
         int sheetId = RandomUtilities.GetRandomId();
 
+        var addSheetRequest = new Request
+        {
+            AddSheet = new AddSheetRequest
+            {
+                Properties = new SheetProperties
+                {
+                    Title = title,
+                    SheetId = sheetId
+                }
+            }
+        };
+
         await _service.Spreadsheets.BatchUpdate(new BatchUpdateSpreadsheetRequest 
             {
-                Requests = new List<Request>
-                {
-                    new()
-                    {
-                        AddSheet = new AddSheetRequest
-                        {
-                            Properties = new SheetProperties
-                            {
-                                Title = title,
-                                SheetId = sheetId
-                            }
-                        }
-                    }
-                }
+                Requests = new List<Request> { addSheetRequest }
             }, _spreadsheetId)
             .ExecuteAsync(token);
 
