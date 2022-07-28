@@ -18,8 +18,9 @@ public static class StudentPointsExtensions
 
         points.ForEach(p =>
         {
-            data.Add(Math.Round(p.Points, 2));
-            data.Add(p.Date.ToString("dd.MM.yyyy"));
+            double assignmentPoints = Math.Round(p.Points, 2);
+            data.Add(assignmentPoints != 0 ? assignmentPoints : "");
+            data.Add(p.Date?.ToString("dd.MM.yyyy") ?? "");
         });
 
         var totalPoints = Math.Round(points.Sum(p => p.Points), 2);

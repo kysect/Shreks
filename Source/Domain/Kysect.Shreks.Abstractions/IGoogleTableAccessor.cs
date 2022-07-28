@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.Abstractions;
 
-public record AssignmentPoints(Assignment Assignment, DateOnly Date, double Points);
+public record AssignmentPoints(Assignment Assignment, DateOnly? Date, double Points);
 
 public record StudentPoints(Student Student, IEnumerable<AssignmentPoints> Points);
 
