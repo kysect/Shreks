@@ -32,12 +32,12 @@ public static class ServiceCollectionExtensions
             new MemoryCacheOptions
             {
                 SizeLimit = cacheConf.SizeLimit,
-                ExpirationScanFrequency = TimeSpan.FromMinutes(cacheConf.ExpirationMinutes),
+                ExpirationScanFrequency = cacheConf.Expiration,
             },
             new MemoryCacheEntryOptions()
                 .SetSize(cacheEntryConf.EntrySize)
-                .SetAbsoluteExpiration(TimeSpan.FromMinutes(cacheEntryConf.AbsoluteExpirationMinutes))
-                .SetSlidingExpiration(TimeSpan.FromMinutes(cacheEntryConf.SlidingExpirationMinutes))
+                .SetAbsoluteExpiration(cacheEntryConf.AbsoluteExpiration)
+                .SetSlidingExpiration(cacheEntryConf.SlidingExpiration)
             ));
 
         services.AddSingleton<IInstallationClientFactory>(_ =>

@@ -15,7 +15,7 @@ public class GithubConfiguration : IShreksConfiguration
         ArgumentNullException.ThrowIfNull(PrivateKeySource, nameof(PrivateKeySource));
 
         if (ExpirationSeconds <= 0)
-            throw new ArgumentException($"ExpirationMinutes in {nameof(GithubConfiguration)} must be greater than 0");
+            throw new ArgumentException($"Expiration in {nameof(GithubConfiguration)} must be greater than 0");
         
         if (AppIntegrationId <= 0)
             throw new ArgumentException($"AppIntegrationId in {nameof(GithubConfiguration)} must be greater than 0");
