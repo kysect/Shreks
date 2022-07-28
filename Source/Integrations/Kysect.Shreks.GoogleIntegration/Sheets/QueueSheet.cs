@@ -52,7 +52,7 @@ public class QueueSheet : ISheet
 
     private async Task FormatAsync(CancellationToken token)
     {
-        await Editor.SetAlignmentAsync(HeaderRange, HorizontalAlignment.Center, VerticalAlignment.Middle, token);
+        await Editor.SetAlignmentAsync(HeaderRange, token);
         await Editor.SetValuesAsync(Header, HeaderRange, token);
         await Editor.FreezeRowsAsync(HeaderRange, token);
         await Editor.ResizeColumnsAsync(ColumnLengths, Id, token);

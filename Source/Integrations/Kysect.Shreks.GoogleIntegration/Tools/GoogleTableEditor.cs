@@ -16,7 +16,10 @@ public class GoogleTableEditor
         _service = service;
         _spreadsheetId = spreadsheetId;
     }
-    
+
+    public async Task SetAlignmentAsync(SheetRange sheetRange, CancellationToken token)
+        => await SetAlignmentAsync(sheetRange, HorizontalAlignment.Center, VerticalAlignment.Middle, token);
+
     public async Task SetAlignmentAsync(
         SheetRange sheetRange,
         HorizontalAlignment horizontalAlignment,

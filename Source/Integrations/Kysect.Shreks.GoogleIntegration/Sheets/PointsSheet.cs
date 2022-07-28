@@ -89,7 +89,7 @@ public class PointsSheet : ISheet
     private async Task FormatAsync(IList<Assignment> assignments, CancellationToken token)
     {
         await Editor.ClearValuesAsync(HeaderRange, token);
-        await Editor.SetAlignmentAsync(HeaderRange, HorizontalAlignment.Center, VerticalAlignment.Middle, token);
+        await Editor.SetAlignmentAsync(HeaderRange, token);
         await Editor.FreezeRowsAsync(HeaderRange, token);
         await Editor.FreezeColumnsAsync(new SheetProperties
         {
