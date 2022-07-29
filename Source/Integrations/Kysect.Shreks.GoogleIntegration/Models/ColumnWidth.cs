@@ -15,7 +15,7 @@ public class ColumnWidth
         _width = width;
     }
     
-    public Request GetUpdateColumnWidthRequest(int sheetId)
+    public Request GetResizeColumnRequest(int sheetId)
     {
         var dimensionRange = new DimensionRange
         {

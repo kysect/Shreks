@@ -20,113 +20,149 @@ public class GoogleTableEditor
     public Task SetAlignmentAsync(SheetRange sheetRange, CancellationToken token)
         => SetAlignmentAsync(sheetRange, HorizontalAlignment.Center, VerticalAlignment.Middle, token);
 
-    public Task SetAlignmentAsync(
+    public async Task SetAlignmentAsync(
         SheetRange sheetRange,
         HorizontalAlignment horizontalAlignment,
         VerticalAlignment verticalAlignment,
         CancellationToken token)
-        => ExecuteBatchUpdateAsync(new Request 
+    {
+        var cellData = new CellData
+        {
+            UserEnteredFormat = new CellFormat
+            {
+                HorizontalAlignment = horizontalAlignment,
+                VerticalAlignment = verticalAlignment
+            }
+        };
+
+        var setAlignmentRequest = new Request
         {
             RepeatCell = new RepeatCellRequest
             {
-                Cell = new CellData
-                {
-                    UserEnteredFormat = new CellFormat
-                    {
-                        HorizontalAlignment = horizontalAlignment,
-                        VerticalAlignment = verticalAlignment
-                    }
-                },
+                Cell = cellData,
                 Range = sheetRange.GridRange,
                 Fields = UpdatedFields.All
             }
-        }, token);
+        };
+
+        await ExecuteBatchUpdateAsync(setAlignmentRequest, token);
+    }
 
     public async Task MergeCellsAsync(IList<GridRange> ranges, CancellationToken token)
     {
-        await ExecuteBatchUpdateAsync(ranges.Select(r =>
-            new Request 
+        List<Request> mergeCellsRequest = ranges
+            .Select(r => new Request 
             {
                 MergeCells = new MergeCellsRequest
                 {
                     Range = r,
                     MergeType = MergeType.All
                 }
-            }
-        ).ToList(), token);
+            })
+            .ToList();
+
+        await ExecuteBatchUpdateAsync(mergeCellsRequest, token);
     }
 
     public Task FreezeRowsAsync(SheetRange sheetRange, CancellationToken token)
         => FreezeRowsAsync(sheetRange.FrozenRowProperties, token);
 
     public Task FreezeRowsAsync(SheetProperties sheetProperties, CancellationToken token)
-        => ExecuteBatchUpdateAsync(new Request
-        {
-            UpdateSheetProperties = new UpdateSheetPropertiesRequest
-            {
-                Properties = sheetProperties,
-                Fields = UpdatedFields.FrozenRowCount
-            }
-        }, token);
+        => FreezeDimensionAsync(sheetProperties, UpdatedFields.FrozenRowCount, token);
 
     public Task FreezeColumnsAsync(SheetProperties sheetProperties, CancellationToken token)
-        => ExecuteBatchUpdateAsync(new Request 
-        {
-            UpdateSheetProperties = new UpdateSheetPropertiesRequest
-            {
-                Properties = sheetProperties,
-                Fields = UpdatedFields.FrozenColumnCount
-            }
-        }, token);
+        => FreezeDimensionAsync(sheetProperties, UpdatedFields.FrozenColumnCount, token);
 
-    public Task ResizeColumnsAsync(IEnumerable<ColumnWidth> columnWidths, int sheetId, CancellationToken token)
-        => ExecuteBatchUpdateAsync(columnWidths.Select(c => 
-            c.GetUpdateColumnWidthRequest(sheetId))
-            .ToList(), token);
+    public async Task ResizeColumnsAsync(
+        IEnumerable<ColumnWidth> columnWidths,
+        int sheetId,
+        CancellationToken token)
+    {
+        List<Request> resizeColumnRequests = columnWidths
+            .Select(c => c.GetResizeColumnRequest(sheetId))
+            .ToList();
+            
+        await ExecuteBatchUpdateAsync(resizeColumnRequests, token);
+    }
 
-    public async Task<IList<IList<object>>> GetValuesAsync(SheetRange sheetRange, CancellationToken token)
-        => (await _service.Spreadsheets.Values
+    public async Task<IList<IList<object>>> GetValuesAsync(
+        SheetRange sheetRange,
+        CancellationToken token)
+    {
+        ValueRange valueRange = await _service.Spreadsheets.Values
             .Get(_spreadsheetId, sheetRange.Range)
-            .ExecuteAsync(token))
-            .Values;
+            .ExecuteAsync(token);
+
+        return valueRange.Values;
+    }
 
     public Task SetValuesAsync(IList<object> values, SheetRange sheetRange, CancellationToken token)
         => SetValuesAsync(new List<IList<object>> { values }, sheetRange, token);
 
-    public Task SetValuesAsync(IList<IList<object>> values, SheetRange sheetRange, CancellationToken token)
-        => _service.Spreadsheets.Values.BatchUpdate(new BatchUpdateValuesRequest
+    public async Task SetValuesAsync(
+        IList<IList<object>> values,
+        SheetRange sheetRange,
+        CancellationToken token)
+    {
+        var valueRange = new ValueRange
         {
-            Data = new List<ValueRange>
-            {
-                new()
-                {
-                    Values = values,
-                    Range = sheetRange.Range
-                }
-            },
+            Values = values,
+            Range = sheetRange.Range
+        };
+
+        var batchUpdateRequest = new BatchUpdateValuesRequest
+        {
+            Data = new List<ValueRange> { valueRange },
             ValueInputOption = ValueInputOption.UserEntered
+        };
 
-        }, _spreadsheetId).ExecuteAsync(token);
+        await _service.Spreadsheets.Values.BatchUpdate(batchUpdateRequest, _spreadsheetId)
+            .ExecuteAsync(token);
+    }
+        
 
-    public Task ClearValuesAsync(SheetRange sheetRange, CancellationToken token)
-        => ExecuteBatchUpdateAsync(new Request
+    public async Task ClearValuesAsync(SheetRange sheetRange, CancellationToken token)
+    {
+        var updateCellsRequest = new Request
         {
             UpdateCells = new UpdateCellsRequest
             {
                 Range = sheetRange.GridRange,
                 Fields = UpdatedFields.All
             }
-        }, token);
+        };
+        
+        await ExecuteBatchUpdateAsync(updateCellsRequest, token);
+    }
+    
+    private async Task FreezeDimensionAsync(
+        SheetProperties sheetProperties,
+        string fields,
+        CancellationToken token)
+    {
+        var freezeDimensionsRequest = new Request
+        {
+            UpdateSheetProperties = new UpdateSheetPropertiesRequest
+            {
+                Properties = sheetProperties,
+                Fields = fields
+            }
+        };
 
-    private Task ExecuteBatchUpdateAsync(IList<Request> requests, CancellationToken token)
-        => _service.Spreadsheets.BatchUpdate(
-                new BatchUpdateSpreadsheetRequest
-                {
-                    Requests = requests
-                },
-                _spreadsheetId)
-            .ExecuteAsync(token);
+        await ExecuteBatchUpdateAsync(freezeDimensionsRequest, token);
+    }
 
     private Task ExecuteBatchUpdateAsync(Request request, CancellationToken token)
         => ExecuteBatchUpdateAsync(new List<Request> { request }, token);
+
+    private async Task ExecuteBatchUpdateAsync(IList<Request> requests, CancellationToken token)
+    {
+        var batchUpdateRequest = new BatchUpdateSpreadsheetRequest
+        {
+            Requests = requests
+        };
+        
+        await _service.Spreadsheets.BatchUpdate(batchUpdateRequest, _spreadsheetId)
+            .ExecuteAsync(token);
+    }
 }

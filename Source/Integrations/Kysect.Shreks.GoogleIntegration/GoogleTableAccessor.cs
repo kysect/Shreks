@@ -41,18 +41,12 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         return new GoogleTableAccessor(pointsSheet, queueSheet);
     }
 
-    public Task UpdateQueueAsync(
-        IReadOnlyCollection<Submission> submissions,
-        CancellationToken token = default)
+    public Task UpdateQueueAsync(IReadOnlyCollection<Submission> submissions, CancellationToken token = default)
         => _queueSheet.UpdateQueueAsync(submissions, token);
 
-    public Task UpdatePointsAsync(
-        IReadOnlyCollection<StudentPoints> points,
-        CancellationToken token = default)
+    public Task UpdatePointsAsync(IReadOnlyCollection<StudentPoints> points, CancellationToken token = default)
         => _pointsSheet.UpdatePointsAsync(points, token);
     
-    public Task UpdateStudentPointsAsync(
-        StudentPoints studentPoints,
-        CancellationToken token = default)
+    public Task UpdateStudentPointsAsync(StudentPoints studentPoints, CancellationToken token = default)
         => _pointsSheet.UpdateStudentPointsAsync(studentPoints, token);
 }

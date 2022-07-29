@@ -1,5 +1,4 @@
-﻿using Kysect.Shreks.Core.Formatters;
-using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.GoogleIntegration.Extensions.Entities;
