@@ -18,13 +18,13 @@ public class QueueSheet : ISheet
             "GitHub"
         };
 
-    private static readonly IReadOnlyCollection<int> ColumnLengths = new[]
-    {
-        240,
-        100,
-        150,
-        250
-    };
+    private static readonly IReadOnlyCollection<ColumnWidth> ColumnLengths
+        = new ColumnWidth[]
+        {
+            new(0, 240),
+            new(2, 150),
+            new(3, 250)
+        };
 
     private bool _sheetFormatted;
 
@@ -35,7 +35,9 @@ public class QueueSheet : ISheet
 
     public GoogleTableEditor Editor { get; init; } = null!;
 
-    public async Task UpdateQueueAsync(IReadOnlyCollection<Submission> submissions, CancellationToken token)
+    public async Task UpdateQueueAsync(
+        IReadOnlyCollection<Submission> submissions,
+        CancellationToken token)
     {
         if (!_sheetFormatted)
         {
@@ -43,7 +45,9 @@ public class QueueSheet : ISheet
             _sheetFormatted = true;
         }
 
-        IList<IList<object>> queue = submissions.Select(s => s.ToSheetData()).ToList();
+        IList<IList<object>> queue = submissions
+            .Select(s => s.ToSheetData())
+            .ToList();
 
         await Editor.ClearValuesAsync(DataRange, token);
         await Editor.SetValuesAsync(queue, DataRange, token);

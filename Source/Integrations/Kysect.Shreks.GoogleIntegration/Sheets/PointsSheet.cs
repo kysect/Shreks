@@ -28,7 +28,8 @@ public class PointsSheet : ISheet
         "B1:B3"
     };
 
-    private static readonly IReadOnlyCollection<int> ColumnLengths = new[] { 240 };
+    private static readonly IReadOnlyCollection<ColumnWidth> ColumnLengths
+        = new ColumnWidth[] { new(0, 240) };
 
     public int Id { get; init; }
 

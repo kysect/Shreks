@@ -79,25 +79,10 @@ public class GoogleTableEditor
             }
         }, token);
 
-    public async Task ResizeColumnsAsync(IEnumerable<int> orderedLengths, int sheetId, CancellationToken token)
-        => await ExecuteBatchUpdateAsync(orderedLengths.Select((l, i) => new Request 
-        {
-            UpdateDimensionProperties = new UpdateDimensionPropertiesRequest
-            {
-                Properties = new DimensionProperties
-                {
-                    PixelSize = l
-                },
-                Range = new DimensionRange
-                {
-                    StartIndex = i,
-                    EndIndex = i + 1,
-                    Dimension = Dimension.Columns,
-                    SheetId = sheetId
-                },
-                Fields = UpdatedFields.All
-            }
-        }).ToList(), token);
+    public async Task ResizeColumnsAsync(IEnumerable<ColumnWidth> columnWidths, int sheetId, CancellationToken token)
+        => await ExecuteBatchUpdateAsync(columnWidths.Select(c => 
+            c.GetUpdateColumnWidthRequest(sheetId))
+            .ToList(), token);
 
     public async Task<IList<IList<object>>> GetValuesAsync(SheetRange sheetRange, CancellationToken token)
         => (await _service.Spreadsheets.Values
