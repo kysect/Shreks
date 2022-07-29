@@ -4,7 +4,7 @@ namespace Kysect.Shreks.Integration.Github.Entities;
 
 public class ShreksMemoryCache : IShreksMemoryCache
 {
-    private readonly MemoryCache _cache;
+    private readonly IMemoryCache _cache;
     private readonly MemoryCacheEntryOptions _cacheEntryOptions;
 
     public ShreksMemoryCache(
@@ -14,9 +14,6 @@ public class ShreksMemoryCache : IShreksMemoryCache
         _cache = new MemoryCache(memoryCacheOptions);
         _cacheEntryOptions = memoryCacheEntryOptions;
     }
-
-    public bool TryGetValue(object key, out object value)
-        => _cache.TryGetValue(key, out value);
 
     public async Task<TItem> GetOrCreateAsync<TItem>(object key,
         Func<ICacheEntry, Task<TItem>> factory)
@@ -28,7 +25,5 @@ public class ShreksMemoryCache : IShreksMemoryCache
         });
     }
 
-    public ICacheEntry CreateEntry(object key) => _cache.CreateEntry(key);
-    public void Remove(object key) => _cache.Remove(key);
     public void Dispose() => _cache.Dispose();
 }
