@@ -17,15 +17,15 @@ public class GoogleTableEditor
         _spreadsheetId = spreadsheetId;
     }
 
-    public async Task SetAlignmentAsync(SheetRange sheetRange, CancellationToken token)
-        => await SetAlignmentAsync(sheetRange, HorizontalAlignment.Center, VerticalAlignment.Middle, token);
+    public Task SetAlignmentAsync(SheetRange sheetRange, CancellationToken token)
+        => SetAlignmentAsync(sheetRange, HorizontalAlignment.Center, VerticalAlignment.Middle, token);
 
-    public async Task SetAlignmentAsync(
+    public Task SetAlignmentAsync(
         SheetRange sheetRange,
         HorizontalAlignment horizontalAlignment,
         VerticalAlignment verticalAlignment,
         CancellationToken token)
-        => await ExecuteBatchUpdateAsync(new Request 
+        => ExecuteBatchUpdateAsync(new Request 
         {
             RepeatCell = new RepeatCellRequest
             {
@@ -56,11 +56,11 @@ public class GoogleTableEditor
         ).ToList(), token);
     }
 
-    public async Task FreezeRowsAsync(SheetRange sheetRange, CancellationToken token)
-        => await FreezeRowsAsync(sheetRange.FrozenRowProperties, token);
+    public Task FreezeRowsAsync(SheetRange sheetRange, CancellationToken token)
+        => FreezeRowsAsync(sheetRange.FrozenRowProperties, token);
 
-    public async Task FreezeRowsAsync(SheetProperties sheetProperties, CancellationToken token)
-        => await ExecuteBatchUpdateAsync(new Request
+    public Task FreezeRowsAsync(SheetProperties sheetProperties, CancellationToken token)
+        => ExecuteBatchUpdateAsync(new Request
         {
             UpdateSheetProperties = new UpdateSheetPropertiesRequest
             {
@@ -69,8 +69,8 @@ public class GoogleTableEditor
             }
         }, token);
 
-    public async Task FreezeColumnsAsync(SheetProperties sheetProperties, CancellationToken token)
-        => await ExecuteBatchUpdateAsync(new Request 
+    public Task FreezeColumnsAsync(SheetProperties sheetProperties, CancellationToken token)
+        => ExecuteBatchUpdateAsync(new Request 
         {
             UpdateSheetProperties = new UpdateSheetPropertiesRequest
             {
@@ -79,8 +79,8 @@ public class GoogleTableEditor
             }
         }, token);
 
-    public async Task ResizeColumnsAsync(IEnumerable<ColumnWidth> columnWidths, int sheetId, CancellationToken token)
-        => await ExecuteBatchUpdateAsync(columnWidths.Select(c => 
+    public Task ResizeColumnsAsync(IEnumerable<ColumnWidth> columnWidths, int sheetId, CancellationToken token)
+        => ExecuteBatchUpdateAsync(columnWidths.Select(c => 
             c.GetUpdateColumnWidthRequest(sheetId))
             .ToList(), token);
 
@@ -90,11 +90,11 @@ public class GoogleTableEditor
             .ExecuteAsync(token))
             .Values;
 
-    public async Task SetValuesAsync(IList<object> values, SheetRange sheetRange, CancellationToken token)
-        => await SetValuesAsync(new List<IList<object>> { values }, sheetRange, token);
+    public Task SetValuesAsync(IList<object> values, SheetRange sheetRange, CancellationToken token)
+        => SetValuesAsync(new List<IList<object>> { values }, sheetRange, token);
 
-    public async Task SetValuesAsync(IList<IList<object>> values, SheetRange sheetRange, CancellationToken token)
-        => await _service.Spreadsheets.Values.BatchUpdate(new BatchUpdateValuesRequest
+    public Task SetValuesAsync(IList<IList<object>> values, SheetRange sheetRange, CancellationToken token)
+        => _service.Spreadsheets.Values.BatchUpdate(new BatchUpdateValuesRequest
         {
             Data = new List<ValueRange>
             {
@@ -108,8 +108,8 @@ public class GoogleTableEditor
 
         }, _spreadsheetId).ExecuteAsync(token);
 
-    public async Task ClearValuesAsync(SheetRange sheetRange, CancellationToken token)
-        => await ExecuteBatchUpdateAsync(new Request
+    public Task ClearValuesAsync(SheetRange sheetRange, CancellationToken token)
+        => ExecuteBatchUpdateAsync(new Request
         {
             UpdateCells = new UpdateCellsRequest
             {
@@ -118,8 +118,8 @@ public class GoogleTableEditor
             }
         }, token);
 
-    private async Task ExecuteBatchUpdateAsync(IList<Request> requests, CancellationToken token)
-        => await _service.Spreadsheets.BatchUpdate(
+    private Task ExecuteBatchUpdateAsync(IList<Request> requests, CancellationToken token)
+        => _service.Spreadsheets.BatchUpdate(
                 new BatchUpdateSpreadsheetRequest
                 {
                     Requests = requests
@@ -127,6 +127,6 @@ public class GoogleTableEditor
                 _spreadsheetId)
             .ExecuteAsync(token);
 
-    private async Task ExecuteBatchUpdateAsync(Request request, CancellationToken token)
-        => await ExecuteBatchUpdateAsync(new List<Request> { request }, token);
+    private Task ExecuteBatchUpdateAsync(Request request, CancellationToken token)
+        => ExecuteBatchUpdateAsync(new List<Request> { request }, token);
 }
