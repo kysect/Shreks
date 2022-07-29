@@ -3,20 +3,20 @@ using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.Core.Formatters;
 
-public record UserFullNameFormatter(User User) : IFullNameFormatter
+public class UserFullNameFormatter : IUserFullNameFormatter
 {
-    public string GetFullName()
+    public string GetFullName(User user)
     {
         var fullNameBuilder = new StringBuilder()
-            .Append(User.LastName)
+            .Append(user.LastName)
             .Append(' ')
-            .Append(User.FirstName);
+            .Append(user.FirstName);
 
-        if (User.MiddleName != "")
+        if (user.MiddleName != "")
         {
             fullNameBuilder
                 .Append(' ')
-                .Append(User.MiddleName);
+                .Append(user.MiddleName);
         }
 
         return fullNameBuilder.ToString();

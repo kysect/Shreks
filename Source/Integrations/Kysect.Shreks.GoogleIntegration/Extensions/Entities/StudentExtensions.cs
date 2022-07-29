@@ -6,7 +6,7 @@ namespace Kysect.Shreks.GoogleIntegration.Extensions.Entities;
 internal static class StudentExtensions
 {
     public static string GetFullName(this Student student)
-        => new UserFullNameFormatter(student).GetFullName();
+        => new UserFullNameFormatter().GetFullName(student);
 
     public static string GetSheetIdentifier(this Student student)
         => $"{student.GetFullName()}{student.Group.Name}";
