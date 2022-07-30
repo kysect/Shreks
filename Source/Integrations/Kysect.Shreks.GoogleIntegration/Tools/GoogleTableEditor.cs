@@ -109,7 +109,8 @@ public class GoogleTableEditor
             ValueInputOption = ValueInputOption.UserEntered
         };
 
-        await _service.Spreadsheets.Values.BatchUpdate(batchUpdateRequest, _spreadsheetId)
+        await _service.Spreadsheets.Values
+            .BatchUpdate(batchUpdateRequest, _spreadsheetId)
             .ExecuteAsync(token);
     }
 
@@ -185,7 +186,8 @@ public class GoogleTableEditor
             Requests = requests
         };
         
-        await _service.Spreadsheets.BatchUpdate(batchUpdateRequest, _spreadsheetId)
+        await _service.Spreadsheets
+            .BatchUpdate(batchUpdateRequest, _spreadsheetId)
             .ExecuteAsync(token);
     }
 }
