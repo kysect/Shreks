@@ -38,22 +38,24 @@ public class PointsSheet : ISheet
     public PointsSheet(
         IUserFullNameFormatter userFullNameFormatter,
         IStudentIdentifierProvider studentIdentifierProvider,
-        ISheetDataConverter<StudentPoints> studentPointsConverter)
+        ISheetDataConverter<StudentPoints> studentPointsConverter,
+        CreateSheetArguments sheetArguments)
     {
         _userFullNameFormatter = userFullNameFormatter;
         _studentIdentifierProvider = studentIdentifierProvider;
         _studentPointsConverter = studentPointsConverter;
+        (Id, HeaderRange, DataRange, Editor) = sheetArguments;
     }
 
     public static SheetDescriptor Descriptor { get; }
         = new("Баллы", "A1:Z3", "A4:Q");
 
-    public int Id { get; init; }
+    public int Id { get; }
 
-    public SheetRange HeaderRange { get; init; } = null!;
-    public SheetRange DataRange { get; init; } = null!;
+    public SheetRange HeaderRange { get; }
+    public SheetRange DataRange { get; }
 
-    public GoogleTableEditor Editor { get; init; } = null!;
+    public GoogleTableEditor Editor { get; }
 
     public async Task UpdatePointsAsync(IReadOnlyCollection<StudentPoints> points, CancellationToken token)
     {

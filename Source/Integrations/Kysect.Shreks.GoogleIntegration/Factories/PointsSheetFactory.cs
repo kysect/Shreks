@@ -26,12 +26,10 @@ public class PointsSheetFactory : ISheetFactory<PointsSheet>
 
     public PointsSheet Create(CreateSheetArguments sheetArguments)
     {
-        return new PointsSheet(_userFullNameFormatter, _studentIdentifierProvider, _studentPointsConverter)
-        {
-            Id = sheetArguments.SheetId,
-            HeaderRange = sheetArguments.HeaderSheetRange,
-            DataRange = sheetArguments.DataSheetRange,
-            Editor = sheetArguments.Editor
-        };
+        return new PointsSheet(
+            _userFullNameFormatter,
+            _studentIdentifierProvider,
+            _studentPointsConverter,
+            sheetArguments);
     }
 }

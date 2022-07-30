@@ -16,12 +16,6 @@ public class QueueSheetFactory : ISheetFactory<QueueSheet>
 
     public QueueSheet Create(CreateSheetArguments sheetArguments)
     {
-        return new QueueSheet(_submissionConverter)
-        {
-            Id = sheetArguments.SheetId,
-            HeaderRange = sheetArguments.HeaderSheetRange,
-            DataRange = sheetArguments.DataSheetRange,
-            Editor = sheetArguments.Editor
-        };
+        return new QueueSheet(_submissionConverter, sheetArguments);
     }
 }

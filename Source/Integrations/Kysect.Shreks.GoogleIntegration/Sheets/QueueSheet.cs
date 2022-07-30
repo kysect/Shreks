@@ -29,17 +29,20 @@ public class QueueSheet : ISheet
     private bool _sheetFormatted;
 
     private readonly ISheetDataConverter<Submission> _submissionConverter;
-    public QueueSheet(ISheetDataConverter<Submission> submissionConverter)
+    public QueueSheet(
+        ISheetDataConverter<Submission> submissionConverter,
+        CreateSheetArguments sheetArguments)
     {
         _submissionConverter = submissionConverter;
+        (Id, HeaderRange, DataRange, Editor) = sheetArguments;
     }
 
-    public int Id { get; init; }
+    public int Id { get; }
 
-    public SheetRange HeaderRange { get; init; } = null!;
-    public SheetRange DataRange { get; init; } = null!;
+    public SheetRange HeaderRange { get; }
+    public SheetRange DataRange { get; }
 
-    public GoogleTableEditor Editor { get; init; } = null!;
+    public GoogleTableEditor Editor { get; }
 
     public async Task UpdateQueueAsync(
         IReadOnlyCollection<Submission> submissions,

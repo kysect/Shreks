@@ -5,10 +5,10 @@ namespace Kysect.Shreks.GoogleIntegration.Sheets;
 
 public interface ISheet
 {
-    int Id { get; init; }
+    int Id { get; }
 
-    SheetRange HeaderRange { get; init; }
-    SheetRange DataRange { get; init; }
+    SheetRange HeaderRange { get; }
+    SheetRange DataRange { get; }
     
-    GoogleTableEditor Editor { get; init; }
+    GoogleTableEditor Editor { get; }
 }
