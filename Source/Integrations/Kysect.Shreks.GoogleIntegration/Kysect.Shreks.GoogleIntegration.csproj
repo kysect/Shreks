@@ -10,6 +10,7 @@
     <PackageReference Include="Google.Apis.Sheets.v4" Version="1.57.0.2727" />
     <PackageReference Include="Kysect.Centum" Version="0.0.1" />
     <PackageReference Include="Kysect.Centum.Abstractions.Sheets" Version="0.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
