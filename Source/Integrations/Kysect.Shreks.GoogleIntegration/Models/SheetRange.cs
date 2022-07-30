@@ -11,17 +11,13 @@ public class SheetRange
     private static readonly Regex AlphabeticRegex = new("^[a-zA-Z0-9]*$", RegexOptions.Compiled);
 
     public SheetRange(string title, int id, string range)
-        : this(id, range)
     {
         string titleReference = AlphabeticRegex.IsMatch(title)
             ? title
             : $"'{title}'";
 
         Range = $"{titleReference}!{range}";
-    }
 
-    public SheetRange(int id, string range)
-    {
         string[] rangeParts = range.Split(':');
         if (rangeParts.Length is not 2)
             throw new ArgumentException("Range must contain two indices");
@@ -50,7 +46,7 @@ public class SheetRange
         };
     }
 
-    public string Range { get; } = null!;
+    public string Range { get; }
     public DimensionRange ColumnDimensionRange { get; }
     public GridRange GridRange { get; }
     

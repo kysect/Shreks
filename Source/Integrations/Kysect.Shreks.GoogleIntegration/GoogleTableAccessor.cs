@@ -2,9 +2,14 @@
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Kysect.Shreks.Abstractions;
+using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.GoogleIntegration.Converters;
+using Kysect.Shreks.GoogleIntegration.Factories;
+using Kysect.Shreks.GoogleIntegration.Providers;
 using Kysect.Shreks.GoogleIntegration.Sheets;
 using Kysect.Shreks.GoogleIntegration.Tools;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Kysect.Shreks.GoogleIntegration;
 
@@ -33,10 +38,15 @@ public class GoogleTableAccessor : IGoogleTableAccessor
                 HttpClientInitializer = credential
             });
 
+        IServiceProvider services = ConfigureServices();
+
         var sheetCreator = new GoogleSheetCreator(service, spreadsheetId);
 
-        var pointsSheet = await sheetCreator.GetOrCreateSheetAsync<PointsSheet>(PointsSheet.Descriptor, token);
-        var queueSheet = await sheetCreator.GetOrCreateSheetAsync<QueueSheet>(QueueSheet.Descriptor, token);
+        var pointsSheetFactory = services.GetRequiredService<ISheetFactory<PointsSheet>>();
+        var pointsSheet = await sheetCreator.GetOrCreateSheetAsync(pointsSheetFactory, PointsSheet.Descriptor, token);
+
+        var queueSheetFactory = services.GetRequiredService<ISheetFactory<QueueSheet>>();
+        var queueSheet = await sheetCreator.GetOrCreateSheetAsync(queueSheetFactory, QueueSheet.Descriptor, token);
         
         return new GoogleTableAccessor(pointsSheet, queueSheet);
     }
@@ -49,4 +59,16 @@ public class GoogleTableAccessor : IGoogleTableAccessor
     
     public Task UpdateStudentPointsAsync(StudentPoints studentPoints, CancellationToken token = default)
         => _pointsSheet.UpdateStudentPointsAsync(studentPoints, token);
+
+    private static IServiceProvider ConfigureServices()
+    {
+        return new ServiceCollection()
+            .AddSingleton<ISheetFactory<PointsSheet>, PointsSheetFactory>()
+            .AddSingleton<ISheetFactory<QueueSheet>, QueueSheetFactory>()
+            .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
+            .AddSingleton<IStudentIdentifierProvider, StudentSheetIdentifierProvider>()
+            .AddSingleton<ISheetDataConverter<StudentPoints>, StudentPointsConverter>()
+            .AddSingleton<ISheetDataConverter<Submission>, SubmissionsConverter>()
+            .BuildServiceProvider();
+    }
 }

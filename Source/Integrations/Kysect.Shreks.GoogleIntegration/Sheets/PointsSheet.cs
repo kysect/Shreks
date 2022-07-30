@@ -1,9 +1,11 @@
 ﻿using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Abstractions;
+using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.GoogleIntegration.Converters;
 using Kysect.Shreks.GoogleIntegration.Exceptions;
-using Kysect.Shreks.GoogleIntegration.Extensions.Entities;
 using Kysect.Shreks.GoogleIntegration.Models;
+using Kysect.Shreks.GoogleIntegration.Providers;
 using Kysect.Shreks.GoogleIntegration.Tools;
 
 namespace Kysect.Shreks.GoogleIntegration.Sheets;
@@ -29,6 +31,20 @@ public class PointsSheet : ISheet
     private static readonly IReadOnlyCollection<ColumnWidth> ColumnLengths
         = new ColumnWidth[] { new(0, 240) };
 
+    private readonly IUserFullNameFormatter _userFullNameFormatter;
+    private readonly IStudentIdentifierProvider _studentIdentifierProvider;
+    private readonly ISheetDataConverter<StudentPoints> _studentPointsConverter;
+
+    public PointsSheet(
+        IUserFullNameFormatter userFullNameFormatter,
+        IStudentIdentifierProvider studentIdentifierProvider,
+        ISheetDataConverter<StudentPoints> studentPointsConverter)
+    {
+        _userFullNameFormatter = userFullNameFormatter;
+        _studentIdentifierProvider = studentIdentifierProvider;
+        _studentPointsConverter = studentPointsConverter;
+    }
+
     public static SheetDescriptor Descriptor { get; }
         = new("Баллы", "A1:Z3", "A4:Q");
 
@@ -45,7 +61,7 @@ public class PointsSheet : ISheet
 
         List<StudentPoints> sortedPoints = points
             .OrderBy(p => p.Student.Group.Name)
-            .ThenBy(p => p.Student.GetFullName())
+            .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student))
             .ToList();
 
         IEnumerable<Assignment> assignments = sortedPoints
@@ -57,7 +73,7 @@ public class PointsSheet : ISheet
         await FormatAsync(assignments.ToList(), token);
 
         IList<IList<object>> values = sortedPoints
-            .Select(s => s.ToSheetData())
+            .Select(_studentPointsConverter.GetSheetData)
             .ToList();
         
         await Editor.SetValuesAsync(values, DataRange, token);
@@ -65,8 +81,8 @@ public class PointsSheet : ISheet
 
     public async Task UpdateStudentPointsAsync(StudentPoints studentPoints, CancellationToken token)
     {
-        string studentIdentifier = studentPoints.Student.GetSheetIdentifier();
-        IList<object> newStudentRow = studentPoints.ToSheetData();
+        string studentIdentifier = _studentIdentifierProvider.GetStudentIdentifier(studentPoints.Student);
+        IList<object> newStudentRow = _studentPointsConverter.GetSheetData(studentPoints);
 
         IList<IList<object>> values = await Editor.GetValuesAsync(DataRange, token);
         IList<object>? studentRow = values.FirstOrDefault(row =>
@@ -108,7 +124,7 @@ public class PointsSheet : ISheet
     private IList<GridRange> GetMergeRanges(int assignmentCount)
     {
         IList<GridRange> mergeRanges = InitialMergeRanges
-            .Select(r => new SheetRange(Id, r).GridRange)
+            .Select(r => new SheetRange(Descriptor.Title, Id, r).GridRange)
             .ToList();
         
         int assignmentColumnEnd = AssignmentColumnsStart + assignmentCount * 2;

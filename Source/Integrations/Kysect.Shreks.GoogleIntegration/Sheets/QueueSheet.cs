@@ -1,5 +1,5 @@
 ﻿using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.GoogleIntegration.Extensions.Entities;
+using Kysect.Shreks.GoogleIntegration.Converters;
 using Kysect.Shreks.GoogleIntegration.Models;
 using Kysect.Shreks.GoogleIntegration.Tools;
 
@@ -29,6 +29,12 @@ public class QueueSheet : ISheet
 
     private bool _sheetFormatted;
 
+    private readonly ISheetDataConverter<Submission> _submissionConverter;
+    public QueueSheet(ISheetDataConverter<Submission> submissionConverter)
+    {
+        _submissionConverter = submissionConverter;
+    }
+
     public int Id { get; init; }
 
     public SheetRange HeaderRange { get; init; } = null!;
@@ -47,7 +53,7 @@ public class QueueSheet : ISheet
         }
 
         IList<IList<object>> queue = submissions
-            .Select(s => s.ToSheetData())
+            .Select(_submissionConverter.GetSheetData)
             .ToList();
 
         await Editor.ClearValuesAsync(DataRange, token);

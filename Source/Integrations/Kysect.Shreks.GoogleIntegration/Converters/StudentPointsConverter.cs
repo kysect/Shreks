@@ -1,17 +1,25 @@
 ﻿using System.Globalization;
 using Kysect.Shreks.Abstractions;
+using Kysect.Shreks.Core.Formatters;
 
-namespace Kysect.Shreks.GoogleIntegration.Extensions.Entities;
+namespace Kysect.Shreks.GoogleIntegration.Converters;
 
-internal static class StudentPointsExtensions
+public class StudentPointsConverter : ISheetDataConverter<StudentPoints>
 {
     private static readonly CultureInfo CurrentCultureInfo = new("ru-RU");
 
-    public static IList<object> ToSheetData(this StudentPoints studentPoints)
+    private readonly IUserFullNameFormatter _userFullNameFormatter;
+
+    public StudentPointsConverter(IUserFullNameFormatter userFullNameFormatter)
+    {
+        _userFullNameFormatter = userFullNameFormatter;
+    }
+
+    public IList<object> GetSheetData(StudentPoints studentPoints)
     {
         var data = new List<object>
         {
-            studentPoints.Student.GetFullName(),
+            _userFullNameFormatter.GetFullName(studentPoints.Student),
             studentPoints.Student.Group.Name
         };
 

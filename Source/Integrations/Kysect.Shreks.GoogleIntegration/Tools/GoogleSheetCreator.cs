@@ -1,6 +1,6 @@
 ﻿using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-using Kysect.Shreks.GoogleIntegration.Extensions;
+using Kysect.Shreks.GoogleIntegration.Factories;
 using Kysect.Shreks.GoogleIntegration.Models;
 using Kysect.Shreks.GoogleIntegration.Sheets;
 
@@ -17,25 +17,25 @@ public class GoogleSheetCreator
         _spreadsheetId = spreadsheetId;
     }
 
-    public async Task<T> GetOrCreateSheetAsync<T>(SheetDescriptor descriptor, CancellationToken token)
-        where T : ISheet, new()
+    public async Task<TSheet> GetOrCreateSheetAsync<TSheet>(
+        ISheetFactory<TSheet> sheetFactory,
+        SheetDescriptor descriptor,
+        CancellationToken token)
+        where TSheet : ISheet
     {
         (string title, string headerRange, string dataRange) = descriptor;
 
         int sheetId = await GetSheetIdAsync(title, token) ?? await CreateSheetAsync(title, token);
-
-        var headerSheetRange = new SheetRange(title, sheetId, headerRange);
-        var dataSheetRange = new SheetRange(title, sheetId, dataRange);
         
-        var editor = new GoogleTableEditor(_service, _spreadsheetId);
-
-        return new T
+        var createSheetArguments = new CreateSheetArguments
         {
-            Id = sheetId,
-            HeaderRange = headerSheetRange,
-            DataRange = dataSheetRange,
-            Editor = editor
+            SheetId = sheetId,
+            HeaderSheetRange = new SheetRange(title, sheetId, headerRange),
+            DataSheetRange = new SheetRange(title, sheetId, dataRange),
+            Editor = new GoogleTableEditor(_service, _spreadsheetId)
         };
+        
+        return sheetFactory.Create(createSheetArguments);
     }
 
     public async Task<int?> GetSheetIdAsync(string title, CancellationToken token)
