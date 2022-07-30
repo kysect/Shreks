@@ -4,23 +4,14 @@ using Kysect.Shreks.GoogleIntegration.SheetEnums;
 
 namespace Kysect.Shreks.GoogleIntegration.Models;
 
-public class ColumnWidth
+public record struct ColumnWidth(int ColumnIndex, int Width)
 {
-    private readonly int _columnIndex;
-    private readonly int _width;
-
-    public ColumnWidth(int columnIndex, int width)
-    {
-        _columnIndex = columnIndex;
-        _width = width;
-    }
-    
     public Request GetResizeColumnRequest(int sheetId)
     {
         var dimensionRange = new DimensionRange
         {
-            StartIndex = _columnIndex,
-            EndIndex = _columnIndex + 1,
+            StartIndex = ColumnIndex,
+            EndIndex = ColumnIndex + 1,
             Dimension = Dimension.Columns,
             SheetId = sheetId
         };
@@ -29,7 +20,7 @@ public class ColumnWidth
         {
             Properties = new DimensionProperties
             {
-                PixelSize = _width
+                PixelSize = Width
             },
             Range = dimensionRange,
             Fields = UpdatedFields.All
