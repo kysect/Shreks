@@ -1,12 +1,10 @@
 ﻿using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.GoogleIntegration.Attributes;
 using Kysect.Shreks.GoogleIntegration.Extensions.Entities;
 using Kysect.Shreks.GoogleIntegration.Models;
 using Kysect.Shreks.GoogleIntegration.Tools;
 
 namespace Kysect.Shreks.GoogleIntegration.Sheets;
 
-[GoogleSheet("Очередь", "A1:D1", "A2:D")]
 public class QueueSheet : ISheet
 {
     private static readonly IList<object> Header =
@@ -25,6 +23,9 @@ public class QueueSheet : ISheet
             new(2, 150),
             new(3, 250)
         };
+
+    public static SheetDescriptor Descriptor { get; }
+        = new("Очередь", "A1:D1", "A2:D");
 
     private bool _sheetFormatted;
 

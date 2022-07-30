@@ -17,10 +17,10 @@ public class GoogleSheetCreator
         _spreadsheetId = spreadsheetId;
     }
 
-    public async Task<T> GetOrCreateSheetAsync<T>(CancellationToken token)
+    public async Task<T> GetOrCreateSheetAsync<T>(SheetDescriptor descriptor, CancellationToken token)
         where T : ISheet, new()
     {
-        (string title, string headerRange, string dataRange) = typeof(T).GetGoogleSheetAttribute();
+        (string title, string headerRange, string dataRange) = descriptor;
 
         int sheetId = await GetSheetIdAsync(title, token) ?? await CreateSheetAsync(title, token);
 

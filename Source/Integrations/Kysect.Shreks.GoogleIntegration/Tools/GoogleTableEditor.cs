@@ -119,7 +119,6 @@ public class GoogleTableEditor
         await _service.Spreadsheets.Values.BatchUpdate(batchUpdateRequest, _spreadsheetId)
             .ExecuteAsync(token);
     }
-        
 
     public async Task ClearValuesAsync(SheetRange sheetRange, CancellationToken token)
     {

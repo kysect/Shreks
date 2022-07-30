@@ -35,8 +35,8 @@ public class GoogleTableAccessor : IGoogleTableAccessor
 
         var sheetCreator = new GoogleSheetCreator(service, spreadsheetId);
 
-        var pointsSheet = await sheetCreator.GetOrCreateSheetAsync<PointsSheet>(token);
-        var queueSheet = await sheetCreator.GetOrCreateSheetAsync<QueueSheet>(token);
+        var pointsSheet = await sheetCreator.GetOrCreateSheetAsync<PointsSheet>(PointsSheet.Descriptor, token);
+        var queueSheet = await sheetCreator.GetOrCreateSheetAsync<QueueSheet>(QueueSheet.Descriptor, token);
         
         return new GoogleTableAccessor(pointsSheet, queueSheet);
     }

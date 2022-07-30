@@ -1,7 +1,6 @@
 ﻿using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Abstractions;
 using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.GoogleIntegration.Attributes;
 using Kysect.Shreks.GoogleIntegration.Exceptions;
 using Kysect.Shreks.GoogleIntegration.Extensions.Entities;
 using Kysect.Shreks.GoogleIntegration.Models;
@@ -9,7 +8,6 @@ using Kysect.Shreks.GoogleIntegration.Tools;
 
 namespace Kysect.Shreks.GoogleIntegration.Sheets;
 
-[GoogleSheet("Баллы", "A1:Z3", "A4:Q")]
 public class PointsSheet : ISheet
 {
     private const int FrozenColumnCount = 1;
@@ -30,6 +28,9 @@ public class PointsSheet : ISheet
 
     private static readonly IReadOnlyCollection<ColumnWidth> ColumnLengths
         = new ColumnWidth[] { new(0, 240) };
+
+    public static SheetDescriptor Descriptor { get; }
+        = new("Баллы", "A1:Z3", "A4:Q");
 
     public int Id { get; init; }
 
