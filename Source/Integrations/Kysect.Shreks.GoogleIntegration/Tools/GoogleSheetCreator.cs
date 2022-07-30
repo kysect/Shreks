@@ -26,15 +26,13 @@ public class GoogleSheetCreator
         (string title, string headerRange, string dataRange) = descriptor;
 
         int sheetId = await GetSheetIdAsync(title, token) ?? await CreateSheetAsync(title, token);
-        
-        var createSheetArguments = new CreateSheetArguments
-        {
-            SheetId = sheetId,
-            HeaderSheetRange = new SheetRange(title, sheetId, headerRange),
-            DataSheetRange = new SheetRange(title, sheetId, dataRange),
-            Editor = new GoogleTableEditor(_service, _spreadsheetId)
-        };
-        
+
+        var createSheetArguments = new CreateSheetArguments(
+            sheetId,
+            new SheetRange(title, sheetId, headerRange),
+            new SheetRange(title, sheetId, dataRange),
+            new GoogleTableEditor(_service, _spreadsheetId));
+
         return sheetFactory.Create(createSheetArguments);
     }
 
