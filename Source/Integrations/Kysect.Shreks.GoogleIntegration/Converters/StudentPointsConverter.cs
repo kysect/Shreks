@@ -46,5 +46,5 @@ public class StudentPointsConverter : ISheetDataConverter<StudentPoints>
         => Math.Round(points, 2).ToString(CurrentCultureInfo);
 
     private static string DateToSheetData(DateOnly? dateOnly)
-        => dateOnly?.ToString("dd.MM.yyyy") ?? "";
+        => dateOnly?.ToString("dd.MM.yyyy") ?? string.Empty;
 }
