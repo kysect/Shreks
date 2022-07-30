@@ -1,6 +1,5 @@
 ﻿using Google.Apis.Sheets.v4.Data;
 using Kysect.Centum.Sheets.Models;
-using Kysect.Shreks.GoogleIntegration.SheetEnums;
 
 namespace Kysect.Shreks.GoogleIntegration.Models;
 

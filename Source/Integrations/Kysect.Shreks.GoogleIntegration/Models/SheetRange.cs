@@ -2,7 +2,6 @@
 using Google.Apis.Sheets.v4.Data;
 using Kysect.Centum.Sheets.Indices;
 using Kysect.Centum.Sheets.Models;
-using Kysect.Shreks.GoogleIntegration.Factories;
 using Kysect.Shreks.GoogleIntegration.Factories.Ranges;
 
 namespace Kysect.Shreks.GoogleIntegration.Models;
