@@ -51,14 +51,7 @@ public class GoogleTableEditor
     public async Task MergeCellsAsync(IList<GridRange> ranges, CancellationToken token)
     {
         List<Request> mergeCellsRequest = ranges
-            .Select(r => new Request 
-            {
-                MergeCells = new MergeCellsRequest
-                {
-                    Range = r,
-                    MergeType = MergeType.All
-                }
-            })
+            .Select(CreateMergeCellsRequest)
             .ToList();
 
         await ExecuteBatchUpdateAsync(mergeCellsRequest, token);
@@ -79,18 +72,7 @@ public class GoogleTableEditor
         CancellationToken token)
     {
         List<Request> resizeColumnRequests = columnWidths
-            .Select(c => new Request 
-                {
-                    UpdateDimensionProperties = new UpdateDimensionPropertiesRequest
-                    {
-                        Properties = new DimensionProperties
-                        {
-                            PixelSize = c.Width
-                        },
-                        Range = c.GetDimensionRange(sheetId),
-                        Fields = UpdatedFields.All
-                    }
-                })
+            .Select(c => CreateResizeColumnRequest(c, sheetId))
             .ToList();
             
         await ExecuteBatchUpdateAsync(resizeColumnRequests, token);
@@ -144,7 +126,38 @@ public class GoogleTableEditor
         
         await ExecuteBatchUpdateAsync(updateCellsRequest, token);
     }
-    
+
+    private static Request CreateMergeCellsRequest(GridRange range)
+    {
+        return new Request
+        {
+            MergeCells = new MergeCellsRequest
+            {
+                Range = range,
+                MergeType = MergeType.All
+            }
+        };
+    }
+
+    private static Request CreateResizeColumnRequest(ColumnWidth columnWidth, int sheetId)
+    {
+        var updateRequest = new UpdateDimensionPropertiesRequest
+        {
+            Properties = new DimensionProperties
+            {
+                PixelSize = columnWidth.Width
+            },
+            Range = columnWidth.GetDimensionRange(sheetId),
+            Fields = UpdatedFields.All
+        };
+
+        return new Request
+        {
+            UpdateDimensionProperties = updateRequest
+        };
+    }
+
+
     private async Task FreezeDimensionAsync(
         SheetProperties sheetProperties,
         string fields,

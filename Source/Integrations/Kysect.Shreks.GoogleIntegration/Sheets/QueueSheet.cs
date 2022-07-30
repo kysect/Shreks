@@ -7,14 +7,13 @@ namespace Kysect.Shreks.GoogleIntegration.Sheets;
 
 public class QueueSheet : ISheet
 {
-    private static readonly IList<object> Header =
-        new List<object>
-        {
-            "ФИО",
-            "Группа",
-            "Лабораторная работа",
-            "GitHub"
-        };
+    private static readonly IList<object> Header = new List<object>
+    {
+        "ФИО",
+        "Группа",
+        "Лабораторная работа",
+        "GitHub"
+    };
 
     private static readonly IReadOnlyCollection<ColumnWidth> ColumnLengths
         = new ColumnWidth[]

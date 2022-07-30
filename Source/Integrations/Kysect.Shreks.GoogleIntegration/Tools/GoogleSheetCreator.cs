@@ -60,14 +60,16 @@ public class GoogleSheetCreator
             }
         };
 
+        var createSheetRequest = new BatchUpdateSpreadsheetRequest
+        {
+            Requests = new List<Request>
+            {
+                addSheetRequest
+            }
+        };
+
         BatchUpdateSpreadsheetResponse response = await _service.Spreadsheets
-            .BatchUpdate(new BatchUpdateSpreadsheetRequest 
-            { 
-                Requests = new List<Request>
-                { 
-                    addSheetRequest
-                }
-            }, _spreadsheetId)
+            .BatchUpdate(createSheetRequest, _spreadsheetId)
             .ExecuteAsync(token);
 
         return response

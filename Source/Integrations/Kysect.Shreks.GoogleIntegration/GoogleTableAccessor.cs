@@ -32,11 +32,12 @@ public class GoogleTableAccessor : IGoogleTableAccessor
     {
         var credential = await GoogleCredential.FromFileAsync(ClientSecretsPath, token);
 
-        var service = new SheetsService(
-            new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential
-            });
+        var initializer = new BaseClientService.Initializer
+        {
+            HttpClientInitializer = credential
+        };
+
+        var service = new SheetsService(initializer);
 
         IServiceProvider services = ConfigureServices();
 
