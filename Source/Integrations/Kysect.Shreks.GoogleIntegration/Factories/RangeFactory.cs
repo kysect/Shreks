@@ -5,7 +5,7 @@ using Kysect.Shreks.GoogleIntegration.Extensions;
 
 namespace Kysect.Shreks.GoogleIntegration.Factories;
 
-public class RangeFactory : IRangeFactory
+public class RangeFactory
 {
     private readonly int _sheetId;
 

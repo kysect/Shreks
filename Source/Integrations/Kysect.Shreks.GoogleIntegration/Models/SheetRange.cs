@@ -22,7 +22,7 @@ public class SheetRange
         if (rangeParts.Length is not 2)
             throw new ArgumentException("Range must contain two indices");
 
-        IRangeFactory rangeFactory = new RangeFactory(id);
+        var rangeFactory = new RangeFactory(id);
         
         var startSheetIndex = new SheetIndex(rangeParts.First());
         var endSheetIndex = new SheetIndex(rangeParts.Last());
