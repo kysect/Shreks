@@ -6,29 +6,14 @@ namespace Kysect.Shreks.GoogleIntegration.Models;
 
 public record struct ColumnWidth(int ColumnIndex, int Width)
 {
-    public Request GetResizeColumnRequest(int sheetId)
+    public DimensionRange GetDimensionRange(int sheetId)
     {
-        var dimensionRange = new DimensionRange
+        return new DimensionRange
         {
             StartIndex = ColumnIndex,
             EndIndex = ColumnIndex + 1,
             Dimension = Dimension.Columns,
             SheetId = sheetId
-        };
-        
-        var updateProperties = new UpdateDimensionPropertiesRequest
-        {
-            Properties = new DimensionProperties
-            {
-                PixelSize = Width
-            },
-            Range = dimensionRange,
-            Fields = UpdatedFields.All
-        };
-
-        return new Request
-        {
-            UpdateDimensionProperties = updateProperties
         };
     }
 }

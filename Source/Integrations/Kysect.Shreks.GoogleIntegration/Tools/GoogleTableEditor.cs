@@ -79,7 +79,18 @@ public class GoogleTableEditor
         CancellationToken token)
     {
         List<Request> resizeColumnRequests = columnWidths
-            .Select(c => c.GetResizeColumnRequest(sheetId))
+            .Select(c => new Request 
+                {
+                    UpdateDimensionProperties = new UpdateDimensionPropertiesRequest
+                    {
+                        Properties = new DimensionProperties
+                        {
+                            PixelSize = c.Width
+                        },
+                        Range = c.GetDimensionRange(sheetId),
+                        Fields = UpdatedFields.All
+                    }
+                })
             .ToList();
             
         await ExecuteBatchUpdateAsync(resizeColumnRequests, token);
