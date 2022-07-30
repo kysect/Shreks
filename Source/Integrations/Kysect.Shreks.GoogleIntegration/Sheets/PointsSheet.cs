@@ -66,13 +66,9 @@ public class PointsSheet : ISheet
             .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student))
             .ToList();
 
-        IEnumerable<Assignment> assignments = sortedPoints
-                                                  .FirstOrDefault()?
-                                                  .Points
-                                                  .Select(p => p.Assignment) 
-                                              ?? Enumerable.Empty<Assignment>();
+        IList<Assignment> assignments = GetAssignments(sortedPoints);
 
-        await FormatAsync(assignments.ToList(), token);
+        await FormatAsync(assignments, token);
 
         IList<IList<object>> values = sortedPoints
             .Select(_studentPointsConverter.GetSheetData)
@@ -178,6 +174,21 @@ public class PointsSheet : ISheet
         header[2].Add("Итог");
 
         return header;
+    }
+
+    private static IList<Assignment> GetAssignments(IEnumerable<StudentPoints> sortedPoints)
+    {
+        StudentPoints? studentPoint = sortedPoints.FirstOrDefault();
+
+        if (studentPoint is null)
+        {
+            return Array.Empty<Assignment>();
+        }
+
+        return studentPoint
+            .Points
+            .Select(p => p.Assignment)
+            .ToList();
     }
 
     private static IList<object> GetListOfEmptyStrings(int emptyStringsCount)
