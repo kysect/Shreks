@@ -1,13 +1,11 @@
-﻿using System.Globalization;
-using Kysect.Shreks.Abstractions;
+﻿using Kysect.Shreks.Abstractions;
 using Kysect.Shreks.Core.Formatters;
+using Kysect.Shreks.GoogleIntegration.Extensions;
 
 namespace Kysect.Shreks.GoogleIntegration.Converters;
 
 public class StudentPointsConverter : ISheetDataConverter<StudentPoints>
 {
-    private static readonly CultureInfo CurrentCultureInfo = new("ru-RU");
-
     private readonly IUserFullNameFormatter _userFullNameFormatter;
 
     public StudentPointsConverter(IUserFullNameFormatter userFullNameFormatter)
@@ -17,34 +15,17 @@ public class StudentPointsConverter : ISheetDataConverter<StudentPoints>
 
     public IList<object> GetSheetData(StudentPoints studentPoints)
     {
-        var data = new List<object>
+        IEnumerable<object> data = new List<object>
         {
             _userFullNameFormatter.GetFullName(studentPoints.Student),
             studentPoints.Student.Group.Name
         };
 
-        List<AssignmentPoints> points = studentPoints.Points
-            .OrderBy(p => p.Assignment.Id)
+        IEnumerable<AssignmentPoints> points = studentPoints.Points
+            .OrderBy(p => p.Assignment.Id);
+        
+        return data
+            .Concat(points.GetPointsData())
             .ToList();
-
-        points.ForEach(p =>
-        {
-            data.Add(PointsToSheetData(p.Points));
-            data.Add(DateToSheetData(p.Date));
-        });
-
-        double totalPoints = points.Sum(p => p.Points);
-        data.Add(PointsToString(totalPoints));
-
-        return data;
     }
-
-    private static string PointsToSheetData(double points)
-        => points == 0 ? string.Empty : PointsToString(points);
-
-    private static string PointsToString(double points)
-        => Math.Round(points, 2).ToString(CurrentCultureInfo);
-
-    private static string DateToSheetData(DateOnly? dateOnly)
-        => dateOnly?.ToString("dd.MM.yyyy") ?? string.Empty;
 }
