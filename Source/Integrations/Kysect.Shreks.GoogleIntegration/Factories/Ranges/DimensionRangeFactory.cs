@@ -3,25 +3,19 @@ using Kysect.Centum.Sheets.Indices;
 using Kysect.Centum.Sheets.Models;
 using Kysect.Shreks.GoogleIntegration.Extensions;
 
-namespace Kysect.Shreks.GoogleIntegration.Factories;
+namespace Kysect.Shreks.GoogleIntegration.Factories.Ranges;
 
-public class RangeFactory
+public static class DimensionRangeFactory
 {
-    private readonly int _sheetId;
-
-    public RangeFactory(int sheetId)
-    {
-        _sheetId = sheetId;
-    }
-
-    public DimensionRange GetDimensionRange(
+    public static DimensionRange Create(
+        int sheetId,
         SheetIndex startSheetIndex,
         SheetIndex endSheetIndex,
         Dimension dimension)
     {
         var dimensionRange = new DimensionRange
         {
-            SheetId = _sheetId,
+            SheetId = sheetId,
             Dimension = dimension
         };
 
@@ -51,37 +45,5 @@ public class RangeFactory
         }
 
         return dimensionRange;
-    }
-
-    public GridRange GetGridRange(
-        SheetIndex startSheetIndex,
-        SheetIndex endSheetIndex)
-    {
-        var gridRange = new GridRange
-        {
-            SheetId = _sheetId
-        };
-
-        if (startSheetIndex.Row.IsNotNone())
-        {
-            gridRange.StartRowIndex = startSheetIndex.Row.Value - 1;
-        }
-
-        if (startSheetIndex.Column.IsNotNone())
-        {
-            gridRange.StartColumnIndex = startSheetIndex.Column.Value - 1;
-        }
-
-        if (endSheetIndex.Row.IsNotNone())
-        {
-            gridRange.EndRowIndex = endSheetIndex.Row.Value;
-        }
-
-        if (endSheetIndex.Column.IsNotNone())
-        {
-            gridRange.EndColumnIndex = endSheetIndex.Column.Value;
-        }
-
-        return gridRange;
     }
 }

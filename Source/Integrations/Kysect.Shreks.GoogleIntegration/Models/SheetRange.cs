@@ -3,6 +3,7 @@ using Google.Apis.Sheets.v4.Data;
 using Kysect.Centum.Sheets.Indices;
 using Kysect.Centum.Sheets.Models;
 using Kysect.Shreks.GoogleIntegration.Factories;
+using Kysect.Shreks.GoogleIntegration.Factories.Ranges;
 
 namespace Kysect.Shreks.GoogleIntegration.Models;
 
@@ -21,16 +22,13 @@ public readonly record struct SheetRange
         string[] rangeParts = range.Split(':');
         if (rangeParts.Length is not 2)
             throw new ArgumentException("Range must contain two indices");
-
-        var rangeFactory = new RangeFactory(id);
         
         var startSheetIndex = new SheetIndex(rangeParts.First());
         var endSheetIndex = new SheetIndex(rangeParts.Last());
 
-        ColumnDimensionRange = rangeFactory
-            .GetDimensionRange(startSheetIndex, endSheetIndex, Dimension.Columns);
+        ColumnDimensionRange = DimensionRangeFactory.Create(id, startSheetIndex, endSheetIndex, Dimension.Columns);
         
-        GridRange = rangeFactory.GetGridRange(startSheetIndex, endSheetIndex);
+        GridRange = GridRangeFactory.Create(id, startSheetIndex, endSheetIndex);
 
         FrozenRowProperties = new SheetProperties
         {
