@@ -96,8 +96,7 @@ public class PointsSheet : ISheet
 
         if (studentRow is null)
         {
-            throw new GoogleTableException(
-                $"Student with identifier {studentIdentifier} was not found");
+            throw new GoogleTableException($"Student with identifier {studentIdentifier} was not found");
         }
 
         int studentIndex = values.IndexOf(studentRow);
