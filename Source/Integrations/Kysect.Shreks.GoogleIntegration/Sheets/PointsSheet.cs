@@ -105,17 +105,19 @@ public class PointsSheet : ISheet
 
     private async Task FormatAsync(IList<Assignment> assignments, CancellationToken token)
     {
-        await Editor.ClearValuesAsync(HeaderRange, token);
-        await Editor.SetAlignmentAsync(HeaderRange, token);
-        await Editor.FreezeRowsAsync(HeaderRange, token);
-        await Editor.FreezeColumnsAsync(new SheetProperties
+        var freezeColumnProperties = new SheetProperties
         {
             SheetId = Id,
             GridProperties = new GridProperties
             {
                 FrozenColumnCount = FrozenColumnCount
             }
-        }, token);
+        };
+
+        await Editor.ClearValuesAsync(HeaderRange, token);
+        await Editor.SetAlignmentAsync(HeaderRange, token);
+        await Editor.FreezeRowsAsync(HeaderRange, token);
+        await Editor.FreezeColumnsAsync(freezeColumnProperties, token);
         await Editor.MergeCellsAsync(GetMergeRanges(assignments.Count), token);
         await Editor.SetValuesAsync(GetHeader(assignments), HeaderRange, token);
         await Editor.ResizeColumnsAsync(ColumnLengths, Id, token);
