@@ -40,7 +40,7 @@ public class StudentPointsConverter : ISheetDataConverter<StudentPoints>
     }
 
     private static string PointsToSheetData(double points)
-        => points == 0 ? "" : PointsToString(points);
+        => points == 0 ? string.Empty : PointsToString(points);
 
     private static string PointsToString(double points)
         => Math.Round(points, 2).ToString(CurrentCultureInfo);
