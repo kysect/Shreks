@@ -12,7 +12,7 @@ public class UserFullNameFormatter : IUserFullNameFormatter
             .Append(' ')
             .Append(user.FirstName);
 
-        if (user.MiddleName != "")
+        if (!string.IsNullOrEmpty(user.MiddleName))
         {
             fullNameBuilder
                 .Append(' ')
