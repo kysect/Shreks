@@ -85,6 +85,7 @@ public class PointsSheet : ISheet
         IList<object> newStudentRow = _studentPointsConverter.GetSheetData(studentPoints);
 
         IList<IList<object>> values = await Editor.GetValuesAsync(DataRange, token);
+
         IList<object>? studentRow = values.FirstOrDefault(row =>
         {
             string rowIdentifier = $"{row[0]}{row[1]}";
