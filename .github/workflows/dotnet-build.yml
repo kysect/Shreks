@@ -18,8 +18,8 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore Source/Kysect.Shreks.sln
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build Source/Kysect.Shreks.sln --configuration Release --no-restore
     - name: Test
       run: dotnet test Source/Tests/Kysect.Shreks.Test.csproj --no-restore --verbosity normal
