@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Seeding.Options;
 
-namespace Kysect.Shreks.Seeding.EntityGenerators;
+namespace Kysect.Shreks.Seeding.EntityGenerators.StudyGenerators;
 
 public class AssignmentGenerator : EntityGeneratorBase<Assignment>
 {
