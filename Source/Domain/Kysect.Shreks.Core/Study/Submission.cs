@@ -14,6 +14,7 @@ public partial class Submission : IEntity<Guid>
         SubmissionDateTime = submissionDateTime;
         Student = student;
         Assignment = assignment;
+        AdditionalPoints = Points.None;
         _points = Points.None;
     }
 
@@ -22,6 +23,8 @@ public partial class Submission : IEntity<Guid>
     public virtual Student Student { get; protected init; }
 
     public virtual Assignment Assignment { get; protected init; }
+    
+    public Points AdditionalPoints { get; set; }
 
     public Points Points
     {
