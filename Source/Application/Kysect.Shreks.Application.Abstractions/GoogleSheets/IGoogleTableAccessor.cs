@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 
-namespace Kysect.Shreks.Abstractions;
+namespace Kysect.Shreks.Application.Abstractions.GoogleSheets;
 
 public record AssignmentPoints(Assignment Assignment, DateOnly Date, double Points);
 

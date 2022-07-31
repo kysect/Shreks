@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Kysect.Shreks.Abstractions;
+using Kysect.Shreks.Application.Abstractions.GoogleSheets;
 using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.GoogleIntegration.Models;

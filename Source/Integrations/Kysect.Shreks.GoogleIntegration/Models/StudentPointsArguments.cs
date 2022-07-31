@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Abstractions;
+﻿using Kysect.Shreks.Application.Abstractions.GoogleSheets;
 using Kysect.Shreks.Core.Study;
 
 namespace Kysect.Shreks.GoogleIntegration.Models;
