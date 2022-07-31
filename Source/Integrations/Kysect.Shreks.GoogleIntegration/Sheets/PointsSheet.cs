@@ -60,21 +60,18 @@ public class PointsSheet : ISheet
             .OrderBy(a => a.Title)
             .ToList();
 
-        List<StudentPoints> sortedPoints = points.StudentsPoints
-            .OrderBy(p => p.Student.Group.Name)
-            .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student))
-            .ToList();
-
         await FormatAsync(orderedAssignments, token);
 
-        IList<IList<object>> values = sortedPoints
+        IList<IList<object>> values = points.StudentsPoints
+            .OrderBy(p => p.Student.Group.Name)
+            .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student))
             .Select(s =>
             {
                 var studentPointsArguments = new StudentPointsArguments(orderedAssignments, s);
                 return _studentPointsConverter.GetSheetRow(studentPointsArguments);
             })
             .ToList();
-        
+
         await Editor.SetValuesAsync(values, DataRange, token);
     }
 
