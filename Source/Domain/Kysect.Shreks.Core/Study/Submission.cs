@@ -9,11 +9,12 @@ public partial class Submission : IEntity<Guid>
 {
     private Points _points;
 
-    public Submission(Student student, Assignment assignment, DateTime submissionDateTime) : this(Guid.NewGuid())
+    public Submission(Student student, Assignment assignment, DateTime submissionDateTime, string payload) : this(Guid.NewGuid())
     {
         SubmissionDateTime = submissionDateTime;
         Student = student;
         Assignment = assignment;
+        Payload = payload;
         AdditionalPoints = Points.None;
         _points = Points.None;
     }
@@ -23,6 +24,8 @@ public partial class Submission : IEntity<Guid>
     public virtual Student Student { get; protected init; }
 
     public virtual Assignment Assignment { get; protected init; }
+    
+    public string Payload { get; protected init; }
     
     public Points AdditionalPoints { get; set; }
 
