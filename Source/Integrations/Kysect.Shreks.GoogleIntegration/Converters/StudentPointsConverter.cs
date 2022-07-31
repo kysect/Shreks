@@ -15,11 +15,9 @@ public class StudentPointsConverter : ISheetDataConverter<StudentPoints>
 
     public IList<object> GetSheetData(StudentPoints studentPoints)
     {
-        IEnumerable<object> data = new List<object>
-        {
-            _userFullNameFormatter.GetFullName(studentPoints.Student),
-            studentPoints.Student.Group.Name
-        };
+        IEnumerable<object> data = Enumerable
+            .Repeat(_userFullNameFormatter.GetFullName(studentPoints.Student), 1)
+            .Append(studentPoints.Student.Group.Name);
 
         IEnumerable<AssignmentPoints> points = studentPoints.Points
             .OrderBy(p => p.Assignment.Id);
