@@ -28,9 +28,9 @@ public class QueueSheet : ISheet
 
     private bool _sheetFormatted;
 
-    private readonly ISheetDataConverter<Submission> _submissionConverter;
+    private readonly ISheetRowConverter<Submission> _submissionConverter;
     public QueueSheet(
-        ISheetDataConverter<Submission> submissionConverter,
+        ISheetRowConverter<Submission> submissionConverter,
         CreateSheetArguments sheetArguments)
     {
         _submissionConverter = submissionConverter;
@@ -55,7 +55,7 @@ public class QueueSheet : ISheet
         }
 
         IList<IList<object>> queue = submissions
-            .Select(_submissionConverter.GetSheetData)
+            .Select(_submissionConverter.GetSheetRow)
             .ToList();
 
         await Editor.ClearValuesAsync(DataRange, token);

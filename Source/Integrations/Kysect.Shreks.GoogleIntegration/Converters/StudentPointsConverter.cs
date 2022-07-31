@@ -1,10 +1,12 @@
 ﻿using System.Globalization;
 using Kysect.Shreks.Abstractions;
 using Kysect.Shreks.Core.Formatters;
+using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.GoogleIntegration.Models;
 
 namespace Kysect.Shreks.GoogleIntegration.Converters;
 
-public class StudentPointsConverter : ISheetDataConverter<StudentPoints>
+public class StudentPointsConverter : ISheetRowConverter<StudentPointsArguments>
 {
     private static readonly CultureInfo CurrentCultureInfo = new("ru-RU");
 
@@ -15,33 +17,32 @@ public class StudentPointsConverter : ISheetDataConverter<StudentPoints>
         _userFullNameFormatter = userFullNameFormatter;
     }
 
-    public IList<object> GetSheetData(StudentPoints studentPoints)
+    public IList<object> GetSheetRow(StudentPointsArguments studentPointsArguments)
+        => GetSheetRow(studentPointsArguments.Assignments, studentPointsArguments.StudentPoints).ToList();
+
+    private IEnumerable<object> GetSheetRow(IReadOnlyCollection<Assignment> assignments, StudentPoints studentPoints)
     {
-        IEnumerable<object> data = Enumerable
-            .Repeat(_userFullNameFormatter.GetFullName(studentPoints.Student), 1)
-            .Append(studentPoints.Student.Group.Name);
+        yield return _userFullNameFormatter.GetFullName(studentPoints.Student);
+        yield return studentPoints.Student.Group.Name;
 
-        IEnumerable<AssignmentPoints> points = studentPoints.Points
-            .OrderBy(p => p.Assignment.Id);
-        
-        return data
-            .Concat(GetPointsData(points))
-            .ToList();
-    }
-
-    public static IEnumerable<object> GetPointsData(
-        IEnumerable<AssignmentPoints> assignmentPoints)
-    {
-        double totalPoints = 0;
-
-        foreach (AssignmentPoints assignmentPoint in assignmentPoints)
+        foreach (Assignment assignment in assignments)
         {
-            yield return PointsToSheetData(assignmentPoint.Points);
-            yield return DateToSheetData(assignmentPoint.Date);
-            totalPoints += assignmentPoint.Points;
+            var assignmentPoints = studentPoints.Points
+                .FirstOrDefault(p => p.Assignment.Equals(assignment));
+
+            if (assignmentPoints is null)
+            {
+                yield return string.Empty;
+                yield return string.Empty;
+            }
+            else
+            {
+                yield return PointsToSheetData(assignmentPoints.Points);
+                yield return DateToSheetData(assignmentPoints.Date);
+            }
         }
 
-        yield return PointsToString(totalPoints);
+        yield return PointsToString(studentPoints.Points.Sum(p => p.Points));
     }
 
     private static string PointsToSheetData(double points)

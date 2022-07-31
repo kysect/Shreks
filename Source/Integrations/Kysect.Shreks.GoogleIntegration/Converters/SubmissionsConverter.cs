@@ -4,7 +4,7 @@ using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.GoogleIntegration.Converters;
 
-public class SubmissionsConverter : ISheetDataConverter<Submission>
+public class SubmissionsConverter : ISheetRowConverter<Submission>
 {
     private readonly IUserFullNameFormatter _userFullNameFormatter;
 
@@ -13,7 +13,7 @@ public class SubmissionsConverter : ISheetDataConverter<Submission>
         _userFullNameFormatter = userFullNameFormatter;
     }
 
-    public IList<object> GetSheetData(Submission submission)
+    public IList<object> GetSheetRow(Submission submission)
     {
         StudentAssignment assignment = submission.StudentAssignment;
         Student student = assignment.Student;

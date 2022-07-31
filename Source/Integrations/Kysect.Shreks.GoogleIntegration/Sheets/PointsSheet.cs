@@ -30,11 +30,11 @@ public class PointsSheet : ISheet
         = new ColumnWidth[] { new(0, 240) };
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
-    private readonly ISheetDataConverter<StudentPoints> _studentPointsConverter;
+    private readonly ISheetRowConverter<StudentPointsArguments> _studentPointsConverter;
 
     public PointsSheet(
         IUserFullNameFormatter userFullNameFormatter,
-        ISheetDataConverter<StudentPoints> studentPointsConverter,
+        ISheetRowConverter<StudentPointsArguments> studentPointsConverter,
         CreateSheetArguments sheetArguments)
     {
         _userFullNameFormatter = userFullNameFormatter;
@@ -56,15 +56,23 @@ public class PointsSheet : ISheet
     {
         await Editor.ClearValuesAsync(DataRange, token);
 
+        List<Assignment> orderedAssignments = points.Assignments
+            .OrderBy(a => a.Title)
+            .ToList();
+
         List<StudentPoints> sortedPoints = points.StudentsPoints
             .OrderBy(p => p.Student.Group.Name)
             .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student))
             .ToList();
 
-        await FormatAsync(points.Assignments.ToList(), token);
+        await FormatAsync(orderedAssignments, token);
 
         IList<IList<object>> values = sortedPoints
-            .Select(_studentPointsConverter.GetSheetData)
+            .Select(s =>
+            {
+                var studentPointsArguments = new StudentPointsArguments(orderedAssignments, s);
+                return _studentPointsConverter.GetSheetRow(studentPointsArguments);
+            })
             .ToList();
         
         await Editor.SetValuesAsync(values, DataRange, token);

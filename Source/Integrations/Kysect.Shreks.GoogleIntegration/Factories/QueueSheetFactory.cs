@@ -7,9 +7,9 @@ namespace Kysect.Shreks.GoogleIntegration.Factories;
 
 public class QueueSheetFactory : ISheetFactory<QueueSheet>
 {
-    private readonly ISheetDataConverter<Submission> _submissionConverter;
+    private readonly ISheetRowConverter<Submission> _submissionConverter;
     
-    public QueueSheetFactory(ISheetDataConverter<Submission> submissionConverter)
+    public QueueSheetFactory(ISheetRowConverter<Submission> submissionConverter)
     {
         _submissionConverter = submissionConverter;
     }

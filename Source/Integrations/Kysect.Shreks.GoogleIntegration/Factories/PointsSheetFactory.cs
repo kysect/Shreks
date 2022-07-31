@@ -1,5 +1,4 @@
-﻿using Kysect.Shreks.Abstractions;
-using Kysect.Shreks.Core.Formatters;
+﻿using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.GoogleIntegration.Converters;
 using Kysect.Shreks.GoogleIntegration.Models;
 using Kysect.Shreks.GoogleIntegration.Sheets;
@@ -9,11 +8,11 @@ namespace Kysect.Shreks.GoogleIntegration.Factories;
 public class PointsSheetFactory : ISheetFactory<PointsSheet>
 {
     private readonly IUserFullNameFormatter _userFullNameFormatter;
-    private readonly ISheetDataConverter<StudentPoints> _studentPointsConverter;
+    private readonly ISheetRowConverter<StudentPointsArguments> _studentPointsConverter;
 
     public PointsSheetFactory(
         IUserFullNameFormatter userFullNameFormatter,
-        ISheetDataConverter<StudentPoints> studentPointsConverter)
+        ISheetRowConverter<StudentPointsArguments> studentPointsConverter)
     {
         _userFullNameFormatter = userFullNameFormatter;
         _studentPointsConverter = studentPointsConverter;
