@@ -6,7 +6,7 @@ using Kysect.Shreks.GoogleIntegration.Factories.Ranges;
 
 namespace Kysect.Shreks.GoogleIntegration.Models;
 
-public readonly record struct SheetRange
+public readonly struct SheetRange
 {
     private static readonly Regex AlphabeticRegex = new("^[a-zA-Z0-9]*$", RegexOptions.Compiled);
 
