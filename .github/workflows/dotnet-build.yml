@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build Source/Kysect.Shreks.sln --configuration Release --no-restore
     - name: Test
-      run: dotnet test Source/Tests/Kysect.Shreks.Tests/Kysect.Shreks.Test.csproj --no-restore --verbosity normal
+      run: dotnet test Source/Tests/Kysect.Shreks.Tests/Kysect.Shreks.Tests.csproj --no-restore --verbosity normal
