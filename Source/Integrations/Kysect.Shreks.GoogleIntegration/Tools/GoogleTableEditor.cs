@@ -78,17 +78,6 @@ public class GoogleTableEditor
         await ExecuteBatchUpdateAsync(resizeColumnRequests, token);
     }
 
-    public async Task<IList<IList<object>>> GetValuesAsync(
-        SheetRange sheetRange,
-        CancellationToken token)
-    {
-        ValueRange valueRange = await _service.Spreadsheets.Values
-            .Get(_spreadsheetId, sheetRange.Range)
-            .ExecuteAsync(token);
-
-        return valueRange.Values;
-    }
-
     public Task SetValuesAsync(IList<object> values, SheetRange sheetRange, CancellationToken token)
         => SetValuesAsync(new List<IList<object>> { values }, sheetRange, token);
 

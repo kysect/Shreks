@@ -3,9 +3,7 @@ using Kysect.Shreks.Abstractions;
 using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.GoogleIntegration.Converters;
-using Kysect.Shreks.GoogleIntegration.Exceptions;
 using Kysect.Shreks.GoogleIntegration.Models;
-using Kysect.Shreks.GoogleIntegration.Providers;
 using Kysect.Shreks.GoogleIntegration.Tools;
 
 namespace Kysect.Shreks.GoogleIntegration.Sheets;
@@ -32,17 +30,14 @@ public class PointsSheet : ISheet
         = new ColumnWidth[] { new(0, 240) };
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
-    private readonly IStudentIdentifierProvider _studentIdentifierProvider;
     private readonly ISheetDataConverter<StudentPoints> _studentPointsConverter;
 
     public PointsSheet(
         IUserFullNameFormatter userFullNameFormatter,
-        IStudentIdentifierProvider studentIdentifierProvider,
         ISheetDataConverter<StudentPoints> studentPointsConverter,
         CreateSheetArguments sheetArguments)
     {
         _userFullNameFormatter = userFullNameFormatter;
-        _studentIdentifierProvider = studentIdentifierProvider;
         _studentPointsConverter = studentPointsConverter;
         (Id, HeaderRange, DataRange, Editor) = sheetArguments;
     }
@@ -57,46 +52,20 @@ public class PointsSheet : ISheet
 
     public GoogleTableEditor Editor { get; }
 
-    public async Task UpdatePointsAsync(IReadOnlyCollection<StudentPoints> points, CancellationToken token)
+    public async Task UpdatePointsAsync(Points points, CancellationToken token)
     {
         await Editor.ClearValuesAsync(DataRange, token);
 
-        List<StudentPoints> sortedPoints = points
+        List<StudentPoints> sortedPoints = points.StudentsPoints
             .OrderBy(p => p.Student.Group.Name)
             .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student))
             .ToList();
 
-        IList<Assignment> assignments = GetAssignments(sortedPoints);
-
-        await FormatAsync(assignments, token);
+        await FormatAsync(points.Assignments.ToList(), token);
 
         IList<IList<object>> values = sortedPoints
             .Select(_studentPointsConverter.GetSheetData)
             .ToList();
-        
-        await Editor.SetValuesAsync(values, DataRange, token);
-    }
-
-    public async Task UpdateStudentPointsAsync(StudentPoints studentPoints, CancellationToken token)
-    {
-        string studentIdentifier = _studentIdentifierProvider.GetStudentIdentifier(studentPoints.Student);
-        IList<object> newStudentRow = _studentPointsConverter.GetSheetData(studentPoints);
-
-        IList<IList<object>> values = await Editor.GetValuesAsync(DataRange, token);
-
-        IList<object>? studentRow = values.FirstOrDefault(row =>
-        {
-            string rowIdentifier = $"{row[0]}{row[1]}";
-            return rowIdentifier == studentIdentifier;
-        });
-
-        if (studentRow is null)
-        {
-            throw new GoogleTableException($"Student with identifier {studentIdentifier} was not found");
-        }
-
-        int studentIndex = values.IndexOf(studentRow);
-        values[studentIndex] = newStudentRow;
         
         await Editor.SetValuesAsync(values, DataRange, token);
     }
@@ -175,22 +144,7 @@ public class PointsSheet : ISheet
 
         return header;
     }
-
-    private static IList<Assignment> GetAssignments(IEnumerable<StudentPoints> sortedPoints)
-    {
-        StudentPoints? studentPoint = sortedPoints.FirstOrDefault();
-
-        if (studentPoint is null)
-        {
-            return Array.Empty<Assignment>();
-        }
-
-        return studentPoint
-            .Points
-            .Select(p => p.Assignment)
-            .ToList();
-    }
-
+    
     private static IList<object> GetListOfEmptyStrings(int emptyStringsCount)
         => new List<object>(Enumerable.Repeat("", emptyStringsCount));
 }

@@ -53,11 +53,8 @@ public class GoogleTableAccessor : IGoogleTableAccessor
     public Task UpdateQueueAsync(IReadOnlyCollection<Submission> submissions, CancellationToken token = default)
         => _queueSheet.UpdateQueueAsync(submissions, token);
 
-    public Task UpdatePointsAsync(IReadOnlyCollection<StudentPoints> points, CancellationToken token = default)
+    public Task UpdatePointsAsync(Points points, CancellationToken token = default)
         => _pointsSheet.UpdatePointsAsync(points, token);
-    
-    public Task UpdateStudentPointsAsync(StudentPoints studentPoints, CancellationToken token = default)
-        => _pointsSheet.UpdateStudentPointsAsync(studentPoints, token);
 
     private static IServiceProvider ConfigureServices()
     {
