@@ -18,6 +18,7 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     public DbSet<Mentor> Mentors { get; protected init; } = null!;
     public DbSet<Assignment> Assignments { get; protected init; } = null!;
     public DbSet<GroupAssignment> GroupAssignments { get; protected init; } = null!;
+    public DbSet<StudentAssignment> StudentAssignments { get; protected init; } = null!;
     public DbSet<StudentGroup> StudentGroups { get; protected init; } = null!;
     public DbSet<Subject> Subjects { get; protected init; } = null!;
     public DbSet<SubjectCourse> SubjectCourses { get; protected init; } = null!;

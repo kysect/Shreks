@@ -14,6 +14,7 @@ public interface IShreksDatabaseContext
 
     DbSet<Assignment> Assignments { get; }
     DbSet<GroupAssignment> GroupAssignments { get; }
+    DbSet<StudentAssignment> StudentAssignments { get; }
     DbSet<StudentGroup> StudentGroups { get; }
     DbSet<Subject> Subjects { get; }
     DbSet<SubjectCourse> SubjectCourses { get; }
