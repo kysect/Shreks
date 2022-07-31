@@ -2,7 +2,7 @@
 
 namespace Kysect.Shreks.GoogleIntegration.Models;
 
-public record struct CreateSheetArguments(
+public readonly record struct CreateSheetArguments(
     int SheetId,
     SheetRange HeaderSheetRange,
     SheetRange DataSheetRange,

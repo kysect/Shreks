@@ -3,7 +3,7 @@ using Kysect.Centum.Sheets.Models;
 
 namespace Kysect.Shreks.GoogleIntegration.Models;
 
-public record struct ColumnWidth(int ColumnIndex, int Width)
+public readonly record struct ColumnWidth(int ColumnIndex, int Width)
 {
     public DimensionRange GetDimensionRange(int sheetId)
     {
