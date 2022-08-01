@@ -37,7 +37,7 @@ class Assignment
     + Points MinPoints
     + Points MaxPoints
     + GroupAssignment[] GroupAssignments
-    + DeadlinePolicy[] DeadlinePolicys
+    + DeadlinePolicy[] DeadlinePolicies
 }
 
 class Submission
