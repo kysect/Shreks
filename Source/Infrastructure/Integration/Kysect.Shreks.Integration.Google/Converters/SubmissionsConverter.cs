@@ -15,17 +15,16 @@ public class SubmissionsConverter : ISheetRowConverter<Submission>
 
     public IList<object> GetSheetRow(Submission submission)
     {
-        StudentAssignment assignment = submission.StudentAssignment;
-        Student student = assignment.Student;
+        Assignment assignment = submission.Assignment;
+        Student student = submission.Student;
 
         return new List<object>
         {
             _userFullNameFormatter.GetFullName(student),
             student.Group.Name,
             //TODO: change to short name
-            assignment.Assignment.Title,
-            //TODO: change to real pr link
-            "https://github.com/kysect/Shreks/pull/29"
+            assignment.Title,
+            submission.Payload
         };
     }
 }
