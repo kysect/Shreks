@@ -15,7 +15,7 @@ public partial class Submission : IEntity<Guid>
         Student = student;
         Assignment = assignment;
         Payload = payload;
-        AdditionalPoints = Points.None;
+        ExtraPoints = Points.None;
         _points = Points.None;
     }
 
@@ -27,7 +27,7 @@ public partial class Submission : IEntity<Guid>
     
     public string Payload { get; protected init; }
     
-    public Points AdditionalPoints { get; set; }
+    public Points ExtraPoints { get; set; }
 
     public Points Points
     {
