@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
-    <ProjectReference Include="..\..\..\Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj" />
+    <ProjectReference Include="..\..\..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj" />
   </ItemGroup>
 
 </Project>
