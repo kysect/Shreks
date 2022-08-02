@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32611.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{6BC0B5E6-94B2-4984-B201-7ACD167E783A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integration", "Integration", "{D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integrations", "Integrations", "{D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}"
 EndProject
@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{D6F2860A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Playground", "Playground\Kysect.Shreks.Playground\Kysect.Shreks.Playground.csproj", "{DE47A0F5-9E5D-4086-88AB-33850DA4EFAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Integration.Github", "Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj", "{2D8C7DC4-E72C-4F6C-B361-576576E44EFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Integration.Github", "Infrastructure\Integrations\Github\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj", "{2D8C7DC4-E72C-4F6C-B361-576576E44EFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Integration.Google", "Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj", "{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Integration.Google", "Infrastructure\Integrations\Google\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj", "{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Core", "Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj", "{D23139A5-29A9-449E-8AD3-2FC8BC5E8086}"
 EndProject
@@ -34,6 +34,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Playground.Github", "Playground\Kysect.Shreks.Playground.Github\Kysect.Shreks.Playground.Github.csproj", "{9CE8224C-7446-4FB0-AA53-28FE4A668848}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Playground", "Playground", "{DC866D57-D41E-455D-BD7D-85F1DD575823}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github", "Github", "{72BDE483-24C0-4B90-91E3-89FA03A45C5A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Google", "Google", "{4B7B968D-8C89-4BE0-BDDA-E98C8BC47FF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Integration.Github.Core", "Infrastructure\Integrations\Github\Kysect.Shreks.Integration.Github.Core\Kysect.Shreks.Integration.Github.Core.csproj", "{746D4317-195D-4F3A-9911-DF3AAD710ACB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,13 +83,15 @@ Global
 		{5DCD0DCE-A3B4-425A-A691-F001DA77D209}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DCD0DCE-A3B4-425A-A691-F001DA77D209}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DCD0DCE-A3B4-425A-A691-F001DA77D209}.Release|Any CPU.Build.0 = Release|Any CPU
+		{746D4317-195D-4F3A-9911-DF3AAD710ACB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{746D4317-195D-4F3A-9911-DF3AAD710ACB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{746D4317-195D-4F3A-9911-DF3AAD710ACB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{746D4317-195D-4F3A-9911-DF3AAD710ACB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{2D8C7DC4-E72C-4F6C-B361-576576E44EFB} = {D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}
-		{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8} = {D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}
 		{D23139A5-29A9-449E-8AD3-2FC8BC5E8086} = {6BC0B5E6-94B2-4984-B201-7ACD167E783A}
 		{2277FA49-1C47-4798-9CD9-1BB57FE6E383} = {AE556858-2A9D-481F-9235-3C74F0CDC5A5}
 		{DDF7FF3A-29B3-4AF1-831A-869AB641B9EE} = {C578EF62-E40C-42E7-AB9D-E7BA215F342C}
@@ -92,6 +100,11 @@ Global
 		{DE47A0F5-9E5D-4086-88AB-33850DA4EFAE} = {DC866D57-D41E-455D-BD7D-85F1DD575823}
 		{9CE8224C-7446-4FB0-AA53-28FE4A668848} = {DC866D57-D41E-455D-BD7D-85F1DD575823}
 		{D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E} = {C578EF62-E40C-42E7-AB9D-E7BA215F342C}
+		{72BDE483-24C0-4B90-91E3-89FA03A45C5A} = {D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}
+		{2D8C7DC4-E72C-4F6C-B361-576576E44EFB} = {72BDE483-24C0-4B90-91E3-89FA03A45C5A}
+		{4B7B968D-8C89-4BE0-BDDA-E98C8BC47FF8} = {D66AA3ED-1CC1-405E-BFD3-7DBA6EDC0E2E}
+		{B29C5E6D-2FE4-499E-9AE6-8712CAC38CD8} = {4B7B968D-8C89-4BE0-BDDA-E98C8BC47FF8}
+		{746D4317-195D-4F3A-9911-DF3AAD710ACB} = {72BDE483-24C0-4B90-91E3-89FA03A45C5A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD5C67DB-70F8-4C47-A3F4-7C94BECE1657}

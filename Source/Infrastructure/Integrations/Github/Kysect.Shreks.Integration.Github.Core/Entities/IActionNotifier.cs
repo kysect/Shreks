@@ -1,6 +1,6 @@
 using Octokit.Webhooks;
 
-namespace Kysect.Shreks.Integration.Github.Entities;
+namespace Kysect.Shreks.Integration.Github.Core.Entities;
 
 public interface IActionNotifier
 { 

@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Infrastructure\Integrations\Github\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
     </ItemGroup>
 

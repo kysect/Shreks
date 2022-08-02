@@ -1,8 +1,8 @@
-using Kysect.Shreks.Integration.Github.Client;
+using Kysect.Shreks.Integration.Github.Core.Client;
 using Microsoft.Extensions.Logging;
 using Octokit.Webhooks;
 
-namespace Kysect.Shreks.Integration.Github.Entities;
+namespace Kysect.Shreks.Integration.Github.Core.Entities;
 
 public class ActionNotifier : IActionNotifier
 {

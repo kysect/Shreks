@@ -1,4 +1,6 @@
-using Kysect.Shreks.Integration.Github.Entities;
+using Kysect.Shreks.Integration.Github.Core.Entities;
+using Kysect.Shreks.Integration.Github.Core.Exceptions;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Octokit.Webhooks;
 using Octokit.Webhooks.Events;
@@ -26,7 +28,9 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name}");
 
-        if (IsSenderBotOrNull(pullRequestEvent))
+        var sender = GetSender(pullRequestEvent);
+
+        if (IsSenderBot(sender))
         {
             _logger.LogTrace($"{nameof(ProcessPullRequestWebhookAsync)} skipped because sender is bot or null");
             return;
@@ -51,7 +55,9 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name}");
 
-        if (IsSenderBotOrNull(pullRequestReviewEvent))
+        var sender = GetSender(pullRequestReviewEvent);
+
+        if (IsSenderBot(sender))
         {
             _logger.LogTrace($"{nameof(ProcessPullRequestReviewWebhookAsync)} skipped because sender is bot or null");
             return;
@@ -78,7 +84,9 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
     {
         _logger.LogDebug($"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name}");
 
-        if (IsSenderBotOrNull(issueCommentEvent))
+        var sender = GetSender(issueCommentEvent);
+
+        if (IsSenderBot(sender))
         {
             _logger.LogTrace($"{nameof(ProcessIssueCommentWebhookAsync)} skipped because sender is bot or null");
             return;
@@ -100,5 +108,15 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             nameof(ProcessIssueCommentWebhookAsync));
     }
 
-    private bool IsSenderBotOrNull(WebhookEvent webhookEvent) => webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
+    private bool IsSenderBot(User sender) => sender.Type == UserType.Bot;
+
+    private User GetSender(WebhookEvent webhookEvent)
+    {
+        var sender =  webhookEvent.Sender;
+
+        if (sender is not null) return sender;
+
+        _logger.LogError($"Sender for webhook event {webhookEvent.Action} is null");
+        throw new SenderNotFoundException($"Sender for webhook event {webhookEvent.Action} is null");
+    }
 }

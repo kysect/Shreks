@@ -1,7 +1,7 @@
 using GitHubJwt;
 using Octokit;
 
-namespace Kysect.Shreks.Integration.Github.CredentialStores;
+namespace Kysect.Shreks.Integration.Github.Core.CredentialStores;
 
 public class GithubAppCredentialStore : ICredentialStore
 {

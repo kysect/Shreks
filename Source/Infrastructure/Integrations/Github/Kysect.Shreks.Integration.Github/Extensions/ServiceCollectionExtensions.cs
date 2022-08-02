@@ -1,9 +1,11 @@
+using System.Reflection;
 using GitHubJwt;
-using Kysect.Shreks.Integration.Github.Client;
-using Kysect.Shreks.Integration.Github.CredentialStores;
-using Kysect.Shreks.Integration.Github.Entities;
+using Kysect.Shreks.Integration.Github.Core.Client;
+using Kysect.Shreks.Integration.Github.Core.CredentialStores;
+using Kysect.Shreks.Integration.Github.Core.Entities;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Github.Processors;
+using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
@@ -57,6 +59,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddWebhookProcessors(this IServiceCollection services)
     {
+        services.AddMediatR(typeof(ShreksWebhookEventProcessor).GetTypeInfo().Assembly);
         services.AddSingleton<WebhookEventProcessor, ShreksWebhookEventProcessor>();
 
         return services;

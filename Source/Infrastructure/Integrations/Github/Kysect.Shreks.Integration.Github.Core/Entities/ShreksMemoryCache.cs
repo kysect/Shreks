@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Kysect.Shreks.Integration.Github.Entities;
+namespace Kysect.Shreks.Integration.Github.Core.Entities;
 
 public class ShreksMemoryCache : IShreksMemoryCache
 {
