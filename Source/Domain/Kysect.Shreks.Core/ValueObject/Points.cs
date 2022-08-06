@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Kysect.Shreks.Core.ValueObject;
 
 public readonly record struct Points
@@ -30,7 +32,16 @@ public readonly record struct Points
     {
         if (b.Value is 0)
             throw new DivideByZeroException();
-        
+
         return new Points(a.Value / b.Value);
     }
+
+    public static bool operator >(Points a, Points b)
+        => a.Value > b.Value;
+
+    public static bool operator <(Points a, Points b)
+        => a.Value < b.Value;
+
+    public override string ToString()
+        => Value.ToString(CultureInfo.InvariantCulture);
 }
