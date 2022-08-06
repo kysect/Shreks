@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.Options;
 
-namespace Kysect.Shreks.Seeding.EntityGenerators.UserAssociationsGenerators;
+namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociation>
 {

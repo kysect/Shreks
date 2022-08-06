@@ -2,7 +2,7 @@ using Bogus;
 using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Seeding.Options;
 
-namespace Kysect.Shreks.Seeding.EntityGenerators.DeadlinePolicyGenerator;
+namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class DeadlinePolicyGenerator : EntityGeneratorBase<DeadlinePolicy>
 {
