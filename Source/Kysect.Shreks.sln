@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Playground.Gi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Playground", "Playground", "{DC866D57-D41E-455D-BD7D-85F1DD575823}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Application.Cqrs", "Application\Kysect.Shreks.Application.Cqrs\Kysect.Shreks.Application.Cqrs.csproj", "{40545D18-5CC3-48FE-8819-A2614EB91804}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Application.Handlers", "Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj", "{40545D18-5CC3-48FE-8819-A2614EB91804}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
