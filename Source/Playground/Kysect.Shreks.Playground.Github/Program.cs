@@ -14,7 +14,8 @@ shreksConfiguration.Verify();
 
 builder.Services
     .AddGithubServices(shreksConfiguration)
-    .AddWebhookProcessors();
+    .AddWebhookProcessors()
+    .AddCommandParser();
 
 builder.Services
     .AddLogging(logBuilder => logBuilder.AddSerilog());
