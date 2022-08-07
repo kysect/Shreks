@@ -57,7 +57,7 @@ public class PointsSheet : ISheet
         await Editor.ClearValuesAsync(DataRange, token);
 
         List<Assignment> orderedAssignments = points.Assignments
-            .OrderBy(a => a.Title)
+            .OrderBy(a => a.ShortName)
             .ToList();
 
         await FormatAsync(orderedAssignments, token);
@@ -138,7 +138,7 @@ public class PointsSheet : ISheet
 
         foreach (Assignment assignment in assignments)
         {
-            header[1].Add(assignment.Title);
+            header[1].Add(assignment.ShortName);
             header[1].Add("");
 
             header[2].Add("Балл");
