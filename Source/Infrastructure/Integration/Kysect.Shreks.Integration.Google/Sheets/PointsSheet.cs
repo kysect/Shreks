@@ -65,9 +65,9 @@ public class PointsSheet : ISheet
         IList<IList<object>> values = points.StudentsPoints
             .OrderBy(p => p.Student.Group.Name)
             .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student))
-            .Select(s =>
+            .Select(p =>
             {
-                var studentPointsArguments = new StudentPointsArguments(orderedAssignments, s);
+                var studentPointsArguments = new StudentPointsArguments(orderedAssignments, p);
                 return _studentPointsConverter.GetSheetRow(studentPointsArguments);
             })
             .ToList();
