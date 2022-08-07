@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Serilog;

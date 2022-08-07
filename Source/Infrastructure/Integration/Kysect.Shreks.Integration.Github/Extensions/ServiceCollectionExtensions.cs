@@ -8,7 +8,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
 using Octokit.Webhooks;
-using Kysect.Shreks.Integration.Github.Commands;
 
 namespace Kysect.Shreks.Integration.Github.Extensions;
 
@@ -60,13 +59,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<WebhookEventProcessor, ShreksWebhookEventProcessor>();
 
-        return services;
-    }
-
-    public static IServiceCollection AddCommandParser(this IServiceCollection services)
-    {
-        services.AddSingleton<CommandParser>();
-        
         return services;
     }
 }

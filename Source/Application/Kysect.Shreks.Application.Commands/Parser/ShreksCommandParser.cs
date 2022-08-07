@@ -1,26 +1,26 @@
 using CommandLine;
 
-namespace Kysect.Shreks.Integration.Github.Commands;
+namespace Kysect.Shreks.Application.Commands.Commands;
 
-public class CommandParser
+public class ShreksCommandParser
 {
     private readonly Type[] _commandTypes;
 
-    public CommandParser()
+    public ShreksCommandParser()
     {
         _commandTypes = typeof(ICommand).Assembly.GetTypes()
             .Where(type => type.IsAssignableTo(typeof(ICommand)) && !type.IsInterface)
             .ToArray();
     }
 
-    public ICommand? Parse(String commandStr)
+    public ICommand? Parse(string commandStr)
     {
-        var result = CommandLine.Parser.Default.ParseArguments(commandStr.Split(), _commandTypes);
+        var result = Parser.Default.ParseArguments(commandStr.Split(), _commandTypes);
         if (result.Tag == ParserResultType.NotParsed)
         {
             //check if there was no command at all, then return null, else throw
         }
 
-        return result.Value as ICommand;
+        return (ICommand) result.Value;
     }
 }

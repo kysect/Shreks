@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.Integration.Github.Commands;
+namespace Kysect.Shreks.Application.Commands.Commands;
 
 public interface ICommand
 {

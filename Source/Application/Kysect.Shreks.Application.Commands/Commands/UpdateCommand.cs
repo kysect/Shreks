@@ -1,6 +1,6 @@
 using CommandLine;
 
-namespace Kysect.Shreks.Integration.Github.Commands;
+namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/update")]
 public class UpdateCommand : ICommand
