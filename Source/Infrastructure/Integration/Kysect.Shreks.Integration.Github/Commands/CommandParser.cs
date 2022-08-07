@@ -8,9 +8,9 @@ public class CommandParser
 
     public CommandParser()
     {
-        _commandTypes = (from type in typeof(ICommand).Assembly.GetTypes()
-            where type.IsAssignableTo(typeof(ICommand)) && !type.IsInterface
-            select type).ToArray();
+        _commandTypes = typeof(ICommand).Assembly.GetTypes()
+            .Where(type => type.IsAssignableTo(typeof(ICommand)) && !type.IsInterface)
+            .ToArray();
     }
 
     public ICommand? Parse(String commandStr)
