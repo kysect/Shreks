@@ -6,15 +6,16 @@ User -> Github
 Github -> Github : Filter events
 Github -> Shreks.Github : Call /api/github/webhooks
 
-Shreks.Github -> CommanParser : Parse command
+Shreks.Github -> CommandParser : Parse command
 
 alt Parse error
-    CommanParser -> Shreks.Github : Error message
+    CommandParser -> Shreks.Github : Error message
     Shreks.Github -> Github : Send comment with error message
 end
 
-CommanParser -> Shreks.Github : command
+CommandParser -> Shreks.Github : command
 Shreks.Github -> Shreks.Core : Call event handler
+Shreks.Core -> Shreks.Core : Resolve entities
 Shreks.Github -> Github : Send "like" reaction to comment
 
 alt Command execution error
