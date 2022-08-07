@@ -1,4 +1,6 @@
 using CommandLine;
+using Kysect.Shreks.Application.Commands.Processors;
+using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
@@ -20,9 +22,8 @@ public class UpdateCommand : ICommand
     
     [Option(shortName:'e', longName:"extra", Required = false)]
     private int? ExtraPoints { get; }
-    
-    public void Process(/*mediatr*/)
+    public void Process(ICommandProcessor processor, User executor)
     {
-        //create and submit request
+        processor.Process(this, executor);
     }
 }
