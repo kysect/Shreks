@@ -1,0 +1,26 @@
+@startuml
+
+actor User
+
+User -> Github
+Github -> Github : Filter events
+Github -> Shreks.Github : Call /api/github/webhooks
+
+Shreks.Github -> CommandParser : Parse command
+
+alt Parse error
+    CommandParser -> Shreks.Github : Error message
+    Shreks.Github -> Github : Send comment with error message
+end
+
+CommandParser -> Shreks.Github : command
+Shreks.Github -> Shreks.Core : Call event handler
+Shreks.Core -> Shreks.Core : Resolve entities
+Shreks.Github -> Github : Send "like" reaction to comment
+
+alt Command execution error
+    Shreks.Core -> Shreks.Github : Error message
+    Shreks.Github -> Github : Send comment with error message and dislike reaction
+end
+
+@enduml
