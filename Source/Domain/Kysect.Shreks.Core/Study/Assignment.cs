@@ -10,7 +10,7 @@ public partial class Assignment : IEntity<Guid>
     private readonly HashSet<GroupAssignment> _groupAssignments;
     private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
 
-    public Assignment(string title, Points minPoints, Points maxPoints)
+    public Assignment(string title, string shortName, Points minPoints, Points maxPoints)
         : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(title);
@@ -19,6 +19,7 @@ public partial class Assignment : IEntity<Guid>
             throw new ArgumentException("minPoints must be less than or equal to maxPoints");
         
         Title = title;
+        ShortName = shortName;
         MinPoints = minPoints;
         MaxPoints = maxPoints;
         _groupAssignments = new HashSet<GroupAssignment>();
@@ -26,6 +27,7 @@ public partial class Assignment : IEntity<Guid>
     }
 
     public string Title { get; set; }
+    public string ShortName { get; set; }
     public Points MinPoints { get; protected set; }
     public Points MaxPoints { get; protected set; }
     public virtual IReadOnlyCollection<GroupAssignment> GroupAssignments => _groupAssignments;

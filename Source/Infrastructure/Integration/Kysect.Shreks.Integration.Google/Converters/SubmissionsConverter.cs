@@ -22,8 +22,7 @@ public class SubmissionsConverter : ISheetRowConverter<Submission>
         {
             _userFullNameFormatter.GetFullName(student),
             student.Group.Name,
-            //TODO: change to short name
-            assignment.Title,
+            assignment.ShortName,
             submission.Payload
         };
     }

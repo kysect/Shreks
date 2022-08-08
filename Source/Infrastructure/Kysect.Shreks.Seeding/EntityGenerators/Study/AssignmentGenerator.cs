@@ -32,6 +32,7 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
         var assignment = new Assignment
         (
             _faker.Commerce.Product(),
+            _faker.Commerce.Product(),
             _faker.Random.Double(0, 5),
             _faker.Random.Double(5, 10)
         );
