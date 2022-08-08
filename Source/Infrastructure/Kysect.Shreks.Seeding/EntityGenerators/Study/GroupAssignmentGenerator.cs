@@ -24,11 +24,10 @@ public class GroupAssignmentGenerator : EntityGeneratorBase<GroupAssignment>
 
     protected override GroupAssignment Generate(int index)
     {
-        var groupCount = _groupGenerator.GeneratedEntities.Count;
         var assignmentCount = _assignmentGenerator.GeneratedEntities.Count;
 
-        var groupNumber = _faker.Random.Number(0, groupCount - 1);
-        var assignmentNumber = _faker.Random.Number(0, assignmentCount - 1);
+        var groupNumber = index / assignmentCount;
+        var assignmentNumber = index % assignmentCount;
 
         var group = _groupGenerator.GeneratedEntities[groupNumber];
         var assignment = _assignmentGenerator.GeneratedEntities[assignmentNumber];
