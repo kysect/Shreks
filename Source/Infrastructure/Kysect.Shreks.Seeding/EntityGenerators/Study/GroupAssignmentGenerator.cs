@@ -24,10 +24,14 @@ public class GroupAssignmentGenerator : EntityGeneratorBase<GroupAssignment>
 
     protected override GroupAssignment Generate(int index)
     {
+        var groupCount = _groupGenerator.GeneratedEntities.Count;
         var assignmentCount = _assignmentGenerator.GeneratedEntities.Count;
 
         var groupNumber = index / assignmentCount;
         var assignmentNumber = index % assignmentCount;
+
+        if (groupNumber >= groupCount)
+            throw new IndexOutOfRangeException("the group index is greater than the number of groups.");
 
         var group = _groupGenerator.GeneratedEntities[groupNumber];
         var assignment = _assignmentGenerator.GeneratedEntities[assignmentNumber];
