@@ -16,7 +16,7 @@ public abstract class DataAccessTestBase : IDisposable
         var collection = new ServiceCollection();
         collection.AddDatabaseContext(x =>
         {
-            x.UseLazyLoadingProxies().UseSqlite("Data Source=test.db");
+            x.UseLazyLoadingProxies().UseSqlite($"Data Source={Guid.NewGuid()}.db");
         });
 
         collection.AddEntityGenerators();
