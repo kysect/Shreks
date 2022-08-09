@@ -1,5 +1,4 @@
 ﻿using Kysect.Shreks.Application.Abstractions.DataAccess;
-using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.EntityGenerators;
 

@@ -1,6 +1,5 @@
 ﻿using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Core.UserAssociations;
-using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.EntityGenerators;
 
 namespace Kysect.Shreks.Seeding.DatabaseSeeders;
