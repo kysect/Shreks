@@ -22,9 +22,11 @@ public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociatio
     protected override IsuUserAssociation Generate(int index)
     {
         var userCount = _userGenerator.GeneratedEntities.Count;
-        var userNumber = _faker.Random.Number(0, userCount - 1);
+        
+        if (index >= userCount)
+            throw new IndexOutOfRangeException("User index more than count of users.");
 
-        var user = _userGenerator.GeneratedEntities[userNumber];
+        var user = _userGenerator.GeneratedEntities[index];
 
         var id = _faker.Random.Int();
         var association = new IsuUserAssociation(user, id);

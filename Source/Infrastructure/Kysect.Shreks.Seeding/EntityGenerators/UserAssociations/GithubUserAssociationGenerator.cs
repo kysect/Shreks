@@ -19,9 +19,11 @@ public class GithubUserAssociationGenerator : EntityGeneratorBase<GithubUserAsso
     protected override GithubUserAssociation Generate(int index)
     {
         var userCount = _userGenerator.GeneratedEntities.Count;
-        var userNumber = _faker.Random.Number(0, userCount - 1);
 
-        var user = _userGenerator.GeneratedEntities[userNumber];
+        if (index >= userCount)
+            throw new IndexOutOfRangeException("User index more than count of users.");
+        
+        var user = _userGenerator.GeneratedEntities[index];
 
         var githubName = _faker.Person.UserName;
         var association = new GithubUserAssociation(user, githubName);

@@ -24,11 +24,15 @@ public class SubjectCourseGroupGenerator : EntityGeneratorBase<SubjectCourseGrou
 
     protected override SubjectCourseGroup Generate(int index)
     {
-        var subjectCourseCount = _subjectCourseGenerator.GeneratedEntities.Count;
-        var subjectCourseGroupNumber = _faker.Random.Number(0, subjectCourseCount - 1);
-
         var studentGroupCount = _studentGroupGenerator.GeneratedEntities.Count;
-        var studentGroupNumber = _faker.Random.Number(0, studentGroupCount - 1);
+        var studentGroupNumber = index % studentGroupCount;
+        
+        var subjectCourseCount = _subjectCourseGenerator.GeneratedEntities.Count;
+        var subjectCourseGroupNumber = index / studentGroupCount;
+
+        if (subjectCourseGroupNumber >= subjectCourseCount)
+            throw new IndexOutOfRangeException(
+                "The subject course group index is greater than the number of subject courses.");
 
         var subjectCourse = _subjectCourseGenerator.GeneratedEntities[subjectCourseGroupNumber];
         var studentGroup = _studentGroupGenerator.GeneratedEntities[studentGroupNumber];

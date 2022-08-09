@@ -23,9 +23,12 @@ public class SubjectCourseAssociationGenerator : EntityGeneratorBase<SubjectCour
     protected override SubjectCourseAssociation Generate(int index)
     {
         var count = _subjectCourseGenerator.GeneratedEntities.Count;
-        var number = _faker.Random.Number(0, count - 1);
-        var subjectCourse = _subjectCourseGenerator.GeneratedEntities[number];
         
+        if (index >= count)
+            throw new IndexOutOfRangeException("Subject course index more than count of subject courses.");
+        
+        var subjectCourse = _subjectCourseGenerator.GeneratedEntities[index];
+
         var association = new GithubSubjectCourseAssociation(subjectCourse, _faker.Commerce.Product());
         subjectCourse.AddAssociation(association);
 
