@@ -24,14 +24,14 @@ public class StudentGenerator : EntityGeneratorBase<Student>
         var groupCount = _studentGroupGenerator.GeneratedEntities.Count;
         var groupNumber = _faker.Random.Number(0, groupCount - 1);
         
-        StudentGroup? group = _studentGroupGenerator.GeneratedEntities[groupNumber];
+        StudentGroup group = _studentGroupGenerator.GeneratedEntities[groupNumber];
 
         var student = new Student
         (
-                _faker.Person.FirstName, 
-                _faker.Person.UserName, 
-                _faker.Person.LastName,
-                group
+            _faker.Person.FirstName, 
+            _faker.Person.UserName, 
+            _faker.Person.LastName,
+            group
         );
         
         group.AddStudent(student);
