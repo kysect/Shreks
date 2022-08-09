@@ -31,7 +31,7 @@ public class GroupAssignmentGenerator : EntityGeneratorBase<GroupAssignment>
         var assignmentNumber = index % assignmentCount;
 
         if (groupNumber >= groupCount)
-            throw new IndexOutOfRangeException("the group index is greater than the number of groups.");
+            throw new IndexOutOfRangeException("The group index is greater than the number of groups.");
 
         var group = _groupGenerator.GeneratedEntities[groupNumber];
         var assignment = _assignmentGenerator.GeneratedEntities[assignmentNumber];
