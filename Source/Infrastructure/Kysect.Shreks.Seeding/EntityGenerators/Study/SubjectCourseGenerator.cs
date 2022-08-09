@@ -31,9 +31,11 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
         var mentor = _mentorGenerator.GeneratedEntities[mentorNumber];
         
         var subjectCount = _subjectGenerator.GeneratedEntities.Count;
-        var subjectNumber = _faker.Random.Number(0, subjectCount - 1);
 
-        var subject = _subjectGenerator.GeneratedEntities[subjectNumber];
+        if (index >= subjectCount)
+            throw new IndexOutOfRangeException("The subject index is greater than the number of subjects.");
+
+        var subject = _subjectGenerator.GeneratedEntities[index];
 
         var subjectCourse = new SubjectCourse(subject, mentor);
         
