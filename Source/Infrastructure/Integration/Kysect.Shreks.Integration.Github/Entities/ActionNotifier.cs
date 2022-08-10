@@ -20,7 +20,7 @@ public class ActionNotifier : IActionNotifier
 
     public async Task ApplyInComments(WebhookEvent webhookEvent, long issueNumber, string hook)
     {
-        ParseWebhookEvent(webhookEvent, out var repository, out var installation);
+        ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
 
         var installationClient = await _installationClientFactory.GetClient(installation.Id);
 
@@ -33,7 +33,7 @@ public class ActionNotifier : IActionNotifier
 
     public async Task ReactInComments(WebhookEvent webhookEvent, long commentId, bool isSuccessful)
     {
-        ParseWebhookEvent(webhookEvent, out var repository, out var installation);
+        ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
 
         var installationClient = await _installationClientFactory.GetClient(installation.Id);
 
