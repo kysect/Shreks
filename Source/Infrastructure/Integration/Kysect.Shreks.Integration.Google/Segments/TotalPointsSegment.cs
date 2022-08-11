@@ -1,6 +1,6 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Application.Abstractions.GoogleSheets;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
 using MediatR;

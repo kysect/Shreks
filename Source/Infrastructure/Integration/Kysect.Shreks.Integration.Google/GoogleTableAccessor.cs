@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.Abstractions.GoogleSheets;
+﻿using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Integration.Google.Sheets;
 
 namespace Kysect.Shreks.Integration.Google;

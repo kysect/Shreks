@@ -3,7 +3,7 @@ using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.SheetBuilders;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Application.Abstractions.GoogleSheets;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Segments;
