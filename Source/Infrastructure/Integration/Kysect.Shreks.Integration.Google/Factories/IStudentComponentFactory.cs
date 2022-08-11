@@ -7,5 +7,5 @@ public interface IStudentComponentFactory
 {
     IComponent BuildHeader();
 
-    public IComponent BuildRow(Student student);
+   IComponent BuildRow(Student student);
 }
