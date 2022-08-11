@@ -16,11 +16,11 @@ public static class ServiceCollectionExtensions
     {
         return serviceCollection
             .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
-            .AddSingleton<ISheetDataFactory<Points>, PointsSheetDataFactory>()
-            .AddSingleton<ISheetDataFactory<Queue>, QueueSheetDataFactory>()
+            .AddSingleton<ISheetComponentFactory<Points>, PointsSheetComponentFactory>()
+            .AddSingleton<ISheetComponentFactory<Queue>, QueueSheetComponentFactory>()
             .AddSingleton<ISheet<Points>, PointsSheet>()
             .AddSingleton<ISheet<Queue>, QueueSheet>()
-            .AddSingleton<ISheetController, SheetController>()
+            .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<ISheetBuilder, SheetBuilder>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>();
     }

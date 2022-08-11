@@ -8,13 +8,13 @@ using static Microsoft.Extensions.DependencyInjection.ActivatorUtilities;
 
 namespace Kysect.Shreks.Integration.Google.Factories;
 
-public class PointsSheetDataFactory : ISheetDataFactory<Points>
+public class PointsSheetComponentFactory : ISheetComponentFactory<Points>
 {
     private readonly ISheetBuilder _sheetBuilder;
 
     private readonly ISheetSegment<Points, StudentPoints, Unit>[] _segments;
 
-    public PointsSheetDataFactory(
+    public PointsSheetComponentFactory(
         ISheetBuilder sheetBuilder,
         IServiceProvider serviceProvider)
     {

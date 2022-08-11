@@ -2,7 +2,7 @@
 
 namespace Kysect.Shreks.Integration.Google.Factories;
 
-public interface ISheetDataFactory<in TData>
+public interface ISheetComponentFactory<in TData>
 {
     IComponent Create(TData data);
 }

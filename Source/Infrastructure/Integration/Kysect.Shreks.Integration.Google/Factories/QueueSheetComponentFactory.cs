@@ -9,12 +9,12 @@ using static Microsoft.Extensions.DependencyInjection.ActivatorUtilities;
 
 namespace Kysect.Shreks.Integration.Google.Factories;
 
-public class QueueSheetDataFactory : ISheetDataFactory<Queue>
+public class QueueSheetComponentFactory : ISheetComponentFactory<Queue>
 {
     private readonly ISheetBuilder _sheetBuilder;
     private readonly ISheetSegment<Unit, Submission, Unit>[] _segments;
 
-    public QueueSheetDataFactory(
+    public QueueSheetComponentFactory(
         ISheetBuilder sheetBuilder,
         IServiceProvider serviceProvider)
     {

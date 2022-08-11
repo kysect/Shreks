@@ -5,14 +5,14 @@ using Kysect.Shreks.Integration.Google.Sheets;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
 
-public class SheetController : ISheetController
+public class SheetManagementService : ISheetManagementService
 {
     private const string AllFields = "*";
 
     private readonly SheetsService _sheetsService;
     private readonly ISpreadsheetIdProvider _spreadsheetIdProvider;
 
-    public SheetController(SheetsService sheetsService, ISpreadsheetIdProvider spreadsheetIdProvider)
+    public SheetManagementService(SheetsService sheetsService, ISpreadsheetIdProvider spreadsheetIdProvider)
     {
         _sheetsService = sheetsService;
         _spreadsheetIdProvider = spreadsheetIdProvider;

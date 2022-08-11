@@ -11,14 +11,14 @@ namespace Kysect.Shreks.Integration.Google.Sheets;
 public class QueueSheet : ISheet<Queue>
 {
     private readonly ISpreadsheetIdProvider _spreadsheetIdProvider;
-    private readonly ISheetController _sheetEditor;
-    private readonly ISheetDataFactory<Queue> _sheetDataFactory;
+    private readonly ISheetManagementService _sheetEditor;
+    private readonly ISheetComponentFactory<Queue> _sheetDataFactory;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
     public QueueSheet(
         ISpreadsheetIdProvider spreadsheetIdProvider,
-        ISheetController sheetEditor,
-        ISheetDataFactory<Queue> sheetDataFactory,
+        ISheetManagementService sheetEditor,
+        ISheetComponentFactory<Queue> sheetDataFactory,
         IComponentRenderer<GoogleSheetRenderCommand> renderer)
     {
         _spreadsheetIdProvider = spreadsheetIdProvider;

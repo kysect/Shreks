@@ -14,15 +14,15 @@ public class PointsSheet : ISheet<Points>
 {
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ISpreadsheetIdProvider _spreadsheetIdProvider;
-    private readonly ISheetController _sheetEditor;
-    private readonly ISheetDataFactory<Points> _sheetDataFactory;
+    private readonly ISheetManagementService _sheetEditor;
+    private readonly ISheetComponentFactory<Points> _sheetDataFactory;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
     public PointsSheet(
         IUserFullNameFormatter userFullNameFormatter,
         ISpreadsheetIdProvider spreadsheetIdProvider,
-        ISheetController sheetEditor,
-        ISheetDataFactory<Points> sheetDataFactory,
+        ISheetManagementService sheetEditor,
+        ISheetComponentFactory<Points> sheetDataFactory,
         IComponentRenderer<GoogleSheetRenderCommand> renderer)
     {
         _userFullNameFormatter = userFullNameFormatter;
