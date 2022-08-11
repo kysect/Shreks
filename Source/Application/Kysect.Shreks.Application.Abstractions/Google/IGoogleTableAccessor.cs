@@ -7,9 +7,9 @@ public record AssignmentPoints(Assignment Assignment, DateOnly Date, double Poin
 
 public record StudentPoints(Student Student, IReadOnlyCollection<AssignmentPoints> Points);
 
-public record Points(IReadOnlyCollection<Assignment> Assignments, IReadOnlyCollection<StudentPoints> StudentsPoints);
+public record struct Points(IReadOnlyCollection<Assignment> Assignments, IReadOnlyCollection<StudentPoints> StudentsPoints);
 
-public record Queue(IReadOnlyCollection<Submission> Submissions);
+public record struct Queue(IReadOnlyCollection<Submission> Submissions);
 
 public interface IGoogleTableAccessor
 {
