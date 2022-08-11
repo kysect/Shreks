@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.Seeding.Options;
 
 namespace Kysect.Shreks.Seeding.EntityGenerators;
@@ -15,14 +16,10 @@ public class MentorGenerator : EntityGeneratorBase<Mentor>
 
     protected override Mentor Generate(int index)
     {
-        var middleName = _faker.Random.Bool(0.95f)
-            ? _faker.Name.FirstName()
-            : string.Empty;
-
         return new Mentor
         (
             _faker.Name.FirstName(), 
-            middleName, 
+            _faker.Name.MiddleName(), 
             _faker.Name.LastName()
         );
     }

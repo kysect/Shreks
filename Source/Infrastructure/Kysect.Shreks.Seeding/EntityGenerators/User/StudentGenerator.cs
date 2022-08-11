@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.Seeding.Options;
 
 namespace Kysect.Shreks.Seeding.EntityGenerators;
@@ -26,14 +27,10 @@ public class StudentGenerator : EntityGeneratorBase<Student>
         
         StudentGroup group = _studentGroupGenerator.GeneratedEntities[groupNumber];
 
-        var middleName = _faker.Random.Bool(0.95f)
-            ? _faker.Name.FirstName()
-            : string.Empty;
-
         var student = new Student
         (
             _faker.Name.FirstName(),
-            middleName,
+            _faker.Name.MiddleName(),
             _faker.Name.LastName(),
             group
         );
