@@ -1,7 +1,7 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
 using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Integration.Google.Segments.Factories;
+using Kysect.Shreks.Integration.Google.Factories;
 using MediatR;
 
 namespace Kysect.Shreks.Integration.Google.Segments;

@@ -4,7 +4,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using static FluentSpreadsheets.ComponentFactory;
 
-namespace Kysect.Shreks.Integration.Google.Segments.Factories;
+namespace Kysect.Shreks.Integration.Google.Factories;
 
 public class StudentComponentFactory : IStudentComponentFactory
 {

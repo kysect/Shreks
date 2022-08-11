@@ -2,11 +2,8 @@
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.SheetBuilders;
 using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Core.Formatters;
-using Kysect.Shreks.Core.Users;
-using Kysect.Shreks.Integration.Google.Providers;
+using Kysect.Shreks.Integration.Google.Factories;
 using Kysect.Shreks.Integration.Google.Segments;
-using Kysect.Shreks.Integration.Google.Segments.Factories;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tools;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +17,8 @@ public static class ServiceCollectionExtensions
         return serviceCollection
             .AddSheetSegments()
             .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
+            .AddSingleton<ISheetDataFactory<Points>, PointsSheetDataFactory>()
+            .AddSingleton<ISheetDataFactory<Queue>, QueueSheetDataFactory>()
             .AddSingleton<ISheet<Points>, PointsSheet>()
             .AddSingleton<ISheet<Queue>, QueueSheet>()
             .AddSingleton<ISheetController, SheetController>()
