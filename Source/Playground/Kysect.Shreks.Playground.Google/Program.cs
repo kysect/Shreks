@@ -1,4 +1,5 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using Bogus;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Kysect.Shreks.Application.Abstractions.Google;
@@ -37,6 +38,7 @@ IServiceProvider services = new ServiceCollection()
         o.ConfigureEntityGenerator<Submission>(s => s.Count = 300); 
         o.ConfigureEntityGenerator<Student>(s => s.Count = 100); 
         o.ConfigureEntityGenerator<Assignment>(s => s.Count = 5);
+        o.Faker = new Faker("ru");
     })
     .BuildServiceProvider();
 
