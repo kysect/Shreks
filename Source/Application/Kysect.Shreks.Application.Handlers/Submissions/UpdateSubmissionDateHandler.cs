@@ -14,7 +14,7 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command>
 
     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
-        var submission = await _context.Submissions.GetEntityByIdAsync(request.SubmissionId, cancellationToken);
+        var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
         submission.SubmissionDateTime = request.NewDate;
         _context.Submissions.Update(submission);

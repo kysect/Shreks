@@ -5,7 +5,7 @@ namespace Kysect.Shreks.Application.Abstractions.DataAccess;
 
 public static class GetEntityByIdExtension
 {
-    public static async Task<T> GetEntityByIdAsync<T>(this DbSet<T> dbSet, Guid id, CancellationToken cancellationToken = default)
+    public static async Task<T> GetByIdAsync<T>(this DbSet<T> dbSet, Guid id, CancellationToken cancellationToken = default)
         where T : class
     {
         var entity = await dbSet.FindAsync(new object[]{ id }, cancellationToken);

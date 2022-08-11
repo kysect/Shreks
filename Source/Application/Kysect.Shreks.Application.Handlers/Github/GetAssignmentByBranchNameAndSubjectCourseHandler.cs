@@ -15,7 +15,7 @@ public class GetAssignmentByBranchAndSubjectCourseHandler : IRequestHandler<Quer
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        var subjectCourse = await _context.SubjectCourses.GetEntityByIdAsync(request.SubjectCourseId, cancellationToken);
+        var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
         var assignment = subjectCourse.Assignments.FirstOrDefault(a => a.ShortName == request.BranchName);
 

@@ -15,7 +15,7 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command>
 
     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
-        var submission = await _context.Submissions.GetEntityByIdAsync(request.SubmissionId, cancellationToken);
+        var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
         submission.Points = new Points(request.NewPoints);
         _context.Submissions.Update(submission);

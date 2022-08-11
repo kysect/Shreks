@@ -16,8 +16,8 @@ public class CreateSubmissionHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var student = await _context.Students.GetEntityByIdAsync(request.StudentId, cancellationToken);
-        var assignment = await _context.Assignments.GetEntityByIdAsync(request.AssignmentId, cancellationToken);
+        var student = await _context.Students.GetByIdAsync(request.StudentId, cancellationToken);
+        var assignment = await _context.Assignments.GetByIdAsync(request.AssignmentId, cancellationToken);
 
         var submission = new Submission(student, assignment, DateTime.Now, request.Payload);
         await _context.Submissions.AddAsync(submission, cancellationToken);
