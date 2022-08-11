@@ -11,7 +11,7 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<Assignment> _assignments;
     private readonly HashSet<SubjectCourseAssociation> _associations;
 
-    public SubjectCourse(Subject subject, Mentor lector)
+    public SubjectCourse(Subject subject, Mentor lector) : this(Guid.NewGuid())
     {
         Subject = subject;
         Lector = lector;
