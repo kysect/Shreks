@@ -21,6 +21,8 @@ public class AssignmentPointsSegment : PrototypeSheetSegmentBase<Points, Student
 
     protected override IComponent BuildHeader(Assignment data)
     {
+        ArgumentNullException.ThrowIfNull(data);
+
         return VStack
         (
             Label(data.ShortName).WithDefaultStyle(),

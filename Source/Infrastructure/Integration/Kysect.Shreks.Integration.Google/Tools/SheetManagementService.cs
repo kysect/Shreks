@@ -20,6 +20,8 @@ public class SheetManagementService : ISheetManagementService
 
     public async Task CreateOrClearSheetAsync(ISheet sheet, CancellationToken token)
     {
+        ArgumentNullException.ThrowIfNull(sheet);
+
         bool sheetExists = await CheckSheetExistsAsync(sheet.Title, token);
 
         if (sheetExists)

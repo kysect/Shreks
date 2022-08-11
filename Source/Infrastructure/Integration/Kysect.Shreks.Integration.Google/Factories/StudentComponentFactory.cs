@@ -28,6 +28,8 @@ public class StudentComponentFactory : IStudentComponentFactory
 
     public IComponent BuildRow(Student student)
     {
+        ArgumentNullException.ThrowIfNull(student);
+
         string studentName = _userFullNameFormatter.GetFullName(student);
 
         string groupName = student.Group.Name;
