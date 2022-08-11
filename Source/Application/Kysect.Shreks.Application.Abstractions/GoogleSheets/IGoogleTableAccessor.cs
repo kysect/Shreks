@@ -9,8 +9,10 @@ public record StudentPoints(Student Student, IReadOnlyCollection<AssignmentPoint
 
 public record Points(IReadOnlyCollection<Assignment> Assignments, IReadOnlyCollection<StudentPoints> StudentsPoints);
 
+public record Queue(IReadOnlyCollection<Submission> Submissions);
+
 public interface IGoogleTableAccessor
 {
-    Task UpdateQueueAsync(IReadOnlyCollection<Submission> submissions, CancellationToken token = default);
+    Task UpdateQueueAsync(Queue queue, CancellationToken token = default);
     Task UpdatePointsAsync(Points points, CancellationToken token = default);
 }
