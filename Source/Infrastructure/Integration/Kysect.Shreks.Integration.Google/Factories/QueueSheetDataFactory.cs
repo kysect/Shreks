@@ -5,6 +5,7 @@ using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Integration.Google.Segments;
 using MediatR;
+using static Microsoft.Extensions.DependencyInjection.ActivatorUtilities;
 
 namespace Kysect.Shreks.Integration.Google.Factories;
 
@@ -15,15 +16,14 @@ public class QueueSheetDataFactory : ISheetDataFactory<Queue>
 
     public QueueSheetDataFactory(
         ISheetBuilder sheetBuilder,
-        QueueStudentSegment studentSegment,
-        AssignmentDataSegment assignmentSegment)
+        IServiceProvider serviceProvider)
     {
         _sheetBuilder = sheetBuilder;
 
         _segments = new ISheetSegment<Unit, Submission, Unit>[]
         {
-            studentSegment,
-            assignmentSegment
+            CreateInstance<QueueStudentSegment>(serviceProvider),
+            CreateInstance<AssignmentDataSegment>(serviceProvider)
         };
     }
 

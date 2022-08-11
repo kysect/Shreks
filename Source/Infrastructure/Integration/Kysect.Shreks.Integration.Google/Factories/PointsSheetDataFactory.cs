@@ -4,6 +4,7 @@ using FluentSpreadsheets.SheetSegments;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Integration.Google.Segments;
 using MediatR;
+using static Microsoft.Extensions.DependencyInjection.ActivatorUtilities;
 
 namespace Kysect.Shreks.Integration.Google.Factories;
 
@@ -15,17 +16,15 @@ public class PointsSheetDataFactory : ISheetDataFactory<Points>
 
     public PointsSheetDataFactory(
         ISheetBuilder sheetBuilder,
-        PointsStudentSegment studentSegment,
-        AssignmentPointsSegment assignmentPointsSegment,
-        TotalPointsSegment finalPointsSegment)
+        IServiceProvider serviceProvider)
     {
         _sheetBuilder = sheetBuilder;
 
         _segments = new ISheetSegment<Points, StudentPoints, Unit>[]
         {
-            studentSegment,
-            assignmentPointsSegment,
-            finalPointsSegment
+            CreateInstance<PointsStudentSegment>(serviceProvider),
+            CreateInstance<AssignmentPointsSegment>(serviceProvider),
+            CreateInstance<TotalPointsSegment>(serviceProvider)
         };
     }
 

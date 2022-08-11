@@ -15,7 +15,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSheetServices(this IServiceCollection serviceCollection)
     {
         return serviceCollection
-            .AddSheetSegments()
             .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
             .AddSingleton<ISheetDataFactory<Points>, PointsSheetDataFactory>()
             .AddSingleton<ISheetDataFactory<Queue>, QueueSheetDataFactory>()
@@ -24,15 +23,5 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISheetController, SheetController>()
             .AddSingleton<ISheetBuilder, SheetBuilder>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>();
-    }
-
-    private static IServiceCollection AddSheetSegments(this IServiceCollection serviceCollection)
-    {
-        return serviceCollection
-            .AddSingleton<PointsStudentSegment>()
-            .AddSingleton<AssignmentPointsSegment>()
-            .AddSingleton<TotalPointsSegment>()
-            .AddSingleton<QueueStudentSegment>()
-            .AddSingleton<AssignmentDataSegment>();
     }
 }
