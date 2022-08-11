@@ -24,19 +24,14 @@ public class SubmissionGenerator : EntityGeneratorBase<Submission>
 
     protected override Submission Generate(int index)
     {
-        var assignmentCount = _assignmentGenerator.GeneratedEntities.Count;
-        var studentCount = _studentGenerator.GeneratedEntities.Count;
+        var assignment = _faker.PickRandom<Assignment>(_assignmentGenerator.GeneratedEntities);
+        var student = _faker.PickRandom<Student>(_studentGenerator.GeneratedEntities);
 
-        var assignmentNumber = index % assignmentCount;
-        var studentNumber = index / assignmentCount;
-
-        if (studentNumber >= studentCount)
-            throw new IndexOutOfRangeException("Student number more than student count.");
-
-        var assignment = _assignmentGenerator.GeneratedEntities[assignmentNumber];
-        var student = _studentGenerator.GeneratedEntities[studentNumber];
-
-        var submission = new Submission(student, assignment, _faker.Date.Future(), _faker.Commerce.Product());
+        var submission = new Submission(student, assignment, _faker.Date.Future(), _faker.Internet.Url())
+        {
+            Points = _faker.Random.Double(assignment.MinPoints, assignment.MaxPoints),
+            ExtraPoints = _faker.Random.Bool(0.95f) ? 0 : _faker.Random.Double(0, 15)
+        };
         
         return submission;
     }
