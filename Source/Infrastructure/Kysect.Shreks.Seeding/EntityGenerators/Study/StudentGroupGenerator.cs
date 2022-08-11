@@ -15,6 +15,6 @@ public class StudentGroupGenerator : EntityGeneratorBase<StudentGroup>
 
     protected override StudentGroup Generate(int index)
     {
-        return new StudentGroup(_faker.Commerce.Product());
+        return new StudentGroup($"M{_faker.Random.Int(0, 100000)}");
     }
 }
