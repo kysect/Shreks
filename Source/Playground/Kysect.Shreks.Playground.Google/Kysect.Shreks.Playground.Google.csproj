@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />
   </ItemGroup>
 
 </Project>
