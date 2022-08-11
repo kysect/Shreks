@@ -6,21 +6,27 @@ namespace Kysect.Shreks.Seeding.Options;
 public class EntityGenerationOptions
 {
     private readonly IServiceCollection _collection;
-
-    public Faker Faker { get; set; }
-
+    
     public EntityGenerationOptions(IServiceCollection collection)
     {
         _collection = collection;
-        
-        Faker = new Faker();
     }
 
-    public void ConfigureEntityGenerator<TEntity>(Action<EntityGeneratorOptions<TEntity>> action)
+    public EntityGenerationOptions ConfigureEntityGenerator<TEntity>(Action<EntityGeneratorOptions<TEntity>> action)
     {
         var instance = new EntityGeneratorOptions<TEntity>();
         action(instance);
         
         _collection.AddSingleton(instance);
+        return this;
+    }
+
+    public EntityGenerationOptions ConfigureFaker(Action<Faker> action)
+    {
+        var instance = new Faker();
+        action(instance);
+
+        _collection.AddSingleton(instance);
+        return this;
     }
 }
