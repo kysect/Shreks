@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+	<Content Include="client_secrets.json">
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj" />
   </ItemGroup>
 
