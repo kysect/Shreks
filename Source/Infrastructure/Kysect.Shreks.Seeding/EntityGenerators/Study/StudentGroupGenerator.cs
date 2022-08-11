@@ -6,6 +6,8 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class StudentGroupGenerator : EntityGeneratorBase<StudentGroup>
 {
+    private const int MaxGroupNumber = 100000;
+
     private readonly Faker _faker;
     
     public StudentGroupGenerator(EntityGeneratorOptions<StudentGroup> options, Faker faker) : base(options)
@@ -15,6 +17,7 @@ public class StudentGroupGenerator : EntityGeneratorBase<StudentGroup>
 
     protected override StudentGroup Generate(int index)
     {
-        return new StudentGroup($"M{_faker.Random.Int(0, 100000)}");
+        var groupNumber = _faker.Random.Int(0, MaxGroupNumber);
+        return new StudentGroup($"M{groupNumber}");
     }
 }

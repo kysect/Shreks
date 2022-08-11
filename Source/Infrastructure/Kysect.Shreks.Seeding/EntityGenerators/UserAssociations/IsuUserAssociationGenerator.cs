@@ -7,6 +7,9 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociation>
 {
+    private const int MinIsuNumber = 100000;
+    private const int MaxIsuNumber = 1000000;
+
     private readonly IEntityGenerator<Mentor> _mentorGenerator;
     private readonly IEntityGenerator<Student> _studentGenerator;
 
@@ -34,7 +37,7 @@ public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociatio
 
         var user = generatedUsers[index];
 
-        var id = _faker.Random.Int(100000, 1000000);
+        var id = _faker.Random.Int(MinIsuNumber, MaxIsuNumber);
         var association = new IsuUserAssociation(user, id);
 
         user.AddAssociation(association);
