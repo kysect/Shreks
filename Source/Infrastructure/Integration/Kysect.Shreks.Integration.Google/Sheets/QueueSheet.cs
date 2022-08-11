@@ -1,72 +1,57 @@
-﻿using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Integration.Google.Converters;
-using Kysect.Shreks.Integration.Google.Models;
+﻿using FluentSpreadsheets;
+using FluentSpreadsheets.GoogleSheets.Rendering;
+using FluentSpreadsheets.Rendering;
+using FluentSpreadsheets.SheetBuilders;
+using FluentSpreadsheets.SheetSegments;
+using Kysect.Shreks.Application.Abstractions.GoogleSheets;
+using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Integration.Google.Providers;
+using Kysect.Shreks.Integration.Google.Segments;
 using Kysect.Shreks.Integration.Google.Tools;
+using MediatR;
 
 namespace Kysect.Shreks.Integration.Google.Sheets;
 
-public class QueueSheet : ISheet
+public class QueueSheet : ISheet<Queue>
 {
-    private static readonly IList<object> Header = new List<object>
-    {
-        "ФИО",
-        "Группа",
-        "Лабораторная работа",
-        "GitHub"
-    };
+    private readonly ISpreadsheetIdProvider _spreadsheetIdProvider;
+    private readonly ISheetController _sheetEditor;
+    private readonly ISheetBuilder _sheetBuilder;
+    private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
-    private static readonly IReadOnlyCollection<ColumnWidth> ColumnLengths
-        = new ColumnWidth[]
-        {
-            new(0, 240),
-            new(2, 150),
-            new(3, 250)
-        };
+    private readonly ISheetSegment<Unit, Submission, Unit>[] _segments;
 
-    public static SheetDescriptor Descriptor { get; }
-        = new("Очередь", "A1:D1", "A2:D");
-
-    private bool _sheetFormatted;
-
-    private readonly ISheetRowConverter<Submission> _submissionConverter;
     public QueueSheet(
-        ISheetRowConverter<Submission> submissionConverter,
-        CreateSheetArguments sheetArguments)
+        ISpreadsheetIdProvider spreadsheetIdProvider,
+        ISheetController sheetEditor,
+        ISheetBuilder sheetBuilder,
+        IComponentRenderer<GoogleSheetRenderCommand> renderer,
+        QueueStudentSegment studentSegment,
+        AssignmentDataSegment assignmentSegment)
     {
-        _submissionConverter = submissionConverter;
-        (Id, HeaderRange, DataRange, Editor) = sheetArguments;
-    }
+        _spreadsheetIdProvider = spreadsheetIdProvider;
+        _sheetEditor = sheetEditor;
+        _sheetBuilder = sheetBuilder;
+        _renderer = renderer;
 
-    public int Id { get; }
-
-    public SheetRange HeaderRange { get; }
-    public SheetRange DataRange { get; }
-
-    public GoogleTableEditor Editor { get; }
-
-    public async Task UpdateQueueAsync(
-        IReadOnlyCollection<Submission> submissions,
-        CancellationToken token)
-    {
-        if (!_sheetFormatted)
+        _segments = new ISheetSegment<Unit, Submission, Unit>[]
         {
-            await FormatAsync(token);
-            _sheetFormatted = true;
-        }
-
-        IList<IList<object>> queue = submissions
-            .Select(_submissionConverter.GetSheetRow)
-            .ToList();
-
-        await Editor.ClearValuesAsync(DataRange, token);
-        await Editor.SetValuesAsync(queue, DataRange, token);
+            studentSegment,
+            assignmentSegment
+        };
     }
 
-    private async Task FormatAsync(CancellationToken token)
+    public string Title => "Очередь";
+    public int Id => 1;
+
+    public async Task UpdateAsync(Queue queue, CancellationToken token)
     {
-        await Editor.SetAlignmentAsync(HeaderRange, token);
-        await Editor.SetValuesAsync(Header, HeaderRange, token);
-        await Editor.FreezeRowsAsync(HeaderRange, token);
-        await Editor.ResizeColumnsAsync(ColumnLengths, Id, token);
+        await _sheetEditor.CreateOrClearSheetAsync(this, token);
+
+        var sheetData = new SheetData<Unit, Submission, Unit>(Unit.Value, queue.Submissions, Unit.Value);
+        IComponent sheet = _sheetBuilder.Build(_segments, sheetData);
+
+        var renderCommand = new GoogleSheetRenderCommand(_spreadsheetIdProvider.SpreadsheetId, Id, Title, sheet);
+        await _renderer.RenderAsync(renderCommand, token);
     }
 }
