@@ -1,11 +1,12 @@
 using CommandLine;
 using Kysect.Shreks.Application.Commands.Processors;
+using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/update")]
-public class UpdateCommand : ICommand
+public class UpdateCommand : IShreksCommand
 {
     public UpdateCommand(string submissionId, int ratingPercent, int extraPoints)
     {
@@ -22,8 +23,9 @@ public class UpdateCommand : ICommand
     
     [Option(shortName:'e', longName:"extra", Required = false)]
     private int? ExtraPoints { get; }
-    public void Process(ICommandProcessor processor, User executor)
+    
+    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor, User executor) where TResult : IShreksCommandResult
     {
-        processor.Process(this, executor);
+        return processor.Process(this, executor);
     }
 }

@@ -1,6 +1,6 @@
 namespace Kysect.Shreks.Application.Commands.Commands;
 
-public class IShreksCommandParser
+public interface IShreksCommandParser
 {
-    
+    IShreksCommand? Parse(string commandStr);
 }
