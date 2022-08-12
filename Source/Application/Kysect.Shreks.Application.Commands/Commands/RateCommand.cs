@@ -2,7 +2,6 @@ using CommandLine;
 using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
-using Kysect.Shreks.Core.Users;
 using MediatR;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
@@ -28,8 +27,10 @@ public class RateCommand : IShreksCommand
         return processor.Process(this, context);
     }
 
-    public IRequest GetRequest(ShreksCommandContext context)
+    public IEnumerable<IRequest> GetRequest(ShreksCommandContext context)
     {
-        return new UpdateSubmissionPoints.Command(context.Submission!.Id, RatingPercent);
+        Guid submissionId = context.Submission?.Id ?? throw new ArgumentException("No submission provided"); //should it be it's own exception so we can catch it in processor and tell that there is no submission in this pr?
+        //TODO: add update extra points command or add extra points to this command
+        return new List<IRequest>{new UpdateSubmissionPoints.Command(submissionId, RatingPercent)};
     }
 }
