@@ -25,7 +25,7 @@ public partial class Submission : IEntity<Guid>
 
     public virtual Assignment Assignment { get; protected init; }
     
-    public string Payload { get; protected init; }
+    public string Payload { get; set; }
     
     public Points ExtraPoints { get; set; }
 
