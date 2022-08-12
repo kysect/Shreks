@@ -3,15 +3,21 @@ namespace Kysect.Shreks.Integration.Github.Helpers;
 public class GithubConfiguration : IShreksConfiguration
 {
     public string? PrivateKeySource { get; init; }
-    public string? Secret { get; init; }
     public int AppIntegrationId { get; init; }
     public int ExpirationSeconds { get; init; }
     public string? Organization { get; init; }
+    public string? GithubAppSecret { get; private set; }
+
+    public void SetGithubAppSecret(string githubAppSecret)
+    {
+        ArgumentNullException.ThrowIfNull(githubAppSecret, nameof(githubAppSecret));
+        GithubAppSecret = githubAppSecret;
+    }
 
     public void Verify()
     {
         ArgumentNullException.ThrowIfNull(Organization, nameof(Organization));
-        ArgumentNullException.ThrowIfNull(Secret, nameof(Secret));
+        ArgumentNullException.ThrowIfNull(GithubAppSecret, nameof(GithubAppSecret));
         ArgumentNullException.ThrowIfNull(PrivateKeySource, nameof(PrivateKeySource));
 
         if (ExpirationSeconds <= 0)
