@@ -58,9 +58,9 @@ IReadOnlyCollection<StudentPoints> studentPoints = studentGenerator.GeneratedEnt
 var points = new Points(assignments, studentPoints);
 await googleTableAccessor.UpdatePointsAsync(points);
 
-IReadOnlyCollection<AssignmentPoints> GetPoints(Student student, IReadOnlyCollection<Submission> submissions)
+IReadOnlyCollection<AssignmentPoints> GetPoints(Student student, IEnumerable<Submission> submissionsCollection)
 {
-    return submissions
+    return submissionsCollection
         .Where(sub => sub.Student.Equals(student))
         .GroupBy(sub => sub.Assignment)
         .Select(sub => sub.MaxBy(g => g.SubmissionDateTime))
