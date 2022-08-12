@@ -11,7 +11,7 @@ namespace Kysect.Shreks.Integration.Google.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddSheetServices(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddGoogleIntegration(this IServiceCollection serviceCollection)
     {
         return serviceCollection
             .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISheet<Queue>, QueueSheet>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<ISheetBuilder, SheetBuilder>()
-            .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>();
+            .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
+            .AddSingleton<IGoogleTableAccessor, GoogleTableAccessor>();
     }
 }

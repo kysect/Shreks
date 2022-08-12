@@ -27,10 +27,9 @@ const string spreadSheetId = "";
 var spreadsheetIdProvider = new ConstSpreadsheetIdProvider(spreadSheetId);
 
 IServiceProvider services = new ServiceCollection()
-    .AddSheetServices()
+    .AddGoogleIntegration()
     .AddSingleton(sheetsService)
     .AddSingleton<ISpreadsheetIdProvider>(spreadsheetIdProvider)
-    .AddSingleton<IGoogleTableAccessor, GoogleTableAccessor>()
     .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
     .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
     .AddEntityGenerators(o =>
