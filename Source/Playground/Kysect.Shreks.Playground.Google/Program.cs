@@ -31,13 +31,11 @@ IServiceProvider services = new ServiceCollection()
     .AddSingleton<ISpreadsheetIdProvider>(spreadsheetIdProvider)
     .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
     .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
-    .AddEntityGenerators(o =>
-    {
-        o.ConfigureEntityGenerator<Submission>(s => s.Count = 300); 
-        o.ConfigureEntityGenerator<Student>(s => s.Count = 100); 
-        o.ConfigureEntityGenerator<Assignment>(s => s.Count = 5);
-        o.Faker = new Faker("ru");
-    })
+    .AddEntityGenerators(o => o
+        .ConfigureEntityGenerator<Submission>(s => s.Count = 300)
+        .ConfigureEntityGenerator<Student>(s => s.Count = 100)
+        .ConfigureEntityGenerator<Assignment>(a => a.Count = 5)
+        .ConfigureFaker(f => f.Locale = "ru"))
     .BuildServiceProvider();
 
 var googleTableAccessor = services.GetRequiredService<IGoogleTableAccessor>();
