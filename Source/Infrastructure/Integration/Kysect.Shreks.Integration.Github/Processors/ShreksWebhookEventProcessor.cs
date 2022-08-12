@@ -1,4 +1,8 @@
+using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
+using Kysect.Shreks.Application.Commands.Commands;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Integration.Github.Entities;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using Octokit.Webhooks;
 using Octokit.Webhooks.Events;
@@ -14,11 +18,18 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 {
     private readonly IActionNotifier _actionNotifier;
     private readonly ILogger<ShreksWebhookEventProcessor> _logger;
+    private readonly IShreksCommandParser _commandParser;
+    private readonly GithubCommandProcessor _commandProcessor;
+    private readonly Mediator _mediator;
 
-    public ShreksWebhookEventProcessor(IActionNotifier actionNotifier, ILogger<ShreksWebhookEventProcessor> logger)
+    public ShreksWebhookEventProcessor(IActionNotifier actionNotifier, ILogger<ShreksWebhookEventProcessor> logger,
+        GithubCommandProcessor commandProcessor, IShreksCommandParser commandParser, Mediator mediator)
     {
         _actionNotifier = actionNotifier;
         _logger = logger;
+        _commandProcessor = commandProcessor;
+        _commandParser = commandParser;
+        _mediator = mediator;
     }
 
     protected override async Task ProcessPullRequestWebhookAsync(WebhookHeaders headers,
@@ -35,13 +46,23 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
         switch (action)
         {
             case PullRequestActionValue.Synchronize:
+                //here we should update time and payload
                 break;
             case PullRequestActionValue.Opened:
+                var response = await _mediator.Send(new CreateSubmissionCommand.Command(
+                    Guid.Empty, //testing only, will remove after merge of queries
+                    Guid.Empty, 
+                    pullRequestEvent.PullRequest.DiffUrl));
+                await _actionNotifier.ApplyInComments(
+                    pullRequestEvent,
+                    pullRequestEvent.PullRequest.Number,
+                    string.Format("Created submission with id {0}", response.SubmissionId));
+                return;
                 break;
         }
 
         await _actionNotifier.ApplyInComments(
-            pullRequestEvent, 
+            pullRequestEvent,
             pullRequestEvent.PullRequest.Number,
             nameof(ProcessPullRequestWebhookAsync));
     }
@@ -89,6 +110,20 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             case IssueCommentActionValue.Edited:
                 break;
             case IssueCommentActionValue.Created:
+                IShreksCommand? command = _commandParser.Parse(issueCommentEvent.Comment.Body);
+                if (command != null)
+                {
+                    var result =  await command.Process(_commandProcessor, new ShreksCommandContext(null!, null)); //for testing, will remove after merge of queries
+                    await _actionNotifier.ApplyInComments(
+                        issueCommentEvent,
+                        issueCommentEvent.Issue.Number,
+                        result.Message);
+
+                    await _actionNotifier.ReactInComments(
+                        issueCommentEvent,
+                        issueCommentEvent.Comment.Id,
+                        result.IsSuccess);
+                }
                 break;
             case IssueCommentActionValue.Deleted:
                 break;
@@ -105,5 +140,6 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             true);
     }
 
-    private bool IsSenderBotOrNull(WebhookEvent webhookEvent) => webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
+    private bool IsSenderBotOrNull(WebhookEvent webhookEvent) =>
+        webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
 }
