@@ -35,7 +35,7 @@ public class QueueSheet : ISheet<Queue>
         await _sheetEditor.CreateOrClearSheetAsync(this, token);
 
         IComponent sheetData = _sheetDataFactory.Create(queue);
-        var renderCommand = new GoogleSheetRenderCommand(_spreadsheetIdProvider.SpreadsheetId, Id, Title, sheetData);
+        var renderCommand = new GoogleSheetRenderCommand(_spreadsheetIdProvider.GetSpreadsheetId(), Id, Title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
     }
 }

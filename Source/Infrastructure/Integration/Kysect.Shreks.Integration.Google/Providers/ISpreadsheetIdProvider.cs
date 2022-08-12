@@ -2,5 +2,5 @@
 
 public interface ISpreadsheetIdProvider
 {
-    string SpreadsheetId { get; }
+    string GetSpreadsheetId();
 }

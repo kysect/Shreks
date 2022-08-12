@@ -6,5 +6,6 @@ public class RuCultureInfoProvider : ICultureInfoProvider
 {
     private static readonly CultureInfo RuCultureInfo = new("ru-RU");
 
-    public CultureInfo CultureInfo => RuCultureInfo;
+    public CultureInfo GetCultureInfo()
+        => RuCultureInfo;
 }

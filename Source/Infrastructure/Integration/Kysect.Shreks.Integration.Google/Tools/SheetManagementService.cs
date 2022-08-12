@@ -37,7 +37,7 @@ public class SheetManagementService : ISheetManagementService
     private async Task<bool> CheckSheetExistsAsync(string title, CancellationToken token)
     {
         Spreadsheet spreadSheet = await _sheetsService.Spreadsheets
-            .Get(_spreadsheetIdProvider.SpreadsheetId)
+            .Get(_spreadsheetIdProvider.GetSpreadsheetId())
             .ExecuteAsync(token);
 
         Sheet? sheet = spreadSheet.Sheets.FirstOrDefault(s => s.Properties.Title == title);
@@ -105,7 +105,7 @@ public class SheetManagementService : ISheetManagementService
         var batchUpdateRequest = new BatchUpdateSpreadsheetRequest { Requests = requests };
 
         await _sheetsService.Spreadsheets
-            .BatchUpdate(batchUpdateRequest, _spreadsheetIdProvider.SpreadsheetId)
+            .BatchUpdate(batchUpdateRequest, _spreadsheetIdProvider.GetSpreadsheetId())
             .ExecuteAsync(token);
     }
 }

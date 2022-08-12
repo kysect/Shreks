@@ -36,7 +36,7 @@ public class AssignmentPointsSegment : PrototypeSheetSegmentBase<Points, Student
 
     protected override IComponent BuildRow(HeaderRowData<Assignment, AssignmentPoints?> data, int rowIndex)
     {
-        CultureInfo currentCulture = _cultureInfoProvider.CultureInfo;
+        CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
         AssignmentPoints? assignmentPoints = data.RowData;
 
         IComponent pointsComponent = assignmentPoints is null

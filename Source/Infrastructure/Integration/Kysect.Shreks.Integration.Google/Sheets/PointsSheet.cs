@@ -42,7 +42,7 @@ public class PointsSheet : ISheet<Points>
         Points sortedPoints = SortPoints(points);
 
         IComponent sheetData = _sheetDataFactory.Create(sortedPoints);
-        var renderCommand = new GoogleSheetRenderCommand(_spreadsheetIdProvider.SpreadsheetId, Id, Title, sheetData);
+        var renderCommand = new GoogleSheetRenderCommand(_spreadsheetIdProvider.GetSpreadsheetId(), Id, Title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
     }
 

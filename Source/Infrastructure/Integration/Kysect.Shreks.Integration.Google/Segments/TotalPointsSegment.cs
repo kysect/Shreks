@@ -24,6 +24,6 @@ public class TotalPointsSegment : SheetSegmentBase<Points, StudentPoints, Unit>
     {
         double totalPoints = data.RowData.Points.Sum(p => p.Points);
 
-        return Label(totalPoints.ToSheetPoints(_cultureInfoProvider.CultureInfo)).WithDefaultStyle();
+        return Label(totalPoints.ToSheetPoints(_cultureInfoProvider.GetCultureInfo())).WithDefaultStyle();
     }
 }

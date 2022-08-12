@@ -2,10 +2,13 @@
 
 public class ConstSpreadsheetIdProvider : ISpreadsheetIdProvider
 {
+    private readonly string _spreadsheetId;
+
     public ConstSpreadsheetIdProvider(string spreadSheetId)
     {
-        SpreadsheetId = spreadSheetId;
+        _spreadsheetId = spreadSheetId;
     }
 
-    public string SpreadsheetId { get; }
+    public string GetSpreadsheetId()
+        => _spreadsheetId;
 }

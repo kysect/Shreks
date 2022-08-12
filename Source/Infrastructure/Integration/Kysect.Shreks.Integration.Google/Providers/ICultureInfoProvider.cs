@@ -4,5 +4,5 @@ namespace Kysect.Shreks.Integration.Google.Providers;
 
 public interface ICultureInfoProvider
 {
-    CultureInfo CultureInfo { get; }
+    CultureInfo GetCultureInfo();
 }
