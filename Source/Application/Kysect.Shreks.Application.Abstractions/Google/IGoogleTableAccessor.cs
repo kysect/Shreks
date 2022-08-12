@@ -9,10 +9,10 @@ public record StudentPoints(Student Student, IReadOnlyCollection<AssignmentPoint
 
 public record struct Points(IReadOnlyCollection<Assignment> Assignments, IReadOnlyCollection<StudentPoints> StudentsPoints);
 
-public record struct Queue(IReadOnlyCollection<Submission> Submissions);
+public record struct StudentsQueue(IReadOnlyCollection<Submission> Submissions);
 
 public interface IGoogleTableAccessor
 {
-    Task UpdateQueueAsync(Queue queue, CancellationToken token = default);
+    Task UpdateQueueAsync(StudentsQueue queue, CancellationToken token = default);
     Task UpdatePointsAsync(Points points, CancellationToken token = default);
 }

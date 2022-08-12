@@ -9,7 +9,7 @@ using static Microsoft.Extensions.DependencyInjection.ActivatorUtilities;
 
 namespace Kysect.Shreks.Integration.Google.Factories;
 
-public class QueueSheetComponentFactory : ISheetComponentFactory<Queue>
+public class QueueSheetComponentFactory : ISheetComponentFactory<StudentsQueue>
 {
     private readonly ISheetBuilder _sheetBuilder;
     private readonly ISheetSegment<Unit, Submission, Unit>[] _segments;
@@ -27,7 +27,7 @@ public class QueueSheetComponentFactory : ISheetComponentFactory<Queue>
         };
     }
 
-    public IComponent Create(Queue queue)
+    public IComponent Create(StudentsQueue queue)
     {
         var sheetData = new SheetData<Unit, Submission, Unit>(Unit.Value, queue.Submissions, Unit.Value);
         return _sheetBuilder.Build(_segments, sheetData);

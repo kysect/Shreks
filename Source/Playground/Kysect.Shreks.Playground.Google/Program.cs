@@ -46,7 +46,7 @@ var googleTableAccessor = services.GetRequiredService<IGoogleTableAccessor>();
 var submissionGenerator = services.GetRequiredService<IEntityGenerator<Submission>>();
 IReadOnlyCollection<Submission> submissions = submissionGenerator.GeneratedEntities;
 
-var queue = new Queue(submissions);
+var queue = new StudentsQueue(submissions);
 await googleTableAccessor.UpdateQueueAsync(queue);
 
 var studentGenerator = services.GetRequiredService<IEntityGenerator<Student>>();
