@@ -8,11 +8,13 @@
 
     <ItemGroup>
       <PackageReference Include="CommandLineParser" Version="2.9.1" />
+      <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj" />
+      <ProjectReference Include="..\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

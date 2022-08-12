@@ -24,8 +24,9 @@ public class UpdateCommand : IShreksCommand
     [Option(shortName:'e', longName:"extra", Required = false)]
     private int? ExtraPoints { get; }
     
-    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor, User executor) where TResult : IShreksCommandResult
+    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor,  ShreksCommandContext context) 
+        where TResult : IShreksCommandResult
     {
-        return processor.Process(this, executor);
+        return processor.Process(this, context);
     }
 }
