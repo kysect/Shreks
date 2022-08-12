@@ -6,12 +6,7 @@ namespace Kysect.Shreks.Playground.Github.StubHandlers;
 
 public class CreateSubmissionHandler : IRequestHandler<CreateSubmissionCommand.Command, CreateSubmissionCommand.Response>
 {
-    private readonly Submission _submission;
-
-    public CreateSubmissionHandler(Submission submission)
-    {
-        _submission = submission;
-    }
+    internal static readonly Submission _submission = new Submission(null!, null!, DateTime.Now, "");
 
     public Task<CreateSubmissionCommand.Response> Handle(CreateSubmissionCommand.Command request, CancellationToken cancellationToken)
     {

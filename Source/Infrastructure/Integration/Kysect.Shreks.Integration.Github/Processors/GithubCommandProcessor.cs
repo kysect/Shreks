@@ -7,9 +7,9 @@ namespace Kysect.Shreks.Integration.Github.Processors;
 
 public class GithubCommandProcessor : IShreksCommandProcessor<BaseShreksCommandResult>
 {
-    private readonly Mediator _mediator;
+    private readonly IMediator _mediator;
 
-    public GithubCommandProcessor(Mediator mediator)
+    public GithubCommandProcessor(IMediator mediator)
     {
         _mediator = mediator;
     }

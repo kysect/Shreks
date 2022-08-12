@@ -19,4 +19,8 @@
       <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="StubHandlers\ServiceExtensions" />
+    </ItemGroup>
+
 </Project>
