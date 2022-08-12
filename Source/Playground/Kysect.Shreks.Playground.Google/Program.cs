@@ -6,7 +6,6 @@ using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
-using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Seeding.EntityGenerators;
