@@ -1,3 +1,4 @@
+using Bogus;
 using FluentScanning;
 using FluentScanning.DependencyInjection;
 using Kysect.Shreks.Application.Abstractions.DataAccess;
@@ -5,6 +6,7 @@ using Kysect.Shreks.Seeding.DatabaseSeeders;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Options;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Kysect.Shreks.Seeding.Extensions;
 
@@ -18,7 +20,7 @@ public static class RegistrationExtensions
         action?.Invoke(generationOptions);
 
         collection.AddSingleton(typeof(EntityGeneratorOptions<>));
-        collection.AddSingleton(generationOptions.Faker);
+        collection.TryAddSingleton<Faker>();
 
         using var scanner = collection.UseAssemblyScanner(typeof(IAssemblyMarker));
 

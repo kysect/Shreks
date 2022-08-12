@@ -7,25 +7,33 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class GithubUserAssociationGenerator : EntityGeneratorBase<GithubUserAssociation>
 {
-    private readonly IEntityGenerator<User> _userGenerator;
-    private readonly Faker _faker;
+    private readonly IEntityGenerator<Mentor> _mentorGenerator;
+    private readonly IEntityGenerator<Student> _studentGenerator;
     
-    public GithubUserAssociationGenerator(EntityGeneratorOptions<GithubUserAssociation> options, IEntityGenerator<User> userGenerator, Faker faker) : base(options)
+    private readonly Faker _faker;
+
+    public GithubUserAssociationGenerator(
+        EntityGeneratorOptions<GithubUserAssociation> options,
+        IEntityGenerator<Mentor> mentorGenerator,
+        IEntityGenerator<Student> studentGenerator,
+        Faker faker) : base(options)
     {
-        _userGenerator = userGenerator;
+        _mentorGenerator = mentorGenerator;
+        _studentGenerator = studentGenerator;
         _faker = faker;
     }
 
     protected override GithubUserAssociation Generate(int index)
     {
-        var userCount = _userGenerator.GeneratedEntities.Count;
+        var user = _mentorGenerator.GeneratedEntities
+            .Concat<User>(_studentGenerator.GeneratedEntities)
+            .Skip(index)
+            .FirstOrDefault();
 
-        if (index >= userCount)
-            throw new IndexOutOfRangeException("User index more than count of users.");
-        
-        var user = _userGenerator.GeneratedEntities[index];
+        if (user is null)
+            throw new IndexOutOfRangeException("Github association count is greater than count of users.");
 
-        var githubName = _faker.Person.UserName;
+        var githubName = _faker.Internet.UserName(user.FirstName, user.LastName);
         var association = new GithubUserAssociation(user, githubName);
 
         user.AddAssociation(association);

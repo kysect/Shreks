@@ -7,28 +7,36 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociation>
 {
-    private readonly IEntityGenerator<User> _userGenerator;
+    private const int MinIsuNumber = 100000;
+    private const int MaxIsuNumber = 1000000;
+
+    private readonly IEntityGenerator<Mentor> _mentorGenerator;
+    private readonly IEntityGenerator<Student> _studentGenerator;
+
     private readonly Faker _faker;
-    
+
     public IsuUserAssociationGenerator(
         EntityGeneratorOptions<IsuUserAssociation> options,
-        IEntityGenerator<User> userGenerator,
+        IEntityGenerator<Mentor> mentorGenerator,
+        IEntityGenerator<Student> studentGenerator,
         Faker faker) : base(options)
     {
-        _userGenerator = userGenerator;
+        _mentorGenerator = mentorGenerator;
+        _studentGenerator = studentGenerator;
         _faker = faker;
     }
 
     protected override IsuUserAssociation Generate(int index)
     {
-        var userCount = _userGenerator.GeneratedEntities.Count;
-        
-        if (index >= userCount)
-            throw new IndexOutOfRangeException("User index more than count of users.");
+        var user = _mentorGenerator.GeneratedEntities
+            .Concat<User>(_studentGenerator.GeneratedEntities)
+            .Skip(index)
+            .FirstOrDefault();
 
-        var user = _userGenerator.GeneratedEntities[index];
+        if (user is null)
+            throw new IndexOutOfRangeException("Isu association count is greater than count of users.");
 
-        var id = _faker.Random.Int();
+        var id = _faker.Random.Int(MinIsuNumber, MaxIsuNumber);
         var association = new IsuUserAssociation(user, id);
 
         user.AddAssociation(association);

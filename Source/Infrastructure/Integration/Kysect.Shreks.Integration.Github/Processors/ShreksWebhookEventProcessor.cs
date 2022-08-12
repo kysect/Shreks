@@ -42,7 +42,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         await _actionNotifier.ApplyInComments(
             pullRequestEvent, 
-            (int) pullRequestEvent.PullRequest.Number,
+            pullRequestEvent.PullRequest.Number,
             nameof(ProcessPullRequestWebhookAsync));
     }
 
@@ -69,7 +69,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         await _actionNotifier.ApplyInComments(
             pullRequestReviewEvent,
-            (int) pullRequestReviewEvent.PullRequest.Number,
+            pullRequestReviewEvent.PullRequest.Number,
             nameof(ProcessPullRequestWebhookAsync));
     }
 
@@ -96,8 +96,13 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         await _actionNotifier.ApplyInComments(
             issueCommentEvent,
-            (int) issueCommentEvent.Issue.Number,
+            issueCommentEvent.Issue.Number,
             nameof(ProcessIssueCommentWebhookAsync));
+
+        await _actionNotifier.ReactInComments(
+            issueCommentEvent,
+            issueCommentEvent.Comment.Id,
+            true);
     }
 
     private bool IsSenderBotOrNull(WebhookEvent webhookEvent) => webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
