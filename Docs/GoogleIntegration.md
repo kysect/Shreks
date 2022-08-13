@@ -1,6 +1,6 @@
 # Google integration
 
-GoogleTableAccessor содержит в себе методы UpdatePointsAsync и UpdateQueueAsync, создающие таблицы на листах "Баллы" и "Очередь" соответсвенно
+GoogleTableAccessor содержит в себе методы UpdatePointsAsync и UpdateQueueAsync, создающие таблицы на листах "Баллы" и "Очередь" соответсвенно (Создает листы если их не было)
 
 Пример использования находится в проекте Playground.Google:
 
