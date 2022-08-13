@@ -1,3 +1,4 @@
+using Kysect.Shreks.Integration.Github.CredentialStores;
 using Kysect.Shreks.Integration.Github.Entities;
 using Octokit;
 
@@ -23,9 +24,7 @@ public class InstallationClientFactory : IInstallationClientFactory
     {
         var accessToken = await _gitHubAppClient.GitHubApps.CreateInstallationToken(installationId);
 
-        return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"))
-        {
-            Credentials = new Credentials(accessToken.Token)
-        };
+        return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"), 
+            new InstallationCredentialStore(_gitHubAppClient, installationId));
     }
 }
