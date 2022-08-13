@@ -22,8 +22,6 @@ public class InstallationClientFactory : IInstallationClientFactory
 
     private async Task<GitHubClient> CreateInstallationClient(long installationId)
     {
-        var accessToken = await _gitHubAppClient.GitHubApps.CreateInstallationToken(installationId);
-
         return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"), 
             new InstallationCredentialStore(_gitHubAppClient, installationId));
     }
