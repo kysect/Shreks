@@ -15,12 +15,12 @@ public class InstallationClientFactory : IInstallationClientFactory
         _memoryCache = memoryCache;
     }
 
-    public async Task<GitHubClient> GetClient(long installationId)
+    public GitHubClient GetClient(long installationId)
     {
-        return await _memoryCache.GetOrCreateAsync(installationId, async _ => await CreateInstallationClient(installationId));
+        return _memoryCache.GetOrCreate(installationId,  _ => CreateInstallationClient(installationId));
     }
 
-    private async Task<GitHubClient> CreateInstallationClient(long installationId)
+    private GitHubClient CreateInstallationClient(long installationId)
     {
         return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"), 
             new InstallationCredentialStore(_gitHubAppClient, installationId));
