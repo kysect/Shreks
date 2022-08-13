@@ -9,7 +9,7 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 [Verb("/update")]
 public class UpdateCommand : IShreksCommand
 {
-    public UpdateCommand(string submissionId, int ratingPercent, int extraPoints)
+    public UpdateCommand(string submissionId, int? ratingPercent, int? extraPoints)
     {
         SubmissionId = submissionId;
         RatingPercent = ratingPercent;
@@ -17,13 +17,13 @@ public class UpdateCommand : IShreksCommand
     }
 
     [Value(0, Required = true, MetaName = "SubmissionId")]
-    private string SubmissionId { get; }
+    public string SubmissionId { get; }
     
-    [Option(shortName:'r', longName: "rating", Required = false, Min = 0, Max = 100)]
-    private int? RatingPercent { get; }
+    [Option(shortName:'r', longName: "rating", Required = false)]
+    public int? RatingPercent { get; }
     
     [Option(shortName:'e', longName:"extra", Required = false)]
-    private int? ExtraPoints { get; }
+    public int? ExtraPoints { get; }
     
     public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor,  ShreksCommandContext context) 
         where TResult : IShreksCommandResult

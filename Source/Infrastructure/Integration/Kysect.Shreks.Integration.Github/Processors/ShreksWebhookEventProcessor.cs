@@ -48,6 +48,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             case PullRequestActionValue.Synchronize:
                 //here we should update time and payload
                 break;
+            case PullRequestActionValue.Reopened:
             case PullRequestActionValue.Opened:
                 var response = await _mediator.Send(new CreateSubmissionCommand.Command(
                     Guid.Empty, //testing only, will remove after merge of queries
@@ -124,6 +125,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                         issueCommentEvent.Comment.Id,
                         result.IsSuccess);
                 }
+                return;
                 break;
             case IssueCommentActionValue.Deleted:
                 break;

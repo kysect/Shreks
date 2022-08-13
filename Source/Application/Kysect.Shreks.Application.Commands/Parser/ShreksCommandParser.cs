@@ -15,10 +15,14 @@ public class ShreksCommandParser : IShreksCommandParser
 
     public IShreksCommand? Parse(string commandStr)
     {
+        if (commandStr.FirstOrDefault() != '/')
+        {
+            return null;
+        }
         var result = Parser.Default.ParseArguments(commandStr.Split(), _commandTypes);
         if (result.Tag == ParserResultType.NotParsed)
         {
-            //check if there was no command at all, then return null, else throw
+            
         }
 
         return (IShreksCommand) result.Value;

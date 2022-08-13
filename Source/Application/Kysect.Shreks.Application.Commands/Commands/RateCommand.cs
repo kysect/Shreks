@@ -15,11 +15,11 @@ public class RateCommand : IShreksCommand
         ExtraPoints = extraPoints;
     }
 
-    [Value(0, Required = true, Min = 0, Max = 100, MetaName = "RatingPercent")]
-    private int RatingPercent { get; }
+    [Value(0, Required = true, MetaName = "RatingPercent")]
+    public int RatingPercent { get; }
     
     [Value(1, Required = false, Default = 0, MetaName = "ExtraPoints")]
-    private int ExtraPoints { get; }
+    public int ExtraPoints { get; }
     
     public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor, ShreksCommandContext context) 
         where TResult : IShreksCommandResult
