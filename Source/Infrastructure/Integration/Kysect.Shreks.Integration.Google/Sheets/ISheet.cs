@@ -1,14 +1,13 @@
-﻿using Kysect.Shreks.Integration.Google.Models;
-using Kysect.Shreks.Integration.Google.Tools;
+﻿namespace Kysect.Shreks.Integration.Google.Sheets;
 
-namespace Kysect.Shreks.Integration.Google.Sheets;
+public interface ISheet<in TData> : ISheet
+{
+    Task UpdateAsync(TData data, CancellationToken token);
+}
 
 public interface ISheet
 {
-    int Id { get; }
+    string Title { get; }
 
-    SheetRange HeaderRange { get; }
-    SheetRange DataRange { get; }
-    
-    GoogleTableEditor Editor { get; }
+    int Id { get; }
 }
