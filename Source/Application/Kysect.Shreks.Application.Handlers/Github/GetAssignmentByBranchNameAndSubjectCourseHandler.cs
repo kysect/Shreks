@@ -21,8 +21,10 @@ public class GetAssignmentByBranchAndSubjectCourseHandler : IRequestHandler<Quer
 
         if (assignment is null)
         {
+            var branchName = request.BranchName;
+            var subjectCourseId = request.SubjectCourseId;
             var message =
-                $"Assignment with branch name {request.BranchName} for subject course {request.SubjectCourseId} not found";
+                $"Assignment with branch name {branchName} for subject course {subjectCourseId} not found";
             throw new EntityNotFoundException(message);
         }
 
