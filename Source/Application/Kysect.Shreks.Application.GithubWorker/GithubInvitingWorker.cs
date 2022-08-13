@@ -1,11 +1,11 @@
 ﻿using Kysect.CommonLib;
 using Kysect.GithubUtils;
 using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
-using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Integration.Github.Client;
-using Microsoft.EntityFrameworkCore;
+using MediatR;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Octokit;
@@ -14,24 +14,30 @@ namespace Kysect.Shreks.Application.GithubWorker
 {
     public class GithubInvitingWorker : BackgroundService
     {
-        private readonly TimeSpan _period = TimeSpan.FromHours(24).Add(TimeSpan.FromMinutes(1));
+        /// <summary>
+        /// This worker is our restriction bypass, github allow to invite only 50 users per 24 hours.
+        /// So we need to send invites every 24 hours + 1 minutes shift for preventing race conditions.
+        /// </summary>
+        private readonly TimeSpan _delayBetweenInviteIteration = TimeSpan.FromHours(24).Add(TimeSpan.FromMinutes(1));
 
         private readonly ILogger<GithubInvitingWorker> _logger;
         private readonly IInstallationClientFactory _clientFactory;
         private readonly IShreksDatabaseContext _context;
         private readonly IGitHubClient _appClient;
+        private readonly IMediator _mediator;
 
-        public GithubInvitingWorker(ILogger<GithubInvitingWorker> logger, IInstallationClientFactory clientFactory, IShreksDatabaseContext context, IGitHubClient appClient)
+        public GithubInvitingWorker(ILogger<GithubInvitingWorker> logger, IInstallationClientFactory clientFactory, IShreksDatabaseContext context, IGitHubClient appClient, IMediator mediator)
         {
             _logger = logger;
             _clientFactory = clientFactory;
             _context = context;
             _appClient = appClient;
+            _mediator = mediator;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using var timer = new PeriodicTimer(_period);
+            using var timer = new PeriodicTimer(_delayBetweenInviteIteration);
             while (!stoppingToken.IsCancellationRequested &&
                    await timer.WaitForNextTickAsync(stoppingToken))
             {
@@ -42,7 +48,7 @@ namespace Kysect.Shreks.Application.GithubWorker
                         if (subjectCourseAssociation is not GithubSubjectCourseAssociation githubSubjectCourseAssociation)
                             continue;
 
-                        await ProcessSubject(githubSubjectCourseAssociation);
+                        await ProcessSubject(githubSubjectCourseAssociation, stoppingToken);
                     }
                 }
                 catch (Exception ex)
@@ -52,13 +58,14 @@ namespace Kysect.Shreks.Application.GithubWorker
             }
         }
 
-        private async Task ProcessSubject(GithubSubjectCourseAssociation githubSubjectCourseAssociation)
+        private async Task ProcessSubject(GithubSubjectCourseAssociation githubSubjectCourseAssociation, CancellationToken stoppingToken)
         {
             SubjectCourse subjectCourse = githubSubjectCourseAssociation.SubjectCourse;
             var message = $"Start inviting to organization {githubSubjectCourseAssociation.GithubOrganizationName} for course {subjectCourse.Subject.Title}";
             _logger.LogInformation(message);
 
-            List<string> organizationUsers = await GetOrganizationUsers(subjectCourse);
+            GetGithubUsernamesForSubjectCourse.Response response = await _mediator.Send(new GetGithubUsernamesForSubjectCourse.Query(subjectCourse.Id), stoppingToken);
+            IReadOnlyCollection<string> organizationUsers = response.StudentGithubUsernames;
             OrganizationInviteSender organizationInviteSender = await CreateOrganizationInviteSender(githubSubjectCourseAssociation.GithubOrganizationName);
 
             InviteResult inviteResult = await organizationInviteSender.Invite(githubSubjectCourseAssociation.GithubOrganizationName, organizationUsers);
@@ -81,22 +88,6 @@ namespace Kysect.Shreks.Application.GithubWorker
             Installation installation = await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(githubOrganization);
             GitHubClient client = await _clientFactory.GetClient(installation.Id);
             return new OrganizationInviteSender(client);
-        }
-
-        private async Task<List<string>> GetOrganizationUsers(SubjectCourse subjectCourse)
-        {
-            List<UserAssociation> associations = await _context
-                .SubjectCourseGroups
-                .Where(subjectCourseGroup => subjectCourseGroup.SubjectCourseId == subjectCourse.Id)
-                .Select(group => group.StudentGroup)
-                .SelectMany(group => group.Students)
-                .SelectMany(student => student.Associations)
-                .ToListAsync();
-
-            return associations
-                .OfType<GithubUserAssociation>()
-                .Select(associations => associations.GithubUsername)
-                .ToList();
         }
     }
 }
