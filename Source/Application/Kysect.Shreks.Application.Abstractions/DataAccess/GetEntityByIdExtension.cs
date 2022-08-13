@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Common.Exceptions;
+using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Application.Abstractions.DataAccess;

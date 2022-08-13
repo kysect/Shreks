@@ -1,5 +1,5 @@
 using Kysect.Shreks.Application.Abstractions.DataAccess;
-using Kysect.Shreks.Application.Common.Exceptions;
+using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

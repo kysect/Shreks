@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.Application.Common.Exceptions;
+namespace Kysect.Shreks.Application.Abstractions.Exceptions;
 
 public class EntityNotFoundException : ShreksApplicationException
 {
