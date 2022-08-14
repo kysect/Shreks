@@ -54,7 +54,7 @@ public class PointsSheet : ISheet<Points>
 
         List<StudentPoints> sortedStudentPoints = points.StudentsPoints
             .OrderBy(p => p.Student.Group.Name)
-            .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student))
+            .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student.User))
             .ToList();
 
         return new Points(sortedAssignments, sortedStudentPoints);
