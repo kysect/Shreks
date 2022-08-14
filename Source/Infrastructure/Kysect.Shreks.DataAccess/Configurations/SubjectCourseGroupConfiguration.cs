@@ -12,7 +12,5 @@ public class SubjectCourseGroupConfiguration : IEntityTypeConfiguration<SubjectC
 
         builder.HasOne(x => x.SubjectCourse);
         builder.HasOne(x => x.StudentGroup);
-        
-        builder.Navigation(x => x.PracticeMentors).HasField("_practiceMentors");
     }
 }
