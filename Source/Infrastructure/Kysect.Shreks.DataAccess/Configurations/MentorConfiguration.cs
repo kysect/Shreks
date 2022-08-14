@@ -4,11 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Kysect.Shreks.DataAccess.Configurations;
 
-public class StudentConfiguration : IEntityTypeConfiguration<Student>
+public class MentorConfiguration : IEntityTypeConfiguration<Mentor>
 {
-    public void Configure(EntityTypeBuilder<Student> builder)
+    public void Configure(EntityTypeBuilder<Mentor> builder)
     {
         builder.HasOne(x => x.User);
-        builder.HasOne(x => x.Group);
     }
 }
