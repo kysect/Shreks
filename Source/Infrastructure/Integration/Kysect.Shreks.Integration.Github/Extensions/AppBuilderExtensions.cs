@@ -11,7 +11,7 @@ public static class AppBuilderExtensions
         var gitHubConf = shreksConfiguration.GithubConfiguration;
 
         app.UseRouting()
-            .UseEndpoints(endpoints => endpoints.MapGitHubWebhooks(secret: gitHubConf.Secret));
+            .UseEndpoints(endpoints => endpoints.MapGitHubWebhooks(secret: gitHubConf.GithubAppSecret));
 
         return app;
     }

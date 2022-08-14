@@ -15,13 +15,12 @@ public class ShreksMemoryCache : IShreksMemoryCache
         _cacheEntryOptions = memoryCacheEntryOptions;
     }
 
-    public async Task<TItem> GetOrCreateAsync<TItem>(object key,
-        Func<ICacheEntry, Task<TItem>> factory)
+    public TItem GetOrCreate<TItem>(object key, Func<ICacheEntry, TItem> factory)
     {
-        return await _cache.GetOrCreateAsync(key, async entry =>
+        return  _cache.GetOrCreate(key, entry =>
         {
             entry.SetOptions(_cacheEntryOptions);
-            return await factory(entry);
+            return factory(entry);
         });
     }
 

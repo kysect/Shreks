@@ -1,22 +1,27 @@
-﻿using Kysect.Shreks.Core.Formatters;
-using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Integration.Google.Converters;
+﻿using FluentSpreadsheets.GoogleSheets.Rendering;
+using FluentSpreadsheets.Rendering;
+using FluentSpreadsheets.SheetBuilders;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Integration.Google.Factories;
-using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Integration.Google.Sheets;
+using Kysect.Shreks.Integration.Google.Tools;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddSheetServices(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddGoogleIntegration(this IServiceCollection serviceCollection)
     {
         return serviceCollection
-            .AddSingleton<ISheetFactory<PointsSheet>, PointsSheetFactory>()
-            .AddSingleton<ISheetFactory<QueueSheet>, QueueSheetFactory>()
-            .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
-            .AddSingleton<ISheetRowConverter<StudentPointsArguments>, StudentPointsConverter>()
-            .AddSingleton<ISheetRowConverter<Submission>, SubmissionsConverter>();
+            .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
+            .AddSingleton<ISheetComponentFactory<Points>, PointsSheetComponentFactory>()
+            .AddSingleton<ISheetComponentFactory<StudentsQueue>, QueueSheetComponentFactory>()
+            .AddSingleton<ISheet<Points>, PointsSheet>()
+            .AddSingleton<ISheet<StudentsQueue>, QueueSheet>()
+            .AddSingleton<ISheetManagementService, SheetManagementService>()
+            .AddSingleton<ISheetBuilder, SheetBuilder>()
+            .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
+            .AddSingleton<IGoogleTableAccessor, GoogleTableAccessor>();
     }
 }
