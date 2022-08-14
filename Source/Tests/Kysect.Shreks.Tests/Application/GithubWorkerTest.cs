@@ -1,16 +1,16 @@
 ﻿using FluentAssertions;
 using Kysect.Shreks.Application.Handlers.Students;
 using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Tests.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Xunit;
 using static Kysect.Shreks.Application.Abstractions.Students.GetGithubUsernamesForSubjectCourse;
 
 namespace Kysect.Shreks.Tests.Application;
 
-public class GithubWorkerTest : DataAccessTestBase
+public class GithubWorkerTest : ApplicationTestBase
 {
     //TODO: check after #83 implemented
-    //[Fact]
+    [Fact]
     public async Task GetStudentGithubsForSubjectId_NoExceptionThrown()
     {
         var handler = new GetGithubUsernamesForSubjectCourseHandler(Context);

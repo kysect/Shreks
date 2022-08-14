@@ -4,14 +4,14 @@ using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kysect.Shreks.Tests.DataAccess;
+namespace Kysect.Shreks.Tests.Application;
 
-public abstract class DataAccessTestBase : IDisposable
+public class ApplicationTestBase : IDisposable
 {
     protected readonly ShreksDatabaseContext Context;
     protected readonly IServiceProvider Provider;
 
-    protected DataAccessTestBase()
+    protected ApplicationTestBase()
     {
         var collection = new ServiceCollection();
         var id = Guid.NewGuid();
@@ -22,11 +22,14 @@ public abstract class DataAccessTestBase : IDisposable
         });
 
         collection.AddEntityGenerators();
+        collection.AddDatabaseSeeders();
 
         Provider = collection.BuildServiceProvider();
 
         Context = Provider.GetRequiredService<ShreksDatabaseContext>();
         Context.Database.EnsureCreated();
+
+        Provider.UseDatabaseSeeders().GetAwaiter().GetResult();
     }
 
     public void Dispose()
