@@ -10,7 +10,8 @@ public record SubmissionDto(
     double ExtraPoints,
     double Points);
 
-public static class SubmissionExtensions {
+public static class SubmissionExtensions
+{
     public static SubmissionDto ToDto(this Submission submission)
     {
         return new SubmissionDto(
