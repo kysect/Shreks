@@ -30,7 +30,7 @@ public class StudentComponentFactory : IStudentComponentFactory
     {
         ArgumentNullException.ThrowIfNull(student);
 
-        string studentName = _userFullNameFormatter.GetFullName(student);
+        string studentName = _userFullNameFormatter.GetFullName(student.User);
 
         string groupName = student.Group.Name;
 
