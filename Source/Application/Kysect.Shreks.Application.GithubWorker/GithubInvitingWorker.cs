@@ -86,7 +86,7 @@ namespace Kysect.Shreks.Application.GithubWorker
         private async Task<OrganizationInviteSender> CreateOrganizationInviteSender(string githubOrganization)
         {
             Installation installation = await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(githubOrganization);
-            GitHubClient client = await _clientFactory.GetClient(installation.Id);
+            GitHubClient client = _clientFactory.GetClient(installation.Id);
             return new OrganizationInviteSender(client);
         }
     }
