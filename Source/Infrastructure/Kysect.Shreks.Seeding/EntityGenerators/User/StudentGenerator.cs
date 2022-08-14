@@ -9,34 +9,34 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 public class StudentGenerator : EntityGeneratorBase<Student>
 {
     private readonly IEntityGenerator<StudentGroup> _studentGroupGenerator;
+    private readonly IEntityGenerator<User> _userGenerator;
     private readonly Faker _faker;
 
     public StudentGenerator(
         EntityGeneratorOptions<Student> options,
         IEntityGenerator<StudentGroup> studentGroupGenerator,
-        Faker faker) : base(options)
+        Faker faker,
+        IEntityGenerator<User> userGenerator) : base(options)
     {
         _studentGroupGenerator = studentGroupGenerator;
         _faker = faker;
+        _userGenerator = userGenerator;
     }
-    
+
     protected override Student Generate(int index)
     {
         var groupCount = _studentGroupGenerator.GeneratedEntities.Count;
         var groupNumber = _faker.Random.Number(0, groupCount - 1);
-        
+
         StudentGroup group = _studentGroupGenerator.GeneratedEntities[groupNumber];
 
-        var student = new Student
-        (
-            _faker.Name.FirstName(),
-            _faker.Name.MiddleName(),
-            _faker.Name.LastName(),
-            group
-        );
-        
+        var userIndex = _faker.Random.Int(0, _userGenerator.GeneratedEntities.Count - 1);
+        var user = _userGenerator.GeneratedEntities[userIndex];
+
+        var student = new Student(user, group);
+
         group.AddStudent(student);
-                
+
         return student;
     }
 }
