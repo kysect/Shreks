@@ -1,4 +1,5 @@
 using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Study;
 using MediatR;
 using static Kysect.Shreks.Application.Abstractions.Submissions.Commands.CreateSubmissionCommand;
@@ -23,6 +24,6 @@ public class CreateSubmissionHandler : IRequestHandler<Command, Response>
         await _context.Submissions.AddAsync(submission, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new Response(submission.Id);
+        return new Response(submission.ToDto());
     }
 }
