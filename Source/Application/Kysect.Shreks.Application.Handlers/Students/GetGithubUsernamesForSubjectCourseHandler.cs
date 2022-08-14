@@ -23,7 +23,7 @@ public class GetGithubUsernamesForSubjectCourseHandler : IRequestHandler<Query, 
             .Where(subjectCourseGroup => subjectCourseGroup.SubjectCourseId == request.SubjectCourseId)
             .Select(group => group.StudentGroup)
             .SelectMany(group => group.Students)
-            .SelectMany(student => student.Associations)
+            .SelectMany(student => student.User.Associations)
             .ToListAsync(cancellationToken: cancellationToken);
 
         List<string> result = associations
