@@ -9,7 +9,6 @@ namespace Kysect.Shreks.Tests.Application;
 
 public class GithubWorkerTest : ApplicationTestBase
 {
-    //TODO: check after #83 implemented
     [Fact]
     public async Task GetStudentGithubsForSubjectId_NoExceptionThrown()
     {
@@ -21,5 +20,4 @@ public class GithubWorkerTest : ApplicationTestBase
 
         response.StudentGithubUsernames.Should().NotBeNull();
     }
-
 }
