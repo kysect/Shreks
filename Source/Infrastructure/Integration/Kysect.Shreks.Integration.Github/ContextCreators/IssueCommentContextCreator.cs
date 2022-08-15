@@ -8,9 +8,9 @@ namespace Kysect.Shreks.Integration.Github.ContextCreators;
 
 public class IssueCommentContextCreator : ICommandContextCreator
 {
-    private IMediator _mediator;
-    private IssueCommentEvent _event;
-    private IShreksDatabaseContext _databaseContext;
+    private readonly IMediator _mediator;
+    private readonly IssueCommentEvent _event;
+    private readonly IShreksDatabaseContext _databaseContext;
 
     public IssueCommentContextCreator(IMediator mediator, IssueCommentEvent issueCommentEvent, IShreksDatabaseContext databaseContext)
     {

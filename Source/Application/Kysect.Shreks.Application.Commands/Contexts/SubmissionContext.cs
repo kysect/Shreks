@@ -6,7 +6,7 @@ namespace Kysect.Shreks.Application.Commands.Contexts;
 
 public class SubmissionContext : BaseContext
 {
-    public readonly Submission Submission;
+    public Submission Submission { get; }
 
     public SubmissionContext(Mediator mediator, User issuer, Submission submission) : base(mediator, issuer)
     {
