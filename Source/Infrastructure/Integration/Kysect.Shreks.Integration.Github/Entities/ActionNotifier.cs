@@ -22,7 +22,7 @@ public class ActionNotifier : IActionNotifier
     {
         ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
 
-        var installationClient = await _installationClientFactory.GetClient(installation.Id);
+        var installationClient = _installationClientFactory.GetClient(installation.Id);
 
         await installationClient.Issue.Comment.Create(
             repository.Owner.Login, 
@@ -35,7 +35,7 @@ public class ActionNotifier : IActionNotifier
     {
         ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
 
-        var installationClient = await _installationClientFactory.GetClient(installation.Id);
+        var installationClient = _installationClientFactory.GetClient(installation.Id);
 
         var reaction = await installationClient.Reaction.IssueComment.Create(
             repository.Id,
