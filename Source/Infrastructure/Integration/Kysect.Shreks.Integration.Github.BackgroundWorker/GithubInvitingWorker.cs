@@ -47,7 +47,7 @@ public class GithubInvitingWorker : BackgroundService
         {
             try
             {
-                await foreach (SubjectCourseAssociation subjectCourseAssociation in _context.SubjectCourseAssociations)
+                foreach (SubjectCourseAssociation subjectCourseAssociation in _context.SubjectCourseAssociations)
                 {
                     if (subjectCourseAssociation is not GithubSubjectCourseAssociation githubSubjectCourseAssociation)
                         continue;

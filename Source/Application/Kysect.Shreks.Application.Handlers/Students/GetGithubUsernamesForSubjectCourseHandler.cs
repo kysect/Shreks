@@ -18,19 +18,16 @@ public class GetGithubUsernamesForSubjectCourseHandler : IRequestHandler<Query, 
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        List<UserAssociation> associations = await _context
+        List<string> githubUsernames = await _context
             .SubjectCourseGroups
             .Where(subjectCourseGroup => subjectCourseGroup.SubjectCourseId == request.SubjectCourseId)
             .Select(group => group.StudentGroup)
             .SelectMany(group => group.Students)
             .SelectMany(student => student.User.Associations)
-            .ToListAsync(cancellationToken: cancellationToken);
-
-        List<string> result = associations
             .OfType<GithubUserAssociation>()
             .Select(association => association.GithubUsername)
-            .ToList();
+            .ToListAsync(cancellationToken: cancellationToken);
 
-        return new Response(result);
+        return new Response(githubUsernames);
     }
 }
