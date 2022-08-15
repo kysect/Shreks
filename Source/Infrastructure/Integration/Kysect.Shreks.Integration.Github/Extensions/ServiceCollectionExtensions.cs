@@ -40,13 +40,21 @@ public static class ServiceCollectionExtensions
                 .SetSlidingExpiration(cacheEntryConf.SlidingExpiration)
             ));
 
-        services.AddSingleton<IInstallationClientFactory>(serviceProvider =>
+        services.AddSingleton<IGitHubClient>(serviceProvider =>
         {
             var githubJwtFactory = serviceProvider.GetService<GitHubJwtFactory>()!;
-            var memoryCache = serviceProvider.GetService<IShreksMemoryCache>()!;
 
             var appClient = new GitHubClient(new ProductHeaderValue(gitHubConf.Organization),
                 new GithubAppCredentialStore(githubJwtFactory));
+            return appClient;
+        });
+
+        services.AddSingleton<IInstallationClientFactory>(serviceProvider =>
+        {
+            var appClient = serviceProvider.GetService<IGitHubClient>()!;
+
+            var memoryCache = serviceProvider.GetService<IShreksMemoryCache>()!;
+
             return new InstallationClientFactory(appClient, memoryCache);
         });
 
