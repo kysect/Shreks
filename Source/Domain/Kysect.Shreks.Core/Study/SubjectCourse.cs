@@ -10,22 +10,23 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<SubjectCourseGroup> _groups;
     private readonly HashSet<Assignment> _assignments;
     private readonly HashSet<SubjectCourseAssociation> _associations;
+    private readonly HashSet<Mentor> _mentors;
 
-    public SubjectCourse(Subject subject, Mentor lector)
+    public SubjectCourse(Subject subject) : this(Guid.NewGuid())
     {
         Subject = subject;
-        Lector = lector;
 
         _groups = new HashSet<SubjectCourseGroup>();
         _assignments = new HashSet<Assignment>();
         _associations = new HashSet<SubjectCourseAssociation>();
+        _mentors = new HashSet<Mentor>();
     }
 
     public virtual Subject Subject { get; protected init; }
-    public virtual Mentor Lector { get; protected init; }
     public virtual IReadOnlyCollection<SubjectCourseGroup> Groups => _groups;
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
+    public virtual IReadOnlyCollection<Mentor> Mentors => _mentors;
 
     public void AddGroup(SubjectCourseGroup group)
     {
@@ -73,5 +74,26 @@ public partial class SubjectCourse : IEntity<Guid>
 
         if (!_associations.Remove(association))
             throw new DomainInvalidOperationException($"Association {association} is not assigned to this course");
+    }
+
+    public Mentor AddMentor(User user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        
+        if (_mentors.Any(x => x.User.Equals(user)))
+            throw new DomainInvalidOperationException($"User {user} is already a mentor of this subject course");
+        
+        var mentor = new Mentor(user);
+        _mentors.Add(mentor);
+
+        return mentor;
+    }
+    
+    public void RemoveMentor(Mentor mentor)
+    {
+        ArgumentNullException.ThrowIfNull(mentor);
+        
+        if (!_mentors.Remove(mentor))
+            throw new DomainInvalidOperationException($"Mentor {mentor} is not a mentor of this subject course");
     }
 }

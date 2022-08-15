@@ -8,6 +8,7 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 {
     public void Configure(EntityTypeBuilder<Student> builder)
     {
+        builder.HasOne(x => x.User);
         builder.HasOne(x => x.Group);
     }
 }
