@@ -108,20 +108,30 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             case IssueCommentActionValue.Edited:
                 break;
             case IssueCommentActionValue.Created:
-                IShreksCommand? command = _commandParser.Parse(issueCommentEvent.Comment.Body);
-                if (command != null)
+                try
                 {
-                    var result =  await command.Process(_commandProcessor, 
-                        new IssueCommentContextCreator(_mediator, issueCommentEvent, _databaseContext));
+                    IShreksCommand? command = _commandParser.Parse(issueCommentEvent.Comment.Body);
+                    if (command != null)
+                    {
+                        var result = await command.Process(_commandProcessor,
+                            new IssueCommentContextCreator(_mediator, issueCommentEvent, _databaseContext));
+                        await _actionNotifier.SendComment(
+                            issueCommentEvent,
+                            issueCommentEvent.Issue.Number,
+                            result.Message);
+
+                        await _actionNotifier.ReactInComments(
+                            issueCommentEvent,
+                            issueCommentEvent.Comment.Id,
+                            result.IsSuccess);
+                    }
+                }
+                catch(Exception e)
+                {
                     await _actionNotifier.SendComment(
                         issueCommentEvent,
                         issueCommentEvent.Issue.Number,
-                        result.Message);
-
-                    await _actionNotifier.ReactInComments(
-                        issueCommentEvent,
-                        issueCommentEvent.Comment.Id,
-                        result.IsSuccess);
+                        e.Message);
                 }
                 break;
             case IssueCommentActionValue.Deleted:

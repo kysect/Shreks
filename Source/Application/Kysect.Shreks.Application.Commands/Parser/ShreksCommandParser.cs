@@ -22,7 +22,7 @@ public class ShreksCommandParser : IShreksCommandParser
         var result = Parser.Default.ParseArguments(commandStr.Split(), _commandTypes);
         if (result.Tag == ParserResultType.NotParsed)
         {
-            
+            throw new ArgumentException("Failed to parse command"); //TODO: handle different errors
         }
 
         return (IShreksCommand) result.Value;
