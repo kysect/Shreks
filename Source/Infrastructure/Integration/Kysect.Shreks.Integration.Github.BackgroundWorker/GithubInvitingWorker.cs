@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Octokit;
 
-namespace Kysect.Shreks.Application.GithubWorker;
+namespace Kysect.Shreks.Integration.Github.BackgroundWorker;
 
 public class GithubInvitingWorker : BackgroundService
 {
@@ -26,7 +26,11 @@ public class GithubInvitingWorker : BackgroundService
     private readonly IGitHubClient _appClient;
     private readonly IMediator _mediator;
 
-    public GithubInvitingWorker(ILogger<GithubInvitingWorker> logger, IInstallationClientFactory clientFactory, IShreksDatabaseContext context, IGitHubClient appClient, IMediator mediator)
+    public GithubInvitingWorker(IInstallationClientFactory clientFactory,
+        IShreksDatabaseContext context,
+        IGitHubClient appClient,
+        IMediator mediator,
+        ILogger<GithubInvitingWorker> logger)
     {
         _logger = logger;
         _clientFactory = clientFactory;
