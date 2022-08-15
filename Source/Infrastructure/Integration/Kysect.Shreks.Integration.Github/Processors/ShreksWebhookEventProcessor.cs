@@ -1,6 +1,7 @@
+using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Commands;
-using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Integration.Github.ContextCreators;
 using Kysect.Shreks.Integration.Github.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,6 @@ using Octokit.Webhooks.Events.IssueComment;
 using Octokit.Webhooks.Events.PullRequest;
 using Octokit.Webhooks.Events.PullRequestReview;
 using Octokit.Webhooks.Models;
-using PullRequestReviewEvent = Octokit.Webhooks.Events.PullRequestReviewEvent;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
 
@@ -21,15 +21,22 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
     private readonly IShreksCommandParser _commandParser;
     private readonly GithubCommandProcessor _commandProcessor;
     private readonly IMediator _mediator;
+    private readonly IShreksDatabaseContext _databaseContext;
 
-    public ShreksWebhookEventProcessor(IActionNotifier actionNotifier, ILogger<ShreksWebhookEventProcessor> logger,
-        GithubCommandProcessor commandProcessor, IShreksCommandParser commandParser, IMediator mediator)
+    public ShreksWebhookEventProcessor(
+        IActionNotifier actionNotifier, 
+        ILogger<ShreksWebhookEventProcessor> logger,
+        GithubCommandProcessor commandProcessor, 
+        IShreksCommandParser commandParser, 
+        IMediator mediator, 
+        IShreksDatabaseContext databaseContext)
     {
         _actionNotifier = actionNotifier;
         _logger = logger;
         _commandProcessor = commandProcessor;
         _commandParser = commandParser;
         _mediator = mediator;
+        _databaseContext = databaseContext;
     }
 
     protected override async Task ProcessPullRequestWebhookAsync(WebhookHeaders headers,
@@ -57,7 +64,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 await _actionNotifier.ApplyInComments(
                     pullRequestEvent,
                     pullRequestEvent.PullRequest.Number,
-                    string.Format("Created submission with id {0}", response.SubmissionId));
+                    $"Created submission with id {response.Submission.Id}");
                 return;
                 break;
         }
@@ -114,7 +121,8 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 IShreksCommand? command = _commandParser.Parse(issueCommentEvent.Comment.Body);
                 if (command != null)
                 {
-                    var result =  await command.Process(_commandProcessor, new ShreksCommandContext(null!, null)); //for testing, will remove after merge of queries
+                    var result =  await command.Process(_commandProcessor, 
+                        new IssueCommentContextCreator(_mediator, issueCommentEvent, _databaseContext)); //for testing, will remove after merge of queries
                     await _actionNotifier.ApplyInComments(
                         issueCommentEvent,
                         issueCommentEvent.Issue.Number,

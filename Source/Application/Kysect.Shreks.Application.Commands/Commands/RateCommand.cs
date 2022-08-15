@@ -1,8 +1,9 @@
 using CommandLine;
 using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
+using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
-using MediatR;
+using Kysect.Shreks.Core.Study;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
@@ -16,21 +17,23 @@ public class RateCommand : IShreksCommand
     }
 
     [Value(0, Required = true, MetaName = "RatingPercent")]
-    public int RatingPercent { get; }
+    public double RatingPercent { get; }
     
     [Value(1, Required = false, Default = 0, MetaName = "ExtraPoints")]
-    public int ExtraPoints { get; }
+    public double ExtraPoints { get; }
     
-    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor, ShreksCommandContext context) 
+    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor, ICommandContextCreator contextCreator) 
         where TResult : IShreksCommandResult
     {
-        return processor.Process(this, context);
+        return processor.Process(this, contextCreator);
     }
 
-    public IEnumerable<IRequest> GetRequest(ShreksCommandContext context)
+    public async Task<Guid> Execute(SubmissionContext context)
     {
-        Guid submissionId = context.Submission?.Id ?? throw new ArgumentException("No submission provided"); //should it be it's own exception so we can catch it in processor and tell that there is no submission in this pr?
+        Submission submission = context.Submission;
         //TODO: add update extra points command or add extra points to this command
-        return new List<IRequest>{new UpdateSubmissionPoints.Command(submissionId, RatingPercent)};
+        var respone = await context.Mediator.Send(new UpdateSubmissionPoints.Command(submission.Id, 
+            RatingPercent / 100 * submission.Assignment.MaxPoints));
+        return respone.Submission.Id;
     }
 }

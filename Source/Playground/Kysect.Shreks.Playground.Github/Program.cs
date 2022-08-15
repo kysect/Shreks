@@ -13,7 +13,7 @@ Log.Logger = new LoggerConfiguration()
 var builder = WebApplication.CreateBuilder(args);
 
 var shreksConfiguration = builder.Configuration.GetSection(nameof(ShreksConfiguration)).Get<ShreksConfiguration>();
-//shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
+shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
 
 builder.Services
     .AddGithubServices(shreksConfiguration)
