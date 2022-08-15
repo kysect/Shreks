@@ -6,6 +6,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Integration.Github.Client;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Octokit;
@@ -47,7 +48,8 @@ public class GithubInvitingWorker : BackgroundService
         {
             try
             {
-                foreach (SubjectCourseAssociation subjectCourseAssociation in _context.SubjectCourseAssociations)
+                List<SubjectCourseAssociation> subjectCourseAssociations = await _context.SubjectCourseAssociations.ToListAsync(cancellationToken: stoppingToken);
+                foreach (var subjectCourseAssociation in subjectCourseAssociations)
                 {
                     if (subjectCourseAssociation is not GithubSubjectCourseAssociation githubSubjectCourseAssociation)
                         continue;
