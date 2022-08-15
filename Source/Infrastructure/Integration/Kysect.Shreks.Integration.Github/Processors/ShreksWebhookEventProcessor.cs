@@ -1,5 +1,4 @@
 using Kysect.Shreks.Application.Abstractions.DataAccess;
-using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Integration.Github.ContextCreators;
 using Kysect.Shreks.Integration.Github.Entities;
@@ -57,15 +56,6 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 break;
             case PullRequestActionValue.Reopened:
             case PullRequestActionValue.Opened:
-                var response = await _mediator.Send(new CreateSubmissionCommand.Command(
-                    Guid.Empty, //testing only, will remove after merge of queries
-                    Guid.Empty, 
-                    pullRequestEvent.PullRequest.DiffUrl));
-                await _actionNotifier.ApplyInComments(
-                    pullRequestEvent,
-                    pullRequestEvent.PullRequest.Number,
-                    $"Created submission with id {response.Submission.Id}");
-                return;
                 break;
         }
 
@@ -122,8 +112,8 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 if (command != null)
                 {
                     var result =  await command.Process(_commandProcessor, 
-                        new IssueCommentContextCreator(_mediator, issueCommentEvent, _databaseContext)); //for testing, will remove after merge of queries
-                    await _actionNotifier.ApplyInComments(
+                        new IssueCommentContextCreator(_mediator, issueCommentEvent, _databaseContext));
+                    await _actionNotifier.SendComment(
                         issueCommentEvent,
                         issueCommentEvent.Issue.Number,
                         result.Message);
@@ -133,21 +123,10 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                         issueCommentEvent.Comment.Id,
                         result.IsSuccess);
                 }
-                return;
                 break;
             case IssueCommentActionValue.Deleted:
                 break;
         }
-
-        await _actionNotifier.ApplyInComments(
-            issueCommentEvent,
-            issueCommentEvent.Issue.Number,
-            nameof(ProcessIssueCommentWebhookAsync));
-
-        await _actionNotifier.ReactInComments(
-            issueCommentEvent,
-            issueCommentEvent.Comment.Id,
-            true);
     }
 
     private bool IsSenderBotOrNull(WebhookEvent webhookEvent) =>

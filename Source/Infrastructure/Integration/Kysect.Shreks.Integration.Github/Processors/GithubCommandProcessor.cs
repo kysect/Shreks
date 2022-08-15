@@ -14,7 +14,7 @@ public class GithubCommandProcessor : IShreksCommandProcessor<BaseShreksCommandR
             var submissionId = await rateCommand.Execute(await contextCreator.CreateSubmissionContext());
             return new BaseShreksCommandResult(true, $"Created submission with id {submissionId}");
         }
-        catch(Exception e) //TODO: catch different exceptions end write better messages
+        catch(Exception e) //TODO: catch different exceptions and write better messages
         {
             return new BaseShreksCommandResult(false, e.Message); 
         }
@@ -25,9 +25,13 @@ public class GithubCommandProcessor : IShreksCommandProcessor<BaseShreksCommandR
         try
         {
             var submissionDto = await updateCommand.Execute(await contextCreator.CreateBaseContext());
-            return new BaseShreksCommandResult(true, string.Format($"Updated submission: {submissionDto}")); //md?
+            return new BaseShreksCommandResult(true, 
+                $"Updated submission - " +
+                $"points: {submissionDto.Points}, " +
+                $"Extra points: {submissionDto.ExtraPoints}, " +
+                $"Date: {submissionDto.SubmissionDateTime}"); //md?
         }
-        catch(Exception e) //TODO: catch different exceptions end write better messages
+        catch(Exception e) //TODO: catch different exceptions and write better messages
         {
             return new BaseShreksCommandResult(false, e.Message); 
         }
