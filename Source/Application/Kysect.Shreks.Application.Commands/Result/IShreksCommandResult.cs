@@ -2,7 +2,7 @@ namespace Kysect.Shreks.Application.Commands.Result;
 
 public interface IShreksCommandResult
 {
-    public bool IsSuccess { get; }
+    bool IsSuccess { get; }
     
-    public string Message { get; }
+    string Message { get; }
 }
