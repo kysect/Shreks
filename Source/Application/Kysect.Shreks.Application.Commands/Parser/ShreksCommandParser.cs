@@ -13,12 +13,8 @@ public class ShreksCommandParser : IShreksCommandParser
             .ToArray();
     }
 
-    public IShreksCommand? Parse(string commandStr)
+    public IShreksCommand Parse(string commandStr)
     {
-        if (commandStr.FirstOrDefault() != '/')
-        {
-            return null;
-        }
         var result = Parser.Default.ParseArguments(commandStr.Split(), _commandTypes);
         if (result.Tag == ParserResultType.NotParsed)
         {

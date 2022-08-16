@@ -5,7 +5,7 @@ namespace Kysect.Shreks.Application.Commands.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddCommandParser(this IServiceCollection services)
+    public static IServiceCollection AddApplicationCommands(this IServiceCollection services)
     {
         services.AddSingleton<IShreksCommandParser, ShreksCommandParser>();
         

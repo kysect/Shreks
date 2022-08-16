@@ -110,9 +110,10 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             case IssueCommentActionValue.Created:
                 try
                 {
-                    IShreksCommand? command = _commandParser.Parse(issueCommentEvent.Comment.Body);
-                    if (command != null)
+                    var comment = issueCommentEvent.Comment.Body;
+                    if (comment.FirstOrDefault() != '/')
                     {
+                        IShreksCommand command = _commandParser.Parse(comment);
                         var result = await command.Process(_commandProcessor,
                             new IssueCommentContextFactory(_mediator, issueCommentEvent, _databaseContext));
                         await _actionNotifier.SendComment(

@@ -34,7 +34,7 @@ public class UpdateCommand : IShreksCommand
 
     public async Task<SubmissionDto> Execute(BaseContext context)
     {
-        Guid submissionId = new Guid(SubmissionId);
+        Guid submissionId = Guid.Parse(SubmissionId);
         SubmissionDto submissionDto = null!;
         if (RatingPercent.HasValue)
         {
