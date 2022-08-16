@@ -20,8 +20,7 @@ builder.Services
     .AddCommandParser()
     .AddMediatR(c => c.AsSingleton(), Assembly.GetExecutingAssembly())
     .AddCommandProcessor()
-    .AddWebhookProcessors()
-    ;
+    .AddWebhookProcessors();
 
 builder.Services
     .AddLogging(logBuilder => logBuilder.AddSerilog());
