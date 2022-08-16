@@ -8,15 +8,18 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 public class AssignmentGenerator : EntityGeneratorBase<Assignment>
 {
     private readonly IEntityGenerator<DeadlinePolicy> _deadlinePolicyGenerator;
+    private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
     private readonly Faker _faker;
 
     public AssignmentGenerator(
         EntityGeneratorOptions<Assignment> options,
         IEntityGenerator<DeadlinePolicy> deadlinePolicyGenerator,
+        IEntityGenerator<SubjectCourse> subjectCourseGenerator,
         Faker faker)
         : base(options)
     {
         _deadlinePolicyGenerator = deadlinePolicyGenerator;
+        _subjectCourseGenerator = subjectCourseGenerator;
         _faker = faker;
     }
 
@@ -41,7 +44,10 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
         {
             assignment.AddDeadlinePolicy(deadline);
         }
-        
+
+        var subjectCourse = _faker.PickRandom<SubjectCourse>(_subjectCourseGenerator.GeneratedEntities);
+        subjectCourse.AddAssignment(assignment);
+
         return assignment;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Abstractions.Google.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
@@ -10,7 +10,7 @@ using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Segments;
 
-public class AssignmentPointsSegment : PrototypeSheetSegmentBase<Points, StudentPoints, Unit, Assignment, AssignmentPoints?>
+public class AssignmentPointsSegment : PrototypeSheetSegmentBase<CoursePoints, StudentPoints, Unit, Assignment, AssignmentPoints?>
 {
     private readonly ICultureInfoProvider _cultureInfoProvider;
 
@@ -54,7 +54,7 @@ public class AssignmentPointsSegment : PrototypeSheetSegmentBase<Points, Student
         );
     }
 
-    protected override IEnumerable<Assignment> SelectHeaderData(Points data)
+    protected override IEnumerable<Assignment> SelectHeaderData(CoursePoints data)
         => data.Assignments;
 
     protected override AssignmentPoints? SelectRowData(HeaderRowData<Assignment, StudentPoints> data)

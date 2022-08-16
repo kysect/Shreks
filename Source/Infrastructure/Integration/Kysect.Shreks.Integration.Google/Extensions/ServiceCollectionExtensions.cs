@@ -2,6 +2,7 @@
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.SheetBuilders;
 using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Abstractions.Google.Models;
 using Kysect.Shreks.Integration.Google.Factories;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tools;
@@ -15,9 +16,9 @@ public static class ServiceCollectionExtensions
     {
         return serviceCollection
             .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
-            .AddSingleton<ISheetComponentFactory<Points>, PointsSheetComponentFactory>()
+            .AddSingleton<ISheetComponentFactory<CoursePoints>, PointsSheetComponentFactory>()
             .AddSingleton<ISheetComponentFactory<StudentsQueue>, QueueSheetComponentFactory>()
-            .AddSingleton<ISheet<Points>, PointsSheet>()
+            .AddSingleton<ISheet<CoursePoints>, PointsSheet>()
             .AddSingleton<ISheet<StudentsQueue>, QueueSheet>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<ISheetBuilder, SheetBuilder>()
