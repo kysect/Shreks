@@ -21,10 +21,10 @@ public class RateCommand : IShreksCommand<SubmissionContext, Guid>
     [Value(1, Required = false, Default = 0.0, MetaName = "ExtraPoints")]
     public double? ExtraPoints { get; }
     
-    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor) 
+    public Task<TResult> AcceptAsync<TResult>(IShreksCommandVisitor<TResult> visitor) 
         where TResult : IShreksCommandResult
     {
-        return visitor.Visit(this);
+        return visitor.VisitAsync(this);
     }
 
     public async Task<Guid> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)

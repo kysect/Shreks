@@ -16,7 +16,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         _cancellationToken = cancellationToken;
     }
 
-    public async Task<BaseShreksCommandResult> Visit(RateCommand rateCommand)
+    public async Task<BaseShreksCommandResult> VisitAsync(RateCommand rateCommand)
     {
         try
         {
@@ -30,7 +30,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
     }
 
-    public async Task<BaseShreksCommandResult> Visit(UpdateCommand updateCommand)
+    public async Task<BaseShreksCommandResult> VisitAsync(UpdateCommand updateCommand)
     {
         try
         {

@@ -5,6 +5,6 @@ namespace Kysect.Shreks.Application.Commands.Processors;
 
 public interface IShreksCommandVisitor<TResult> where TResult : IShreksCommandResult
 {
-    Task<TResult> Visit(RateCommand rateCommand);
-    Task<TResult> Visit(UpdateCommand updateCommand);
+    Task<TResult> VisitAsync(RateCommand rateCommand);
+    Task<TResult> VisitAsync(UpdateCommand updateCommand);
 }
