@@ -34,7 +34,12 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 
         var subjectCourse = new SubjectCourse(subject);
 
-        foreach (var mentor in _faker.Random.ListItems(_mentorGenerator.GeneratedEntities.ToList()))
+        var mentors = _faker.Random
+            .ListItems(_mentorGenerator.GeneratedEntities.ToList())
+            .DistinctBy(m => m.User)
+            .ToList();
+
+        foreach (var mentor in mentors)
         {
             subjectCourse.AddMentor(mentor.User);
         }
