@@ -40,6 +40,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
     {
         var assignmentPoints = submissions
             .Where(s => s.Student.Equals(student))
+            .AsEnumerable()
             .GroupBy(s => s.Assignment)
             .Select(s => GetAssignmentPoints(s.ToArray()))
             .ToArray();
