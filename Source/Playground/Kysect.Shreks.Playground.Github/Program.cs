@@ -16,10 +16,9 @@ var shreksConfiguration = builder.Configuration.GetSection(nameof(ShreksConfigur
 shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
 
 builder.Services
+    .AddMediatR(c => c.AsSingleton(), Assembly.GetExecutingAssembly())
     .AddGithubServices(shreksConfiguration)
     .AddApplicationCommands()
-    .AddMediatR(c => c.AsSingleton(), Assembly.GetExecutingAssembly())
-    .AddCommandProcessor()
     .AddWebhookProcessors();
 
 builder.Services

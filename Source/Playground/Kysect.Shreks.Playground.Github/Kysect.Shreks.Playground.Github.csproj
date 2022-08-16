@@ -17,6 +17,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
     </ItemGroup>
 
     <ItemGroup>

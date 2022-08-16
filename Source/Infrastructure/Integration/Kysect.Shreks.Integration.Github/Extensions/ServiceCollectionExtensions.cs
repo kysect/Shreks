@@ -60,16 +60,11 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IActionNotifier, ActionNotifier>();
 
+        services.AddSingleton<GithubCommandProcessor>();
+
         return services;
     }
 
-    public static IServiceCollection AddCommandProcessor(this IServiceCollection services)
-    {
-        services.AddSingleton<GithubCommandProcessor>();
-        
-        return services;
-    }
-    
     public static IServiceCollection AddWebhookProcessors(this IServiceCollection services)
     {
         services.AddSingleton<WebhookEventProcessor, ShreksWebhookEventProcessor>();
