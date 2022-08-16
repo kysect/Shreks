@@ -18,21 +18,18 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
     private readonly IActionNotifier _actionNotifier;
     private readonly ILogger<ShreksWebhookEventProcessor> _logger;
     private readonly IShreksCommandParser _commandParser;
-    private readonly GithubCommandProcessor _commandVisitor;
     private readonly IMediator _mediator;
     private readonly IShreksDatabaseContext _databaseContext;
 
     public ShreksWebhookEventProcessor(
         IActionNotifier actionNotifier, 
         ILogger<ShreksWebhookEventProcessor> logger,
-        GithubCommandProcessor commandVisitor, 
         IShreksCommandParser commandParser, 
         IMediator mediator, 
         IShreksDatabaseContext databaseContext)
     {
         _actionNotifier = actionNotifier;
         _logger = logger;
-        _commandVisitor = commandVisitor;
         _commandParser = commandParser;
         _mediator = mediator;
         _databaseContext = databaseContext;

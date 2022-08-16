@@ -7,7 +7,7 @@ namespace Kysect.Shreks.Integration.Github.Processors;
 
 public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
-    private ICommandContextFactory _contextFactory;
+    private readonly ICommandContextFactory _contextFactory;
 
     public GithubCommandProcessor(ICommandContextFactory contextFactory)
     {
