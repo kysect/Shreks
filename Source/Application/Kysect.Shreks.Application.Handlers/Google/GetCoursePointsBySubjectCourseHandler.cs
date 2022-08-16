@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetCoursePointsBySubjectCourse;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
