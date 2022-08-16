@@ -114,7 +114,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                     if (command != null)
                     {
                         var result = await command.Process(_commandProcessor,
-                            new IssueCommentContextCreator(_mediator, issueCommentEvent, _databaseContext));
+                            new IssueCommentContextFactory(_mediator, issueCommentEvent, _databaseContext));
                         await _actionNotifier.SendComment(
                             issueCommentEvent,
                             issueCommentEvent.Issue.Number,

@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
-using Kysect.Shreks.Core.Study;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
@@ -22,10 +21,10 @@ public class RateCommand : IShreksCommand
     [Value(1, Required = false, Default = 0, MetaName = "ExtraPoints")]
     public double ExtraPoints { get; }
     
-    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor, ICommandContextCreator contextCreator) 
+    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor, ICommandContextFactory contextFactory) 
         where TResult : IShreksCommandResult
     {
-        return processor.Process(this, contextCreator);
+        return processor.Process(this, contextFactory);
     }
 
     public async Task<Guid> Execute(SubmissionContext context)

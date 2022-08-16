@@ -26,10 +26,10 @@ public class UpdateCommand : IShreksCommand
     [Option(shortName:'e', longName:"extra", Required = false)]
     public double? ExtraPoints { get; }
     
-    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor,  ICommandContextCreator contextCreator) 
+    public Task<TResult> Process<TResult>(IShreksCommandProcessor<TResult> processor,  ICommandContextFactory contextFactory) 
         where TResult : IShreksCommandResult
     {
-        return processor.Process(this, contextCreator);
+        return processor.Process(this, contextFactory);
     }
 
     public async Task<SubmissionDto> Execute(BaseContext context)

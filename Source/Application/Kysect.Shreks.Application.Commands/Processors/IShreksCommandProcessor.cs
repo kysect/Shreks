@@ -6,6 +6,6 @@ namespace Kysect.Shreks.Application.Commands.Processors;
 
 public interface IShreksCommandProcessor<TResult> where TResult : IShreksCommandResult
 {
-    Task<TResult> Process(RateCommand rateCommand, ICommandContextCreator contextCreator);
-    Task<TResult> Process(UpdateCommand updateCommand, ICommandContextCreator contextCreator);
+    Task<TResult> Process(RateCommand rateCommand, ICommandContextFactory contextFactory);
+    Task<TResult> Process(UpdateCommand updateCommand, ICommandContextFactory contextFactory);
 }
