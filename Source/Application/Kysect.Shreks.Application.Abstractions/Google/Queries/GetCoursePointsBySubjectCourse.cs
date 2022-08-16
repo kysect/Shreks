@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Kysect.Shreks.Application.Abstractions.Google.Models;
+using MediatR;
 
 namespace Kysect.Shreks.Application.Abstractions.Google.Queries;
 

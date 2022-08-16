@@ -1,15 +1,6 @@
-﻿using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.Users;
+﻿using Kysect.Shreks.Application.Abstractions.Google.Models;
 
 namespace Kysect.Shreks.Application.Abstractions.Google;
-
-public record AssignmentPoints(Assignment Assignment, DateOnly Date, double Points);
-
-public record StudentPoints(Student Student, IReadOnlyCollection<AssignmentPoints> Points);
-
-public record struct CoursePoints(IReadOnlyCollection<Assignment> Assignments, IReadOnlyCollection<StudentPoints> StudentsPoints);
-
-public record struct StudentsQueue(IReadOnlyCollection<Submission> Submissions);
 
 public interface IGoogleTableAccessor
 {

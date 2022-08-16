@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Abstractions.Google.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;

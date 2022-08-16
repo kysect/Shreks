@@ -3,6 +3,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Abstractions.Google.Models;
 using Kysect.Shreks.Application.Abstractions.Google.Queries;
 using Kysect.Shreks.Application.Handlers.Google;
 using Kysect.Shreks.Core.Formatters;

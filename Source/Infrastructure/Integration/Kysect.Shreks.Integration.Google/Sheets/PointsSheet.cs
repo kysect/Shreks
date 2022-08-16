@@ -1,7 +1,7 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
-using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Abstractions.Google.Models;
 using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Integration.Google.Factories;
