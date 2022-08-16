@@ -25,9 +25,8 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var assignments = subjectCourse.Assignments;
 
-        var submission = await _context.Submissions
-            .Where(s => assignments.Any(a => a.Equals(s.Assignment)))
-            .ToArrayAsync(cancellationToken);
+        var submission = _context.Submissions
+            .Where(s => assignments.Any(a => a.Equals(s.Assignment)));
 
         var studentPoints = subjectCourse.Groups
             .SelectMany(g => g.StudentGroup.Students.Select(s => GetStudentPoints(s, submission)))
@@ -37,7 +36,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new Response(points);
     }
 
-    private static StudentPoints GetStudentPoints(Student student, IEnumerable<Submission> submissions)
+    private static StudentPoints GetStudentPoints(Student student, IQueryable<Submission> submissions)
     {
         var assignmentPoints = submissions
             .Where(s => s.Student.Equals(student))
