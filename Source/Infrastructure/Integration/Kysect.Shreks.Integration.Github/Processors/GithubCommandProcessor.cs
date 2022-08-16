@@ -5,9 +5,9 @@ using Kysect.Shreks.Application.Commands.Result;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
 
-public class GithubCommandProcessor : IShreksCommandProcessor<BaseShreksCommandResult>
+public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
-    public async Task<BaseShreksCommandResult> Process(RateCommand rateCommand, ICommandContextFactory contextFactory)
+    public async Task<BaseShreksCommandResult> Visit(RateCommand rateCommand, ICommandContextFactory contextFactory)
     {
         try
         {
@@ -20,7 +20,7 @@ public class GithubCommandProcessor : IShreksCommandProcessor<BaseShreksCommandR
         }
     }
 
-    public async Task<BaseShreksCommandResult> Process(UpdateCommand updateCommand, ICommandContextFactory contextFactory)
+    public async Task<BaseShreksCommandResult> Visit(UpdateCommand updateCommand, ICommandContextFactory contextFactory)
     {
         try
         {
