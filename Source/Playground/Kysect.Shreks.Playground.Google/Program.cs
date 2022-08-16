@@ -55,7 +55,7 @@ IReadOnlyCollection<StudentPoints> studentPoints = studentGenerator.GeneratedEnt
     .Select(s => new StudentPoints(s, GetPoints(s, submissions)))
     .ToList();
 
-var points = new Points(assignments, studentPoints);
+var points = new CoursePoints(assignments, studentPoints);
 await googleTableAccessor.UpdatePointsAsync(points);
 
 IReadOnlyCollection<AssignmentPoints> GetPoints(Student student, IEnumerable<Submission> submissionsCollection)

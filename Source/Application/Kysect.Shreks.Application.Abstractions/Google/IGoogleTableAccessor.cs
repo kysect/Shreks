@@ -7,12 +7,12 @@ public record AssignmentPoints(Assignment Assignment, DateOnly Date, double Poin
 
 public record StudentPoints(Student Student, IReadOnlyCollection<AssignmentPoints> Points);
 
-public record struct Points(IReadOnlyCollection<Assignment> Assignments, IReadOnlyCollection<StudentPoints> StudentsPoints);
+public record struct CoursePoints(IReadOnlyCollection<Assignment> Assignments, IReadOnlyCollection<StudentPoints> StudentsPoints);
 
 public record struct StudentsQueue(IReadOnlyCollection<Submission> Submissions);
 
 public interface IGoogleTableAccessor
 {
     Task UpdateQueueAsync(StudentsQueue queue, CancellationToken token = default);
-    Task UpdatePointsAsync(Points points, CancellationToken token = default);
+    Task UpdatePointsAsync(CoursePoints points, CancellationToken token = default);
 }

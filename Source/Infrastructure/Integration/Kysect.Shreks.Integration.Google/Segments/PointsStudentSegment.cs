@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Integration.Google.Segments;
 
-public class PointsStudentSegment : SheetSegmentBase<Points, StudentPoints, Unit>
+public class PointsStudentSegment : SheetSegmentBase<CoursePoints, StudentPoints, Unit>
 {
     private readonly IStudentComponentFactory _studentComponentFactory;
 
@@ -15,9 +15,9 @@ public class PointsStudentSegment : SheetSegmentBase<Points, StudentPoints, Unit
         _studentComponentFactory = studentComponentFactory;
     }
 
-    protected override IComponent BuildHeader(Points data)
+    protected override IComponent BuildHeader(CoursePoints data)
         => _studentComponentFactory.BuildHeader();
 
-    protected override IComponent BuildRow(HeaderRowData<Points, StudentPoints> data, int rowIndex)
+    protected override IComponent BuildRow(HeaderRowData<CoursePoints, StudentPoints> data, int rowIndex)
         => _studentComponentFactory.BuildRow(data.RowData.Student);
 }
