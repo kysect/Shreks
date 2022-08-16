@@ -38,7 +38,8 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
         var subject = _subjectGenerator.GeneratedEntities[index];
 
         var subjectCourse = new SubjectCourse(subject);
-        
+        subjectCourse.AddMentor(mentor.User);
+
         subject.AddCourse(subjectCourse);
 
         return subjectCourse;
