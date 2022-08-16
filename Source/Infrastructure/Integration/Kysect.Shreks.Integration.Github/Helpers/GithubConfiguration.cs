@@ -6,7 +6,7 @@ public class GithubConfiguration : IShreksConfiguration
     public int AppIntegrationId { get; init; }
     public int ExpirationSeconds { get; init; }
     public string? Organization { get; init; }
-    public string? GithubAppSecret { get; private set; }
+    public string? GithubAppSecret { get; set; }
 
     public void SetGithubAppSecret(string githubAppSecret)
     {

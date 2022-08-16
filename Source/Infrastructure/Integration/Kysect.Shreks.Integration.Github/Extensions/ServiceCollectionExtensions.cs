@@ -60,13 +60,8 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IActionNotifier, ActionNotifier>();
 
-        return services;
-    }
-
-    public static IServiceCollection AddWebhookProcessors(this IServiceCollection services)
-    {
         services.AddSingleton<WebhookEventProcessor, ShreksWebhookEventProcessor>();
-
+        
         return services;
     }
 }
