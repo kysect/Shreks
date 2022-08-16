@@ -25,11 +25,6 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 
     protected override SubjectCourse Generate(int index)
     {
-        var mentorCount = _mentorGenerator.GeneratedEntities.Count;
-        var mentorNumber = _faker.Random.Number(0, mentorCount - 1);
-
-        var mentor = _mentorGenerator.GeneratedEntities[mentorNumber];
-        
         var subjectCount = _subjectGenerator.GeneratedEntities.Count;
 
         if (index >= subjectCount)
@@ -38,7 +33,11 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
         var subject = _subjectGenerator.GeneratedEntities[index];
 
         var subjectCourse = new SubjectCourse(subject);
-        subjectCourse.AddMentor(mentor.User);
+
+        foreach (var mentor in _faker.Random.ListItems(_mentorGenerator.GeneratedEntities.ToList()))
+        {
+            subjectCourse.AddMentor(mentor.User);
+        }
 
         subject.AddCourse(subjectCourse);
 
