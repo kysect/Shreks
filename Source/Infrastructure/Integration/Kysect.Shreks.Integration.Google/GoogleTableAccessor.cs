@@ -15,9 +15,9 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         _queueSheet = queueSheet;
     }
 
-    public Task UpdatePointsAsync(CoursePoints points, CancellationToken token = default)
-        => _pointsSheet.UpdateAsync(points, token);
+    public Task UpdatePointsAsync(string spreadsheetId, CoursePoints points, CancellationToken token = default)
+        => _pointsSheet.UpdateAsync(spreadsheetId, points, token);
 
-    public Task UpdateQueueAsync(StudentsQueue queue, CancellationToken token = default)
-        => _queueSheet.UpdateAsync(queue, token);
+    public Task UpdateQueueAsync(string spreadsheetId, StudentsQueue queue, CancellationToken token = default)
+        => _queueSheet.UpdateAsync(spreadsheetId, queue, token);
 }

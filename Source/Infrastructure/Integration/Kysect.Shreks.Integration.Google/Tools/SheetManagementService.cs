@@ -1,6 +1,5 @@
 ﻿using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
-using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
@@ -10,34 +9,32 @@ public class SheetManagementService : ISheetManagementService
     private const string AllFields = "*";
 
     private readonly SheetsService _sheetsService;
-    private readonly ISpreadsheetIdProvider _spreadsheetIdProvider;
 
-    public SheetManagementService(SheetsService sheetsService, ISpreadsheetIdProvider spreadsheetIdProvider)
+    public SheetManagementService(SheetsService sheetsService)
     {
         _sheetsService = sheetsService;
-        _spreadsheetIdProvider = spreadsheetIdProvider;
     }
 
-    public async Task CreateOrClearSheetAsync(ISheet sheet, CancellationToken token)
+    public async Task CreateOrClearSheetAsync(string spreadsheetId, ISheet sheet, CancellationToken token)
     {
         ArgumentNullException.ThrowIfNull(sheet);
 
-        bool sheetExists = await CheckSheetExistsAsync(sheet.Title, token);
+        bool sheetExists = await CheckSheetExistsAsync(spreadsheetId, sheet.Title, token);
 
         if (sheetExists)
         {
-            await ClearSheetAsync(sheet.Id, token);
+            await ClearSheetAsync(spreadsheetId, sheet.Id, token);
         }
         else
         {
-            await CreateSheetAsync(sheet, token);
+            await CreateSheetAsync(spreadsheetId, sheet, token);
         }
     }
 
-    private async Task<bool> CheckSheetExistsAsync(string title, CancellationToken token)
+    private async Task<bool> CheckSheetExistsAsync(string spreadsheetId, string title, CancellationToken token)
     {
         Spreadsheet spreadSheet = await _sheetsService.Spreadsheets
-            .Get(_spreadsheetIdProvider.GetSpreadsheetId())
+            .Get(spreadsheetId)
             .ExecuteAsync(token);
 
         Sheet? sheet = spreadSheet.Sheets.FirstOrDefault(s => s.Properties.Title == title);
@@ -45,7 +42,7 @@ public class SheetManagementService : ISheetManagementService
         return sheet is not null;
     }
 
-    private async Task CreateSheetAsync(ISheet sheet, CancellationToken token)
+    private async Task CreateSheetAsync(string spreadsheetId, ISheet sheet, CancellationToken token)
     {
         var addSheetRequest = new Request
         {
@@ -59,10 +56,10 @@ public class SheetManagementService : ISheetManagementService
             }
         };
 
-        await ExecuteBatchUpdateAsync(addSheetRequest, token);
+        await ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
     }
 
-    private async Task ClearSheetAsync(int sheetId, CancellationToken token)
+    private async Task ClearSheetAsync(string spreadsheetId, int sheetId, CancellationToken token)
     {
         var allFieldsGridRange = new GridRange
         {
@@ -94,18 +91,18 @@ public class SheetManagementService : ISheetManagementService
             unmergeCellsRequest
         };
 
-        await ExecuteBatchUpdateAsync(requests, token);
+        await ExecuteBatchUpdateAsync(spreadsheetId, requests, token);
     }
 
-    private Task ExecuteBatchUpdateAsync(Request request, CancellationToken token)
-        => ExecuteBatchUpdateAsync(new[] { request }, token);
+    private Task ExecuteBatchUpdateAsync(string spreadsheetId, Request request, CancellationToken token)
+        => ExecuteBatchUpdateAsync(spreadsheetId, new[] { request }, token);
 
-    private async Task ExecuteBatchUpdateAsync(IList<Request> requests, CancellationToken token)
+    private async Task ExecuteBatchUpdateAsync(string spreadsheetId, IList<Request> requests, CancellationToken token)
     {
         var batchUpdateRequest = new BatchUpdateSpreadsheetRequest { Requests = requests };
 
         await _sheetsService.Spreadsheets
-            .BatchUpdate(batchUpdateRequest, _spreadsheetIdProvider.GetSpreadsheetId())
+            .BatchUpdate(batchUpdateRequest, spreadsheetId)
             .ExecuteAsync(token);
     }
 }

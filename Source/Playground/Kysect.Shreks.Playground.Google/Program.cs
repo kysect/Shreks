@@ -27,14 +27,11 @@ var initializer = new BaseClientService.Initializer
 
 var sheetsService = new SheetsService(initializer);
 
-const string spreadSheetId = "";
-
-var spreadsheetIdProvider = new ConstSpreadsheetIdProvider(spreadSheetId);
+const string spreadsheetId = "";
 
 IServiceProvider services = new ServiceCollection()
     .AddGoogleIntegration()
     .AddSingleton(sheetsService)
-    .AddSingleton<ISpreadsheetIdProvider>(spreadsheetIdProvider)
     .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
     .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
     .AddEntityGenerators(o => o
@@ -44,7 +41,7 @@ IServiceProvider services = new ServiceCollection()
         .ConfigureFaker(f => f.Locale = "ru"))
     .AddDatabaseContext(o => o
         .UseLazyLoadingProxies()
-        .UseInMemoryDatabase($"Data Source=playground.db"))
+        .UseInMemoryDatabase("Data Source=playground.db"))
     .AddDatabaseSeeders()
     .BuildServiceProvider();
 
@@ -62,10 +59,10 @@ IReadOnlyCollection<Submission> submissions = services
     .ListItems(submissionGenerator.GeneratedEntities.ToArray());
 
 var queue = new StudentsQueue(submissions);
-await googleTableAccessor.UpdateQueueAsync(queue);
+await googleTableAccessor.UpdateQueueAsync(spreadsheetId, queue);
 
 var coursePointsHandler = new GetCoursePointsBySubjectCourseHandler(databaseContext);
 var coursePointsQuery = new GetCoursePointsBySubjectCourse.Query(databaseContext.SubjectCourses.First().Id);
 var points = await coursePointsHandler.Handle(coursePointsQuery, default);
     
-await googleTableAccessor.UpdatePointsAsync(points.Points);
+await googleTableAccessor.UpdatePointsAsync(spreadsheetId, points.Points);
