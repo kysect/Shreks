@@ -1,3 +1,4 @@
+using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Study;
@@ -9,10 +10,12 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 public class CreateSubmissionHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly IMapper _mapper;
 
-    public CreateSubmissionHandler(IShreksDatabaseContext context)
+    public CreateSubmissionHandler(IShreksDatabaseContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -24,6 +27,8 @@ public class CreateSubmissionHandler : IRequestHandler<Command, Response>
         await _context.Submissions.AddAsync(submission, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new Response(submission.ToDto());
+        var dto = _mapper.Map<SubmissionDto>(submission);
+
+        return new Response(dto);
     }
 }
