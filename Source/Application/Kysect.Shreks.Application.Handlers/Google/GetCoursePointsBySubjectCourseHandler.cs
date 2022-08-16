@@ -23,7 +23,11 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
-        var submission = await _context.Submissions.ToArrayAsync(cancellationToken);
+        var assignments = subjectCourse.Assignments;
+
+        var submission = await _context.Submissions
+            .Where(s => assignments.Any(a => a.Equals(s.Assignment)))
+            .ToArrayAsync(cancellationToken);
 
         var studentPoints = subjectCourse.Groups
             .SelectMany(g => g.StudentGroup.Students.Select(s => GetStudentPoints(s, submission)))
@@ -38,17 +42,17 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         var assignmentPoints = submissions
             .Where(s => s.Student.Equals(student))
             .GroupBy(s => s.Assignment)
-            .Select(s => s.MaxBy(sub => sub.SubmissionDateTime)!)
-            .Select(GetAssignmentPoints)
+            .Select(s => GetAssignmentPoints(s.ToArray()))
             .ToArray();
 
         return new StudentPoints(student, assignmentPoints);
     }
 
-    private static AssignmentPoints GetAssignmentPoints(Submission submission)
+    private static AssignmentPoints GetAssignmentPoints(IEnumerable<Submission> submissions)
     {
+        var submission = submissions.Last();
+        //TODO: add deadlines usage instead of .Last
         var points = submission.Points;
-        //TODO: add deadlines usage
 
         var submissionDate = DateOnly.FromDateTime(submission.SubmissionDateTime);
         return new AssignmentPoints(submission.Assignment, submissionDate, points);
