@@ -19,7 +19,7 @@ public class IssueCommentContextFactory : ICommandContextFactory
         _databaseContext = databaseContext;
     }
 
-    public async Task<BaseContext> CreateBaseContext(CancellationToken cancellationToken)
+    public async Task<BaseContext> CreateBaseContext()
     {
         var login = _event.Sender!.Login; //user is always present in this event
         var query = new GetUserByUsername.Query(login);
@@ -28,7 +28,7 @@ public class IssueCommentContextFactory : ICommandContextFactory
         return new BaseContext(_mediator, issuer, cancellationToken);
     }
 
-    public Task<SubmissionContext> CreateSubmissionContext(CancellationToken cancellationToken)
+    public Task<SubmissionContext> CreateSubmissionContext()
     {
         //TODO: need pr -> submission query
         throw new NotImplementedException();

@@ -7,7 +7,7 @@ using Kysect.Shreks.Application.Commands.Result;
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/rate", aliases: new []{"/assess", "/gachi-rate"})]
-public class RateCommand : IShreksCommand
+public class RateCommand : IShreksCommand<SubmissionContext, Guid>
 {
     public RateCommand(double ratingPercent, double? extraPoints)
     {
@@ -21,10 +21,10 @@ public class RateCommand : IShreksCommand
     [Value(1, Required = false, Default = 0.0, MetaName = "ExtraPoints")]
     public double? ExtraPoints { get; }
     
-    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor, CancellationToken cancellationToken) 
+    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor) 
         where TResult : IShreksCommandResult
     {
-        return visitor.Visit(this, cancellationToken);
+        return visitor.Visit(this);
     }
 
     public async Task<Guid> ExecuteAsync(SubmissionContext context)

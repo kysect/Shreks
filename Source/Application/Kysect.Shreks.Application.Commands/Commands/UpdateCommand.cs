@@ -8,7 +8,7 @@ using Kysect.Shreks.Application.Dto.Study;
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/update")]
-public class UpdateCommand : IShreksCommand
+public class UpdateCommand : IShreksCommand<BaseContext, SubmissionDto>
 {
     public UpdateCommand(string submissionId, double? ratingPercent, double? extraPoints)
     {
@@ -26,10 +26,10 @@ public class UpdateCommand : IShreksCommand
     [Option(shortName:'e', longName:"extra", Required = false)]
     public double? ExtraPoints { get; }
     
-    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor, CancellationToken cancellationToken) 
+    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor) 
         where TResult : IShreksCommandResult
     {
-        return visitor.Visit(this, cancellationToken);
+        return visitor.Visit(this);
     }
 
     public async Task<SubmissionDto> ExecuteAsync(BaseContext context)

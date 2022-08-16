@@ -8,17 +8,19 @@ namespace Kysect.Shreks.Integration.Github.Processors;
 public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
     private readonly ICommandContextFactory _contextFactory;
+    private readonly CancellationToken _cancellationToken;
 
-    public GithubCommandProcessor(ICommandContextFactory contextFactory)
+    public GithubCommandProcessor(ICommandContextFactory contextFactory, CancellationToken cancellationToken)
     {
         _contextFactory = contextFactory;
+        _cancellationToken = cancellationToken;
     }
 
-    public async Task<BaseShreksCommandResult> Visit(RateCommand rateCommand, CancellationToken cancellationToken)
+    public async Task<BaseShreksCommandResult> Visit(RateCommand rateCommand)
     {
         try
         {
-            var context = await _contextFactory.CreateSubmissionContext(cancellationToken);
+            var context = await _contextFactory.CreateSubmissionContext();
             var submissionId = await rateCommand.ExecuteAsync(context);
             return new BaseShreksCommandResult(true, $"Created submission with id {submissionId}");
         }
@@ -28,12 +30,11 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
     }
 
-    public async Task<BaseShreksCommandResult> Visit(UpdateCommand updateCommand,
-        CancellationToken cancellationToken)
+    public async Task<BaseShreksCommandResult> Visit(UpdateCommand updateCommand)
     {
         try
         {
-            var context = await _contextFactory.CreateBaseContext(cancellationToken);
+            var context = await _contextFactory.CreateBaseContext();
             var submissionDto = await updateCommand.ExecuteAsync(context);
             return new BaseShreksCommandResult(true, 
                 $"Updated submission - " +

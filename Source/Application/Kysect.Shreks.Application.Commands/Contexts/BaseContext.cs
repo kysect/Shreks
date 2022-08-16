@@ -8,6 +8,7 @@ public class BaseContext
     public IMediator Mediator { get; }
     
     public CancellationToken CancellationToken { get; }
+    
     public User Issuer { get; }
 
     public BaseContext(IMediator mediator, User issuer, CancellationToken cancellationToken)

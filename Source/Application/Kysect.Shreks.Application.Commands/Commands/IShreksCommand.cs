@@ -5,6 +5,5 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 
 public interface IShreksCommand
 {
-    Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor, CancellationToken cancellationToken)
-        where TResult : IShreksCommandResult;
+    Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor) where TResult : IShreksCommandResult;
 }
