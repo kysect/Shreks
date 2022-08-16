@@ -7,7 +7,7 @@ using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetCoursePoin
 
 namespace Kysect.Shreks.Tests.Application;
 
-public class GoogleWorkerTest : ApplicationTestBase
+public class CoursePointsHandlerTest : ApplicationTestBase
 {
     [Fact]
     public async Task GetCoursePointsForSubjectId_NoExceptionThrown()
