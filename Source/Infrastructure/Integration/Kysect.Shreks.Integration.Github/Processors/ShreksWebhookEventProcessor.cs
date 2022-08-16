@@ -114,9 +114,10 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                     if (comment.FirstOrDefault() == '/')
                     {
                         IShreksCommand command = _commandParser.Parse(comment);
-                        var result = await command.Accept(_commandVisitor,
-                            new IssueCommentContextFactory(_mediator, issueCommentEvent, _databaseContext), 
-                            CancellationToken.None);
+                        var contextCreator = new IssueCommentContextFactory(_mediator, issueCommentEvent,
+                            _databaseContext);
+                        var processor = new GithubCommandProcessor(contextCreator);
+                        var result = await command.Accept(processor, CancellationToken.None);
                         await _actionNotifier.SendComment(
                             issueCommentEvent,
                             issueCommentEvent.Issue.Number,

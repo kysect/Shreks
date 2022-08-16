@@ -26,11 +26,10 @@ public class UpdateCommand : IShreksCommand
     [Option(shortName:'e', longName:"extra", Required = false)]
     public double? ExtraPoints { get; }
     
-    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor, ICommandContextFactory contextFactory,
-        CancellationToken cancellationToken) 
+    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor, CancellationToken cancellationToken) 
         where TResult : IShreksCommandResult
     {
-        return visitor.Visit(this, contextFactory, cancellationToken);
+        return visitor.Visit(this, cancellationToken);
     }
 
     public async Task<SubmissionDto> ExecuteAsync(BaseContext context)

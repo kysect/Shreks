@@ -17,9 +17,8 @@ shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verif
 
 builder.Services
     .AddMediatR(c => c.AsSingleton(), Assembly.GetExecutingAssembly())
-    .AddGithubServices(shreksConfiguration)
     .AddApplicationCommands()
-    .AddWebhookProcessors();
+    .AddGithubServices(shreksConfiguration);
 
 builder.Services
     .AddLogging(logBuilder => logBuilder.AddSerilog());

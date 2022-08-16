@@ -7,12 +7,19 @@ namespace Kysect.Shreks.Integration.Github.Processors;
 
 public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
-    public async Task<BaseShreksCommandResult> Visit(RateCommand rateCommand, ICommandContextFactory contextFactory,
-        CancellationToken cancellationToken)
+    private ICommandContextFactory _contextFactory;
+
+    public GithubCommandProcessor(ICommandContextFactory contextFactory)
+    {
+        _contextFactory = contextFactory;
+    }
+
+    public async Task<BaseShreksCommandResult> Visit(RateCommand rateCommand, CancellationToken cancellationToken)
     {
         try
         {
-            var submissionId = await rateCommand.ExecuteAsync(await contextFactory.CreateSubmissionContext(cancellationToken));
+            var context = await _contextFactory.CreateSubmissionContext(cancellationToken);
+            var submissionId = await rateCommand.ExecuteAsync(context);
             return new BaseShreksCommandResult(true, $"Created submission with id {submissionId}");
         }
         catch(Exception e) //TODO: catch different exceptions and write better messages
@@ -21,12 +28,12 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
     }
 
-    public async Task<BaseShreksCommandResult> Visit(UpdateCommand updateCommand, ICommandContextFactory contextFactory,
+    public async Task<BaseShreksCommandResult> Visit(UpdateCommand updateCommand,
         CancellationToken cancellationToken)
     {
         try
         {
-            var context = await contextFactory.CreateBaseContext(cancellationToken);
+            var context = await _contextFactory.CreateBaseContext(cancellationToken);
             var submissionDto = await updateCommand.ExecuteAsync(context);
             return new BaseShreksCommandResult(true, 
                 $"Updated submission - " +
