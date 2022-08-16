@@ -20,8 +20,8 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            var context = await _contextFactory.CreateSubmissionContext();
-            var submissionId = await rateCommand.ExecuteAsync(context);
+            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
+            var submissionId = await rateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Created submission with id {submissionId}");
         }
         catch(Exception e) //TODO: catch different exceptions and write better messages
@@ -34,8 +34,8 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            var context = await _contextFactory.CreateBaseContext();
-            var submissionDto = await updateCommand.ExecuteAsync(context);
+            var context = await _contextFactory.CreateBaseContext(_cancellationToken);
+            var submissionDto = await updateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, 
                 $"Updated submission - " +
                 $"points: {submissionDto.Points}, " +

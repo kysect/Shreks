@@ -6,15 +6,11 @@ namespace Kysect.Shreks.Application.Commands.Contexts;
 public class BaseContext
 {
     public IMediator Mediator { get; }
-    
-    public CancellationToken CancellationToken { get; }
-    
     public User Issuer { get; }
 
-    public BaseContext(IMediator mediator, User issuer, CancellationToken cancellationToken)
+    public BaseContext(IMediator mediator, User issuer)
     {
         Mediator = mediator;
         Issuer = issuer;
-        CancellationToken = cancellationToken;
     }
 }

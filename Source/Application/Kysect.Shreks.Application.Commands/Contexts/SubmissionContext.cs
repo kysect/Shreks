@@ -8,8 +8,8 @@ public class SubmissionContext : BaseContext
 {
     public Submission Submission { get; }
 
-    public SubmissionContext(Mediator mediator, User issuer, Submission submission, CancellationToken cancellationToken) 
-        : base(mediator, issuer, cancellationToken)
+    public SubmissionContext(Mediator mediator, User issuer, Submission submission) 
+        : base(mediator, issuer)
     {
         Submission = submission;
     }

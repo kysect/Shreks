@@ -32,14 +32,14 @@ public class UpdateCommand : IShreksCommand<BaseContext, SubmissionDto>
         return visitor.Visit(this);
     }
 
-    public async Task<SubmissionDto> ExecuteAsync(BaseContext context)
+    public async Task<SubmissionDto> ExecuteAsync(BaseContext context, CancellationToken cancellationToken)
     {
         Guid submissionId = Guid.Parse(SubmissionId);
         SubmissionDto submissionDto = null!;
         if (RatingPercent.HasValue)
         {
              var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent.Value);
-             var response = await context.Mediator.Send(command, context.CancellationToken);
+             var response = await context.Mediator.Send(command, cancellationToken);
              submissionDto = response.Submission;
         }
 
