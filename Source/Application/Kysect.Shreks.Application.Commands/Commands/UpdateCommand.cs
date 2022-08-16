@@ -38,8 +38,8 @@ public class UpdateCommand : IShreksCommand
         SubmissionDto submissionDto = null!;
         if (RatingPercent.HasValue)
         {
-             var response = await context.Mediator.Send(new UpdateSubmissionPoints.Command(submissionId, 
-                 RatingPercent.Value));
+             var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent.Value);
+             var response = await context.Mediator.Send(command);
              submissionDto = response.Submission;
         }
 
