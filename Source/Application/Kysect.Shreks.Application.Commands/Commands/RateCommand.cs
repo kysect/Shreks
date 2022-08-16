@@ -30,10 +30,12 @@ public class RateCommand : IShreksCommand
 
     public async Task<Guid> Execute(SubmissionContext context)
     {
-        Submission submission = context.Submission;
+        var submissionId = context.Submission.Id;
+        var maxPoints = context.Submission.Assignment.MaxPoints;
+        var points = RatingPercent / 100 * maxPoints;
+        var command = new UpdateSubmissionPoints.Command(submissionId, points);
         //TODO: add update extra points command or add extra points to this command
-        var respone = await context.Mediator.Send(new UpdateSubmissionPoints.Command(submission.Id, 
-            RatingPercent / 100 * submission.Assignment.MaxPoints));
+        var respone = await context.Mediator.Send(command);
         return respone.Submission.Id;
     }
 }
