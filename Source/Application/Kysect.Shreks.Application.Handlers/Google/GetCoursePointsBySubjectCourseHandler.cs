@@ -19,6 +19,8 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
         var submission = await _context.Submissions.ToArrayAsync(cancellationToken);
