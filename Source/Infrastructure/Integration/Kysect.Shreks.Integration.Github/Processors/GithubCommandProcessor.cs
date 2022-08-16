@@ -7,11 +7,12 @@ namespace Kysect.Shreks.Integration.Github.Processors;
 
 public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
-    public async Task<BaseShreksCommandResult> Visit(RateCommand rateCommand, ICommandContextFactory contextFactory)
+    public async Task<BaseShreksCommandResult> Visit(RateCommand rateCommand, ICommandContextFactory contextFactory,
+        CancellationToken cancellationToken)
     {
         try
         {
-            var submissionId = await rateCommand.Execute(await contextFactory.CreateSubmissionContext());
+            var submissionId = await rateCommand.ExecuteAsync(await contextFactory.CreateSubmissionContext(cancellationToken));
             return new BaseShreksCommandResult(true, $"Created submission with id {submissionId}");
         }
         catch(Exception e) //TODO: catch different exceptions and write better messages
@@ -20,11 +21,13 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
     }
 
-    public async Task<BaseShreksCommandResult> Visit(UpdateCommand updateCommand, ICommandContextFactory contextFactory)
+    public async Task<BaseShreksCommandResult> Visit(UpdateCommand updateCommand, ICommandContextFactory contextFactory,
+        CancellationToken cancellationToken)
     {
         try
         {
-            var submissionDto = await updateCommand.Execute(await contextFactory.CreateBaseContext());
+            var context = await contextFactory.CreateBaseContext(cancellationToken);
+            var submissionDto = await updateCommand.ExecuteAsync(context);
             return new BaseShreksCommandResult(true, 
                 $"Updated submission - " +
                 $"points: {submissionDto.Points}, " +

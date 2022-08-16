@@ -6,6 +6,8 @@ namespace Kysect.Shreks.Application.Commands.Processors;
 
 public interface IShreksCommandVisitor<TResult> where TResult : IShreksCommandResult
 {
-    Task<TResult> Visit(RateCommand rateCommand, ICommandContextFactory contextFactory);
-    Task<TResult> Visit(UpdateCommand updateCommand, ICommandContextFactory contextFactory);
+    Task<TResult> Visit(RateCommand rateCommand, ICommandContextFactory contextFactory, 
+        CancellationToken cancellationToken);
+    Task<TResult> Visit(UpdateCommand updateCommand, ICommandContextFactory contextFactory,
+        CancellationToken cancellationToken);
 }

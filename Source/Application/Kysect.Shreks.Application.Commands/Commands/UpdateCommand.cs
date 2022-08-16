@@ -26,20 +26,21 @@ public class UpdateCommand : IShreksCommand
     [Option(shortName:'e', longName:"extra", Required = false)]
     public double? ExtraPoints { get; }
     
-    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor,  ICommandContextFactory contextFactory) 
+    public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor, ICommandContextFactory contextFactory,
+        CancellationToken cancellationToken) 
         where TResult : IShreksCommandResult
     {
-        return visitor.Visit(this, contextFactory);
+        return visitor.Visit(this, contextFactory, cancellationToken);
     }
 
-    public async Task<SubmissionDto> Execute(BaseContext context)
+    public async Task<SubmissionDto> ExecuteAsync(BaseContext context)
     {
         Guid submissionId = Guid.Parse(SubmissionId);
         SubmissionDto submissionDto = null!;
         if (RatingPercent.HasValue)
         {
              var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent.Value);
-             var response = await context.Mediator.Send(command);
+             var response = await context.Mediator.Send(command, context.CancellationToken);
              submissionDto = response.Submission;
         }
 
