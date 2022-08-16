@@ -23,9 +23,9 @@ public class IssueCommentContextFactory : ICommandContextFactory
     {
         var login = _event.Sender!.Login; //user is always present in this event
         var query = new GetUserByUsername.Query(login);
-        var response = await _mediator.Send(query);
-        var issuer = await _databaseContext.Users.GetByIdAsync(response.UserId);
-        return new BaseContext(_mediator, cancellationToken, issuer);
+        var response = await _mediator.Send(query, cancellationToken);
+        var issuer = await _databaseContext.Users.GetByIdAsync(response.UserId, cancellationToken);
+        return new BaseContext(_mediator, issuer, cancellationToken);
     }
 
     public Task<SubmissionContext> CreateSubmissionContext(CancellationToken cancellationToken)
