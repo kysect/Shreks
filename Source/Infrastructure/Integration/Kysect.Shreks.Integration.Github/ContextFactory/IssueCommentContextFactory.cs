@@ -4,7 +4,7 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using MediatR;
 using Octokit.Webhooks.Events;
 
-namespace Kysect.Shreks.Integration.Github.ContextCreators;
+namespace Kysect.Shreks.Integration.Github.ContextFactory;
 
 public class IssueCommentContextFactory : ICommandContextFactory
 {

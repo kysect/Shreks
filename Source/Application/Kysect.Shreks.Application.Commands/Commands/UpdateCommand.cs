@@ -10,7 +10,7 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 [Verb("/update")]
 public class UpdateCommand : IShreksCommand
 {
-    public UpdateCommand(string submissionId, int? ratingPercent, int? extraPoints)
+    public UpdateCommand(string submissionId, double? ratingPercent, double? extraPoints)
     {
         SubmissionId = submissionId;
         RatingPercent = ratingPercent;

@@ -9,7 +9,7 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 [Verb("/rate", aliases: new []{"/assess", "/gachi-rate"})]
 public class RateCommand : IShreksCommand
 {
-    public RateCommand(int ratingPercent, int extraPoints)
+    public RateCommand(double ratingPercent, double? extraPoints)
     {
         RatingPercent = ratingPercent;
         ExtraPoints = extraPoints;
@@ -18,8 +18,8 @@ public class RateCommand : IShreksCommand
     [Value(0, Required = true, MetaName = "RatingPercent")]
     public double RatingPercent { get; }
     
-    [Value(1, Required = false, Default = 0, MetaName = "ExtraPoints")]
-    public double ExtraPoints { get; }
+    [Value(1, Required = false, Default = 0.0, MetaName = "ExtraPoints")]
+    public double? ExtraPoints { get; }
     
     public Task<TResult> Accept<TResult>(IShreksCommandVisitor<TResult> visitor, ICommandContextFactory contextFactory) 
         where TResult : IShreksCommandResult

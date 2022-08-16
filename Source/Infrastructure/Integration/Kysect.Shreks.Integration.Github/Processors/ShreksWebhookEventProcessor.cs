@@ -1,6 +1,6 @@
 using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Application.Commands.Commands;
-using Kysect.Shreks.Integration.Github.ContextCreators;
+using Kysect.Shreks.Integration.Github.ContextFactory;
 using Kysect.Shreks.Integration.Github.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -111,7 +111,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 try
                 {
                     var comment = issueCommentEvent.Comment.Body;
-                    if (comment.FirstOrDefault() != '/')
+                    if (comment.FirstOrDefault() == '/')
                     {
                         IShreksCommand command = _commandParser.Parse(comment);
                         var result = await command.Accept(_commandVisitor,
