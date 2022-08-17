@@ -3,8 +3,12 @@ using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog(
+    (ctx, lc) => lc.MinimumLevel.Verbose().WriteTo.Console());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -34,5 +38,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseSerilogRequestLogging();
 
 app.Run();
