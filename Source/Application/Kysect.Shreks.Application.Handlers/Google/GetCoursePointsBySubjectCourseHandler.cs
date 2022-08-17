@@ -53,7 +53,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         //TODO: add deadlines usage instead of .Last
         var points = submission.Points;
 
-        var submissionDate = DateOnly.FromDateTime(submission.SubmissionDateTime);
+        var submissionDate = submission.SubmissionDateTime;
         return new AssignmentPoints(submission.Assignment, submissionDate, points);
     }
 }
