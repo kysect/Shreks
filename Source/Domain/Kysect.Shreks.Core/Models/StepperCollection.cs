@@ -13,7 +13,7 @@ public readonly record struct StepperCollection<T>
 
     public T Current => _collection[_index];
 
-    public bool AtEnd => _index == _collection.Count - 1;
+    public bool IsAtEnd => _index == _collection.Count - 1;
 
     public StepperCollection<T> Next()
     {

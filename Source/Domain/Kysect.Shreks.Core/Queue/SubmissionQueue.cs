@@ -79,7 +79,7 @@ public partial class SubmissionQueue : IEntity<Guid>
             _ => throw new ArgumentOutOfRangeException(nameof(evaluator.SortingOrder)),
         };
 
-        if (evaluators.AtEnd)
+        if (evaluators.IsAtEnd)
             return orderedGroupings.SelectMany(x => x);
 
         StepperCollection<ISubmissionEvaluator> next = evaluators.Next();
