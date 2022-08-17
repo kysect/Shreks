@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -12,6 +13,9 @@ public class SubmissionTest : DataAccessTestBase
 
     public SubmissionTest()
     {
+        var studentGenerator = Provider.GetRequiredService<IEntityGenerator<Student>>();
+        var _ = studentGenerator.GeneratedEntities;
+
         _submissionGenerator = Provider.GetRequiredService<IEntityGenerator<Submission>>();
     }
 

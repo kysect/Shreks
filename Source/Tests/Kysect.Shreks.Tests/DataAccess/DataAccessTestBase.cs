@@ -1,3 +1,5 @@
+using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
@@ -16,12 +18,14 @@ public abstract class DataAccessTestBase : IDisposable
         var collection = new ServiceCollection();
         var id = Guid.NewGuid();
 
-        collection.AddDatabaseContext(x =>
-        {
-            x.UseLazyLoadingProxies().UseSqlite($"Data Source={id}.db");
-        });
+        collection.AddDatabaseContext(x => { x.UseLazyLoadingProxies().UseSqlite($"Data Source={id}.db"); });
 
-        collection.AddEntityGenerators();
+        collection.AddEntityGenerators(x =>
+        {
+            x.ConfigureEntityGenerator<StudentGroup>(xx => { xx.Count = 10; });
+
+            x.ConfigureEntityGenerator<Student>(xx => { xx.Count = 30; });
+        });
 
         Provider = collection.BuildServiceProvider();
 
