@@ -1,6 +1,6 @@
 namespace Kysect.Shreks.Core.Models;
 
-public readonly struct StepperCollection<T>
+public readonly record struct StepperCollection<T>
 {
     private readonly IReadOnlyList<T> _collection;
     private readonly int _index;
@@ -12,13 +12,13 @@ public readonly struct StepperCollection<T>
     }
 
     public T Current => _collection[_index];
-    
+
     public bool AtEnd => _index == _collection.Count - 1;
 
     public StepperCollection<T> Next()
     {
         if (_index == _collection.Count - 1)
-            throw new IndexOutOfRangeException("StepperCollection is at the end of the collection");
+            throw new ArgumentOutOfRangeException(nameof(_index), "StepperCollection is at the end of the collection");
 
         return new StepperCollection<T>(_collection, _index + 1);
     }
