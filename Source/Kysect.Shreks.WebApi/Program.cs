@@ -16,18 +16,20 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHandlers();
 builder.Services.AddDatabaseContext(
-    opt => opt.UseInMemoryDatabase("ShreksDb").UseLazyLoadingProxies());
+    opt => opt.UseSqlite("Filename=shreks.db").UseLazyLoadingProxies());
 builder.Services.AddMappingConfiguration();
 
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDatabaseSeeders();
+    builder.Services.AddEntityGenerators();
 }
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    await app.Services.UseDatabaseSeeders();
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
