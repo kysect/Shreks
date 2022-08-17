@@ -1,6 +1,7 @@
 using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Abstractions.Submissions.Queries.GetSubmissionDeadline;
@@ -21,8 +22,11 @@ public class GetSubmissionDeadlineHandler : IRequestHandler<Query, Response>
         IQueryable<Submission> submissionQuery = _context.Submissions
             .Where(x => x.Id.Equals(request.SubmissionId));
 
+        IQueryable<Student> studentsQuery = submissionQuery
+            .Select(x => x.Student);
+
         IQueryable<StudentGroup> groupQuery = _context.StudentGroups
-            .Where(x => x.Students.Any(s => submissionQuery.Any(ss => ss.Student.Equals(s))));
+            .Where(x => x.Students.Any(xx => studentsQuery.Contains(xx)));
 
         IQueryable<Assignment> assignmentQuery = submissionQuery
             .Select(x => x.Assignment);
