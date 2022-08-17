@@ -11,24 +11,22 @@ public class SubmissionGenerator : EntityGeneratorBase<Submission>
     private const float ChangeOfHavingExtraPoints = 0.1f;
 
     private readonly Faker _faker;
-    private readonly IEntityGenerator<Student> _studentGenerator;
-    private readonly IEntityGenerator<Assignment> _assignmentGenerator;
+    private readonly IEntityGenerator<GroupAssignment> _groupAssignmentGenerator;
 
     public SubmissionGenerator(
         EntityGeneratorOptions<Submission> options,
-        IEntityGenerator<Student> studentGenerator,
-        IEntityGenerator<Assignment> assignmentGenerator,
-        Faker faker) : base(options)
+        Faker faker,
+        IEntityGenerator<GroupAssignment> groupAssignmentGenerator) : base(options)
     {
         _faker = faker;
-        _assignmentGenerator = assignmentGenerator;
-        _studentGenerator = studentGenerator;
+        _groupAssignmentGenerator = groupAssignmentGenerator;
     }
 
     protected override Submission Generate(int index)
     {
-        var assignment = _faker.PickRandom<Assignment>(_assignmentGenerator.GeneratedEntities);
-        var student = _faker.PickRandom<Student>(_studentGenerator.GeneratedEntities);
+        var groupAssignment = _faker.PickRandom<GroupAssignment>(_groupAssignmentGenerator.GeneratedEntities);
+        var assignment = groupAssignment.Assignment;
+        var student = _faker.PickRandom<Student>(groupAssignment.Group.Students);
 
         var submission = new Submission
         (
