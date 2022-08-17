@@ -17,6 +17,7 @@ public partial class GroupQueueFilter : QueueFilter
         IQueueFilterVisitor<T> visitor,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(visitor);
         return visitor.VisitAsync(value, this, cancellationToken);
     }
 }

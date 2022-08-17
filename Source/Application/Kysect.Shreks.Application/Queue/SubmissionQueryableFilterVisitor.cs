@@ -11,6 +11,8 @@ public class SubmissionQueryableFilterVisitor : IQueueFilterVisitor<IQueryable<S
         GroupQueueFilter filter,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(filter);
+
         value = value.Where(x => filter.Groups.Contains(x.Student.Group));
         return ValueTask.FromResult(value);
     }

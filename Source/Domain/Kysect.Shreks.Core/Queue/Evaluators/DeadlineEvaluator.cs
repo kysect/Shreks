@@ -13,6 +13,8 @@ public partial class DeadlineEvaluator : SubmissionEvaluator
         ISubmissionEvaluatorVisitor<T> visitor,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(visitor);
+
         return visitor.VisitAsync(submission, this, cancellationToken);
     }
 }

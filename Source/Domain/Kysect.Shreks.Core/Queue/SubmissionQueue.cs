@@ -28,6 +28,8 @@ public partial class SubmissionQueue : IEntity<Guid>
         IQueryExecutor queryExecutor,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(queryExecutor);
+
         foreach (var filter in Configuration.Filters)
         {
             submissionsQuery = await filter.AcceptAsync(submissionsQuery, filterVisitor, cancellationToken);

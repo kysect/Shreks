@@ -20,9 +20,11 @@ public class SubmissionRatingEvaluatorVisitor : ISubmissionEvaluatorVisitor<int>
         DeadlineEvaluator evaluator,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(submission);
+
         var deadlineQuery = new GetSubmissionDeadline.Query(submission.Id);
         var deadline = await _mediator.Send(deadlineQuery, cancellationToken);
-        
+
         return deadline.Deadline > submission.SubmissionDateTime ? 1 : 0;
     }
 }
