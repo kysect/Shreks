@@ -48,7 +48,8 @@ public class GoogleTableAccessor : IGoogleTableAccessor
 
         await PointsUpdateSemaphore.WaitAsync(token);
 
-        IReadOnlyCollection<Guid> subjectCourseIds = PointsUpdateSubjectCourseIds.GetAndClearValues();
+        var subjectCourseIds = PointsUpdateSubjectCourseIds.GetAndClearValues();
+
         if (!subjectCourseIds.Any())
         {
             PointsUpdateSemaphore.Release();
@@ -84,7 +85,8 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         
         await QueueUpdateSemaphore.WaitAsync(token);
 
-        IReadOnlyCollection<Guid> subjectCourseIds = QueueUpdateSubjectCourseIds.GetAndClearValues();
+        var subjectCourseIds = QueueUpdateSubjectCourseIds.GetAndClearValues();
+
         if (!subjectCourseIds.Any())
         {
             QueueUpdateSemaphore.Release();
@@ -99,14 +101,14 @@ public class GoogleTableAccessor : IGoogleTableAccessor
 
                 //TODO: change to GetStudentQueueBySubjectCourse call
 
-                string spreadsheetId = await GetSpreadsheetIdAsync(courseId, token);
+                var spreadsheetId = await GetSpreadsheetIdAsync(courseId, token);
                 await _queueSheet.UpdateAsync(spreadsheetId, queue, token);
 
-                _logger.LogInformation($"Successfully updated queue sheet of course {courseId}.");
+                _logger.LogInformation("Successfully updated queue sheet of course {courseId}.", courseId);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed to update queue sheet of course {courseId}.");
+                _logger.LogError(e, "Failed to update queue sheet of course {courseId}.", courseId);
             }
         }
 
@@ -128,8 +130,9 @@ public class GoogleTableAccessor : IGoogleTableAccessor
             return googleTableAssociation.SpreadsheetId;
         }
 
-        string spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(token);
-        await _mediator.Send(new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId), token);
+        var spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(token);
+        var query = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
+        await _mediator.Send(query, token);
 
         SpreadsheetCreationSemaphore.Release();
 
