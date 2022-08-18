@@ -6,7 +6,7 @@ namespace Kysect.Shreks.Core.Queue.Evaluators;
 
 public partial class DeadlineEvaluator : SubmissionEvaluator
 {
-    public DeadlineEvaluator(SortingOrder sortingOrder) : base(sortingOrder) { }
+    public DeadlineEvaluator(int position, SortingOrder sortingOrder) : base(position, sortingOrder) { }
 
     public override ValueTask<T> AcceptAsync<T>(
         Submission submission,

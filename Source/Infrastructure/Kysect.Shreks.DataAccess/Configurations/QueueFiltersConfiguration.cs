@@ -1,4 +1,3 @@
-using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Queue.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -11,8 +10,5 @@ public class QueueFiltersConfiguration : IEntityTypeConfiguration<QueueFilter>
     {
         builder.HasDiscriminator<string>("Discriminator")
             .HasValue<GroupQueueFilter>(nameof(GroupQueueFilter));
-
-        builder.HasOne<SubmissionQueue>("SubmissionQueue")
-            .WithMany(x => x.Filters);
     }
 }

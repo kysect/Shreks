@@ -11,7 +11,7 @@ namespace Kysect.Shreks.Core.Queue;
 public partial class SubmissionQueue : IEntity<Guid>
 {
     private readonly IReadOnlyCollection<QueueFilter> _filters;
-    private readonly IReadOnlyList<SubmissionEvaluator> _evaluators;
+    private readonly IReadOnlyCollection<SubmissionEvaluator> _evaluators;
 
     public SubmissionQueue(
         IReadOnlyCollection<QueueFilter> filters,
@@ -29,7 +29,7 @@ public partial class SubmissionQueue : IEntity<Guid>
     public virtual IReadOnlyCollection<PositionedSubmission> Submissions { get; protected set; }
     
     public virtual IReadOnlyCollection<QueueFilter> Filters => _filters;
-    public virtual IReadOnlyList<SubmissionEvaluator> Evaluators => _evaluators;
+    public virtual IReadOnlyCollection<SubmissionEvaluator> Evaluators => _evaluators;
 
     public async Task UpdateSubmissions(
         IQueryable<Submission> submissionsQuery,
@@ -47,9 +47,13 @@ public partial class SubmissionQueue : IEntity<Guid>
 
         var submissions = await queryExecutor.ExecuteAsync(submissionsQuery, cancellationToken);
 
+        var evaluators = _evaluators
+            .OrderBy(x => x.Position)
+            .ToArray();
+
         Submissions = await SortedBy(
             submissions,
-            _evaluators,
+            evaluators,
             evaluatorVisitor,
             cancellationToken);
     }
