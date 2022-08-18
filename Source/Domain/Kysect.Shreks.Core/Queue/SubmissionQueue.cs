@@ -12,10 +12,11 @@ public partial class SubmissionQueue : IEntity<Guid>
 {
     private readonly IReadOnlyCollection<QueueFilter> _filters;
     private readonly IReadOnlyCollection<SubmissionEvaluator> _evaluators;
+    private readonly Lazy<IReadOnlyList<SubmissionEvaluator>> _orderedEvaluators;
 
     public SubmissionQueue(
         IReadOnlyCollection<QueueFilter> filters,
-        IReadOnlyList<SubmissionEvaluator> evaluators) 
+        IReadOnlyList<SubmissionEvaluator> evaluators)
         : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(filters);
@@ -24,10 +25,11 @@ public partial class SubmissionQueue : IEntity<Guid>
         _filters = filters;
         _evaluators = evaluators;
         Submissions = Array.Empty<PositionedSubmission>();
+        _orderedEvaluators = new Lazy<IReadOnlyList<SubmissionEvaluator>>(OrderedEvaluators);
     }
 
     public virtual IReadOnlyCollection<PositionedSubmission> Submissions { get; protected set; }
-    
+
     public virtual IReadOnlyCollection<QueueFilter> Filters => _filters;
     public virtual IReadOnlyCollection<SubmissionEvaluator> Evaluators => _evaluators;
 
@@ -47,15 +49,18 @@ public partial class SubmissionQueue : IEntity<Guid>
 
         var submissions = await queryExecutor.ExecuteAsync(submissionsQuery, cancellationToken);
 
-        var evaluators = _evaluators
-            .OrderBy(x => x.Position)
-            .ToArray();
-
         Submissions = await SortedBy(
             submissions,
-            evaluators,
+            _orderedEvaluators.Value,
             evaluatorVisitor,
             cancellationToken);
+    }
+
+    private IReadOnlyList<SubmissionEvaluator> OrderedEvaluators()
+    {
+        return _evaluators
+            .OrderBy(x => x.Position)
+            .ToArray();
     }
 
     private static async Task<IReadOnlyCollection<PositionedSubmission>> SortedBy(
