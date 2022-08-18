@@ -14,13 +14,13 @@ public class GoogleTableAccessor : IGoogleTableAccessor
 {
     private static readonly TimeSpan DelayBetweenSheetUpdates = TimeSpan.FromMinutes(1);
 
-    private static readonly ConcurrentHashSet<Guid> QueueUpdateSubjectCourseIds = new();
-    private static readonly ConcurrentHashSet<Guid> PointsUpdateSubjectCourseIds = new();
+    private readonly ConcurrentHashSet<Guid> _queueUpdateSubjectCourseIds;
+    private readonly ConcurrentHashSet<Guid> _pointsUpdateSubjectCourseIds;
 
-    private static readonly SemaphoreSlim QueueUpdateSemaphore = new(1);
-    private static readonly SemaphoreSlim PointsUpdateSemaphore = new(1);
+    private readonly SemaphoreSlim _queueUpdateSemaphore;
+    private readonly SemaphoreSlim _pointsUpdateSemaphore;
 
-    private static readonly SemaphoreSlim SpreadsheetCreationSemaphore = new(1);
+    private readonly SemaphoreSlim _spreadsheetCreationSemaphore;
 
     private readonly ISheet<CoursePoints> _pointsSheet;
     private readonly ISheet<StudentsQueue> _queueSheet;
@@ -40,19 +40,25 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         _sheetManagementService = sheetManagementService;
         _mediator = mediator;
         _logger = logger;
+
+        _queueUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
+        _pointsUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
+        _queueUpdateSemaphore = new SemaphoreSlim(1, 1);
+        _pointsUpdateSemaphore = new SemaphoreSlim(1, 1);
+        _spreadsheetCreationSemaphore = new SemaphoreSlim(1, 1);
     }
 
     public async Task UpdatePointsAsync(Guid subjectCourseId, CancellationToken token = default)
     {
-        PointsUpdateSubjectCourseIds.Add(subjectCourseId);
+        _pointsUpdateSubjectCourseIds.Add(subjectCourseId);
 
-        await PointsUpdateSemaphore.WaitAsync(token);
+        await _pointsUpdateSemaphore.WaitAsync(token);
 
-        var subjectCourseIds = PointsUpdateSubjectCourseIds.GetAndClearValues();
+        var subjectCourseIds = _pointsUpdateSubjectCourseIds.GetAndClearValues();
 
         if (!subjectCourseIds.Any())
         {
-            PointsUpdateSemaphore.Release();
+            _pointsUpdateSemaphore.Release();
             return;
         }
         
@@ -76,20 +82,20 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         }
 
         await Task.Delay(DelayBetweenSheetUpdates, token);
-        PointsUpdateSemaphore.Release();
+        _pointsUpdateSemaphore.Release();
     }
 
     public async Task UpdateQueueAsync(Guid subjectCourseId, CancellationToken token = default)
     {
-        QueueUpdateSubjectCourseIds.Add(subjectCourseId);
+        _queueUpdateSubjectCourseIds.Add(subjectCourseId);
         
-        await QueueUpdateSemaphore.WaitAsync(token);
+        await _queueUpdateSemaphore.WaitAsync(token);
 
-        var subjectCourseIds = QueueUpdateSubjectCourseIds.GetAndClearValues();
+        var subjectCourseIds = _queueUpdateSubjectCourseIds.GetAndClearValues();
 
         if (!subjectCourseIds.Any())
         {
-            QueueUpdateSemaphore.Release();
+            _queueUpdateSemaphore.Release();
             return;
         }
         
@@ -113,18 +119,18 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         }
 
         await Task.Delay(DelayBetweenSheetUpdates, token);
-        QueueUpdateSemaphore.Release();
+        _queueUpdateSemaphore.Release();
     }
 
     private async Task<string> GetSpreadsheetIdAsync(Guid subjectCourseId, CancellationToken token)
     {
-        await SpreadsheetCreationSemaphore.WaitAsync(token);
+        await _spreadsheetCreationSemaphore.WaitAsync(token);
 
         var response = await _mediator.Send(new GetSpreadsheetIdBySubjectCourse.Query(subjectCourseId), token);
         
         if (response.SpreadsheetId is not null)
         {
-            SpreadsheetCreationSemaphore.Release();
+            _spreadsheetCreationSemaphore.Release();
             return response.SpreadsheetId;
         }
 
@@ -132,7 +138,7 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         var query = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
         await _mediator.Send(query, token);
 
-        SpreadsheetCreationSemaphore.Release();
+        _spreadsheetCreationSemaphore.Release();
 
         return spreadsheetId;
     }
