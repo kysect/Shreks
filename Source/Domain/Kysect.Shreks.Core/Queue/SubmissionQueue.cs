@@ -33,12 +33,13 @@ public partial class SubmissionQueue : IEntity<Guid>
     public virtual IReadOnlyCollection<QueueFilter> Filters => _filters;
     public virtual IReadOnlyCollection<SubmissionEvaluator> Evaluators => _evaluators;
 
-    public async Task UpdateSubmissions(
+    public async Task UpdateSubmissions<TComparable>(
         IQueryable<Submission> submissionsQuery,
         IQueueFilterVisitor<IQueryable<Submission>> filterVisitor,
-        ISubmissionEvaluatorVisitor<int> evaluatorVisitor,
+        ISubmissionEvaluatorVisitor<TComparable> evaluatorVisitor,
         IQueryExecutor queryExecutor,
         CancellationToken cancellationToken)
+        where TComparable : IComparable<TComparable>
     {
         ArgumentNullException.ThrowIfNull(queryExecutor);
 
@@ -63,11 +64,12 @@ public partial class SubmissionQueue : IEntity<Guid>
             .ToArray();
     }
 
-    private static async Task<IReadOnlyCollection<PositionedSubmission>> SortedBy(
+    private static async Task<IReadOnlyCollection<PositionedSubmission>> SortedBy<TComparable>(
         IEnumerable<Submission> submissions,
         IReadOnlyList<ISubmissionEvaluator> evaluators,
-        ISubmissionEvaluatorVisitor<int> visitor,
+        ISubmissionEvaluatorVisitor<TComparable> visitor,
         CancellationToken cancellationToken)
+        where TComparable : IComparable<TComparable>
     {
         var stepperEvaluators = new ForwardIterator<ISubmissionEvaluator>(evaluators, 0);
 
@@ -83,11 +85,12 @@ public partial class SubmissionQueue : IEntity<Guid>
         return await positionedSubmissions.ToListAsync(cancellationToken);
     }
 
-    private static IAsyncEnumerable<Submission> SortedBy(
+    private static IAsyncEnumerable<Submission> SortedBy<TComparable>(
         IAsyncEnumerable<Submission> submissions,
         ForwardIterator<ISubmissionEvaluator> evaluators,
-        ISubmissionEvaluatorVisitor<int> visitor,
+        ISubmissionEvaluatorVisitor<TComparable> visitor,
         CancellationToken cancellationToken)
+        where TComparable : IComparable<TComparable>
     {
         var evaluator = evaluators.Current;
 
