@@ -1,23 +1,24 @@
 using Kysect.Shreks.Core.Queue.Visitors;
 using Kysect.Shreks.Core.Study;
 
-namespace Kysect.Shreks.Core.Queue.Filters;
-
-public partial class GroupQueueFilter : QueueFilter
+namespace Kysect.Shreks.Core.Queue.Filters
 {
-    protected GroupQueueFilter(IReadOnlyCollection<StudentGroup> groups) : base(Guid.NewGuid())
+    public partial class GroupQueueFilter : QueueFilter
     {
-        Groups = groups;
-    }
+        protected GroupQueueFilter(IReadOnlyCollection<StudentGroup> groups)
+        {
+            Groups = groups;
+        }
 
-    public IReadOnlyCollection<StudentGroup> Groups { get; protected init; }
+        public virtual IReadOnlyCollection<StudentGroup> Groups { get; protected init; }
 
-    public override ValueTask<T> AcceptAsync<T>(
-        T value,
-        IQueueFilterVisitor<T> visitor,
-        CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(visitor);
-        return visitor.VisitAsync(value, this, cancellationToken);
+        public override ValueTask<T> AcceptAsync<T>(
+            T value,
+            IQueueFilterVisitor<T> visitor,
+            CancellationToken cancellationToken)
+        {
+            ArgumentNullException.ThrowIfNull(visitor);
+            return visitor.VisitAsync(value, this, cancellationToken);
+        }
     }
 }

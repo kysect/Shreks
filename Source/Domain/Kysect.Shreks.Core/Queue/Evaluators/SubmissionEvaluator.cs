@@ -7,6 +7,8 @@ namespace Kysect.Shreks.Core.Queue.Evaluators;
 
 public abstract partial class SubmissionEvaluator : IEntity<Guid>, ISubmissionEvaluator
 {
+    private SubmissionQueue SubmissionQueue { get; init; }
+
     protected SubmissionEvaluator(SortingOrder sortingOrder) : this(Guid.NewGuid())
     {
         SortingOrder = sortingOrder;

@@ -1,6 +1,7 @@
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue.Evaluators;
+using Kysect.Shreks.Core.Queue.Filters;
 using Kysect.Shreks.Core.Queue.Visitors;
 using Kysect.Shreks.Core.Study;
 using RichEntity.Annotations;
@@ -9,17 +10,26 @@ namespace Kysect.Shreks.Core.Queue;
 
 public partial class SubmissionQueue : IEntity<Guid>
 {
-    public SubmissionQueue(QueueConfiguration configuration) : this(Guid.NewGuid())
-    {
-        ArgumentNullException.ThrowIfNull(configuration);
+    private readonly IReadOnlyCollection<QueueFilter> _filters;
+    private readonly IReadOnlyList<SubmissionEvaluator> _evaluators;
 
-        Submissions = Array.Empty<Submission>();
-        Configuration = configuration;
+    public SubmissionQueue(
+        IReadOnlyCollection<QueueFilter> filters,
+        IReadOnlyList<SubmissionEvaluator> evaluators) 
+        : this(Guid.NewGuid())
+    {
+        ArgumentNullException.ThrowIfNull(filters);
+        ArgumentNullException.ThrowIfNull(evaluators);
+
+        _filters = filters;
+        _evaluators = evaluators;
+        Submissions = Array.Empty<PositionedSubmission>();
     }
 
-    public QueueConfiguration Configuration { get; protected init; }
-
-    public virtual IReadOnlyCollection<Submission> Submissions { get; protected set; }
+    public virtual IReadOnlyCollection<PositionedSubmission> Submissions { get; protected set; }
+    
+    public virtual IReadOnlyCollection<QueueFilter> Filters => _filters;
+    public virtual IReadOnlyList<SubmissionEvaluator> Evaluators => _evaluators;
 
     public async Task UpdateSubmissions(
         IQueryable<Submission> submissionsQuery,
@@ -30,7 +40,7 @@ public partial class SubmissionQueue : IEntity<Guid>
     {
         ArgumentNullException.ThrowIfNull(queryExecutor);
 
-        foreach (var filter in Configuration.Filters)
+        foreach (var filter in _filters)
         {
             submissionsQuery = await filter.AcceptAsync(submissionsQuery, filterVisitor, cancellationToken);
         }
@@ -39,12 +49,12 @@ public partial class SubmissionQueue : IEntity<Guid>
 
         Submissions = await SortedBy(
             submissions,
-            Configuration.Evaluators,
+            _evaluators,
             evaluatorVisitor,
             cancellationToken);
     }
 
-    private static async Task<IReadOnlyCollection<Submission>> SortedBy(
+    private static async Task<IReadOnlyCollection<PositionedSubmission>> SortedBy(
         IEnumerable<Submission> submissions,
         IReadOnlyList<ISubmissionEvaluator> evaluators,
         ISubmissionEvaluatorVisitor<int> visitor,
@@ -58,7 +68,10 @@ public partial class SubmissionQueue : IEntity<Guid>
             visitor,
             cancellationToken);
 
-        return await sortedSubmissions.ToListAsync(cancellationToken);
+        IAsyncEnumerable<PositionedSubmission> positionedSubmissions = sortedSubmissions
+            .Select((x, i) => new PositionedSubmission(i, x));
+
+        return await positionedSubmissions.ToListAsync(cancellationToken);
     }
 
     private static IAsyncEnumerable<Submission> SortedBy(
