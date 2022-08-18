@@ -1,4 +1,3 @@
-using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using RichEntity.Annotations;
