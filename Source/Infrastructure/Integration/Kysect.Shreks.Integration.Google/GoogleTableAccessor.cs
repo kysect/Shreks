@@ -80,7 +80,7 @@ public class GoogleTableAccessor : IGoogleTableAccessor, IDisposable
     {
         await _spreadsheetCreationSemaphore.WaitAsync(token);
 
-        var response = await _mediator.Send(new GetSpreadsheetIdBySubjectCourse.Query(subjectCourseId), token);
+        var response = await _mediator.Send(new FindSpreadsheetIdBySubjectCourse.Query(subjectCourseId), token);
 
         if (response.SpreadsheetId is not null)
         {

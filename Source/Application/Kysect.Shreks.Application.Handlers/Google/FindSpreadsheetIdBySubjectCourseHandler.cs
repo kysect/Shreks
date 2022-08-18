@@ -2,15 +2,15 @@
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetSpreadsheetIdBySubjectCourse;
+using static Kysect.Shreks.Application.Abstractions.Google.Queries.FindSpreadsheetIdBySubjectCourse;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 
-public class GetSpreadsheetIdBySubjectCourseHandler : IRequestHandler<Query, Response>
+public class FindSpreadsheetIdBySubjectCourseHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
 
-    public GetSpreadsheetIdBySubjectCourseHandler(IShreksDatabaseContext context)
+    public FindSpreadsheetIdBySubjectCourseHandler(IShreksDatabaseContext context)
     {
         _context = context;
     }
