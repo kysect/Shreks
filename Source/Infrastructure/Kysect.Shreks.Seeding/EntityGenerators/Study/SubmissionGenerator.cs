@@ -13,7 +13,7 @@ public class SubmissionGenerator : EntityGeneratorBase<Submission>
     private readonly Faker _faker;
     private readonly IEntityGenerator<Student> _studentGenerator;
     private readonly IEntityGenerator<Assignment> _assignmentGenerator;
-    
+
     public SubmissionGenerator(
         EntityGeneratorOptions<Submission> options,
         IEntityGenerator<Student> studentGenerator,
@@ -32,10 +32,10 @@ public class SubmissionGenerator : EntityGeneratorBase<Submission>
 
         var submission = new Submission(student, assignment, _faker.Date.Future(), _faker.Internet.Url())
         {
-            Points = _faker.Random.Double(assignment.MinPoints, assignment.MaxPoints),
+            Rating = _faker.Random.Double(0, 100),
             ExtraPoints = _faker.Random.Bool(ChangeOfHavingExtraPoints) ? _faker.Random.Double(0, MaxExtraPoints) : 0
         };
-        
+
         return submission;
     }
 }
