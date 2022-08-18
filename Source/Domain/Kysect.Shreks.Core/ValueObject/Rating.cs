@@ -16,7 +16,7 @@ public readonly record struct Rating
 
     public double Value { get; }
 
-    public static Rating None() => new Rating();
+    public static Rating None => new Rating();
 
     public static implicit operator Rating(double value)
         => new Rating(value);

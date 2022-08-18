@@ -13,7 +13,7 @@ public partial class Submission : IEntity<Guid>
         Assignment = assignment;
         Payload = payload;
         ExtraPoints = Points.None;
-        Rating = Rating.None();
+        Rating = Rating.None;
     }
 
     public DateTime SubmissionDateTime { get; set; }
