@@ -1,6 +1,9 @@
-﻿using Google.Apis.Sheets.v4;
+﻿using Google.Apis.Drive.v3;
+using Google.Apis.Drive.v3.Data;
+using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Integration.Google.Sheets;
+using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
 
@@ -9,10 +12,12 @@ public class SheetManagementService : ISheetManagementService
     private const string AllFields = "*";
 
     private readonly SheetsService _sheetsService;
+    private readonly DriveService _driveService;
 
-    public SheetManagementService(SheetsService sheetsService)
+    public SheetManagementService(SheetsService sheetsService, DriveService driveService)
     {
         _sheetsService = sheetsService;
+        _driveService = driveService;
     }
 
     public async Task CreateOrClearSheetAsync(string spreadsheetId, ISheet sheet, CancellationToken token)
@@ -31,13 +36,34 @@ public class SheetManagementService : ISheetManagementService
         }
     }
 
-    private async Task<bool> CheckSheetExistsAsync(string spreadsheetId, string title, CancellationToken token)
+    public async Task<string> CreateSpreadsheetAsync(CancellationToken token)
     {
-        Spreadsheet spreadSheet = await _sheetsService.Spreadsheets
+        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
+            .Create(new Spreadsheet())
+            .ExecuteAsync(token);
+
+        string spreadsheetId = spreadsheet.SpreadsheetId;
+        
+        var spreadsheetFile = await _driveService.Files
             .Get(spreadsheetId)
             .ExecuteAsync(token);
 
-        Sheet? sheet = spreadSheet.Sheets.FirstOrDefault(s => s.Properties.Title == title);
+        //TODO: add property to view access to all users
+
+        await _driveService.Files
+            .Update(spreadsheetFile, spreadsheetId)
+            .ExecuteAsync(token);
+
+        return spreadsheetId;
+    }
+
+    private async Task<bool> CheckSheetExistsAsync(string spreadsheetId, string title, CancellationToken token)
+    {
+        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
+            .Get(spreadsheetId)
+            .ExecuteAsync(token);
+
+        Sheet? sheet = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == title);
 
         return sheet is not null;
     }
