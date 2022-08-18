@@ -1,5 +1,4 @@
-﻿using Bogus;
-using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Seeding.Options;
 
 namespace Kysect.Shreks.Seeding.EntityGenerators;
