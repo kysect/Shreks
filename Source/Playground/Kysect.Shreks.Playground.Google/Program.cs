@@ -1,11 +1,9 @@
-﻿using Bogus;
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
-using Kysect.Shreks.Application.Abstractions.Google.Queries;
-using Kysect.Shreks.Application.Handlers.Google;
+using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
@@ -13,10 +11,10 @@ using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
-using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 var credential = await GoogleCredential.FromFileAsync("client_secrets.json", default);
 
@@ -27,22 +25,33 @@ var initializer = new BaseClientService.Initializer
 
 var sheetsService = new SheetsService(initializer);
 
-const string spreadsheetId = "";
+var driverService = new DriveService(initializer);
+//TODO: insert valid credentials
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .CreateLogger();
 
 IServiceProvider services = new ServiceCollection()
     .AddGoogleIntegration()
     .AddSingleton(sheetsService)
+    .AddSingleton(driverService)
     .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
     .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
     .AddEntityGenerators(o => o
-        .ConfigureEntityGenerator<Submission>(s => s.Count = 500)
-        .ConfigureEntityGenerator<Student>(s => s.Count = 100)
+        .ConfigureEntityGenerator<Submission>(s => s.Count = 1000)
+        .ConfigureEntityGenerator<Student>(s => s.Count = 600)
+        .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 50)
+        .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 50)
         .ConfigureEntityGenerator<Assignment>(a => a.Count = 50)
         .ConfigureFaker(f => f.Locale = "ru"))
     .AddDatabaseContext(o => o
         .UseLazyLoadingProxies()
         .UseInMemoryDatabase("Data Source=playground.db"))
     .AddDatabaseSeeders()
+    .AddHandlers()
+    .AddLogging(o => o.AddSerilog())
     .BuildServiceProvider();
 
 var databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
@@ -52,17 +61,14 @@ await services.UseDatabaseSeeders();
 
 var googleTableAccessor = services.GetRequiredService<IGoogleTableAccessor>();
 
-var submissionGenerator = services.GetRequiredService<IEntityGenerator<Submission>>();
+var subjectCourse = databaseContext.SubjectCourses.First();
 
-IReadOnlyCollection<Submission> submissions = services
-    .GetRequiredService<Faker>().Random
-    .ListItems(submissionGenerator.GeneratedEntities.ToArray());
+await googleTableAccessor.UpdateQueueAsync(subjectCourse.Id);
+await googleTableAccessor.UpdatePointsAsync(subjectCourse.Id);
 
-var queue = new StudentsQueue(submissions);
-await googleTableAccessor.UpdateQueueAsync(spreadsheetId, queue);
 
-var coursePointsHandler = new GetCoursePointsBySubjectCourseHandler(databaseContext);
-var coursePointsQuery = new GetCoursePointsBySubjectCourse.Query(databaseContext.SubjectCourses.First().Id);
-var points = await coursePointsHandler.Handle(coursePointsQuery, default);
-    
-await googleTableAccessor.UpdatePointsAsync(spreadsheetId, points.Points);
+await Task.Delay(TimeSpan.FromSeconds(30));
+
+var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
+await googleTableAccessor.UpdateQueueAsync(anotherSubjectCourse.Id);
+await googleTableAccessor.UpdatePointsAsync(anotherSubjectCourse.Id);
