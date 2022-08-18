@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Integration.Google;
 
-public class GoogleTableAccessor : IGoogleTableAccessor
+public class GoogleTableAccessor : IGoogleTableAccessor, IDisposable
 {
     private readonly SemaphoreSlim _spreadsheetCreationSemaphore;
 
@@ -72,6 +72,9 @@ public class GoogleTableAccessor : IGoogleTableAccessor
             _logger.LogError(e, "Failed to update queue sheet of course {SubjectCourseId}.", subjectCourseId);
         }
     }
+
+    public void Dispose()
+        => _spreadsheetCreationSemaphore.Dispose();
 
     private async Task<string> GetSpreadsheetIdAsync(Guid subjectCourseId, CancellationToken token)
     {
