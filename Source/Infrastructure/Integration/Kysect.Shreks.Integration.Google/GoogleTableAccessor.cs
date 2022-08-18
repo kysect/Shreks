@@ -4,7 +4,6 @@ using Kysect.Shreks.Application.Abstractions.Google.Queries;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tools;
-using Kysect.Shreks.Integration.Google.Tools.Collection;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,14 +11,6 @@ namespace Kysect.Shreks.Integration.Google;
 
 public class GoogleTableAccessor : IGoogleTableAccessor
 {
-    private static readonly TimeSpan DelayBetweenSheetUpdates = TimeSpan.FromMinutes(1);
-
-    private readonly ConcurrentHashSet<Guid> _queueUpdateSubjectCourseIds;
-    private readonly ConcurrentHashSet<Guid> _pointsUpdateSubjectCourseIds;
-
-    private readonly SemaphoreSlim _queueUpdateSemaphore;
-    private readonly SemaphoreSlim _pointsUpdateSemaphore;
-
     private readonly SemaphoreSlim _spreadsheetCreationSemaphore;
 
     private readonly ISheet<CoursePoints> _pointsSheet;
@@ -40,86 +31,46 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         _sheetManagementService = sheetManagementService;
         _mediator = mediator;
         _logger = logger;
-
-        _queueUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
-        _pointsUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
-        _queueUpdateSemaphore = new SemaphoreSlim(1, 1);
-        _pointsUpdateSemaphore = new SemaphoreSlim(1, 1);
+        
         _spreadsheetCreationSemaphore = new SemaphoreSlim(1, 1);
     }
 
     public async Task UpdatePointsAsync(Guid subjectCourseId, CancellationToken token = default)
     {
-        _pointsUpdateSubjectCourseIds.Add(subjectCourseId);
-
-        await _pointsUpdateSemaphore.WaitAsync(token);
-
-        var subjectCourseIds = _pointsUpdateSubjectCourseIds.GetAndClearValues();
-
-        if (!subjectCourseIds.Any())
+        try
         {
-            _pointsUpdateSemaphore.Release();
-            return;
+            var query = new GetCoursePointsBySubjectCourse.Query(subjectCourseId);
+            var response = await _mediator.Send(query, token);
+
+            var points = response.Points;
+            var spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
+            await _pointsSheet.UpdateAsync(spreadsheetId, points, token);
+
+            _logger.LogInformation("Successfully updated points sheet of course {SubjectCourseId}.", subjectCourseId);
         }
-        
-        foreach (var courseId in subjectCourseIds)
+        catch (Exception e)
         {
-            try
-            {
-                var query = new GetCoursePointsBySubjectCourse.Query(courseId);
-                var response = await _mediator.Send(query, token);
-
-                var points = response.Points;
-                var spreadsheetId = await GetSpreadsheetIdAsync(courseId, token);
-                await _pointsSheet.UpdateAsync(spreadsheetId, points, token);
-
-                _logger.LogInformation("Successfully updated points sheet of course {CourseId}.", courseId);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Failed to update points sheet of course {CourseId}.", courseId);
-            }
+            _logger.LogError(e, "Failed to update points sheet of course {SubjectCourseId}.", subjectCourseId);
         }
-
-        await Task.Delay(DelayBetweenSheetUpdates, token);
-        _pointsUpdateSemaphore.Release();
     }
 
     public async Task UpdateQueueAsync(Guid subjectCourseId, CancellationToken token = default)
     {
-        _queueUpdateSubjectCourseIds.Add(subjectCourseId);
-        
-        await _queueUpdateSemaphore.WaitAsync(token);
-
-        var subjectCourseIds = _queueUpdateSubjectCourseIds.GetAndClearValues();
-
-        if (!subjectCourseIds.Any())
+        try
         {
-            _queueUpdateSemaphore.Release();
-            return;
+            var queue = new StudentsQueue(Array.Empty<Submission>());
+
+            //TODO: change to GetStudentQueueBySubjectCourse call
+
+            var spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
+            await _queueSheet.UpdateAsync(spreadsheetId, queue, token);
+
+            _logger.LogInformation("Successfully updated queue sheet of course {SubjectCourseId}.", subjectCourseId);
         }
-        
-        foreach (var courseId in subjectCourseIds)
+        catch (Exception e)
         {
-            try
-            {
-                var queue = new StudentsQueue(Array.Empty<Submission>());
-
-                //TODO: change to GetStudentQueueBySubjectCourse call
-
-                var spreadsheetId = await GetSpreadsheetIdAsync(courseId, token);
-                await _queueSheet.UpdateAsync(spreadsheetId, queue, token);
-
-                _logger.LogInformation("Successfully updated queue sheet of course {CourseId}.", courseId);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Failed to update queue sheet of course {CourseId}.", courseId);
-            }
+            _logger.LogError(e, "Failed to update queue sheet of course {SubjectCourseId}.", subjectCourseId);
         }
-
-        await Task.Delay(DelayBetweenSheetUpdates, token);
-        _queueUpdateSemaphore.Release();
     }
 
     private async Task<string> GetSpreadsheetIdAsync(Guid subjectCourseId, CancellationToken token)
@@ -127,7 +78,7 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         await _spreadsheetCreationSemaphore.WaitAsync(token);
 
         var response = await _mediator.Send(new GetSpreadsheetIdBySubjectCourse.Query(subjectCourseId), token);
-        
+
         if (response.SpreadsheetId is not null)
         {
             _spreadsheetCreationSemaphore.Release();
