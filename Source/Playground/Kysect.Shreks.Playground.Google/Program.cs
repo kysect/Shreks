@@ -9,6 +9,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Seeding.Extensions;
@@ -59,16 +60,26 @@ databaseContext.Database.EnsureCreated();
 await databaseContext.SaveChangesAsync();
 await services.UseDatabaseSeeders();
 
-var googleTableAccessor = services.GetRequiredService<IGoogleTableAccessor>();
-
 var subjectCourse = databaseContext.SubjectCourses.First();
 
-await googleTableAccessor.UpdateQueueAsync(subjectCourse.Id);
-await googleTableAccessor.UpdatePointsAsync(subjectCourse.Id);
+var googleTableAccessor = services.GetRequiredService<IGoogleTableAccessor>();
 
+await ((GoogleTableAccessorWorker)googleTableAccessor).StartAsync(default);
+
+await googleTableAccessor.UpdatePointsAsync(subjectCourse.Id);
+await googleTableAccessor.UpdateQueueAsync(subjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 
 var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
-await googleTableAccessor.UpdateQueueAsync(anotherSubjectCourse.Id);
 await googleTableAccessor.UpdatePointsAsync(anotherSubjectCourse.Id);
+await googleTableAccessor.UpdateQueueAsync(anotherSubjectCourse.Id);
+
+await Task.Delay(TimeSpan.FromMinutes(2));
+
+await googleTableAccessor.UpdatePointsAsync(subjectCourse.Id);
+await googleTableAccessor.UpdateQueueAsync(subjectCourse.Id);
+await googleTableAccessor.UpdatePointsAsync(subjectCourse.Id);
+await googleTableAccessor.UpdateQueueAsync(subjectCourse.Id);
+
+await Task.Delay(-1);
