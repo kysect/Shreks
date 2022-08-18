@@ -24,7 +24,7 @@ var submission = new Submission
 (
     new Student(new User("John", "Doe", "adw"),
         new StudentGroup("")),
-    new Assignment("adw", "", 1, 2),
+    new Assignment("adw", "", 1, 2, new SubjectCourse(new Subject(""))),
     DateOnly.FromDateTime(DateTime.Now),
     ""
 );

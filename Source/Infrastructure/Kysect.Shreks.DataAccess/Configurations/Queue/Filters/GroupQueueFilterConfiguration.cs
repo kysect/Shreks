@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.Study;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Kysect.Shreks.DataAccess.Configurations;
+namespace Kysect.Shreks.DataAccess.Configurations.Queue.Filters;
 
 public class GroupQueueFilterConfiguration : IEntityTypeConfiguration<GroupQueueFilter>
 {

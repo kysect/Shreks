@@ -2,7 +2,7 @@ using Kysect.Shreks.Core.Queue;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Kysect.Shreks.DataAccess.Configurations;
+namespace Kysect.Shreks.DataAccess.Configurations.Queue;
 
 public class SubmissionQueueConfiguration : IEntityTypeConfiguration<SubmissionQueue>
 {
