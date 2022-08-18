@@ -6,11 +6,11 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Queue;
 
-public class SubmissionRatingEvaluatorVisitor : ISubmissionEvaluatorVisitor<int>
+public class SubmissionPriorityEvaluatorVisitor : ISubmissionEvaluatorVisitor<int>
 {
     private readonly IMediator _mediator;
 
-    public SubmissionRatingEvaluatorVisitor(IMediator mediator)
+    public SubmissionPriorityEvaluatorVisitor(IMediator mediator)
     {
         _mediator = mediator;
     }

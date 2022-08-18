@@ -18,7 +18,7 @@ public static class ServiceCollectionExtensions
     private static void AddQueue(this IServiceCollection collection)
     {
         collection.AddScoped<IQueueFilterVisitor<IQueryable<Submission>>, SubmissionQueryableFilterVisitor>();
-        collection.AddScoped<ISubmissionEvaluatorVisitor<int>, SubmissionRatingEvaluatorVisitor>();
+        collection.AddScoped<ISubmissionEvaluatorVisitor<int>, SubmissionPriorityEvaluatorVisitor>();
         collection.AddSingleton<IQueryExecutor, QueryExecutor>();
     }
 }

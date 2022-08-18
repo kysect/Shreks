@@ -60,7 +60,7 @@ public partial class SubmissionQueue : IEntity<Guid>
         ISubmissionEvaluatorVisitor<int> visitor,
         CancellationToken cancellationToken)
     {
-        var stepperEvaluators = new StepperCollection<ISubmissionEvaluator>(evaluators, 0);
+        var stepperEvaluators = new ForwardIterator<ISubmissionEvaluator>(evaluators, 0);
 
         IAsyncEnumerable<Submission> sortedSubmissions = SortedBy(
             submissions.AsAsyncEnumerable(cancellationToken),
@@ -76,7 +76,7 @@ public partial class SubmissionQueue : IEntity<Guid>
 
     private static IAsyncEnumerable<Submission> SortedBy(
         IAsyncEnumerable<Submission> submissions,
-        StepperCollection<ISubmissionEvaluator> evaluators,
+        ForwardIterator<ISubmissionEvaluator> evaluators,
         ISubmissionEvaluatorVisitor<int> visitor,
         CancellationToken cancellationToken)
     {
@@ -95,7 +95,7 @@ public partial class SubmissionQueue : IEntity<Guid>
         if (evaluators.IsAtEnd)
             return orderedGroupings.SelectMany(x => x);
 
-        StepperCollection<ISubmissionEvaluator> next = evaluators.Next();
+        ForwardIterator<ISubmissionEvaluator> next = evaluators.Next();
         return orderedGroupings.SelectMany(x => SortedBy(x, next, visitor, cancellationToken));
     }
 }
