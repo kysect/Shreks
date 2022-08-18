@@ -26,18 +26,15 @@ public class GoogleTableAccessorWorker : BackgroundService, IGoogleTableAccessor
         using var timer = new PeriodicTimer(DelayBetweenSheetUpdates);
         while (!token.IsCancellationRequested && await timer.WaitForNextTickAsync(token))
         {
-            var pointsUpdateSubjectCourseIds = _pointsUpdateSubjectCourseIds.GetAndClearValues();
-            var queueUpdateSubjectCourseIds = _queueUpdateSubjectCourseIds.GetAndClearValues();
+            var pointsUpdateTasks = _pointsUpdateSubjectCourseIds
+                .GetAndClearValues()
+                .Select(i => _tableAccessor.UpdatePointsAsync(i, token));
 
-            foreach (var subjectCourseId in pointsUpdateSubjectCourseIds)
-            {
-                await _tableAccessor.UpdateQueueAsync(subjectCourseId, token);
-            }
+            var queueUpdateTasks = _queueUpdateSubjectCourseIds
+                .GetAndClearValues()
+                .Select(i => _tableAccessor.UpdateQueueAsync(i, token));
 
-            foreach (var subjectCourseId in queueUpdateSubjectCourseIds)
-            {
-                await _tableAccessor.UpdatePointsAsync(subjectCourseId, token);
-            }
+            await Task.WhenAll(pointsUpdateTasks.Union(queueUpdateTasks));
         }
     }
 
