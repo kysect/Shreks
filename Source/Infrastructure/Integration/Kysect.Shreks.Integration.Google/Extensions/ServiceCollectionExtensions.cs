@@ -23,7 +23,9 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<ISheetBuilder, SheetBuilder>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
-            .AddSingleton<IGoogleTableAccessor, GoogleTableAccessor>()
-            .Decorate<IGoogleTableAccessor, GoogleTableAccessorWorker>();
+            .AddSingleton<GoogleTableAccessor>()
+            .AddSingleton(p => new GoogleTableAccessorWorker(p.GetRequiredService<GoogleTableAccessor>()))
+            .AddSingleton<IGoogleTableAccessor>(p => p.GetRequiredService<GoogleTableAccessorWorker>())
+            .AddHostedService<GoogleTableAccessorWorker>();
     }
 }
