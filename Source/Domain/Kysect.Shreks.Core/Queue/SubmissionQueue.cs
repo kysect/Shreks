@@ -1,8 +1,6 @@
-using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue.Evaluators;
 using Kysect.Shreks.Core.Queue.Filters;
-using Kysect.Shreks.Core.Queue.Visitors;
 using Kysect.Shreks.Core.Study;
 using RichEntity.Annotations;
 
@@ -29,14 +27,11 @@ public partial class SubmissionQueue : IEntity<Guid>
     }
 
     public virtual IReadOnlyCollection<PositionedSubmission> Submissions { get; protected set; }
-
     public virtual IReadOnlyCollection<QueueFilter> Filters => _filters;
     public virtual IReadOnlyCollection<SubmissionEvaluator> Evaluators => _evaluators;
 
     public async Task UpdateSubmissions<TComparable>(
         IQueryable<Submission> submissionsQuery,
-        IQueueFilterVisitor<IQueryable<Submission>> filterVisitor,
-        ISubmissionEvaluatorVisitor<TComparable> evaluatorVisitor,
         IQueryExecutor queryExecutor,
         CancellationToken cancellationToken)
         where TComparable : IComparable<TComparable>
@@ -45,16 +40,12 @@ public partial class SubmissionQueue : IEntity<Guid>
 
         foreach (var filter in _filters)
         {
-            submissionsQuery = await filter.AcceptAsync(submissionsQuery, filterVisitor, cancellationToken);
+            submissionsQuery = filter.Filter(submissionsQuery);
         }
 
         var submissions = await queryExecutor.ExecuteAsync(submissionsQuery, cancellationToken);
 
-        Submissions = await SortedBy(
-            submissions,
-            _orderedEvaluators.Value,
-            evaluatorVisitor,
-            cancellationToken);
+        Submissions = SortedBy(submissions, _orderedEvaluators.Value);
     }
 
     private IReadOnlyList<SubmissionEvaluator> OrderedEvaluators()
@@ -64,38 +55,30 @@ public partial class SubmissionQueue : IEntity<Guid>
             .ToArray();
     }
 
-    private static async Task<IReadOnlyCollection<PositionedSubmission>> SortedBy<TComparable>(
+    private static IReadOnlyCollection<PositionedSubmission> SortedBy(
         IEnumerable<Submission> submissions,
-        IReadOnlyList<ISubmissionEvaluator> evaluators,
-        ISubmissionEvaluatorVisitor<TComparable> visitor,
-        CancellationToken cancellationToken)
-        where TComparable : IComparable<TComparable>
+        IReadOnlyList<ISubmissionEvaluator> evaluators)
     {
         var stepperEvaluators = new ForwardIterator<ISubmissionEvaluator>(evaluators, 0);
 
-        IAsyncEnumerable<Submission> sortedSubmissions = SortedBy(
-            submissions.AsAsyncEnumerable(cancellationToken),
-            stepperEvaluators,
-            visitor,
-            cancellationToken);
+        IEnumerable<Submission> sortedSubmissions = SortedBy(
+            submissions,
+            stepperEvaluators);
 
-        IAsyncEnumerable<PositionedSubmission> positionedSubmissions = sortedSubmissions
+        IEnumerable<PositionedSubmission> positionedSubmissions = sortedSubmissions
             .Select((x, i) => new PositionedSubmission(i, x));
 
-        return await positionedSubmissions.ToListAsync(cancellationToken);
+        return positionedSubmissions.ToList();
     }
 
-    private static IAsyncEnumerable<Submission> SortedBy<TComparable>(
-        IAsyncEnumerable<Submission> submissions,
-        ForwardIterator<ISubmissionEvaluator> evaluators,
-        ISubmissionEvaluatorVisitor<TComparable> visitor,
-        CancellationToken cancellationToken)
-        where TComparable : IComparable<TComparable>
+    private static IEnumerable<Submission> SortedBy(
+        IEnumerable<Submission> submissions,
+        ForwardIterator<ISubmissionEvaluator> evaluators)
     {
         var evaluator = evaluators.Current;
 
         var groupings = submissions
-            .GroupByAwait(x => evaluator.AcceptAsync(x, visitor, cancellationToken));
+            .GroupBy(x => evaluator.Evaluate(x));
 
         var orderedGroupings = evaluator.SortingOrder switch
         {
@@ -108,6 +91,6 @@ public partial class SubmissionQueue : IEntity<Guid>
             return orderedGroupings.SelectMany(x => x);
 
         ForwardIterator<ISubmissionEvaluator> next = evaluators.Next();
-        return orderedGroupings.SelectMany(x => SortedBy(x, next, visitor, cancellationToken));
+        return orderedGroupings.SelectMany(x => SortedBy(x, next));
     }
 }

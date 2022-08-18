@@ -1,8 +1,8 @@
-using Kysect.Shreks.Core.Queue.Visitors;
+using Kysect.Shreks.Core.Study;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 
 public interface IQueueFilter
 {
-    ValueTask<T> AcceptAsync<T>(T value, IQueueFilterVisitor<T> visitor, CancellationToken cancellationToken);
+    IQueryable<Submission> Filter(IQueryable<Submission> query);
 }

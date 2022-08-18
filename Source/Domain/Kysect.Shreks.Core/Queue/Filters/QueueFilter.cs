@@ -1,12 +1,9 @@
-using Kysect.Shreks.Core.Queue.Visitors;
+using Kysect.Shreks.Core.Study;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 
 public abstract partial class QueueFilter : IEntity<Guid>, IQueueFilter
 {
-    public abstract ValueTask<T> AcceptAsync<T>(
-        T value,
-        IQueueFilterVisitor<T> visitor,
-        CancellationToken cancellationToken);
+    public abstract IQueryable<Submission> Filter(IQueryable<Submission> query);
 }

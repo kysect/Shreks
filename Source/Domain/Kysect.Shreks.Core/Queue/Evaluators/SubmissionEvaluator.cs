@@ -1,5 +1,4 @@
 using Kysect.Shreks.Core.Models;
-using Kysect.Shreks.Core.Queue.Visitors;
 using Kysect.Shreks.Core.Study;
 using RichEntity.Annotations;
 
@@ -16,8 +15,5 @@ public abstract partial class SubmissionEvaluator : IEntity<Guid>, ISubmissionEv
     public int Position { get; protected init; }
     public SortingOrder SortingOrder { get; protected init; }
 
-    public abstract ValueTask<T> AcceptAsync<T>(
-        Submission submission,
-        ISubmissionEvaluatorVisitor<T> visitor,
-        CancellationToken cancellationToken);
+    public abstract double Evaluate(Submission submission);
 }

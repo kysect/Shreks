@@ -1,5 +1,4 @@
 using Kysect.Shreks.Core.Models;
-using Kysect.Shreks.Core.Queue.Visitors;
 using Kysect.Shreks.Core.Study;
 
 namespace Kysect.Shreks.Core.Queue.Evaluators;
@@ -8,13 +7,14 @@ public partial class DeadlineEvaluator : SubmissionEvaluator
 {
     public DeadlineEvaluator(int position, SortingOrder sortingOrder) : base(position, sortingOrder) { }
 
-    public override ValueTask<T> AcceptAsync<T>(
-        Submission submission,
-        ISubmissionEvaluatorVisitor<T> visitor,
-        CancellationToken cancellationToken)
+    public override double Evaluate(Submission submission)
     {
-        ArgumentNullException.ThrowIfNull(visitor);
+        ArgumentNullException.ThrowIfNull(submission);
 
-        return visitor.VisitAsync(submission, this, cancellationToken);
+        var groupAssignment = submission.Assignment
+            .GroupAssignments
+            .Single(x => x.Group.Equals(submission.Student.Group));
+            
+        return groupAssignment.Deadline > submission.SubmissionDateTime ? 1 : 0;
     }
 }
