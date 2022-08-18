@@ -110,11 +110,11 @@ public class GoogleTableAccessor : IGoogleTableAccessor
                 var spreadsheetId = await GetSpreadsheetIdAsync(courseId, token);
                 await _queueSheet.UpdateAsync(spreadsheetId, queue, token);
 
-                _logger.LogInformation("Successfully updated queue sheet of course {courseId}.", courseId);
+                _logger.LogInformation("Successfully updated queue sheet of course {CourseId}.", courseId);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failed to update queue sheet of course {courseId}.", courseId);
+                _logger.LogError(e, "Failed to update queue sheet of course {CourseId}.", courseId);
             }
         }
 
