@@ -59,19 +59,18 @@ public class GoogleTableAccessor : IGoogleTableAccessor
         {
             try
             {
-                GetCoursePointsBySubjectCourse.Response response = await _mediator
-                    .Send(new GetCoursePointsBySubjectCourse.Query(courseId), token);
+                var query = new GetCoursePointsBySubjectCourse.Query(courseId);
+                var response = await _mediator.Send(query, token);
 
-                CoursePoints points = response.Points;
-
-                string spreadsheetId = await GetSpreadsheetIdAsync(courseId, token);
+                var points = response.Points;
+                var spreadsheetId = await GetSpreadsheetIdAsync(courseId, token);
                 await _pointsSheet.UpdateAsync(spreadsheetId, points, token);
 
-                _logger.LogInformation($"Successfully updated points sheet of course {courseId}.");
+                _logger.LogInformation("Successfully updated points sheet of course {CourseId}.", courseId);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Failed to update points sheet of course {courseId}.");
+                _logger.LogError(e, "Failed to update points sheet of course {CourseId}.", courseId);
             }
         }
 
