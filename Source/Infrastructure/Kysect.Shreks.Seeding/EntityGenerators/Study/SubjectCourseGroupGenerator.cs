@@ -27,14 +27,7 @@ public class SubjectCourseGroupGenerator : EntityGeneratorBase<SubjectCourseGrou
         var studentGroupCount = _studentGroupGenerator.GeneratedEntities.Count;
         var studentGroupNumber = index % studentGroupCount;
         
-        var subjectCourseCount = _subjectCourseGenerator.GeneratedEntities.Count;
-        var subjectCourseGroupNumber = index / studentGroupCount;
-
-        if (subjectCourseGroupNumber >= subjectCourseCount)
-            throw new IndexOutOfRangeException(
-                "The subject course group index is greater than the number of subject courses.");
-
-        var subjectCourse = _subjectCourseGenerator.GeneratedEntities[subjectCourseGroupNumber];
+        var subjectCourse = _faker.PickRandom<SubjectCourse>(_subjectCourseGenerator.GeneratedEntities);
         var studentGroup = _studentGroupGenerator.GeneratedEntities[studentGroupNumber];
         
         var subjectCourseGroup = new SubjectCourseGroup(subjectCourse, studentGroup);
