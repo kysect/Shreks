@@ -2,15 +2,15 @@
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetGoogleTableSubjectCourseAssociation;
+using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetSpreadsheetIdBySubjectCourse;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 
-public class GetGoogleTableSubjectCourseAssociationHandler : IRequestHandler<Query, Response>
+public class GetSpreadsheetIdBySubjectCourseHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
 
-    public GetGoogleTableSubjectCourseAssociationHandler(IShreksDatabaseContext context)
+    public GetSpreadsheetIdBySubjectCourseHandler(IShreksDatabaseContext context)
     {
         _context = context;
     }
@@ -23,6 +23,6 @@ public class GetGoogleTableSubjectCourseAssociationHandler : IRequestHandler<Que
             .OfType<GoogleTableSubjectCourseAssociation>()
             .FirstOrDefault();
 
-        return new Response(googleTableAssociation);
+        return new Response(googleTableAssociation?.SpreadsheetId);
     }
 }

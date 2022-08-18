@@ -120,14 +120,12 @@ public class GoogleTableAccessor : IGoogleTableAccessor
     {
         await SpreadsheetCreationSemaphore.WaitAsync(token);
 
-        var response = await _mediator.Send(new GetGoogleTableSubjectCourseAssociation.Query(subjectCourseId), token);
-
-        var googleTableAssociation = response.GoogleTableAssociation;
-
-        if (googleTableAssociation is not null)
+        var response = await _mediator.Send(new GetSpreadsheetIdBySubjectCourse.Query(subjectCourseId), token);
+        
+        if (response.SpreadsheetId is not null)
         {
             SpreadsheetCreationSemaphore.Release();
-            return googleTableAssociation.SpreadsheetId;
+            return response.SpreadsheetId;
         }
 
         var spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(token);
