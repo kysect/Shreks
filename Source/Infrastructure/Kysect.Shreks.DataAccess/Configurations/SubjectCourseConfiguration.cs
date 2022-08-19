@@ -9,7 +9,6 @@ public class SubjectCourseConfiguration : IEntityTypeConfiguration<SubjectCourse
     public void Configure(EntityTypeBuilder<SubjectCourse> builder)
     {
         builder.HasOne(x => x.Subject);
-        builder.HasOne(x => x.Name);
 
         builder.Navigation(x => x.Groups).HasField("_groups");
         builder.Navigation(x => x.Assignments).HasField("_assignments");
