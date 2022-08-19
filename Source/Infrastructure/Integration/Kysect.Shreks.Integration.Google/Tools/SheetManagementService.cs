@@ -3,13 +3,18 @@ using Google.Apis.Drive.v3.Data;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Integration.Google.Sheets;
-using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
 
 public class SheetManagementService : ISheetManagementService
 {
     private const string AllFields = "*";
+
+    private static readonly Permission AnyoneViewerPermission = new()
+    {
+        Type = "anyone",
+        Role = "reader"
+    };
 
     private readonly SheetsService _sheetsService;
     private readonly DriveService _driveService;
@@ -36,22 +41,24 @@ public class SheetManagementService : ISheetManagementService
         }
     }
 
-    public async Task<string> CreateSpreadsheetAsync(CancellationToken token)
+    public async Task<string> CreateSpreadsheetAsync(string title, CancellationToken token)
     {
+        var spreadsheetToCreate = new Spreadsheet
+        {
+            Properties = new SpreadsheetProperties
+            {
+                Title = title
+            }
+        };
+
         Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
-            .Create(new Spreadsheet())
+            .Create(spreadsheetToCreate)
             .ExecuteAsync(token);
 
         string spreadsheetId = spreadsheet.SpreadsheetId;
-        
-        var spreadsheetFile = await _driveService.Files
-            .Get(spreadsheetId)
-            .ExecuteAsync(token);
 
-        //TODO: add property to view access to all users
-
-        await _driveService.Files
-            .Update(spreadsheetFile, spreadsheetId)
+        await _driveService.Permissions
+            .Create(AnyoneViewerPermission, spreadsheetId)
             .ExecuteAsync(token);
 
         return spreadsheetId;

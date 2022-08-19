@@ -88,7 +88,10 @@ public class GoogleTableAccessor : IGoogleTableAccessor, IDisposable
             return response.SpreadsheetId;
         }
 
-        var spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(token);
+        //TODO: change to subject course name
+        var spreadsheetTitle = subjectCourseId.ToString();
+        
+        var spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(spreadsheetTitle, token);
         var query = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
         await _mediator.Send(query, token);
 
