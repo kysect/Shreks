@@ -79,7 +79,7 @@ public class GoogleTableAccessor : IDisposable
     {
         var getTableInfoQuery = new GetSubjectCourseTableInfoById.Query(subjectCourseId);
 
-        (_, string? spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
+        var (_, spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
 
         if (spreadsheetId is not null)
             return spreadsheetId;
