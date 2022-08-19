@@ -19,6 +19,7 @@ public static class TestEnv
             o.ConfigureEntityGenerator<GithubUserAssociation>(o => o.Count = 0);
             o.ConfigureEntityGenerator<IsuUserAssociation>(o => o.Count = 0);
             o.ConfigureEntityGenerator<Submission>(o => o.Count = 0);
+            o.ConfigureEntityGenerator<Student>(o => o.Count = config.Users.Count);
         });
 
         serviceCollection.AddDatabaseSeeders();
