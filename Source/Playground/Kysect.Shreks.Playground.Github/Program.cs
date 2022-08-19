@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 var shreksConfiguration = configuration.GetSection(nameof(ShreksConfiguration)).Get<ShreksConfiguration>();
-//shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
+shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
 TestEnvConfiguration testEnvConfiguration = configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
 
 builder.Services
