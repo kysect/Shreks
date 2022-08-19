@@ -4,16 +4,16 @@ using Microsoft.Extensions.Hosting;
 
 namespace Kysect.Shreks.Integration.Google;
 
-public class GoogleTableAccessorWorker : BackgroundService, IGoogleTableAccessor
+public class GoogleTableAccessorWorker : BackgroundService, IGoogleTableAccessorWorker
 {
     private static readonly TimeSpan DelayBetweenSheetUpdates = TimeSpan.FromMinutes(1);
 
     private readonly ConcurrentHashSet<Guid> _queueUpdateSubjectCourseIds;
     private readonly ConcurrentHashSet<Guid> _pointsUpdateSubjectCourseIds;
 
-    private readonly IGoogleTableAccessor _tableAccessor;
+    private readonly GoogleTableAccessor _tableAccessor;
 
-    public GoogleTableAccessorWorker(IGoogleTableAccessor tableAccessor)
+    public GoogleTableAccessorWorker(GoogleTableAccessor tableAccessor)
     {
         _tableAccessor = tableAccessor;
 
@@ -37,16 +37,9 @@ public class GoogleTableAccessorWorker : BackgroundService, IGoogleTableAccessor
             await Task.WhenAll(pointsUpdateTasks.Union(queueUpdateTasks));
         }
     }
+    public void AddCourseToPointsUpdate(Guid subjectCourseId)
+        => _pointsUpdateSubjectCourseIds.Add(subjectCourseId);
 
-    public Task UpdatePointsAsync(Guid subjectCourseId, CancellationToken token = default)
-    {
-        _pointsUpdateSubjectCourseIds.Add(subjectCourseId);
-        return Task.CompletedTask;
-    }
-
-    public Task UpdateQueueAsync(Guid subjectCourseId, CancellationToken token = default)
-    {
-        _queueUpdateSubjectCourseIds.Add(subjectCourseId);
-        return Task.CompletedTask;
-    }
+    public void AddCourseToQueueUpdate(Guid subjectCourseId)
+        => _queueUpdateSubjectCourseIds.Add(subjectCourseId);
 }

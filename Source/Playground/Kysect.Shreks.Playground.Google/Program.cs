@@ -3,7 +3,6 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
-using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
@@ -75,24 +74,24 @@ await services.UseDatabaseSeeders();
 
 var subjectCourse = databaseContext.SubjectCourses.First();
 
-var googleTableAccessor = services.GetRequiredService<IGoogleTableAccessor>();
+var tableWorker = services.GetRequiredService<GoogleTableAccessorWorker>();
 
-await ((GoogleTableAccessorWorker)googleTableAccessor).StartAsync(default);
+await tableWorker.StartAsync(default);
 
-await googleTableAccessor.UpdatePointsAsync(subjectCourse.Id);
-await googleTableAccessor.UpdateQueueAsync(subjectCourse.Id);
+tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
+tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 
 var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
-await googleTableAccessor.UpdatePointsAsync(anotherSubjectCourse.Id);
-await googleTableAccessor.UpdateQueueAsync(anotherSubjectCourse.Id);
+tableWorker.AddCourseToPointsUpdate(anotherSubjectCourse.Id);
+tableWorker.AddCourseToPointsUpdate(anotherSubjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromMinutes(2));
 
-await googleTableAccessor.UpdatePointsAsync(subjectCourse.Id);
-await googleTableAccessor.UpdateQueueAsync(subjectCourse.Id);
-await googleTableAccessor.UpdatePointsAsync(subjectCourse.Id);
-await googleTableAccessor.UpdateQueueAsync(subjectCourse.Id);
+tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
+tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
+tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
+tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
 
 await Task.Delay(-1);
