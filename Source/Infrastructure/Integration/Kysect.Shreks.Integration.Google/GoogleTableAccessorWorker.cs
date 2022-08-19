@@ -34,7 +34,7 @@ public class GoogleTableAccessorWorker : BackgroundService, IGoogleTableAccessor
                 .GetAndClearValues()
                 .Select(i => _tableAccessor.UpdateQueueAsync(i, token));
 
-            await Task.WhenAll(pointsUpdateTasks.Union(queueUpdateTasks));
+            await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
         }
     }
     public void AddCourseToPointsUpdate(Guid subjectCourseId)
