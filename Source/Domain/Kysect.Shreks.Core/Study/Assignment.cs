@@ -11,6 +11,7 @@ public partial class Assignment : IEntity<Guid>
     private readonly HashSet<GroupAssignment> _groupAssignments;
     private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
 
+    // TODO: Remove when .NET 7 is released
     protected virtual IReadOnlyCollection<QueueFilter> Filters { get; init; }
 
     public Assignment(string title, string shortName, Points minPoints, Points maxPoints, SubjectCourse subjectCourse)
