@@ -50,6 +50,6 @@ public class SubmissionTest : DataAccessTestBase
         var fetchedSubmission = await fetchFunction.Should().NotThrowAsync();
 
         fetchedSubmission.Subject.Should().NotBeNull();
-        fetchedSubmission.Subject!.SubmissionDateTime.Should().Be(submission.SubmissionDateTime);
+        fetchedSubmission.Subject!.SubmissionDate.Should().Be(submission.SubmissionDate);
     }
 }
