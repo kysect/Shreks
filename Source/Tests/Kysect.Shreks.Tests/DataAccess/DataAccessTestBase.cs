@@ -24,7 +24,7 @@ public abstract class DataAccessTestBase : IDisposable
         {
             x.ConfigureEntityGenerator<StudentGroup>(xx => { xx.Count = 10; });
 
-            x.ConfigureEntityGenerator<Student>(xx => { xx.Count = 30; });
+            x.ConfigureEntityGenerator<Student>(xx => { xx.Count = 10; });
         });
 
         Provider = collection.BuildServiceProvider();
