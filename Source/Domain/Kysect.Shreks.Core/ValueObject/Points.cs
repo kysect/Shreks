@@ -24,20 +24,9 @@ public readonly record struct Points
     public static Points operator -(Points a, Points b)
         => new Points(a.Value - b.Value);
 
-    public static Points operator *(Points a, Rating b)
-        => new Points(b * a.Value);
-
     public static Points operator *(Points a, Fraction b)
         => new Points(a.Value * b.Value);
-
-    public static Points operator /(Points a, Points b)
-    {
-        if (b.Value is 0)
-            throw new DivideByZeroException();
-
-        return new Points(a.Value / b.Value);
-    }
-
+    
     public static bool operator >(Points a, Points b)
         => a.Value > b.Value;
 

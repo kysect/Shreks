@@ -10,8 +10,8 @@ public static class RandomizerExtensions
         return new Points(randomizer.Double(min, max));
     }
 
-    public static Rating Rating(this Randomizer randomizer, double min = 0.0d, double max = 1.0d)
+    public static Fraction Fraction(this Randomizer randomizer)
     {
-        return new Rating(randomizer.Double(min, max));
+        return new Fraction(randomizer.Double());
     }
 }

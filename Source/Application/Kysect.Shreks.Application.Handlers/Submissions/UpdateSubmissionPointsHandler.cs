@@ -25,9 +25,13 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
             throw new DomainInvalidOperationException($"Cannot update submission points, both {nameof(request.NewRating)} and {nameof(request.ExtraPoints)} are null.");
 
         var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
+        var assignment = await _context.Assignments.GetByIdAsync(submission.Assignment.Id, cancellationToken);
 
         if (request.NewRating is not null)
-            submission.Rating = new Rating(request.NewRating.Value);
+        {
+            var fraction = new Fraction(request.NewRating.Value / 100);
+            submission.Points = assignment.MaxPoints * fraction;
+        } 
 
         if (request.ExtraPoints is not null)
             submission.ExtraPoints = new Points(request.ExtraPoints.Value);
