@@ -28,7 +28,7 @@ public class StudentGenerator : EntityGeneratorBase<Student>
             throw new IndexOutOfRangeException("Student count is greater than count of users.");
         
         var groupCount = _studentGroupGenerator.GeneratedEntities.Count;
-        var groupNumber = _faker.Random.Number(0, groupCount - 1);
+        var groupNumber = index % groupCount;
 
         StudentGroup group = _studentGroupGenerator.GeneratedEntities[groupNumber];
 
