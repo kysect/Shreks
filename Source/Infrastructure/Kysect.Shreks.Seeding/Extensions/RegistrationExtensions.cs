@@ -55,7 +55,9 @@ public static class RegistrationExtensions
         using var scope = provider.CreateScope();
 
         var context = scope.ServiceProvider.GetRequiredService<IShreksDatabaseContext>();
-        IEnumerable<IDatabaseSeeder> seeders = scope.ServiceProvider.GetServices<IDatabaseSeeder>();
+        IEnumerable<IDatabaseSeeder> seeders = scope.ServiceProvider
+            .GetServices<IDatabaseSeeder>()
+            .OrderByDescending(x => x.Priority);
 
         foreach (var seeder in seeders)
         {

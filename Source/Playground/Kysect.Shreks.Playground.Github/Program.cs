@@ -1,5 +1,8 @@
+using System.Reflection;
+using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
+using MediatR;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -13,8 +16,9 @@ var shreksConfiguration = builder.Configuration.GetSection(nameof(ShreksConfigur
 shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
 
 builder.Services
-    .AddGithubServices(shreksConfiguration)
-    .AddWebhookProcessors();
+    .AddMediatR(c => c.AsSingleton(), Assembly.GetExecutingAssembly())
+    .AddApplicationCommands()
+    .AddGithubServices(shreksConfiguration);
 
 builder.Services
     .AddLogging(logBuilder => logBuilder.AddSerilog());
