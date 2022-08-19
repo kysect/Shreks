@@ -24,11 +24,8 @@ public readonly record struct Points
     public static Points operator -(Points a, Points b)
         => new Points(a.Value - b.Value);
 
-    public static Points operator *(Points a, Points b)
-        => new Points(a.Value * b.Value);
-
     public static Points operator *(Points a, Rating b)
-        => new Points(a.Value * b.Value);
+        => new Points(b * a.Value);
 
     public static Points operator *(Points a, Fraction b)
         => new Points(a.Value * b.Value);
