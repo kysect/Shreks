@@ -58,10 +58,10 @@ public class GoogleTableAccessor : IGoogleTableAccessor, IDisposable
     {
         try
         {
-            var queue = new StudentsQueue(Array.Empty<Submission>());
+            var query = new GetStudentsQueueBySubjectCourse.Query(subjectCourseId);
+            var response = await _mediator.Send(query, token);
 
-            //TODO: change to GetStudentQueueBySubjectCourse call
-
+            var queue = response.Queue;
             var spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
             await _queueSheet.UpdateAsync(spreadsheetId, queue, token);
 
