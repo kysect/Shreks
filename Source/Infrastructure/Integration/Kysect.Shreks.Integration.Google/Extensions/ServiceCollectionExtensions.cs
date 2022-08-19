@@ -17,9 +17,9 @@ public static class ServiceCollectionExtensions
         return serviceCollection
             .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
             .AddSingleton<ISheetComponentFactory<CoursePoints>, PointsSheetComponentFactory>()
-            .AddSingleton<ISheetComponentFactory<StudentsQueue>, QueueSheetComponentFactory>()
+            .AddSingleton<ISheetComponentFactory<SubmissionsQueue>, QueueSheetComponentFactory>()
             .AddSingleton<ISheet<CoursePoints>, PointsSheet>()
-            .AddSingleton<ISheet<StudentsQueue>, QueueSheet>()
+            .AddSingleton<ISheet<SubmissionsQueue>, QueueSheet>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<ISheetBuilder, SheetBuilder>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()

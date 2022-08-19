@@ -7,15 +7,15 @@ using Kysect.Shreks.Integration.Google.Tools;
 
 namespace Kysect.Shreks.Integration.Google.Sheets;
 
-public class QueueSheet : ISheet<StudentsQueue>
+public class QueueSheet : ISheet<SubmissionsQueue>
 {
     private readonly ISheetManagementService _sheetEditor;
-    private readonly ISheetComponentFactory<StudentsQueue> _sheetDataFactory;
+    private readonly ISheetComponentFactory<SubmissionsQueue> _sheetDataFactory;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
     public QueueSheet(
         ISheetManagementService sheetEditor,
-        ISheetComponentFactory<StudentsQueue> sheetDataFactory,
+        ISheetComponentFactory<SubmissionsQueue> sheetDataFactory,
         IComponentRenderer<GoogleSheetRenderCommand> renderer)
     {
         _sheetEditor = sheetEditor;
@@ -26,7 +26,7 @@ public class QueueSheet : ISheet<StudentsQueue>
     public string Title => "Очередь";
     public int Id => 1;
 
-    public async Task UpdateAsync(string spreadsheetId, StudentsQueue queue, CancellationToken token)
+    public async Task UpdateAsync(string spreadsheetId, SubmissionsQueue queue, CancellationToken token)
     {
         await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, this, token);
 

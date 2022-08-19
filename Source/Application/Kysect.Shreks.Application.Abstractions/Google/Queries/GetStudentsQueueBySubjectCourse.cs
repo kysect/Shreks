@@ -7,5 +7,5 @@ public class GetStudentsQueueBySubjectCourse
 {
     public record Query(Guid SubjectCourseId) : IRequest<Response>;
 
-    public record Response(StudentsQueue Queue);
+    public record Response(SubmissionsQueue Queue);
 }

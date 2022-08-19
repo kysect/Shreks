@@ -13,14 +13,14 @@ public class GoogleTableAccessor : IDisposable
     private readonly SemaphoreSlim _spreadsheetCreationSemaphore;
 
     private readonly ISheet<CoursePoints> _pointsSheet;
-    private readonly ISheet<StudentsQueue> _queueSheet;
+    private readonly ISheet<SubmissionsQueue> _queueSheet;
     private readonly ISheetManagementService _sheetManagementService;
     private readonly IMediator _mediator;
     private readonly ILogger<GoogleTableAccessor> _logger;
 
     public GoogleTableAccessor(
         ISheet<CoursePoints> pointsSheet,
-        ISheet<StudentsQueue> queueSheet,
+        ISheet<SubmissionsQueue> queueSheet,
         ISheetManagementService sheetManagementService,
         IMediator mediator,
         ILogger<GoogleTableAccessor> logger)
