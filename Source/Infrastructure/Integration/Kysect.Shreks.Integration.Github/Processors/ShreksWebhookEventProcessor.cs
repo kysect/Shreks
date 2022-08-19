@@ -19,20 +19,17 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
     private readonly ILogger<ShreksWebhookEventProcessor> _logger;
     private readonly IShreksCommandParser _commandParser;
     private readonly IMediator _mediator;
-    private readonly IShreksDatabaseContext _databaseContext;
 
     public ShreksWebhookEventProcessor(
         IActionNotifier actionNotifier, 
         ILogger<ShreksWebhookEventProcessor> logger,
         IShreksCommandParser commandParser, 
-        IMediator mediator, 
-        IShreksDatabaseContext databaseContext)
+        IMediator mediator)
     {
         _actionNotifier = actionNotifier;
         _logger = logger;
         _commandParser = commandParser;
         _mediator = mediator;
-        _databaseContext = databaseContext;
     }
 
     protected override async Task ProcessPullRequestWebhookAsync(WebhookHeaders headers,
@@ -111,8 +108,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                     if (comment.FirstOrDefault() == '/')
                     {
                         IShreksCommand command = _commandParser.Parse(comment);
-                        var contextCreator = new IssueCommentContextFactory(_mediator, issueCommentEvent,
-                            _databaseContext);
+                        var contextCreator = new IssueCommentContextFactory(_mediator, issueCommentEvent);
                         var processor = new GithubCommandProcessor(contextCreator, CancellationToken.None);
                         var result = await command.AcceptAsync(processor);
                         await _actionNotifier.SendComment(

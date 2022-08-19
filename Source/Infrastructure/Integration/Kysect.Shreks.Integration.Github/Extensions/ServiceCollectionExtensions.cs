@@ -58,9 +58,9 @@ public static class ServiceCollectionExtensions
             return new InstallationClientFactory(appClient, memoryCache);
         });
 
-        services.AddSingleton<IActionNotifier, ActionNotifier>();
+        services.AddScoped<IActionNotifier, ActionNotifier>();
 
-        services.AddSingleton<WebhookEventProcessor, ShreksWebhookEventProcessor>();
+        services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessor>();
         
         return services;
     }
