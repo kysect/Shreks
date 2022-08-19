@@ -74,24 +74,24 @@ await services.UseDatabaseSeeders();
 
 var subjectCourse = databaseContext.SubjectCourses.First();
 
-var tableWorker = services.GetRequiredService<GoogleTableAccessorWorker>();
+var tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
 
 await tableWorker.StartAsync(default);
 
-tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
-tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 
 var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
-tableWorker.AddCourseToPointsUpdate(anotherSubjectCourse.Id);
-tableWorker.AddCourseToPointsUpdate(anotherSubjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromMinutes(2));
 
-tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
-tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
-tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
-tableWorker.AddCourseToPointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
 
 await Task.Delay(-1);

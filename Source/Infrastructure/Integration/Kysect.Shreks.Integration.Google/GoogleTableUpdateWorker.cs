@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Kysect.Shreks.Integration.Google;
 
-public class GoogleTableAccessorWorker : BackgroundService, IGoogleTableAccessorWorker
+public class GoogleTableUpdateWorker : BackgroundService, ITableUpdateQueue
 {
     private static readonly TimeSpan DelayBetweenSheetUpdates = TimeSpan.FromMinutes(1);
 
@@ -13,7 +13,7 @@ public class GoogleTableAccessorWorker : BackgroundService, IGoogleTableAccessor
 
     private readonly GoogleTableAccessor _tableAccessor;
 
-    public GoogleTableAccessorWorker(GoogleTableAccessor tableAccessor)
+    public GoogleTableUpdateWorker(GoogleTableAccessor tableAccessor)
     {
         _tableAccessor = tableAccessor;
 
@@ -37,9 +37,9 @@ public class GoogleTableAccessorWorker : BackgroundService, IGoogleTableAccessor
             await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
         }
     }
-    public void AddCourseToPointsUpdate(Guid subjectCourseId)
+    public void EnqueueCoursePointsUpdate(Guid subjectCourseId)
         => _pointsUpdateSubjectCourseIds.Add(subjectCourseId);
 
-    public void AddCourseToQueueUpdate(Guid subjectCourseId)
+    public void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId)
         => _queueUpdateSubjectCourseIds.Add(subjectCourseId);
 }
