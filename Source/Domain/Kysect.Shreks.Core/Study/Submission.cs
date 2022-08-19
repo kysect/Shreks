@@ -1,4 +1,3 @@
-using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using RichEntity.Annotations;
@@ -7,24 +6,17 @@ namespace Kysect.Shreks.Core.Study;
 
 public partial class Submission : IEntity<Guid>
 {
-    private Points _points;
-
-    public Submission(
-        Student student,
-        Assignment assignment,
-        DateOnly submissionDateTime,
-        string payload)
-        : this(Guid.NewGuid())
+    public Submission(Student student, Assignment assignment, DateTime submissionDateTime, string payload) : this(Guid.NewGuid())
     {
         SubmissionDateTime = submissionDateTime;
         Student = student;
         Assignment = assignment;
         Payload = payload;
         ExtraPoints = Points.None;
-        _points = Points.None;
+        Rating = Rating.None;
     }
 
-    public DateOnly SubmissionDateTime { get; set; }
+    public DateTime SubmissionDateTime { get; set; }
 
     public virtual Student Student { get; protected init; }
 
@@ -34,20 +26,7 @@ public partial class Submission : IEntity<Guid>
 
     public Points ExtraPoints { get; set; }
 
-    public Points Points
-    {
-        get => _points;
-        set => SetPoints(value);
-    }
+    public Rating Rating { get; set; }
 
-    private void SetPoints(Points points)
-    {
-        if (points < Assignment.MinPoints || Assignment.MaxPoints < points)
-        {
-            var message = $"Cannot rate submission for assignment {Assignment} with points {points}";
-            throw new DomainInvalidOperationException(message);
-        }
-
-        _points = points;
-    }
+    public Points Points => Rating * Assignment.MaxPoints;
 }
