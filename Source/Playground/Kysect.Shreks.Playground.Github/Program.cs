@@ -1,8 +1,11 @@
-using System.Reflection;
 using Kysect.Shreks.Application.Commands.Extensions;
+using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
-using MediatR;
+using Kysect.Shreks.Mapping.Extensions;
+using Kysect.Shreks.Playground.Github.TestEnv;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
