@@ -78,9 +78,11 @@ public class GoogleTableAccessor : IGoogleTableAccessor, IDisposable
 
     private async Task<string> GetSpreadsheetIdAsync(Guid subjectCourseId, CancellationToken token)
     {
-        var response = await _mediator.Send(new FindSpreadsheetIdBySubjectCourse.Query(subjectCourseId), token);
+        var response = await _mediator.Send(new GetSubjectCourseTableInfoById.Query(subjectCourseId), token);
 
-        var spreadsheetId = response.SpreadsheetId;
+        var tableInfo = response.TableInfo;
+
+        var spreadsheetId = tableInfo.SpreadsheetId;
 
         if (spreadsheetId is not null)
             return spreadsheetId;
@@ -93,15 +95,23 @@ public class GoogleTableAccessor : IGoogleTableAccessor, IDisposable
             return spreadsheetId;
         }
 
-        //TODO: change to subject course name
-        var spreadsheetTitle = subjectCourseId.ToString();
-        
-        spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(spreadsheetTitle, token);
-        var query = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
-        await _mediator.Send(query, token);
+        try
+        {
+            spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(tableInfo.Title, token);
+            var query = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
+            await _mediator.Send(query, token);
 
-        _spreadsheetCreationSemaphore.Release();
-
-        return spreadsheetId;
+            _logger.LogInformation("Successfully created table of course {SubjectCourseId}.", subjectCourseId);
+            return spreadsheetId;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to create table of course {SubjectCourseId}.", subjectCourseId);
+            throw;
+        }
+        finally
+        {
+            _spreadsheetCreationSemaphore.Release();
+        }
     }
 }

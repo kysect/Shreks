@@ -1,16 +1,17 @@
 ﻿using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.Application.Dto.Google;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Google.Queries.FindSpreadsheetIdBySubjectCourse;
+using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetSubjectCourseTableInfoById;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 
-public class FindSpreadsheetIdBySubjectCourseHandler : IRequestHandler<Query, Response>
+public class GetSubjectCourseTableInfoByIdHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
 
-    public FindSpreadsheetIdBySubjectCourseHandler(IShreksDatabaseContext context)
+    public GetSubjectCourseTableInfoByIdHandler(IShreksDatabaseContext context)
     {
         _context = context;
     }
@@ -19,10 +20,12 @@ public class FindSpreadsheetIdBySubjectCourseHandler : IRequestHandler<Query, Re
     {
         SubjectCourse course = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
-        var googleTableAssociation = course.Associations
+        var tableAssociation = course.Associations
             .OfType<GoogleTableSubjectCourseAssociation>()
             .FirstOrDefault();
 
-        return new Response(googleTableAssociation?.SpreadsheetId);
+        var tableInfo = new TableInfoDto(course.Name, tableAssociation?.SpreadsheetId);
+
+        return new Response(tableInfo);
     }
 }
