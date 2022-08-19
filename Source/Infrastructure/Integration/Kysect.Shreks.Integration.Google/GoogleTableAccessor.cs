@@ -76,14 +76,16 @@ public class GoogleTableAccessor : IDisposable
 
     private async Task<string> GetSpreadsheetIdAsync(Guid subjectCourseId, CancellationToken token)
     {
-        var response = await _mediator.Send(new GetSubjectCourseTableInfoById.Query(subjectCourseId), token);
+        var getTableInfoQuery = new GetSubjectCourseTableInfoById.Query(subjectCourseId);
 
-        var spreadsheetId = response.SpreadsheetId;
+        (_, string? spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
 
         if (spreadsheetId is not null)
             return spreadsheetId;
 
         await _spreadsheetCreationSemaphore.WaitAsync(token);
+
+        (string title, spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
 
         if (spreadsheetId is not null)
         {
@@ -93,9 +95,9 @@ public class GoogleTableAccessor : IDisposable
 
         try
         {
-            spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(response.Title, token);
-            var query = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
-            await _mediator.Send(query, token);
+            spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(title, token);
+            var addTableQuery = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
+            await _mediator.Send(addTableQuery, token);
 
             _logger.LogInformation("Successfully created table of course {SubjectCourseId}.", subjectCourseId);
             return spreadsheetId;
