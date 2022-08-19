@@ -1,5 +1,4 @@
-﻿using Kysect.Shreks.Application.Dto.Google;
-using MediatR;
+﻿using MediatR;
 
 namespace Kysect.Shreks.Application.Abstractions.Google.Queries;
 
@@ -7,5 +6,5 @@ public class GetSubjectCourseTableInfoById
 {
     public record Query(Guid SubjectCourseId) : IRequest<Response>;
 
-    public record Response(TableInfoDto TableInfo);
+    public record Response(string Title, string? SpreadsheetId);
 }

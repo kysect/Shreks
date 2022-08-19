@@ -1,5 +1,4 @@
 ﻿using Kysect.Shreks.Application.Abstractions.DataAccess;
-using Kysect.Shreks.Application.Dto.Google;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using MediatR;
@@ -24,8 +23,6 @@ public class GetSubjectCourseTableInfoByIdHandler : IRequestHandler<Query, Respo
             .OfType<GoogleTableSubjectCourseAssociation>()
             .FirstOrDefault();
 
-        var tableInfo = new TableInfoDto(course.Name, tableAssociation?.SpreadsheetId);
-
-        return new Response(tableInfo);
+        return new Response(course.Name, tableAssociation?.SpreadsheetId);
     }
 }

@@ -78,9 +78,7 @@ public class GoogleTableAccessor : IDisposable
     {
         var response = await _mediator.Send(new GetSubjectCourseTableInfoById.Query(subjectCourseId), token);
 
-        var tableInfo = response.TableInfo;
-
-        var spreadsheetId = tableInfo.SpreadsheetId;
+        var spreadsheetId = response.SpreadsheetId;
 
         if (spreadsheetId is not null)
             return spreadsheetId;
@@ -95,7 +93,7 @@ public class GoogleTableAccessor : IDisposable
 
         try
         {
-            spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(tableInfo.Title, token);
+            spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(response.Title, token);
             var query = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
             await _mediator.Send(query, token);
 
