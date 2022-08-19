@@ -25,7 +25,7 @@ public class StudentGenerator : EntityGeneratorBase<Student>
     protected override Student Generate(int index)
     {
         var groupCount = _studentGroupGenerator.GeneratedEntities.Count;
-        var groupNumber = _faker.Random.Number(0, groupCount - 1);
+        var groupNumber = index % groupCount;
 
         StudentGroup group = _studentGroupGenerator.GeneratedEntities[groupNumber];
 

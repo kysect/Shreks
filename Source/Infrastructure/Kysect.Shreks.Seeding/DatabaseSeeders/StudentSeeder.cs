@@ -8,6 +8,8 @@ public class StudentSeeder : IDatabaseSeeder
 {
     private readonly IEntityGenerator<Student> _generator;
 
+    public int Priority => 1;
+
     public StudentSeeder(IEntityGenerator<Student> generator)
     {
         _generator = generator;

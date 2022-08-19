@@ -1,4 +1,5 @@
 using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Core.Queue.Filters;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;
 
@@ -7,6 +8,9 @@ namespace Kysect.Shreks.Core.Study;
 public partial class StudentGroup : IEntity<Guid>
 {
     private readonly HashSet<Student> _students;
+    
+    // TODO: Remove when .NET 7 is released
+    protected virtual IReadOnlyCollection<QueueFilter> Filters { get; set; }
 
     public StudentGroup(string name)
         : this(Guid.NewGuid())
