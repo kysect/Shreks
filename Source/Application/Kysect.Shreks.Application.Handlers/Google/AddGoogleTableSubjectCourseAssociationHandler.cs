@@ -1,11 +1,11 @@
 ﻿using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Google.Queries.AddGoogleTableSubjectCourseAssociation;
+using static Kysect.Shreks.Application.Abstractions.Google.Commands.AddGoogleTableSubjectCourseAssociation;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 
-public class AddGoogleTableSubjectCourseAssociationHandler : IRequestHandler<Query, Unit>
+public class AddGoogleTableSubjectCourseAssociationHandler : IRequestHandler<Command, Unit>
 {
     private readonly IShreksDatabaseContext _context;
 
@@ -14,7 +14,7 @@ public class AddGoogleTableSubjectCourseAssociationHandler : IRequestHandler<Que
         _context = context;
     }
 
-    public async Task<Unit> Handle(Query request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
         var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 

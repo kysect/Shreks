@@ -1,4 +1,5 @@
-﻿using Kysect.Shreks.Application.Abstractions.Google.Models;
+﻿using Kysect.Shreks.Application.Abstractions.Google.Commands;
+using Kysect.Shreks.Application.Abstractions.Google.Models;
 using Kysect.Shreks.Application.Abstractions.Google.Queries;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tools;
@@ -96,8 +97,8 @@ public class GoogleTableAccessor : IDisposable
         try
         {
             spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(title, token);
-            var addTableQuery = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
-            await _mediator.Send(addTableQuery, token);
+            var addTableCommand = new AddGoogleTableSubjectCourseAssociation.Command(subjectCourseId, spreadsheetId);
+            await _mediator.Send(addTableCommand, token);
 
             _logger.LogInformation("Successfully created table of course {SubjectCourseId}.", subjectCourseId);
             return spreadsheetId;
