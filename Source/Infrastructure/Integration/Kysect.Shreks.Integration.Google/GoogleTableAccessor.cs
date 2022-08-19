@@ -78,20 +78,25 @@ public class GoogleTableAccessor : IGoogleTableAccessor, IDisposable
 
     private async Task<string> GetSpreadsheetIdAsync(Guid subjectCourseId, CancellationToken token)
     {
-        await _spreadsheetCreationSemaphore.WaitAsync(token);
-
         var response = await _mediator.Send(new FindSpreadsheetIdBySubjectCourse.Query(subjectCourseId), token);
 
-        if (response.SpreadsheetId is not null)
+        var spreadsheetId = response.SpreadsheetId;
+
+        if (spreadsheetId is not null)
+            return spreadsheetId;
+
+        await _spreadsheetCreationSemaphore.WaitAsync(token);
+
+        if (spreadsheetId is not null)
         {
             _spreadsheetCreationSemaphore.Release();
-            return response.SpreadsheetId;
+            return spreadsheetId;
         }
 
         //TODO: change to subject course name
         var spreadsheetTitle = subjectCourseId.ToString();
         
-        var spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(spreadsheetTitle, token);
+        spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(spreadsheetTitle, token);
         var query = new AddGoogleTableSubjectCourseAssociation.Query(subjectCourseId, spreadsheetId);
         await _mediator.Send(query, token);
 
