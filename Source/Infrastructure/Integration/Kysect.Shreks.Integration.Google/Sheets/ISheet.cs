@@ -2,7 +2,7 @@
 
 public interface ISheet<in TData> : ISheet
 {
-    Task UpdateAsync(TData data, CancellationToken token);
+    Task UpdateAsync(string spreadsheetId, TData data, CancellationToken token);
 }
 
 public interface ISheet
