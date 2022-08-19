@@ -13,11 +13,10 @@ public readonly record struct Points
 
     public static Points None => new Points();
 
-    public static implicit operator Points(double value)
-        => new Points(value);
-
-    public static implicit operator double(Points points)
-        => points.Value;
+    public static Points Max(Points a, Points b)
+    {
+        return a > b ? a : b;
+    }
 
     public static Points operator +(Points a, Points b)
         => new Points(a.Value + b.Value);
@@ -26,6 +25,12 @@ public readonly record struct Points
         => new Points(a.Value - b.Value);
 
     public static Points operator *(Points a, Points b)
+        => new Points(a.Value * b.Value);
+
+    public static Points operator *(Points a, Rating b)
+        => new Points(a.Value * b.Value);
+
+    public static Points operator *(Points a, Fraction b)
         => new Points(a.Value * b.Value);
 
     public static Points operator /(Points a, Points b)

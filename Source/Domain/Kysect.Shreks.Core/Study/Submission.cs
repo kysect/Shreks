@@ -28,5 +28,5 @@ public partial class Submission : IEntity<Guid>
 
     public Rating Rating { get; set; }
 
-    public Points Points => Rating * Assignment.MaxPoints;
+    public Points Points => Assignment.MaxPoints * Rating;
 }

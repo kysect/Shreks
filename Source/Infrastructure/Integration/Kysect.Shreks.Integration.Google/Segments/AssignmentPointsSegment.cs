@@ -41,7 +41,7 @@ public class AssignmentPointsSegment : PrototypeSheetSegmentBase<CoursePoints, S
 
         IComponent pointsComponent = assignmentPoints is null
             ? Empty()
-            : Label(assignmentPoints.Points.ToSheetPoints(currentCulture));
+            : Label(assignmentPoints.Points.Value.ToSheetPoints(currentCulture));
 
         IComponent dateComponent = assignmentPoints is null
             ? Empty()

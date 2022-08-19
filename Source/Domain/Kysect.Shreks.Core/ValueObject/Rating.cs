@@ -18,12 +18,6 @@ public readonly record struct Rating
 
     public static Rating None => new Rating();
 
-    public static implicit operator Rating(double value)
-        => new Rating(value);
-
-    public static implicit operator double(Rating rating)
-        => rating.Value;
-
     public static double operator *(Rating rating, double value)
         => rating.Value / MaxRating * value;
 
