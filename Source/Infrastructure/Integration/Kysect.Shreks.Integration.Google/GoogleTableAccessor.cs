@@ -86,7 +86,7 @@ public class GoogleTableAccessor : IDisposable
 
         await _spreadsheetCreationSemaphore.WaitAsync(token);
 
-        (string title, spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
+        (string subjectCourseName, spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
 
         if (spreadsheetId is not null)
         {
@@ -96,7 +96,7 @@ public class GoogleTableAccessor : IDisposable
 
         try
         {
-            spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(title, token);
+            spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(subjectCourseName, token);
             var addTableCommand = new AddGoogleTableSubjectCourseAssociation.Command(subjectCourseId, spreadsheetId);
             await _mediator.Send(addTableCommand, token);
 

@@ -6,5 +6,5 @@ public class GetSubjectCourseTableInfoById
 {
     public record Query(Guid SubjectCourseId) : IRequest<Response>;
 
-    public record Response(string Title, string? SpreadsheetId);
+    public record Response(string SubjectCourseName, string? SpreadsheetId);
 }
