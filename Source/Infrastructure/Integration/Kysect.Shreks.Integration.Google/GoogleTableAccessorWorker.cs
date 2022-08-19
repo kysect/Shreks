@@ -1,5 +1,5 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Integration.Google.Tools.Collection;
+using Kysect.Shreks.Integration.Google.Models;
 using Microsoft.Extensions.Hosting;
 
 namespace Kysect.Shreks.Integration.Google;
