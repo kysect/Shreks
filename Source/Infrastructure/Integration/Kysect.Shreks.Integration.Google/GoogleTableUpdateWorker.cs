@@ -37,6 +37,7 @@ public class GoogleTableUpdateWorker : BackgroundService, ITableUpdateQueue
             await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
         }
     }
+
     public void EnqueueCoursePointsUpdate(Guid subjectCourseId)
         => _pointsUpdateSubjectCourseIds.Add(subjectCourseId);
 
