@@ -2,6 +2,7 @@
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
+using Google.Apis.Util.Store;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Formatters;
@@ -17,7 +18,21 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-var credential = await GoogleCredential.FromFileAsync("client_secrets.json", default);
+var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read);
+var secrets = await GoogleClientSecrets.FromStreamAsync(stream);
+
+var scopes = new[]
+{
+    SheetsService.Scope.Spreadsheets,
+    DriveService.Scope.Drive
+};
+
+var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+    secrets.Secrets,
+    scopes,
+    "user",
+    CancellationToken.None,
+    new FileDataStore("token.json", true));
 
 var initializer = new BaseClientService.Initializer
 {
@@ -25,9 +40,7 @@ var initializer = new BaseClientService.Initializer
 };
 
 var sheetsService = new SheetsService(initializer);
-
 var driverService = new DriveService(initializer);
-//TODO: insert valid credentials
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -42,8 +55,8 @@ IServiceProvider services = new ServiceCollection()
     .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
     .AddEntityGenerators(o => o
         .ConfigureEntityGenerator<Submission>(s => s.Count = 1000)
-        .ConfigureEntityGenerator<Student>(s => s.Count = 600)
-        .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 50)
+        .ConfigureEntityGenerator<Student>(s => s.Count = 400)
+        .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 20)
         .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 50)
         .ConfigureEntityGenerator<Assignment>(a => a.Count = 50)
         .ConfigureFaker(f => f.Locale = "ru"))
