@@ -12,13 +12,20 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
-var shreksConfiguration = builder.Configuration.GetSection(nameof(ShreksConfiguration)).Get<ShreksConfiguration>();
-shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
+var configuration = builder.Configuration;
+var shreksConfiguration = configuration.GetSection(nameof(ShreksConfiguration)).Get<ShreksConfiguration>();
+//shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
+TestEnvConfiguration testEnvConfiguration = configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
 
 builder.Services
-    .AddMediatR(c => c.AsSingleton(), Assembly.GetExecutingAssembly())
+    .AddMappingConfiguration()
+    .AddDatabaseContext(optionsBuilder => optionsBuilder
+            .UseNpgsql(configuration.GetConnectionString("postgres"))
+            .UseLazyLoadingProxies())
+    .AddHandlers()
     .AddApplicationCommands()
-    .AddGithubServices(shreksConfiguration);
+    .AddGithubServices(shreksConfiguration)
+    .SetupTestEnv(testEnvConfiguration);
 
 builder.Services
     .AddLogging(logBuilder => logBuilder.AddSerilog());
@@ -26,5 +33,6 @@ builder.Services
 var app = builder.Build();
 
 app.UseGithubIntegration(shreksConfiguration);
+await app.Services.UseTestEnv(testEnvConfiguration);
 
 app.Run();

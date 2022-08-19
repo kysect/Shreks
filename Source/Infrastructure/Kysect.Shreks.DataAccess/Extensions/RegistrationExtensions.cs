@@ -11,8 +11,7 @@ public static class RegistrationExtensions
         this IServiceCollection collection,
         Action<DbContextOptionsBuilder> action)
     {
-        collection.AddDbContext<ShreksDatabaseContext>(action);
-        collection.AddScoped<IShreksDatabaseContext, ShreksDatabaseContext>();
+        collection.AddDbContext<IShreksDatabaseContext, ShreksDatabaseContext>(action);
 
         return collection;
     }
