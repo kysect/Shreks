@@ -1,3 +1,4 @@
+using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
@@ -22,6 +23,8 @@ public interface IShreksDatabaseContext
 
     DbSet<UserAssociation> UserAssociations { get; }
     DbSet<SubjectCourseAssociation> SubjectCourseAssociations { get; }
+    
+    DbSet<SubmissionQueue> SubmissionQueues { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -23,7 +23,7 @@ public class CreateSubmissionHandler : IRequestHandler<Command, Response>
         var student = await _context.Students.GetByIdAsync(request.StudentId, cancellationToken);
         var assignment = await _context.Assignments.GetByIdAsync(request.AssignmentId, cancellationToken);
 
-        var submission = new Submission(student, assignment, DateTime.Now, request.Payload);
+        var submission = new Submission(student, assignment, DateOnly.FromDateTime(DateTime.Now), request.Payload);
         await _context.Submissions.AddAsync(submission, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
