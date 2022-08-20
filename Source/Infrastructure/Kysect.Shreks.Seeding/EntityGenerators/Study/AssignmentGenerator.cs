@@ -33,12 +33,15 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
             .Select(i => _deadlinePolicyGenerator.GeneratedEntities[i])
             .Distinct();
 
+        var subjectCourse = _faker.PickRandom<SubjectCourse>(_subjectCourseGenerator.GeneratedEntities);
+
         var assignment = new Assignment
         (
             _faker.Commerce.Product(),
             (index + 1).ToString(),
-            _faker.Random.Points(0, 5),
-            _faker.Random.Points(5, 10)
+            _faker.Random.Double(0, 5),
+            _faker.Random.Double(5, 10),
+            subjectCourse
         );
 
         foreach (var deadline in deadlines)
@@ -46,7 +49,6 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
             assignment.AddDeadlinePolicy(deadline);
         }
 
-        var subjectCourse = _faker.PickRandom<SubjectCourse>(_subjectCourseGenerator.GeneratedEntities);
         subjectCourse.AddAssignment(assignment);
 
         return assignment;

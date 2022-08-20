@@ -32,7 +32,13 @@ public class SubmissionGenerator : EntityGeneratorBase<Submission>
         var assignment = _faker.PickRandom<Assignment>(_assignmentGenerator.GeneratedEntities);
         var student = _faker.PickRandom<Student>(_studentGenerator.GeneratedEntities);
 
-        var submission = new Submission(student, assignment, _faker.Date.Future(), _faker.Internet.Url())
+        var submission = new Submission
+        (
+            student,
+            assignment,
+            DateOnly.FromDateTime(_faker.Date.Future()),
+            _faker.Internet.Url()
+        )
         {
             Rating = _faker.Random.Fraction(),
             ExtraPoints = _faker.Random.Bool(ChangeOfHavingExtraPoints) ? _faker.Random.Points(0, MaxExtraPoints) : Points.None

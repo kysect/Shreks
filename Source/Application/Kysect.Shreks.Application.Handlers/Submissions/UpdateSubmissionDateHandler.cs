@@ -20,7 +20,7 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
     {
         var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
-        submission.SubmissionDateTime = request.NewDate;
+        submission.SubmissionDate = request.NewDate;
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 

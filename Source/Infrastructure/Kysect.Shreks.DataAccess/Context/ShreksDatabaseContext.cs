@@ -1,4 +1,5 @@
 using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
@@ -25,6 +26,7 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     public DbSet<Submission> Submissions { get; protected init; } = null!;
     public DbSet<UserAssociation> UserAssociations { get; protected init; } = null!;
     public DbSet<SubjectCourseAssociation> SubjectCourseAssociations { get; protected init; } = null!;
+    public DbSet<SubmissionQueue> SubmissionQueues { get; protected init; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

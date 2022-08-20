@@ -32,7 +32,9 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 
         var subject = _subjectGenerator.GeneratedEntities[index];
 
-        var subjectCourse = new SubjectCourse(subject);
+        string subjectCourseName = _faker.Commerce.ProductName();
+
+        var subjectCourse = new SubjectCourse(subject, subjectCourseName);
 
         var mentors = _faker.Random
             .ListItems(_mentorGenerator.GeneratedEntities.ToList())

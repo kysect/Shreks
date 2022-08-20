@@ -2,4 +2,4 @@
 
 namespace Kysect.Shreks.Application.Abstractions.Google.Models;
 
-public record struct StudentsQueue(IReadOnlyCollection<Submission> Submissions);
+public record struct SubmissionsQueue(IReadOnlyCollection<Submission> Submissions);
