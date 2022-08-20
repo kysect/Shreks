@@ -11,8 +11,6 @@ public class AssignmentDataSegment : SheetSegmentBase<Unit, QueueSubmissionDto, 
 {
     protected override IComponent BuildHeader(Unit data)
     {
-        TimeSpan timeSpan = DateTime.Now - DateTime.Now;
-
         return HStack
         (
             Label("Лабораторная работа")
@@ -28,7 +26,6 @@ public class AssignmentDataSegment : SheetSegmentBase<Unit, QueueSubmissionDto, 
     {
         var submission = data.RowData.Submission;
 
-        // TODO: use full link to PR instead of number
         return HStack
         (
             Label(submission.AssignmentShortName).WithDefaultStyle(),
