@@ -2,8 +2,10 @@
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -51,7 +53,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             .Where(s => s.Student.Equals(student))
             .AsEnumerable()
             .GroupBy(s => s.Assignment)
-            .Select(s => GetAssignmentPoints(s.ToArray()))
+            .Select(GetAssignmentPoints)
             .ToArray();
 
         var studentDto = _mapper.Map<StudentDto>(student);
@@ -61,11 +63,39 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
     private AssignmentPointsDto GetAssignmentPoints(IEnumerable<Submission> submissions)
     {
-        var submission = submissions.OrderBy(s => s.SubmissionDate).First();
-        //TODO: add deadlines usage instead of .Last
-        var points = submission.Points;
+        var assignment = submissions.First().Assignment;
+        var group = submissions.First().Student.Group;
 
-        var submissionDate = submission.SubmissionDate;
-        return new AssignmentPointsDto(submission.Assignment.Id, submissionDate, points.Value);
+        var deadline = assignment.GroupAssignments.First(g => g.Group.Equals(group)).Deadline;
+
+        var (submission, points) = submissions.Select(
+                s => (submission: s, points: GetSubmissionPoints(s, deadline))
+            ).MaxBy(s => s.points);
+
+        return new AssignmentPointsDto(assignment.Id, submission.SubmissionDate, points.Value);
+    }
+
+    private Points GetSubmissionPoints(Submission submission, DateOnly deadline)
+    {
+        var deadlinePolicies = GetActiveDeadlinePolicies(submission, deadline);
+
+        var points = deadlinePolicies.Aggregate(
+            submission.Points, (current, deadlinePolicy) => deadlinePolicy.Apply(current));
+
+        return points;
+    }
+
+    private IEnumerable<DeadlinePolicy> GetActiveDeadlinePolicies(Submission submission, DateOnly deadline)
+    {
+        if (submission.SubmissionDate <= deadline) return Array.Empty<DeadlinePolicy>();
+
+        var submissionDateTime = submission.SubmissionDate.ToDateTime(TimeOnly.MinValue);
+        var deadlineDateTime = deadline.ToDateTime(TimeOnly.MinValue);
+
+        var submissionDeadlineOffset = submissionDateTime - deadlineDateTime;
+        return submission
+            .Assignment
+            .DeadlinePolicies
+            .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset);
     }
 }
