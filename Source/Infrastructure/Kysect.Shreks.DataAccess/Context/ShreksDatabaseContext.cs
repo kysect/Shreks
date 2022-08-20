@@ -1,6 +1,7 @@
 using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
+using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
@@ -24,6 +25,7 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     public DbSet<SubjectCourse> SubjectCourses { get; protected init; } = null!;
     public DbSet<SubjectCourseGroup> SubjectCourseGroups { get; protected init; } = null!;
     public DbSet<Submission> Submissions { get; protected init; } = null!;
+    public DbSet<SubmissionAssociation> SubmissionAssociations { get; protected init; } = null!;
     public DbSet<UserAssociation> UserAssociations { get; protected init; } = null!;
     public DbSet<SubjectCourseAssociation> SubjectCourseAssociations { get; protected init; } = null!;
     public DbSet<SubmissionQueue> SubmissionQueues { get; protected init; } = null!;
