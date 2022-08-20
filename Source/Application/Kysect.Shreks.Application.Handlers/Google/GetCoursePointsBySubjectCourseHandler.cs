@@ -1,7 +1,11 @@
-﻿using Kysect.Shreks.Application.Abstractions.DataAccess;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
+﻿using AutoMapper;
+using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetCoursePointsBySubjectCourse;
 
@@ -10,10 +14,12 @@ namespace Kysect.Shreks.Application.Handlers.Google;
 public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly IMapper _mapper;
 
-    public GetCoursePointsBySubjectCourseHandler(IShreksDatabaseContext context)
+    public GetCoursePointsBySubjectCourseHandler(IShreksDatabaseContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -31,11 +37,15 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             .SelectMany(g => g.StudentGroup.Students.Select(s => GetStudentPoints(s, submission)))
             .ToArray();
 
-        var points = new CoursePoints(subjectCourse.Assignments, studentPoints);
+        var assignmentsDto = subjectCourse.Assignments
+            .Select(_mapper.Map<AssignmentDto>)
+            .ToArray();
+
+        var points = new CoursePointsDto(assignmentsDto, studentPoints);
         return new Response(points);
     }
 
-    private static StudentPoints GetStudentPoints(Student student, IQueryable<Submission> submissions)
+    private StudentPointsDto GetStudentPoints(Student student, IQueryable<Submission> submissions)
     {
         var assignmentPoints = submissions
             .Where(s => s.Student.Equals(student))
@@ -44,16 +54,18 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             .Select(s => GetAssignmentPoints(s.ToArray()))
             .ToArray();
 
-        return new StudentPoints(student, assignmentPoints);
+        var studentDto = _mapper.Map<StudentDto>(student);
+
+        return new StudentPointsDto(studentDto, assignmentPoints);
     }
 
-    private static AssignmentPoints GetAssignmentPoints(IEnumerable<Submission> submissions)
+    private AssignmentPointsDto GetAssignmentPoints(IEnumerable<Submission> submissions)
     {
         var submission = submissions.OrderBy(s => s.SubmissionDate).First();
         //TODO: add deadlines usage instead of .Last
         var points = submission.Points;
 
         var submissionDate = submission.SubmissionDate;
-        return new AssignmentPoints(submission.Assignment, submissionDate, points);
+        return new AssignmentPointsDto(submission.Assignment.Id, submissionDate, points.Value);
     }
 }

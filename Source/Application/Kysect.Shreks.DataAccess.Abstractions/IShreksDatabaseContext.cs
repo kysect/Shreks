@@ -5,7 +5,7 @@ using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kysect.Shreks.Application.Abstractions.DataAccess;
+namespace Kysect.Shreks.DataAccess.Abstractions;
 
 public interface IShreksDatabaseContext
 {

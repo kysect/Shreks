@@ -1,5 +1,7 @@
+using AutoMapper;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +11,7 @@ namespace Kysect.Shreks.Tests.Application;
 public class ApplicationTestBase : IDisposable
 {
     protected readonly ShreksDatabaseContext Context;
+    protected readonly IMapper Mapper;
     protected readonly IServiceProvider Provider;
 
     protected ApplicationTestBase()
@@ -23,11 +26,14 @@ public class ApplicationTestBase : IDisposable
 
         collection.AddEntityGenerators();
         collection.AddDatabaseSeeders();
+        collection.AddMappingConfiguration();
 
         Provider = collection.BuildServiceProvider();
 
         Context = Provider.GetRequiredService<ShreksDatabaseContext>();
         Context.Database.EnsureCreated();
+
+        Mapper = Provider.GetRequiredService<IMapper>();
 
         Provider.UseDatabaseSeeders().GetAwaiter().GetResult();
     }

@@ -1,11 +1,11 @@
 ﻿using System.Text;
-using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Application.Dto.Users;
 
-namespace Kysect.Shreks.Core.Formatters;
+namespace Kysect.Shreks.Application.Abstractions.Formatters;
 
 public class UserFullNameFormatter : IUserFullNameFormatter
 {
-    public string GetFullName(User user)
+    public string GetFullName(UserDto user)
     {
         var fullNameBuilder = new StringBuilder()
             .Append(user.LastName)

@@ -1,18 +1,18 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.SheetBuilders;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Segments;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kysect.Shreks.Integration.Google.Factories;
 
-public class PointsSheetComponentFactory : ISheetComponentFactory<CoursePoints>
+public class PointsSheetComponentFactory : ISheetComponentFactory<CoursePointsDto>
 {
     private readonly ISheetBuilder _sheetBuilder;
 
-    private readonly ISheetSegment<CoursePoints, StudentPoints, Unit>[] _segments;
+    private readonly ISheetSegment<CoursePointsDto, StudentPointsDto, Unit>[] _segments;
 
     public PointsSheetComponentFactory(
         ISheetBuilder sheetBuilder,
@@ -20,7 +20,7 @@ public class PointsSheetComponentFactory : ISheetComponentFactory<CoursePoints>
     {
         _sheetBuilder = sheetBuilder;
 
-        _segments = new ISheetSegment<CoursePoints, StudentPoints, Unit>[]
+        _segments = new ISheetSegment<CoursePointsDto, StudentPointsDto, Unit>[]
         {
             ActivatorUtilities.CreateInstance<PointsStudentSegment>(serviceProvider),
             ActivatorUtilities.CreateInstance<AssignmentPointsSegment>(serviceProvider),
@@ -28,9 +28,9 @@ public class PointsSheetComponentFactory : ISheetComponentFactory<CoursePoints>
         };
     }
 
-    public IComponent Create(CoursePoints points)
+    public IComponent Create(CoursePointsDto points)
     {
-        var sheetData = new SheetData<CoursePoints, StudentPoints, Unit>(points, points.StudentsPoints, Unit.Value);
+        var sheetData = new SheetData<CoursePointsDto, StudentPointsDto, Unit>(points, points.StudentsPoints, Unit.Value);
         return _sheetBuilder.Build(_segments, sheetData);
     }
 }

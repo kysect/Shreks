@@ -1,12 +1,12 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Factories;
 using MediatR;
 
 namespace Kysect.Shreks.Integration.Google.Segments;
 
-public class PointsStudentSegment : SheetSegmentBase<CoursePoints, StudentPoints, Unit>
+public class PointsStudentSegment : SheetSegmentBase<CoursePointsDto, StudentPointsDto, Unit>
 {
     private readonly IStudentComponentFactory _studentComponentFactory;
 
@@ -15,9 +15,9 @@ public class PointsStudentSegment : SheetSegmentBase<CoursePoints, StudentPoints
         _studentComponentFactory = studentComponentFactory;
     }
 
-    protected override IComponent BuildHeader(CoursePoints data)
+    protected override IComponent BuildHeader(CoursePointsDto data)
         => _studentComponentFactory.BuildHeader();
 
-    protected override IComponent BuildRow(HeaderRowData<CoursePoints, StudentPoints> data, int rowIndex)
+    protected override IComponent BuildRow(HeaderRowData<CoursePointsDto, StudentPointsDto> data, int rowIndex)
         => _studentComponentFactory.BuildRow(data.RowData.Student);
 }

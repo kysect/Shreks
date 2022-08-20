@@ -1,4 +1,3 @@
-using Kysect.Shreks.Core.Users;
 using MediatR;
 
 namespace Kysect.Shreks.Application.Commands.Contexts;
@@ -6,11 +5,11 @@ namespace Kysect.Shreks.Application.Commands.Contexts;
 public class BaseContext
 {
     public IMediator Mediator { get; }
-    public User Issuer { get; }
+    public Guid IssuerId { get; }
 
-    public BaseContext(IMediator mediator, User issuer)
+    public BaseContext(IMediator mediator, Guid issuerId)
     {
         Mediator = mediator;
-        Issuer = issuer;
+        IssuerId = issuerId;
     }
 }
