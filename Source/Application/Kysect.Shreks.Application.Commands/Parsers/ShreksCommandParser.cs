@@ -1,6 +1,7 @@
 using CommandLine;
+using Kysect.Shreks.Application.Commands.Commands;
 
-namespace Kysect.Shreks.Application.Commands.Commands;
+namespace Kysect.Shreks.Application.Commands.Parsers;
 
 public class ShreksCommandParser : IShreksCommandParser
 {

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Octokit;
 
-namespace Kysect.Shreks.Integration.Github.BackgroundWorker;
+namespace Kysect.Shreks.Integration.Github.Invites;
 
 public class GithubInvitingWorker : BackgroundService
 {

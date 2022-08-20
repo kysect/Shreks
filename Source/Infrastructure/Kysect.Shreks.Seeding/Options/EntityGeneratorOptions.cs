@@ -1,5 +1,3 @@
-using Bogus;
-
 namespace Kysect.Shreks.Seeding.Options;
 
 public class EntityGeneratorOptions<TEntity>
