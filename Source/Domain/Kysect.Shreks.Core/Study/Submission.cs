@@ -14,7 +14,7 @@ public partial class Submission : IEntity<Guid>
         Assignment = assignment;
         Payload = payload;
         
-        Rating = null;
+        Rating = default;
         ExtraPoints = default;
     }
 
@@ -28,7 +28,7 @@ public partial class Submission : IEntity<Guid>
 
     public Fraction? Rating { get; set; }
 
-    public Points ExtraPoints { get; set; }
+    public Points? ExtraPoints { get; set; }
 
     public Points? Points => Rating is null ? default : Assignment.MaxPoints * Rating;
 }
