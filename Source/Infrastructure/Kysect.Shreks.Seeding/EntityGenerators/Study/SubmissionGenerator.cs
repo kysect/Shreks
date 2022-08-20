@@ -1,5 +1,6 @@
 ﻿using Bogus;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.Seeding.Extensions;
@@ -36,14 +37,14 @@ public class SubmissionGenerator : EntityGeneratorBase<Submission>
         (
             student,
             assignment,
-            DateOnly.FromDateTime(_faker.Date.Future()),
-            _faker.Internet.Url()
+            DateOnly.FromDateTime(_faker.Date.Future())
         )
         {
             Rating = _faker.Random.Fraction(),
-            ExtraPoints = _faker.Random.Bool(ChangeOfHavingExtraPoints) ? _faker.Random.Points(0, MaxExtraPoints) : Points.None
+            ExtraPoints = _faker.Random.Bool(ChangeOfHavingExtraPoints) ? _faker.Random.Points(0, MaxExtraPoints) : Points.None,
         };
 
+        submission.UpdateAssociation(new GithubPullRequestSubmissionAssociation(submission, _faker.Random.Int(1, 100)));
         return submission;
     }
 }

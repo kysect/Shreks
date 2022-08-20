@@ -26,8 +26,7 @@ var submission = new Submission
     new Student(new User("John", "Doe", "adw"),
         new StudentGroup("")),
     new Assignment("adw", "", new Points(1), new Points(2), new SubjectCourse(new Subject(""), "")),
-    DateOnly.FromDateTime(DateTime.Now),
-    ""
+    DateOnly.FromDateTime(DateTime.Now)
 );
 
 var positionedSubmission = new PositionedSubmission

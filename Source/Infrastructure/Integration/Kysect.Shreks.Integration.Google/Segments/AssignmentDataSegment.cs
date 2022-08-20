@@ -1,6 +1,8 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
+using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Integration.Google.Extensions;
 using MediatR;
 using static FluentSpreadsheets.ComponentFactory;
@@ -26,10 +28,15 @@ public class AssignmentDataSegment : SheetSegmentBase<Unit, Submission, Unit>
     {
         Submission submission = data.RowData;
 
+        ArgumentNullException.ThrowIfNull(submission.Association);
+        if (submission.Association is not GithubPullRequestSubmissionAssociation pullRequest)
+            throw new DomainInvalidOperationException($"Cannot build google sheet row. Submission has invalid association: {submission.Association.GetType()}");
+
+        // TODO: use full link to PR instead of number
         return HStack
         (
             Label(submission.Assignment.ShortName).WithDefaultStyle(),
-            Label(submission.Payload).WithDefaultStyle()
+            Label(pullRequest.PullRequestNumber).WithDefaultStyle()
         );
     }
 }
