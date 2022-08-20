@@ -1,8 +1,8 @@
-﻿using Kysect.Shreks.Application.Abstractions.DataAccess;
-using Kysect.Shreks.Application.Abstractions.Exceptions;
+﻿using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Students.GetStudentByUsername;
+using static Kysect.Shreks.Application.Abstractions.Students.GetStudentByUser;
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 

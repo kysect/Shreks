@@ -2,7 +2,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Abstractions.Students;
 
-public static class GetStudentByUsername
+public static class GetStudentByUser
 {
     public record Query(Guid UserId) : IRequest<Response>;
 
