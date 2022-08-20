@@ -10,5 +10,6 @@ public class SubmissionConfiguration : IEntityTypeConfiguration<Submission>
     {
         builder.HasOne(x => x.Student);
         builder.HasOne(x => x.Assignment);
+        builder.Navigation(x => x.Associations).HasField("_associations");
     }
 }
