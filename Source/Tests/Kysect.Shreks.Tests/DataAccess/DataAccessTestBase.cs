@@ -2,6 +2,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ public abstract class DataAccessTestBase : IDisposable
             x.ConfigureEntityGenerator<Student>(xx => { xx.Count = 30; });
         });
 
+        collection.AddMappingConfiguration();
         Provider = collection.BuildServiceProvider();
 
         Context = Provider.GetRequiredService<ShreksDatabaseContext>();
