@@ -7,7 +7,7 @@ Github -> WebhookEventProcessor : Call /api/github/webhooks
 
 WebhookEventProcessor -> Shreks : CreateSubmission(githubUsername, pullRequestLink)
 Shreks -> Shreks : GetStudentByUsername(githubUsername)
-Shreks -> Shreks : GetStudentAssignment(student, assignmentShortName)
+Shreks -> Shreks : GetGroupAssignment(student, assignmentShortName)
 Shreks -> DatabaseContext : CreateSubmission(submission)
 
 Shreks -> WebhookEventProcessor : Created submission

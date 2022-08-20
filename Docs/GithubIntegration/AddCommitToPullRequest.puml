@@ -10,7 +10,7 @@ Shreks -> Shreks : GetStudentByUsername(githubUsername)
 Shreks -> Shreks : FindCurrentSubmission(pullRequestLink)
 
 alt No active submission
-    Shreks -> Shreks : GetStudentAssignment(student, assignmentShortName)
+    Shreks -> Shreks : GetGroupAssignment(student, assignmentShortName)
     Shreks -> DatabaseContext : CreateSubmission(submission)
 end
 
