@@ -1,10 +1,11 @@
+using Kysect.Shreks.Application.Dto.Study;
 using MediatR;
 
 namespace Kysect.Shreks.Application.Abstractions.Github.Queries;
 
 public static class GetCurrentUnratedSubmissionByPrNumber
 {
-    public record Query(string organisation, string repository, int PrNumber) : IRequest<Response>;
+    public record Query(string organisation, string repository, long PrNumber) : IRequest<Response>;
 
-    public record Response(Guid SubmissionId);
+    public record Response(SubmissionDto SubmissionDto);
 }

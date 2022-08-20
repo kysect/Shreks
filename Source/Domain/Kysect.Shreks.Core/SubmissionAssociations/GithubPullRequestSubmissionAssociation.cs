@@ -12,5 +12,5 @@ public partial class GithubPullRequestSubmissionAssociation : SubmissionAssociat
 
     public string Organization { get; protected set; }
     public string Repository { get; protected set; }
-    public int PullRequestNumber { get; protected set; }
+    public long PullRequestNumber { get; protected set; }
 }

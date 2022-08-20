@@ -25,9 +25,16 @@ public class IssueCommentContextFactory : ICommandContextFactory
         return new BaseContext(_mediator, response.UserId);
     }
 
-    public Task<SubmissionContext> CreateSubmissionContext(CancellationToken cancellationToken)
+    public async Task<SubmissionContext> CreateSubmissionContext(CancellationToken cancellationToken)
     {
-        //TODO: need pr -> submission query
-        throw new NotImplementedException();
+        var login = _event.Sender!.Login; //user is always present in this event
+        var userQuery = new GetUserByUsername.Query(login);
+        var userResponse = await _mediator.Send(userQuery, cancellationToken);
+
+        var submissionQuery = new GetCurrentUnratedSubmissionByPrNumber.Query(_event.Organization.Login!, 
+            _event.Repository.Name, _event.Issue.Number);
+        var submissionResponse =  await _mediator.Send(submissionQuery);
+
+        return new SubmissionContext(_mediator, userResponse.UserId, submissionResponse.SubmissionDto);
     }
 }
