@@ -81,19 +81,19 @@ var tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
 await tableWorker.StartAsync(default);
 
 tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 
 var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
 tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
+tableWorker.EnqueueSubmissionsQueueUpdate(anotherSubjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromMinutes(2));
 
 tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 
 await Task.Delay(-1);
