@@ -10,19 +10,18 @@ namespace Kysect.Shreks.Tests.Mapping;
 
 public class MappingTest : DataAccessTestBase
 {
-    private readonly IEntityGenerator<Submission> _submissionGenerator;
-    private IMapper _mapper;
+    private readonly IMapper _mapper;
 
     public MappingTest()
     {
-        _submissionGenerator = Provider.GetRequiredService<IEntityGenerator<Submission>>();
         _mapper = Provider.GetRequiredService<IMapper>();
     }
 
     [Fact]
-    public async Task MapSubmissionToDto_NoException()
+    public async Task Map_Should_MapSubmissionToSubmissionDto()
     {
-        Submission submission = _submissionGenerator.Generate();
+        Submission submission = Provider.GetRequiredService<IEntityGenerator<Submission>>().Generate();
+        
         var submissionDto = _mapper.Map<SubmissionDto>(submission);
 
         Assert.NotNull(submissionDto);
