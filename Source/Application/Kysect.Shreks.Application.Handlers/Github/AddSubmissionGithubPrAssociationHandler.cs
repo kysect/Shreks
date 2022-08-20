@@ -9,7 +9,7 @@ using static Abstractions.Github.Commands.AddSubmissionGithubPrAssociation;
 
 public class AddSubmissionGithubPrAssociationHandler : IRequestHandler<Command>
 {
-    private IShreksDatabaseContext _context;
+    private readonly IShreksDatabaseContext _context;
 
     public AddSubmissionGithubPrAssociationHandler(IShreksDatabaseContext context)
     {

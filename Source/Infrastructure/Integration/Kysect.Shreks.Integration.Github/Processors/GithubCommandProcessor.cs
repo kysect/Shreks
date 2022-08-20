@@ -21,7 +21,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         try
         {
             var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            var submissionId = await rateCommand.ExecuteAsync(context, _cancellationToken);
+            await rateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, "");
         }
         catch(Exception e) //TODO: catch different exceptions and write better messages
