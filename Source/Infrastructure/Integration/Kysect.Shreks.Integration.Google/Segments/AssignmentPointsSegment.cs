@@ -42,11 +42,11 @@ public class AssignmentPointsSegment
 
         IComponent pointsComponent = assignmentPoints?.Points is null
             ? Empty()
-            : Label(assignmentPoints.Points.Value.ToSheetPoints(currentCulture));
+            : Label(assignmentPoints.Points.ToSheetPoints(currentCulture));
 
-        IComponent dateComponent = assignmentPoints?.Date is null
+        IComponent dateComponent = assignmentPoints is null
             ? Empty()
-            : Label(assignmentPoints.Date.Value, currentCulture);
+            : Label(assignmentPoints.Date, currentCulture);
 
         return HStack
         (
