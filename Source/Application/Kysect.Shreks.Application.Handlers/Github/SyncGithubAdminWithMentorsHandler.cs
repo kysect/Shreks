@@ -1,12 +1,11 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.Application.Abstractions.Github;
 using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Kysect.Shreks.Integration.Github.Client;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Octokit;
 using Kysect.Shreks.Core.Study;
 using Microsoft.Extensions.Logging;
 
@@ -15,19 +14,16 @@ namespace Kysect.Shreks.Application.Handlers.Github;
 public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdminWithMentors.Command>
 {
     private readonly IShreksDatabaseContext _shreksDatabaseContext;
-    private readonly IInstallationClientFactory _clientFactory;
-    private readonly IGitHubClient _appClient;
+    private readonly IOrganizationDetailsProvider _organizationDetailsProvider;
     private readonly ILogger<SyncGithubAdminWithMentorsHandler> _logger;
 
     public SyncGithubAdminWithMentorsHandler(
         IShreksDatabaseContext shreksDatabaseContext,
-        IInstallationClientFactory clientFactory,
-        IGitHubClient appClient,
+        IOrganizationDetailsProvider organizationDetailsProvider,
         ILogger<SyncGithubAdminWithMentorsHandler> logger)
     {
         _shreksDatabaseContext = shreksDatabaseContext;
-        _clientFactory = clientFactory;
-        _appClient = appClient;
+        _organizationDetailsProvider = organizationDetailsProvider;
         _logger = logger;
     }
 
@@ -41,32 +37,24 @@ public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdmin
         if (courseGithub is null)
             throw new EntityNotFoundException($"Cannot found organization {request.OrganizationName} in database");
 
-        IReadOnlyList<User> organizationAdmins = await GetOrganizationAdmins(courseGithub.GithubOrganizationName);
+        IReadOnlyCollection<string> organizationOwners = await _organizationDetailsProvider.GetOrganizationOwners(courseGithub.GithubOrganizationName);
         HashSet<string> mentorUsernames = await GetMentorUsernames(courseGithub.SubjectCourse.Id, cancellationToken);
 
-        List<User> notMentorAdmins = organizationAdmins.Where(a => !mentorUsernames.Contains(a.Login)).ToList();
-        if (!notMentorAdmins.Any())
+        List<string> notMentorOwner = organizationOwners.Where(a => !mentorUsernames.Contains(a)).ToList();
+        if (!notMentorOwner.Any())
         {
-            _logger.LogWarning($"All github admins ({organizationAdmins.Count}) already added as mentors.");
+            _logger.LogWarning($"All github owners ({organizationOwners.Count}) already added as mentors.");
             return Unit.Value;
         }
 
-        foreach (User adminUser in notMentorAdmins)
+        foreach (string owner in notMentorOwner)
         {
-            _logger.LogInformation($"Github user {adminUser.Login} is admin and will be added as mentor to {courseGithub.SubjectCourse.Name}");
-            await CreateMentorFromAdmin(courseGithub.SubjectCourse, adminUser.Login, cancellationToken);
+            _logger.LogInformation($"Github user {owner} is owner and will be added as mentor to {courseGithub.SubjectCourse.Name}");
+            await CreateMentorFromAdmin(courseGithub.SubjectCourse, owner, cancellationToken);
         }
 
         await _shreksDatabaseContext.SaveChangesAsync(cancellationToken);
         return Unit.Value;
-    }
-
-    private async Task<IReadOnlyList<User>> GetOrganizationAdmins(string githubOrganization)
-    {
-        Installation installation = await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(githubOrganization);
-        GitHubClient client = _clientFactory.GetClient(installation.Id);
-        IReadOnlyList<User> adminUsers = await client.Organization.Member.GetAll(githubOrganization, OrganizationMembersRole.Admin);
-        return adminUsers;
     }
 
     private async Task<HashSet<string>> GetMentorUsernames(Guid subjectCourseId, CancellationToken cancellationToken)
