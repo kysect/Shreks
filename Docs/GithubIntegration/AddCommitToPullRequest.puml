@@ -1,0 +1,22 @@
+@startuml Add commit to PR
+
+actor User
+
+User -> Github : Add new commit
+Github -> WebhookEventProcessor : Call /api/github/webhooks
+
+WebhookEventProcessor -> Shreks : UpdateSubmission(githubUsername, pullRequestLink)
+Shreks -> Shreks : GetStudentByUsername(githubUsername)
+Shreks -> Shreks : FindCurrentSubmission(pullRequestLink)
+
+alt No active submission
+    Shreks -> Shreks : GetGroupAssignment(student, assignmentShortName)
+    Shreks -> DatabaseContext : CreateSubmission(submission)
+end
+
+Shreks -> DatabaseContext : Update submission modify time
+
+Shreks -> WebhookEventProcessor : Updated submission
+WebhookEventProcessor -> Github : Send comment
+
+@enduml
