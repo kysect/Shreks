@@ -1,5 +1,4 @@
 ﻿using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
