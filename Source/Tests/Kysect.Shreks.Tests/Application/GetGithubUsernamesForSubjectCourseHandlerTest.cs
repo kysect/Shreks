@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Kysect.Shreks.Application.Handlers.Students;
 using Kysect.Shreks.Core.Study;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -7,12 +6,12 @@ using static Kysect.Shreks.Application.Abstractions.Students.GetGithubUsernamesF
 
 namespace Kysect.Shreks.Tests.Application;
 
-public class GithubWorkerTest : ApplicationTestBase
+public class GetGithubUsernamesForSubjectCourseHandlerTest : ApplicationTestBase
 {
     [Fact]
-    public async Task GetStudentGithubsForSubjectId_NoExceptionThrown()
+    public async Task Handle_Should_NotThrowException()
     {
-        var handler = new GetGithubUsernamesForSubjectCourseHandler(Context);
+        var handler = new Shreks.Application.Handlers.Students.GetGithubUsernamesForSubjectCourseHandler(Context);
 
         SubjectCourse subjectCourse = await Context.SubjectCourses.FirstAsync();
 

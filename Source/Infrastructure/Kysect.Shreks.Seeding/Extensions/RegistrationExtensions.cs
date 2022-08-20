@@ -1,7 +1,7 @@
 using Bogus;
 using FluentScanning;
 using FluentScanning.DependencyInjection;
-using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Seeding.DatabaseSeeders;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Options;

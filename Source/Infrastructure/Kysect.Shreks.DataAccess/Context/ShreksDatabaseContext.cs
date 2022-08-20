@@ -1,10 +1,10 @@
-using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
+using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,15 +1,14 @@
-using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Application.Dto.Study;
 using MediatR;
 
 namespace Kysect.Shreks.Application.Commands.Contexts;
 
 public class SubmissionContext : BaseContext
 {
-    public Submission Submission { get; }
+    public SubmissionDto Submission { get; }
 
-    public SubmissionContext(Mediator mediator, User issuer, Submission submission) 
-        : base(mediator, issuer)
+    public SubmissionContext(IMediator mediator, Guid issuerId, SubmissionDto submission) 
+        : base(mediator, issuerId)
     {
         Submission = submission;
     }

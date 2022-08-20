@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

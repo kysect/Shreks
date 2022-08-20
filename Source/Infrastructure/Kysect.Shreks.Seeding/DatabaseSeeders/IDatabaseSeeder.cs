@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.DataAccess.Abstractions;
 
 namespace Kysect.Shreks.Seeding.DatabaseSeeders;
 
