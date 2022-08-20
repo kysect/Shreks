@@ -1,0 +1,21 @@
+@startuml Rate command
+
+actor Mentor
+
+Mentor -> Github : Send rate command
+Github -> WebhookEventProcessor : Call /api/github/webhooks
+
+WebhookEventProcessor -> Shreks : UpdateSubmission(githubUsername, pullRequestLink)
+Shreks -> Shreks : GetMentorByUsername(githubUsername)
+Shreks -> Shreks : FindCurrentSubmission(pullRequestLink)
+
+alt No active submission
+    Shreks -> WebhookEventProcessor : Report error
+else
+    Shreks -> DatabaseContext : UpdateSubmission(submission)
+    Shreks -> WebhookEventProcessor : Updated submission
+end
+
+WebhookEventProcessor -> Github : Send comment
+
+@enduml
