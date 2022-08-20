@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Commands.Commands;
+using Kysect.Shreks.Application.Commands.Parsers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kysect.Shreks.Application.Commands.Extensions;

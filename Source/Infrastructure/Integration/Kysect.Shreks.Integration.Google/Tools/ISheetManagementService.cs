@@ -4,5 +4,7 @@ namespace Kysect.Shreks.Integration.Google.Tools;
 
 public interface ISheetManagementService
 {
-    Task CreateOrClearSheetAsync(ISheet sheet, CancellationToken token);
+    Task CreateOrClearSheetAsync(string spreadsheetId, ISheet sheet, CancellationToken token);
+
+    Task<string> CreateSpreadsheetAsync(string title, CancellationToken token);
 }

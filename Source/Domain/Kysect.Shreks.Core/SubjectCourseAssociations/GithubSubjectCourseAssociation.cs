@@ -4,7 +4,8 @@ namespace Kysect.Shreks.Core.SubjectCourseAssociations;
 
 public partial class GithubSubjectCourseAssociation : SubjectCourseAssociation
 {
-    public GithubSubjectCourseAssociation(SubjectCourse subjectCourse, string githubOrganizationName) : base(subjectCourse)
+    public GithubSubjectCourseAssociation(SubjectCourse subjectCourse, string githubOrganizationName)
+        : base(subjectCourse)
     {
         GithubOrganizationName = githubOrganizationName;
     }

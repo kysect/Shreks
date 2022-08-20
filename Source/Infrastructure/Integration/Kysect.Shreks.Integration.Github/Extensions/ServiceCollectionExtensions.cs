@@ -3,6 +3,7 @@ using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.CredentialStores;
 using Kysect.Shreks.Integration.Github.Entities;
 using Kysect.Shreks.Integration.Github.Helpers;
+using Kysect.Shreks.Integration.Github.Invites;
 using Kysect.Shreks.Integration.Github.Processors;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,16 @@ namespace Kysect.Shreks.Integration.Github.Extensions;
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddGithubServices(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
+    {
+        services.AddClientFactory(shreksConfiguration);
+        services.AddSingleton<IActionNotifier, ActionNotifier>();
+        services.AddSingleton<WebhookEventProcessor, ShreksWebhookEventProcessor>();
+        services.AddGithubInviteBackgroundService();
+
+        return services;
+    }
+
+    private static IServiceCollection AddClientFactory(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
     {
         var gitHubConf = shreksConfiguration.GithubConfiguration;
         var cacheConf = shreksConfiguration.CacheConfiguration;
@@ -38,7 +49,7 @@ public static class ServiceCollectionExtensions
                 .SetSize(cacheEntryConf.EntrySize)
                 .SetAbsoluteExpiration(cacheEntryConf.AbsoluteExpiration)
                 .SetSlidingExpiration(cacheEntryConf.SlidingExpiration)
-            ));
+        ));
 
         services.AddSingleton<IGitHubClient>(serviceProvider =>
         {
@@ -63,5 +74,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessor>();
         
         return services;
+    }
+
+    private static IServiceCollection AddGithubInviteBackgroundService(this IServiceCollection services)
+    {
+        return services.AddHostedService<GithubInvitingWorker>();
     }
 }

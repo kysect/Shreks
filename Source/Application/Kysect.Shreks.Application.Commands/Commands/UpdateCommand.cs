@@ -35,19 +35,9 @@ public class UpdateCommand : IShreksCommand<BaseContext, SubmissionDto>
     public async Task<SubmissionDto> ExecuteAsync(BaseContext context, CancellationToken cancellationToken)
     {
         Guid submissionId = Guid.Parse(SubmissionId);
-        SubmissionDto submissionDto = null!;
-        if (RatingPercent.HasValue)
-        {
-             var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent.Value);
-             var response = await context.Mediator.Send(command, cancellationToken);
-             submissionDto = response.Submission;
-        }
+        var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent, ExtraPoints);
+        var response = await context.Mediator.Send(command, cancellationToken);
 
-        if (ExtraPoints.HasValue)
-        {
-            //TODO: add update extra balls command (or add them to previous command)
-        }
-
-        return submissionDto;
+        return response.Submission;
     }
 }

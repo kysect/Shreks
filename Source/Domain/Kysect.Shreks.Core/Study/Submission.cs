@@ -14,7 +14,7 @@ public partial class Submission : IEntity<Guid>
         Assignment = assignment;
         Payload = payload;
         ExtraPoints = Points.None;
-        Rating = Rating.None;
+        Rating = Fraction.None;
     }
 
     public DateOnly SubmissionDate { get; set; }
@@ -27,7 +27,7 @@ public partial class Submission : IEntity<Guid>
 
     public Points ExtraPoints { get; set; }
 
-    public Rating Rating { get; set; }
+    public Fraction Rating { get; set; }
 
-    public Points Points => Rating * Assignment.MaxPoints;
+    public Points Points => Assignment.MaxPoints * Rating;
 }

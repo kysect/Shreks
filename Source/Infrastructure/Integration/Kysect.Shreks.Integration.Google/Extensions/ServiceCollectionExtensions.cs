@@ -17,12 +17,15 @@ public static class ServiceCollectionExtensions
         return serviceCollection
             .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
             .AddSingleton<ISheetComponentFactory<CoursePoints>, PointsSheetComponentFactory>()
-            .AddSingleton<ISheetComponentFactory<StudentsQueue>, QueueSheetComponentFactory>()
+            .AddSingleton<ISheetComponentFactory<SubmissionsQueue>, QueueSheetComponentFactory>()
             .AddSingleton<ISheet<CoursePoints>, PointsSheet>()
-            .AddSingleton<ISheet<StudentsQueue>, QueueSheet>()
+            .AddSingleton<ISheet<SubmissionsQueue>, QueueSheet>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<ISheetBuilder, SheetBuilder>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
-            .AddSingleton<IGoogleTableAccessor, GoogleTableAccessor>();
+            .AddSingleton<GoogleTableAccessor>()
+            .AddSingleton(p => new GoogleTableUpdateWorker(p.GetRequiredService<GoogleTableAccessor>()))
+            .AddSingleton<ITableUpdateQueue>(p => p.GetRequiredService<GoogleTableUpdateWorker>())
+            .AddHostedService<GoogleTableUpdateWorker>();
     }
 }

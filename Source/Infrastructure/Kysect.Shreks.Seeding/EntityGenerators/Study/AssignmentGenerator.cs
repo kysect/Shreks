@@ -1,6 +1,7 @@
 using Bogus;
 using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.Seeding.Options;
 
 namespace Kysect.Shreks.Seeding.EntityGenerators;
@@ -38,8 +39,8 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
         (
             _faker.Commerce.Product(),
             (index + 1).ToString(),
-            _faker.Random.Double(0, 5),
-            _faker.Random.Double(5, 10),
+            _faker.Random.Points(0, 5),
+            _faker.Random.Points(5, 10),
             subjectCourse
         );
 

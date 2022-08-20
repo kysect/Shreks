@@ -1,6 +1,8 @@
 ﻿using Bogus;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Core.ValueObject;
+using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.Seeding.Options;
 
 namespace Kysect.Shreks.Seeding.EntityGenerators;
@@ -38,8 +40,8 @@ public class SubmissionGenerator : EntityGeneratorBase<Submission>
             _faker.Internet.Url()
         )
         {
-            Rating = _faker.Random.Double(0, 100),
-            ExtraPoints = _faker.Random.Bool(ChangeOfHavingExtraPoints) ? _faker.Random.Double(0, MaxExtraPoints) : 0
+            Rating = _faker.Random.Fraction(),
+            ExtraPoints = _faker.Random.Bool(ChangeOfHavingExtraPoints) ? _faker.Random.Points(0, MaxExtraPoints) : Points.None
         };
 
         return submission;

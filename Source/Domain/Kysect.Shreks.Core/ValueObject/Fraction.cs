@@ -5,10 +5,12 @@ public readonly record struct Fraction
     public Fraction(double value)
     {
         if (value is < 0 or > 1)
-            throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 0 and 1");
+            throw new ArgumentOutOfRangeException(nameof(value), "Value must be between 0 and 1 (inclusive)");
         
         Value = value;
     }
+
+    public static Fraction None => new Fraction(0);
 
     public double Value { get; }
     

@@ -15,9 +15,11 @@
     <PackageReference Include="Octokit" Version="2.0.1" />
     <PackageReference Include="Octokit.Webhooks.AspNetCore" Version="1.2.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
   </ItemGroup>
   

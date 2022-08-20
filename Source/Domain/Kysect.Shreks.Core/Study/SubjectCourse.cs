@@ -12,9 +12,10 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<SubjectCourseAssociation> _associations;
     private readonly HashSet<Mentor> _mentors;
 
-    public SubjectCourse(Subject subject) : this(Guid.NewGuid())
+    public SubjectCourse(Subject subject, string name) : this(Guid.NewGuid())
     {
         Subject = subject;
+        Name = name;
 
         _groups = new HashSet<SubjectCourseGroup>();
         _assignments = new HashSet<Assignment>();
@@ -23,6 +24,7 @@ public partial class SubjectCourse : IEntity<Guid>
     }
 
     public virtual Subject Subject { get; protected init; }
+    public string Name { get; protected init; }
     public virtual IReadOnlyCollection<SubjectCourseGroup> Groups => _groups;
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;

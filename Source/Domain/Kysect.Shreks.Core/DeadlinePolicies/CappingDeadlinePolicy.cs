@@ -6,15 +6,15 @@ public class CappingDeadlinePolicy : DeadlinePolicy
 {
     public CappingDeadlinePolicy(TimeSpan spanBeforeActivation, double cap) : base(spanBeforeActivation)
     {
-        Cap = cap;
+        Cap = new Points(cap);
     }
 
     protected CappingDeadlinePolicy() { }
 
-    public double Cap { get; set; }
+    public Points Cap { get; set; }
 
     public override Points Apply(Points points)
-        => Math.Max(points, Cap);
+        => Points.Max(points, Cap);
 
     public override bool Equals(DeadlinePolicy? other)
     {

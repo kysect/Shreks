@@ -1,24 +1,37 @@
-﻿using Bogus;
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 using Google.Apis.Sheets.v4;
-using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
-using Kysect.Shreks.Application.Abstractions.Google.Queries;
-using Kysect.Shreks.Application.Handlers.Google;
+using Google.Apis.Util.Store;
+using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Formatters;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
-using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
-var credential = await GoogleCredential.FromFileAsync("client_secrets.json", default);
+var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read);
+var secrets = await GoogleClientSecrets.FromStreamAsync(stream);
+
+var scopes = new[]
+{
+    SheetsService.Scope.Spreadsheets,
+    DriveService.Scope.Drive
+};
+
+var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+    secrets.Secrets,
+    scopes,
+    "user",
+    CancellationToken.None,
+    new FileDataStore("token.json", true));
 
 var initializer = new BaseClientService.Initializer
 {
@@ -26,26 +39,32 @@ var initializer = new BaseClientService.Initializer
 };
 
 var sheetsService = new SheetsService(initializer);
+var driverService = new DriveService(initializer);
 
-const string spreadSheetId = "";
-
-var spreadsheetIdProvider = new ConstSpreadsheetIdProvider(spreadSheetId);
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .CreateLogger();
 
 IServiceProvider services = new ServiceCollection()
     .AddGoogleIntegration()
     .AddSingleton(sheetsService)
-    .AddSingleton<ISpreadsheetIdProvider>(spreadsheetIdProvider)
+    .AddSingleton(driverService)
     .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
     .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
     .AddEntityGenerators(o => o
-        .ConfigureEntityGenerator<Submission>(s => s.Count = 500)
-        .ConfigureEntityGenerator<Student>(s => s.Count = 100)
+        .ConfigureEntityGenerator<Submission>(s => s.Count = 1000)
+        .ConfigureEntityGenerator<Student>(s => s.Count = 400)
+        .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 20)
+        .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 50)
         .ConfigureEntityGenerator<Assignment>(a => a.Count = 50)
         .ConfigureFaker(f => f.Locale = "ru"))
     .AddDatabaseContext(o => o
         .UseLazyLoadingProxies()
-        .UseInMemoryDatabase($"Data Source=playground.db"))
+        .UseInMemoryDatabase("Data Source=playground.db"))
     .AddDatabaseSeeders()
+    .AddHandlers()
+    .AddLogging(o => o.AddSerilog())
     .BuildServiceProvider();
 
 var databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
@@ -53,19 +72,26 @@ databaseContext.Database.EnsureCreated();
 await databaseContext.SaveChangesAsync();
 await services.UseDatabaseSeeders();
 
-var googleTableAccessor = services.GetRequiredService<IGoogleTableAccessor>();
+var subjectCourse = databaseContext.SubjectCourses.First();
 
-var submissionGenerator = services.GetRequiredService<IEntityGenerator<Submission>>();
+var tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
 
-IReadOnlyCollection<Submission> submissions = services
-    .GetRequiredService<Faker>().Random
-    .ListItems(submissionGenerator.GeneratedEntities.ToArray());
+await tableWorker.StartAsync(default);
 
-var queue = new StudentsQueue(submissions);
-await googleTableAccessor.UpdateQueueAsync(queue);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
 
-var coursePointsHandler = new GetCoursePointsBySubjectCourseHandler(databaseContext);
-var coursePointsQuery = new GetCoursePointsBySubjectCourse.Query(databaseContext.SubjectCourses.First().Id);
-var points = await coursePointsHandler.Handle(coursePointsQuery, default);
-    
-await googleTableAccessor.UpdatePointsAsync(points.Points);
+await Task.Delay(TimeSpan.FromSeconds(30));
+
+var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
+tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
+
+await Task.Delay(TimeSpan.FromMinutes(2));
+
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+
+await Task.Delay(-1);
