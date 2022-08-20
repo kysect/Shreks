@@ -1,8 +1,8 @@
-using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
 

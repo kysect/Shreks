@@ -23,7 +23,7 @@ TestEnvConfiguration testEnvConfiguration = configuration.GetSection(nameof(Test
 builder.Services
     .AddMappingConfiguration()
     .AddDatabaseContext(optionsBuilder => optionsBuilder
-            .UseNpgsql(configuration.GetConnectionString("postgres"))
+            .UseSqlite("Filename=shreks-gh.db")
             .UseLazyLoadingProxies())
     .AddHandlers()
     .AddApplicationCommands()
