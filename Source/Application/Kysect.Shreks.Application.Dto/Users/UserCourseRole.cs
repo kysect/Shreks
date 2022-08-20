@@ -2,7 +2,7 @@
 
 public enum UserCourseRole
 {
-    Unknown = 1,
-    Student = 2,
-    Mentor = 3
+    Unknown = 0,
+    Student = 1,
+    Mentor = 2
 }
