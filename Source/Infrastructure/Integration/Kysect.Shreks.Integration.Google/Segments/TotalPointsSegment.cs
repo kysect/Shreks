@@ -25,7 +25,7 @@ public class TotalPointsSegment : SheetSegmentBase<CoursePointsDto, StudentPoint
         double totalPoints = data.RowData
             .Points
             .Where(p => p.Points.HasValue)
-            .Sum(p => p.Points!.Value);
+            .Sum(p => p.Points.GetValueOrDefault());
 
         return Label(totalPoints.ToSheetPoints(_cultureInfoProvider.GetCultureInfo())).WithDefaultStyle();
     }
