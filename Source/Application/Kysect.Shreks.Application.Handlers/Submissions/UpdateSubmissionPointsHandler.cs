@@ -1,5 +1,7 @@
 using AutoMapper;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -12,18 +14,21 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly ITableUpdateQueue _tableUpdateQueue;
     private readonly IMapper _mapper;
 
-    public UpdateSubmissionPointsHandler(IShreksDatabaseContext context, IMapper mapper)
+    public UpdateSubmissionPointsHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue, IMapper mapper)
     {
         _context = context;
+        _tableUpdateQueue = tableUpdateQueue;
         _mapper = mapper;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
         if (request.NewRating is null && request.ExtraPoints is null)
-            throw new DomainInvalidOperationException($"Cannot update submission points, both {nameof(request.NewRating)} and {nameof(request.ExtraPoints)} are null.");
+            throw new DomainInvalidOperationException(
+                $"Cannot update submission points, both {nameof(request.NewRating)} and {nameof(request.ExtraPoints)} are null.");
 
         var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
@@ -38,6 +43,8 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
 
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
+
+        _tableUpdateQueue.EnqueueCoursePointsUpdate(submission.GetCourseId());
 
         var dto = _mapper.Map<SubmissionDto>(submission);
 
