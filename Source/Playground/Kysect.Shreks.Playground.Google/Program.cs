@@ -12,6 +12,7 @@ using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
+using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,6 +65,7 @@ IServiceProvider services = new ServiceCollection()
         .UseInMemoryDatabase("Data Source=playground.db"))
     .AddDatabaseSeeders()
     .AddHandlers()
+    .AddMappingConfiguration()
     .AddLogging(o => o.AddSerilog())
     .BuildServiceProvider();
 
