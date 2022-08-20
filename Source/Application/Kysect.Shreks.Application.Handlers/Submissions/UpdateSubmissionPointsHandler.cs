@@ -30,7 +30,7 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
         if (request.NewRating is not null)
         {
             var fraction = new Fraction(request.NewRating.Value / 100);
-            submission.Points = assignment.MaxPoints * fraction;
+            submission.Rating = fraction;
         } 
 
         if (request.ExtraPoints is not null)
