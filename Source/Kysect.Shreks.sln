@@ -41,13 +41,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Playground.Google", "Playground\Kysect.Shreks.Playground.Google\Kysect.Shreks.Playground.Google.csproj", "{C5524E3D-B64D-42AF-9C86-857107E1A1EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Integration.Github.BackgroundWorker", "Infrastructure\Integration\Kysect.Shreks.Integration.Github.BackgroundWorker\Kysect.Shreks.Integration.Github.BackgroundWorker.csproj", "{888AEE7D-0B4F-48F5-B9C7-486A6E29F8E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Integration.Github.BackgroundWorker", "Infrastructure\Integration\Kysect.Shreks.Integration.Github.BackgroundWorker\Kysect.Shreks.Integration.Github.BackgroundWorker.csproj", "{888AEE7D-0B4F-48F5-B9C7-486A6E29F8E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Mapping", "Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj", "{5484C35D-66C8-4350-A5D3-DEBF44AD17F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Mapping", "Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj", "{5484C35D-66C8-4350-A5D3-DEBF44AD17F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Application.Commands", "Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj", "{571D4667-ACEE-41D2-A12D-D7ED90B00664}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.Commands", "Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj", "{571D4667-ACEE-41D2-A12D-D7ED90B00664}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.WebApi", "Kysect.Shreks.WebApi\Kysect.Shreks.WebApi.csproj", "{D0692446-8F47-4E05-B531-2EBB0B22FC4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.WebApi", "Kysect.Shreks.WebApi\Kysect.Shreks.WebApi.csproj", "{D0692446-8F47-4E05-B531-2EBB0B22FC4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,16 +99,26 @@ Global
 		{9838432F-D197-414D-BA24-8B06BEC9DAC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9838432F-D197-414D-BA24-8B06BEC9DAC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9838432F-D197-414D-BA24-8B06BEC9DAC0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{888AEE7D-0B4F-48F5-B9C7-486A6E29F8E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{888AEE7D-0B4F-48F5-B9C7-486A6E29F8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5484C35D-66C8-4350-A5D3-DEBF44AD17F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5484C35D-66C8-4350-A5D3-DEBF44AD17F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5524E3D-B64D-42AF-9C86-857107E1A1EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5524E3D-B64D-42AF-9C86-857107E1A1EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5524E3D-B64D-42AF-9C86-857107E1A1EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5524E3D-B64D-42AF-9C86-857107E1A1EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{888AEE7D-0B4F-48F5-B9C7-486A6E29F8E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{888AEE7D-0B4F-48F5-B9C7-486A6E29F8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{888AEE7D-0B4F-48F5-B9C7-486A6E29F8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{888AEE7D-0B4F-48F5-B9C7-486A6E29F8E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5484C35D-66C8-4350-A5D3-DEBF44AD17F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5484C35D-66C8-4350-A5D3-DEBF44AD17F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5484C35D-66C8-4350-A5D3-DEBF44AD17F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5484C35D-66C8-4350-A5D3-DEBF44AD17F3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{571D4667-ACEE-41D2-A12D-D7ED90B00664}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{571D4667-ACEE-41D2-A12D-D7ED90B00664}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{571D4667-ACEE-41D2-A12D-D7ED90B00664}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{571D4667-ACEE-41D2-A12D-D7ED90B00664}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0692446-8F47-4E05-B531-2EBB0B22FC4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0692446-8F47-4E05-B531-2EBB0B22FC4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0692446-8F47-4E05-B531-2EBB0B22FC4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0692446-8F47-4E05-B531-2EBB0B22FC4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
