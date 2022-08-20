@@ -7,4 +7,5 @@ public record SubmissionDto(
     Guid AssignmentId,
     string Payload,
     double ExtraPoints,
-    double Points);
+    double Points,
+    string AssignmentShortName);

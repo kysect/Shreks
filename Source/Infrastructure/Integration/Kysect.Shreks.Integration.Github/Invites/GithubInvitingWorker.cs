@@ -1,12 +1,10 @@
 ﻿using Kysect.CommonLib;
 using Kysect.GithubUtils;
-using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.Application.Abstractions.Github.Queries;
 using Kysect.Shreks.Application.Abstractions.Students;
-using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.SubjectCourseAssociations;
+using Kysect.Shreks.Application.Dto.SubjectCourseAssociations;
 using Kysect.Shreks.Integration.Github.Client;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Octokit;
@@ -23,19 +21,17 @@ public class GithubInvitingWorker : BackgroundService
 
     private readonly ILogger<GithubInvitingWorker> _logger;
     private readonly IInstallationClientFactory _clientFactory;
-    private readonly IShreksDatabaseContext _context;
     private readonly IGitHubClient _appClient;
     private readonly IMediator _mediator;
 
-    public GithubInvitingWorker(IInstallationClientFactory clientFactory,
-        IShreksDatabaseContext context,
+    public GithubInvitingWorker(
+        IInstallationClientFactory clientFactory,
         IGitHubClient appClient,
         IMediator mediator,
         ILogger<GithubInvitingWorker> logger)
     {
         _logger = logger;
         _clientFactory = clientFactory;
-        _context = context;
         _appClient = appClient;
         _mediator = mediator;
     }
@@ -43,56 +39,85 @@ public class GithubInvitingWorker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var timer = new PeriodicTimer(_delayBetweenInviteIteration);
-        while (!stoppingToken.IsCancellationRequested &&
-               await timer.WaitForNextTickAsync(stoppingToken))
+        var query = new GetSubjectCourseGithubAssociations.Query();
+
+        while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
         {
             try
             {
-                List<SubjectCourseAssociation> subjectCourseAssociations = await _context.SubjectCourseAssociations.ToListAsync(cancellationToken: stoppingToken);
-                foreach (var subjectCourseAssociation in subjectCourseAssociations)
-                {
-                    if (subjectCourseAssociation is not GithubSubjectCourseAssociation githubSubjectCourseAssociation)
-                        continue;
+                var response = await _mediator.Send(query, stoppingToken);
 
-                    await ProcessSubject(githubSubjectCourseAssociation, stoppingToken);
+                foreach (var association in response.Associations)
+                {
+                    await ProcessSubject(association, stoppingToken);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to execute GithubInvitingWorker with exception message {ex.Message}.");
+                const string template = "Failed to execute GithubInvitingWorker with exception message {Message}.";
+                _logger.LogError(ex, template, ex.Message);
             }
         }
     }
 
-    private async Task ProcessSubject(GithubSubjectCourseAssociation githubSubjectCourseAssociation, CancellationToken stoppingToken)
+    private async Task ProcessSubject(GithubSubjectCourseAssociationDto association, CancellationToken stoppingToken)
     {
-        SubjectCourse subjectCourse = githubSubjectCourseAssociation.SubjectCourse;
-        var message = $"Start inviting to organization {githubSubjectCourseAssociation.GithubOrganizationName} for course {subjectCourse.Subject.Title}";
-        _logger.LogInformation(message);
+        const string template = "Start inviting to organization {OrganizationName} for course {CourseName}";
 
-        GetGithubUsernamesForSubjectCourse.Response response = await _mediator.Send(new GetGithubUsernamesForSubjectCourse.Query(subjectCourse.Id), stoppingToken);
+        var (subjectCourseId, courseName, organizationName) = association;
+
+        _logger.LogInformation(template, organizationName, courseName);
+
+        var usernamesQuery = new GetGithubUsernamesForSubjectCourse.Query(subjectCourseId);
+        var response = await _mediator.Send(usernamesQuery, stoppingToken);
+
         IReadOnlyCollection<string> organizationUsers = response.StudentGithubUsernames;
-        OrganizationInviteSender organizationInviteSender = await CreateOrganizationInviteSender(githubSubjectCourseAssociation.GithubOrganizationName);
+        var inviteSender = await CreateOrganizationInviteSender(organizationName);
+        var inviteResult = await inviteSender.Invite(organizationName, organizationUsers);
 
-        InviteResult inviteResult = await organizationInviteSender.Invite(githubSubjectCourseAssociation.GithubOrganizationName, organizationUsers);
-            
-        _logger.LogInformation($"Finish invite cycle for organization {githubSubjectCourseAssociation.GithubOrganizationName}");
+        _logger.LogInformation("Finish invite cycle for organization {OrganizationName}", organizationName);
+
         if (inviteResult.Success.Any())
-            _logger.LogInformation($"Success invites: {inviteResult.Success.Count}. Users: {inviteResult.Success.ToSingleString()}");
+        {
+            var count = inviteResult.Success.Count;
+            var users = inviteResult.Success.ToSingleString();
+            _logger.LogInformation("Success invites: {InviteCount}. Users: {Users}", count, users);
+        }
+
         if (inviteResult.AlreadyAdded.Any())
-            _logger.LogInformation($"Success invites: {inviteResult.AlreadyAdded.Count}. Users: {inviteResult.AlreadyAdded.ToSingleString()}");
+        {
+            var count = inviteResult.AlreadyAdded.Count;
+            var users = inviteResult.AlreadyAdded.ToSingleString();
+            _logger.LogInformation("Success invites: {AlreadyAddedCount}. Users: {Users}", count, users);
+        }
+
         if (inviteResult.AlreadyInvited.Any())
-            _logger.LogInformation($"Success invites: {inviteResult.AlreadyInvited.Count}. Users: {inviteResult.AlreadyInvited.ToSingleString()}");
+        {
+            var count = inviteResult.AlreadyInvited.Count;
+            var users = inviteResult.AlreadyInvited.ToSingleString();
+            _logger.LogInformation("Success invites: {AlreadyInvitedCount}. Users: {Users}", count, users);
+        }
+
         if (inviteResult.WithExpiredInvites.Any())
-            _logger.LogInformation($"Success invites: {inviteResult.WithExpiredInvites.Count}. Users: {inviteResult.WithExpiredInvites.ToSingleString()}");
+        {
+            var count = inviteResult.WithExpiredInvites.Count;
+            var users = inviteResult.WithExpiredInvites.ToSingleString();
+            _logger.LogInformation("Success invites: {Count}. Users: {Users}", count, users);
+        }
+
         if (inviteResult.Failed.Any())
-            _logger.LogInformation($"Success invites: {inviteResult.Failed.Count}. Error: {inviteResult.Exception?.ToString()}");
+        {
+            var count = inviteResult.Failed.Count;
+            var error = inviteResult.Exception;
+            _logger.LogInformation("Success invites: {FailedCount}. Error: {Error}", count, error);
+        }
     }
 
     private async Task<OrganizationInviteSender> CreateOrganizationInviteSender(string githubOrganization)
     {
-        Installation installation = await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(githubOrganization);
-        GitHubClient client = _clientFactory.GetClient(installation.Id);
+        var installation = await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(githubOrganization);
+        var client = _clientFactory.GetClient(installation.Id);
+
         return new OrganizationInviteSender(client);
     }
 }

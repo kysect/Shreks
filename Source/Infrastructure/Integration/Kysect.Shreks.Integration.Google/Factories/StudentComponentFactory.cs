@@ -1,6 +1,6 @@
 ﻿using FluentSpreadsheets;
-using Kysect.Shreks.Core.Formatters;
-using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Application.Abstractions.Formatters;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using static FluentSpreadsheets.ComponentFactory;
 
@@ -26,13 +26,12 @@ public class StudentComponentFactory : IStudentComponentFactory
         );
     }
 
-    public IComponent BuildRow(Student student)
+    public IComponent BuildRow(StudentDto student)
     {
         ArgumentNullException.ThrowIfNull(student);
 
-        string studentName = _userFullNameFormatter.GetFullName(student.User);
-
-        string groupName = student.Group.Name;
+        var studentName = _userFullNameFormatter.GetFullName(student.User);
+        var groupName = student.GroupName;
 
         return HStack
         (

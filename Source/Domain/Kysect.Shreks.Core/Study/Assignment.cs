@@ -30,7 +30,7 @@ public partial class Assignment : IEntity<Guid>
         _groupAssignments = new HashSet<GroupAssignment>();
         _deadlinePolicies = new HashSet<DeadlinePolicy>();
     }
-
+    
     public string Title { get; set; }
     public string ShortName { get; set; }
     public Points MinPoints { get; protected set; }

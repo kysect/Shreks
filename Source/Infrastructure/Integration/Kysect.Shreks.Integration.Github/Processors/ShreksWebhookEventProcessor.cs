@@ -1,4 +1,3 @@
-using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Integration.Github.ContextFactory;

@@ -1,7 +1,8 @@
 using AutoMapper;
-using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using static Kysect.Shreks.Application.Abstractions.Submissions.Commands.CreateSubmissionCommand;
 namespace Kysect.Shreks.Application.Handlers.Submissions;

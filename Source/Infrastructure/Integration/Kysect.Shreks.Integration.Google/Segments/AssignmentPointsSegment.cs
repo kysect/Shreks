@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
-using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
 using MediatR;
@@ -10,7 +10,8 @@ using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Segments;
 
-public class AssignmentPointsSegment : PrototypeSheetSegmentBase<CoursePoints, StudentPoints, Unit, Assignment, AssignmentPoints?>
+public class AssignmentPointsSegment 
+    : PrototypeSheetSegmentBase<CoursePointsDto, StudentPointsDto, Unit, AssignmentDto, AssignmentPointsDto?>
 {
     private readonly ICultureInfoProvider _cultureInfoProvider;
 
@@ -19,7 +20,7 @@ public class AssignmentPointsSegment : PrototypeSheetSegmentBase<CoursePoints, S
         _cultureInfoProvider = cultureInfoProvider;
     }
 
-    protected override IComponent BuildHeader(Assignment data)
+    protected override IComponent BuildHeader(AssignmentDto data)
     {
         ArgumentNullException.ThrowIfNull(data);
 
@@ -34,14 +35,14 @@ public class AssignmentPointsSegment : PrototypeSheetSegmentBase<CoursePoints, S
         );
     }
 
-    protected override IComponent BuildRow(HeaderRowData<Assignment, AssignmentPoints?> data, int rowIndex)
+    protected override IComponent BuildRow(HeaderRowData<AssignmentDto, AssignmentPointsDto?> data, int rowIndex)
     {
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
-        AssignmentPoints? assignmentPoints = data.RowData;
+        AssignmentPointsDto? assignmentPoints = data.RowData;
 
         IComponent pointsComponent = assignmentPoints is null
             ? Empty()
-            : Label(assignmentPoints.Points.Value.ToSheetPoints(currentCulture));
+            : Label(assignmentPoints.Points.ToSheetPoints(currentCulture));
 
         IComponent dateComponent = assignmentPoints is null
             ? Empty()
@@ -54,9 +55,9 @@ public class AssignmentPointsSegment : PrototypeSheetSegmentBase<CoursePoints, S
         );
     }
 
-    protected override IEnumerable<Assignment> SelectHeaderData(CoursePoints data)
+    protected override IEnumerable<AssignmentDto> SelectHeaderData(CoursePointsDto data)
         => data.Assignments;
 
-    protected override AssignmentPoints? SelectRowData(HeaderRowData<Assignment, StudentPoints> data)
-        => data.RowData.Points.FirstOrDefault(p => p.Assignment.Equals(data.HeaderData));
+    protected override AssignmentPointsDto? SelectRowData(HeaderRowData<AssignmentDto, StudentPointsDto> data)
+        => data.RowData.Points.FirstOrDefault(p => p.AssignmentId.Equals(data.HeaderData.Id));
 }
