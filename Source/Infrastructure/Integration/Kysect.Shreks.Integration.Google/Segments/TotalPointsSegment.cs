@@ -22,7 +22,10 @@ public class TotalPointsSegment : SheetSegmentBase<CoursePointsDto, StudentPoint
 
     protected override IComponent BuildRow(HeaderRowData<CoursePointsDto, StudentPointsDto> data, int rowIndex)
     {
-        double totalPoints = data.RowData.Points.Sum(p => p.Points);
+        double totalPoints = data.RowData
+            .Points
+            .Where(p => p.Points.HasValue)
+            .Sum(p => p.Points.GetValueOrDefault());
 
         return Label(totalPoints.ToSheetPoints(_cultureInfoProvider.GetCultureInfo())).WithDefaultStyle();
     }

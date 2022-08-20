@@ -17,8 +17,9 @@ public partial class Submission : IEntity<Guid>
         Student = student;
         Assignment = assignment;
         Payload = payload;
-        ExtraPoints = Points.None;
-        Rating = Fraction.None;
+        
+        Rating = default;
+        ExtraPoints = default;
 
         _associations = new HashSet<SubmissionAssociation>();
     }
@@ -31,11 +32,11 @@ public partial class Submission : IEntity<Guid>
 
     public string Payload { get; set; }
 
-    public Points ExtraPoints { get; set; }
+    public Fraction? Rating { get; set; }
 
-    public Fraction Rating { get; set; }
+    public Points? ExtraPoints { get; set; }
 
-    public Points Points => Assignment.MaxPoints * Rating;
+    public Points? Points => Rating is null ? default : Assignment.MaxPoints * Rating;
 
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
     
