@@ -5,7 +5,6 @@ public record SubmissionDto(
     DateTime SubmissionDateTime,
     Guid StudentId,
     Guid AssignmentId,
-    string Payload,
     double ExtraPoints,
     double Points,
     string AssignmentShortName);
