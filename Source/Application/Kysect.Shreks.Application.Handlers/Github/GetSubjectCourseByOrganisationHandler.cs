@@ -1,6 +1,6 @@
-using Kysect.Shreks.Application.Abstractions.DataAccess;
 using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
+using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetSubjectCourseByOrganization;

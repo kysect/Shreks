@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using Kysect.Shreks.Application.Abstractions.DataAccess;
-using Kysect.Shreks.Application.Abstractions.DataAccess.Extensions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetCoursePointsBySubjectCourse;
 

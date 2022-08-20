@@ -2,7 +2,7 @@ using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using RichEntity.Annotations;
 
-namespace Kysect.Shreks.Application.Abstractions.DataAccess.Extensions;
+namespace Kysect.Shreks.DataAccess.Abstractions.Extensions;
 
 public static class DbSetExtensions
 {

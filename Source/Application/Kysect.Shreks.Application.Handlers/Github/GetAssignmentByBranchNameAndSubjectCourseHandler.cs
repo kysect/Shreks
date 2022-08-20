@@ -1,6 +1,6 @@
-using Kysect.Shreks.Application.Abstractions.DataAccess;
-using Kysect.Shreks.Application.Abstractions.DataAccess.Extensions;
 using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetAssignmentByBranchAndSubjectCourse;
 namespace Kysect.Shreks.Application.Handlers.Github;
