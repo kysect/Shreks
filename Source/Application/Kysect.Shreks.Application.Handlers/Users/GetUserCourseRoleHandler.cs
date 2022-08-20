@@ -22,7 +22,7 @@ public class GetUserCourseRoleHandler : IRequestHandler<Query, Response>
             .SubjectCourses
             .Where(course => course.Id == request.SubjectCourseId)
             .SelectMany(course => course.Mentors)
-            .AnyAsync(k => k.User.Id == request.UserId, cancellationToken: cancellationToken);
+            .AnyAsync(k => k.User.Id == request.UserId, cancellationToken);
 
         return new Response(isMentor ? UserCourseRole.Mentor : UserCourseRole.Student);
     }
