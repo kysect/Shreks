@@ -40,13 +40,13 @@ public class AssignmentPointsSegment
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
         AssignmentPointsDto? assignmentPoints = data.RowData;
 
-        IComponent pointsComponent = assignmentPoints is null
+        IComponent pointsComponent = assignmentPoints?.Points is null
             ? Empty()
-            : Label(assignmentPoints.Points.ToSheetPoints(currentCulture));
+            : Label(assignmentPoints.Points.Value.ToSheetPoints(currentCulture));
 
-        IComponent dateComponent = assignmentPoints is null
+        IComponent dateComponent = assignmentPoints?.Date is null
             ? Empty()
-            : Label(assignmentPoints.Date, currentCulture);
+            : Label(assignmentPoints.Date.Value, currentCulture);
 
         return HStack
         (
