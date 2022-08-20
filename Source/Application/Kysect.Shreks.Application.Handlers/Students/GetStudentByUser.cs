@@ -6,12 +6,12 @@ using static Kysect.Shreks.Application.Abstractions.Students.GetStudentByUsernam
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 
-public class GetStudentByUser : IRequestHandler<Query, Response>
+public class GetStudentByUserHandler : IRequestHandler<Query, Response>
 {
 
     private readonly IShreksDatabaseContext _context;
 
-    public GetStudentByUser(IShreksDatabaseContext context)
+    public GetStudentByUserHandler(IShreksDatabaseContext context)
     {
         _context = context;
     }
