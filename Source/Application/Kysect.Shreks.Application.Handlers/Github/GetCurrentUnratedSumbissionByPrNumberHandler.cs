@@ -20,9 +20,10 @@ public class GetCurrentUnratedSumbissionByPrNumberHandler : IRequestHandler<Quer
     {
         var submissionId =  await _context.SubmissionAssociations
             .OfType<GithubPullRequestSubmissionAssociation>()
-            .Where(s => s.PullRequestNumber == request.PrNumber
-                        && s.Submission.Points.Value != 0.0) //TODO: make points nullable, as 0 is valid rating
-            .Select(s => s.Submission.Id)
+            .Where(a => a.PullRequestNumber == request.PrNumber
+                        && a.Submission.Points.Value != 0.0) //TODO: make points nullable, as 0 is valid rating
+            .OrderByDescending(a => a.Submission.SubmissionDate)
+            .Select(a => a.Submission.Id)
             .FirstOrDefaultAsync(cancellationToken);
 
         return new Response(submissionId);
