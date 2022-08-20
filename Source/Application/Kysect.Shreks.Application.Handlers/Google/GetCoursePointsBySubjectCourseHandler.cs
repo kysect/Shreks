@@ -63,9 +63,10 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
     {
         var submission = submissions.OrderBy(s => s.SubmissionDate).First();
         //TODO: add deadlines usage instead of .Last
+
         var points = submission.Points;
 
         var submissionDate = submission.SubmissionDate;
-        return new AssignmentPointsDto(submission.Assignment.Id, submissionDate, points.Value);
+        return new AssignmentPointsDto(submission.Assignment.Id, submissionDate, points?.Value);
     }
 }
