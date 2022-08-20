@@ -5,7 +5,7 @@ namespace Kysect.Shreks.Application.Abstractions.Github.Queries;
 
 public static class GetCurrentUnratedSubmissionByPrNumber
 {
-    public record Query(string organisation, string repository, long PrNumber) : IRequest<Response>;
+    public record Query(string Organisation, string Repository, long PrNumber) : IRequest<Response>;
 
     public record Response(SubmissionDto SubmissionDto);
 }

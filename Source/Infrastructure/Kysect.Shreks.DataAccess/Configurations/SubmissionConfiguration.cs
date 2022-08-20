@@ -1,4 +1,5 @@
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.DataAccess.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,5 +12,6 @@ public class SubmissionConfiguration : IEntityTypeConfiguration<Submission>
         builder.HasOne(x => x.Student);
         builder.HasOne(x => x.Assignment);
         builder.Navigation(x => x.Associations).HasField("_associations");
+        builder.Property(x => x.Rating).HasConversion<FractionValueConverter>();
     }
 }

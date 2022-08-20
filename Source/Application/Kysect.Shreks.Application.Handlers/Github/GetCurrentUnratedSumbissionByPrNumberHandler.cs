@@ -1,6 +1,8 @@
 using AutoMapper;
+using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.SubmissionAssociations;
+using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -26,14 +28,18 @@ public class GetCurrentUnratedSumbissionByPrNumberHandler : IRequestHandler<Quer
         var submission =  await _context.SubmissionAssociations
             .OfType<GithubPullRequestSubmissionAssociation>()
             .Where(a => 
-                a.Organization == request.organisation 
-                && a.Repository == request.repository
+                a.Organization == request.Organisation 
+                && a.Repository == request.Repository
                 && a.PullRequestNumber == request.PrNumber
-                && a.Submission.Points.Value != 0.0) //TODO: make points nullable, as 0 is valid rating
+                && a.Submission.Rating == new Fraction(0.0)) //TODO: make points nullable, as 0 is valid rating
             .OrderByDescending(a => a.Submission.SubmissionDate)
             .Select(a => a.Submission)
             .FirstOrDefaultAsync(cancellationToken);
 
+        if (submission is null)
+            throw new EntityNotFoundException($"No unrated submission in pr " +
+                                              $"{request.Organisation}/${request.Repository}/${request.PrNumber}");
+        
         return new Response(_mapper.Map<SubmissionDto>(submission));
     }
 }

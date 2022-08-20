@@ -1,3 +1,4 @@
+using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
@@ -37,4 +38,20 @@ public partial class Submission : IEntity<Guid>
     public Points Points => Assignment.MaxPoints * Rating;
 
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
+    
+    public void AddAssociation(SubmissionAssociation association)
+    {
+        ArgumentNullException.ThrowIfNull(association);
+
+        if (!_associations.Add(association))
+            throw new DomainInvalidOperationException($"Submission {this} already has association {association}");
+    }
+    
+    public void RemoveAssociation(SubmissionAssociation association)
+    {
+        ArgumentNullException.ThrowIfNull(association);
+
+        if (!_associations.Remove(association))
+            throw new DomainInvalidOperationException($"Submission {this} could not remove association {association}");
+    }
 }

@@ -4,10 +4,12 @@ namespace Kysect.Shreks.Core.SubmissionAssociations;
 
 public partial class GithubPullRequestSubmissionAssociation : SubmissionAssociation
 {
-    public GithubPullRequestSubmissionAssociation(Submission submission, string organizationName, 
-        string repository, int pullRequestNumber) : base(submission)
+    public GithubPullRequestSubmissionAssociation(Submission submission, string organization, 
+        string repository, long pullRequestNumber) : base(submission)
     {
+        Repository = repository;
         PullRequestNumber = pullRequestNumber;
+        Organization = organization;
     }
 
     public string Organization { get; protected set; }
