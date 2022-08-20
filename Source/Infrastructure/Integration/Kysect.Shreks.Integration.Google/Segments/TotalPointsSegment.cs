@@ -1,6 +1,6 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
 using MediatR;
@@ -8,7 +8,7 @@ using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Segments;
 
-public class TotalPointsSegment : SheetSegmentBase<CoursePoints, StudentPoints, Unit>
+public class TotalPointsSegment : SheetSegmentBase<CoursePointsDto, StudentPointsDto, Unit>
 {
     private readonly ICultureInfoProvider _cultureInfoProvider;
 
@@ -17,12 +17,12 @@ public class TotalPointsSegment : SheetSegmentBase<CoursePoints, StudentPoints, 
         _cultureInfoProvider = cultureInfoProvider;
     }
 
-    protected override IComponent BuildHeader(CoursePoints data)
+    protected override IComponent BuildHeader(CoursePointsDto data)
         => Label("Итог").WithDefaultStyle();
 
-    protected override IComponent BuildRow(HeaderRowData<CoursePoints, StudentPoints> data, int rowIndex)
+    protected override IComponent BuildRow(HeaderRowData<CoursePointsDto, StudentPointsDto> data, int rowIndex)
     {
-        double totalPoints = data.RowData.Points.Sum(p => p.Points.Value);
+        double totalPoints = data.RowData.Points.Sum(p => p.Points);
 
         return Label(totalPoints.ToSheetPoints(_cultureInfoProvider.GetCultureInfo())).WithDefaultStyle();
     }

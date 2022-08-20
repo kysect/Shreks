@@ -1,21 +1,21 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Factories;
 using Kysect.Shreks.Integration.Google.Tools;
 
 namespace Kysect.Shreks.Integration.Google.Sheets;
 
-public class QueueSheet : ISheet<SubmissionsQueue>
+public class QueueSheet : ISheet<SubmissionsQueueDto>
 {
     private readonly ISheetManagementService _sheetEditor;
-    private readonly ISheetComponentFactory<SubmissionsQueue> _sheetDataFactory;
+    private readonly ISheetComponentFactory<SubmissionsQueueDto> _sheetDataFactory;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
     public QueueSheet(
         ISheetManagementService sheetEditor,
-        ISheetComponentFactory<SubmissionsQueue> sheetDataFactory,
+        ISheetComponentFactory<SubmissionsQueueDto> sheetDataFactory,
         IComponentRenderer<GoogleSheetRenderCommand> renderer)
     {
         _sheetEditor = sheetEditor;
@@ -26,7 +26,7 @@ public class QueueSheet : ISheet<SubmissionsQueue>
     public string Title => "Очередь";
     public int Id => 1;
 
-    public async Task UpdateAsync(string spreadsheetId, SubmissionsQueue queue, CancellationToken token)
+    public async Task UpdateAsync(string spreadsheetId, SubmissionsQueueDto queue, CancellationToken token)
     {
         await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, this, token);
 

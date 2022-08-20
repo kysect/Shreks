@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.Abstractions.Google.Models;
+﻿using Kysect.Shreks.Application.Dto.Tables;
 using MediatR;
 
 namespace Kysect.Shreks.Application.Abstractions.Google.Queries;
@@ -7,5 +7,5 @@ public static class GetCoursePointsBySubjectCourse
 {
     public record Query(Guid SubjectCourseId) : IRequest<Response>;
 
-    public record Response(CoursePoints Points);
+    public record Response(CoursePointsDto Points);
 }

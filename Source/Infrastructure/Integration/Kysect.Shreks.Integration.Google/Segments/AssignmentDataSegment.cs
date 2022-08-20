@@ -1,13 +1,14 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.SheetSegments;
-using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
 using MediatR;
 using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Segments;
 
-public class AssignmentDataSegment : SheetSegmentBase<Unit, Submission, Unit>
+public class AssignmentDataSegment : SheetSegmentBase<Unit, QueueSubmissionDto, Unit>
 {
     protected override IComponent BuildHeader(Unit data)
     {
@@ -22,13 +23,13 @@ public class AssignmentDataSegment : SheetSegmentBase<Unit, Submission, Unit>
         );
     }
 
-    protected override IComponent BuildRow(HeaderRowData<Unit, Submission> data, int rowIndex)
+    protected override IComponent BuildRow(HeaderRowData<Unit, QueueSubmissionDto> data, int rowIndex)
     {
-        Submission submission = data.RowData;
+        var submission = data.RowData.Submission;
 
         return HStack
         (
-            Label(submission.Assignment.ShortName).WithDefaultStyle(),
+            Label(submission.AssignmentShortName).WithDefaultStyle(),
             Label(submission.Payload).WithDefaultStyle()
         );
     }

@@ -1,25 +1,25 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
-using Kysect.Shreks.Core.Formatters;
-using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Application.Abstractions.Formatters;
+using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Factories;
 using Kysect.Shreks.Integration.Google.Tools;
 
 namespace Kysect.Shreks.Integration.Google.Sheets;
 
-public class PointsSheet : ISheet<CoursePoints>
+public class PointsSheet : ISheet<CoursePointsDto>
 {
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ISheetManagementService _sheetEditor;
-    private readonly ISheetComponentFactory<CoursePoints> _sheetDataFactory;
+    private readonly ISheetComponentFactory<CoursePointsDto> _sheetDataFactory;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
     public PointsSheet(
         IUserFullNameFormatter userFullNameFormatter,
         ISheetManagementService sheetEditor,
-        ISheetComponentFactory<CoursePoints> sheetDataFactory,
+        ISheetComponentFactory<CoursePointsDto> sheetDataFactory,
         IComponentRenderer<GoogleSheetRenderCommand> renderer)
     {
         _userFullNameFormatter = userFullNameFormatter;
@@ -31,28 +31,28 @@ public class PointsSheet : ISheet<CoursePoints>
     public string Title => "Баллы";
     public int Id => 2;
 
-    public async Task UpdateAsync(string spreadsheetId, CoursePoints points, CancellationToken token)
+    public async Task UpdateAsync(string spreadsheetId, CoursePointsDto points, CancellationToken token)
     {
         await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, this, token);
 
-        CoursePoints sortedPoints = SortPoints(points);
+        CoursePointsDto sortedPoints = SortPoints(points);
 
         IComponent sheetData = _sheetDataFactory.Create(sortedPoints);
         var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, Id, Title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
     }
 
-    private CoursePoints SortPoints(CoursePoints points)
+    private CoursePointsDto SortPoints(CoursePointsDto points)
     {
-        List<Assignment> sortedAssignments = points.Assignments
+        List<AssignmentDto> sortedAssignments = points.Assignments
             .OrderBy(a => a.ShortName)
             .ToList();
 
-        List<StudentPoints> sortedStudentPoints = points.StudentsPoints
-            .OrderBy(p => p.Student.Group.Name)
+        List<StudentPointsDto> sortedStudentPoints = points.StudentsPoints
+            .OrderBy(p => p.Student.GroupName)
             .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student.User))
             .ToList();
 
-        return new CoursePoints(sortedAssignments, sortedStudentPoints);
+        return new CoursePointsDto(sortedAssignments, sortedStudentPoints);
     }
 }

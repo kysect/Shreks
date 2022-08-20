@@ -1,5 +1,6 @@
 using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.DataAccess;
+using Kysect.Shreks.Application.Abstractions.DataAccess.Extensions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Study;
 using MediatR;

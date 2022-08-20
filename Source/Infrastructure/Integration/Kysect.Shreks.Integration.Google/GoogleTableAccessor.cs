@@ -1,6 +1,6 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google.Commands;
-using Kysect.Shreks.Application.Abstractions.Google.Models;
 using Kysect.Shreks.Application.Abstractions.Google.Queries;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tools;
 using MediatR;
@@ -12,15 +12,15 @@ public class GoogleTableAccessor : IDisposable
 {
     private readonly SemaphoreSlim _spreadsheetCreationSemaphore;
 
-    private readonly ISheet<CoursePoints> _pointsSheet;
-    private readonly ISheet<SubmissionsQueue> _queueSheet;
+    private readonly ISheet<CoursePointsDto> _pointsSheet;
+    private readonly ISheet<SubmissionsQueueDto> _queueSheet;
     private readonly ISheetManagementService _sheetManagementService;
     private readonly IMediator _mediator;
     private readonly ILogger<GoogleTableAccessor> _logger;
 
     public GoogleTableAccessor(
-        ISheet<CoursePoints> pointsSheet,
-        ISheet<SubmissionsQueue> queueSheet,
+        ISheet<CoursePointsDto> pointsSheet,
+        ISheet<SubmissionsQueueDto> queueSheet,
         ISheetManagementService sheetManagementService,
         IMediator mediator,
         ILogger<GoogleTableAccessor> logger)
