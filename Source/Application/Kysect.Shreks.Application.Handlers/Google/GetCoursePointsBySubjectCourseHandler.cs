@@ -89,10 +89,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
     {
         if (submission.SubmissionDate <= deadline) return Array.Empty<DeadlinePolicy>();
 
-        var submissionDateTime = submission.SubmissionDate.ToDateTime(TimeOnly.MinValue);
-        var deadlineDateTime = deadline.ToDateTime(TimeOnly.MinValue);
-
-        var submissionDeadlineOffset = submissionDateTime - deadlineDateTime;
+        var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDate.DayNumber - deadline.DayNumber);
         return submission
             .Assignment
             .DeadlinePolicies
