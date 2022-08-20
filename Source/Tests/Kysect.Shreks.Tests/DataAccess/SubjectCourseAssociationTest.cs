@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Microsoft.Extensions.DependencyInjection;
