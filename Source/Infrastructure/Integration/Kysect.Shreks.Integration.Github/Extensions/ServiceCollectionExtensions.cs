@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddClientFactory(shreksConfiguration);
         services.AddScoped<IActionNotifier, ActionNotifier>();
         services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessor>();
-        //services.AddGithubInviteBackgroundService();
+        services.AddGithubInviteBackgroundService();
 
         return services;
     }
@@ -69,10 +69,6 @@ public static class ServiceCollectionExtensions
             return new InstallationClientFactory(appClient, memoryCache);
         });
 
-        services.AddScoped<IActionNotifier, ActionNotifier>();
-
-        services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessor>();
-        
         return services;
     }
 
