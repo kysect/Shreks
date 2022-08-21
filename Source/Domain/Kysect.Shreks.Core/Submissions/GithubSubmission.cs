@@ -13,7 +13,7 @@ public partial class GithubSubmission : Submission
         string payload,
         string organization,
         string repository,
-        long pullRequestNumber)
+        long prNumber)
         : base(student, groupAssignment, submissionDate, payload)
     {
         var association = new GithubSubmissionAssociation
@@ -21,7 +21,7 @@ public partial class GithubSubmission : Submission
             this,
             organization,
             repository,
-            pullRequestNumber
+            prNumber
         );
 
         AddAssociation(association);
