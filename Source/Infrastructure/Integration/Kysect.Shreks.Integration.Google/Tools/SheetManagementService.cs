@@ -53,7 +53,7 @@ public class SheetManagementService : ISheetManagementService
     {
         var spreadsheetToCreate = new File
         {
-            DriveId = _driveIdProvider.GetDriveId(),
+            Parents = new List<string> { _driveIdProvider.GetDriveId() },
             MimeType = SpreadsheetType,
             Name = title
         };
