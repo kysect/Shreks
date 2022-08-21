@@ -1,15 +1,14 @@
-using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.SubmissionAssociations;
 
-public partial class GithubPullRequestSubmissionAssociation : SubmissionAssociation
+public partial class GithubSubmissionAssociation : SubmissionAssociation
 {
-    public GithubPullRequestSubmissionAssociation(
-        Submission submission,
+    public GithubSubmissionAssociation(
+        GithubSubmission submission,
         string organization,
         string repository,
-        long pullRequestNumber) 
-        : base(submission)
+        long pullRequestNumber) : base(submission)
     {
         Repository = repository;
         PullRequestNumber = pullRequestNumber;

@@ -1,6 +1,6 @@
-﻿using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.DataAccess.Abstractions;
+﻿using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Seeding.EntityGenerators;
+using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 namespace Kysect.Shreks.Seeding.DatabaseSeeders;
 

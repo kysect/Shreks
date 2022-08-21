@@ -8,6 +8,7 @@ using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.ValueConverters;
 using Microsoft.EntityFrameworkCore;
+using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 namespace Kysect.Shreks.DataAccess.Context;
 

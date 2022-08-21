@@ -9,6 +9,6 @@ public class SubmissionAssociationConfiguration : IEntityTypeConfiguration<Submi
     public void Configure(EntityTypeBuilder<SubmissionAssociation> builder)
     {
         builder.HasDiscriminator<string>("Discriminator")
-            .HasValue<GithubPullRequestSubmissionAssociation>(nameof(GithubPullRequestSubmissionAssociation));
+            .HasValue<GithubSubmissionAssociation>(nameof(GithubSubmissionAssociation));
     }
 }

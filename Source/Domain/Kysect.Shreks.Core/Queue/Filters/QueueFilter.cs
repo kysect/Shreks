@@ -1,5 +1,5 @@
-using Kysect.Shreks.Core.Study;
 using RichEntity.Annotations;
+using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 
