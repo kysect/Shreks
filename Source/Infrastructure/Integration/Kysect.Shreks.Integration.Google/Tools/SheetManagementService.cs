@@ -21,16 +21,16 @@ public class SheetManagementService : ISheetManagementService
 
     private readonly SheetsService _sheetsService;
     private readonly DriveService _driveService;
-    private readonly IDriveIdProvider _driveIdProvider;
+    private readonly ITablesParentsProvider _tablesParentsProvider;
 
     public SheetManagementService(
         SheetsService sheetsService,
         DriveService driveService,
-        IDriveIdProvider driveIdProvider)
+        ITablesParentsProvider tablesParentsProvider)
     {
         _sheetsService = sheetsService;
         _driveService = driveService;
-        _driveIdProvider = driveIdProvider;
+        _tablesParentsProvider = tablesParentsProvider;
     }
 
     public async Task CreateOrClearSheetAsync(string spreadsheetId, ISheet sheet, CancellationToken token)
@@ -53,7 +53,7 @@ public class SheetManagementService : ISheetManagementService
     {
         var spreadsheetToCreate = new File
         {
-            Parents = new List<string> { _driveIdProvider.GetDriveId() },
+            Parents = _tablesParentsProvider.GetParents(),
             MimeType = SpreadsheetType,
             Name = title
         };

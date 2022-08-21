@@ -40,8 +40,8 @@ public class GoogleIntegrationOptions
 
     public GoogleIntegrationOptions ConfigureDriveId(string driveId)
     {
-        var driveIdProvider = new ConstDriveIdProvider(driveId);
-        _collection.AddSingleton<IDriveIdProvider>(driveIdProvider);
+        var driveParentProvider = new DriveParentProvider(driveId);
+        _collection.AddSingleton<ITablesParentsProvider>(driveParentProvider);
 
         return this;
     }
