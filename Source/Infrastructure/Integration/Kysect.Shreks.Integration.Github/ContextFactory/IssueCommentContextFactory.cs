@@ -34,7 +34,7 @@ public class IssueCommentContextFactory : ICommandContextFactory
         var issueNumber = _event.Issue.Number;
         var submissionQuery = new GetCurrentUnratedSubmissionByPrNumber.Query(
             organizationName, repositoryName, issueNumber);
-        var submissionResponse = await _mediator.Send(submissionQuery, cancellationToken)
+        var submissionResponse = await _mediator.Send(submissionQuery, cancellationToken);
 
         return new SubmissionContext(_mediator, userId, submissionResponse.SubmissionDto);
     }
