@@ -12,6 +12,7 @@ using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
+using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,6 +65,7 @@ IServiceProvider services = new ServiceCollection()
         .UseInMemoryDatabase("Data Source=playground.db"))
     .AddDatabaseSeeders()
     .AddHandlers()
+    .AddMappingConfiguration()
     .AddLogging(o => o.AddSerilog())
     .BuildServiceProvider();
 
@@ -79,19 +81,19 @@ var tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
 await tableWorker.StartAsync(default);
 
 tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 
 var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
 tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
+tableWorker.EnqueueSubmissionsQueueUpdate(anotherSubjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromMinutes(2));
 
 tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 
 await Task.Delay(-1);

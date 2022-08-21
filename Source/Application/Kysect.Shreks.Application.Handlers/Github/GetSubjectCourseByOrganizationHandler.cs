@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetSubjectCourseByOrganization;
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-public class GetSubjectCourseByOrganisationHandler : IRequestHandler<Query, Response>
+public class GetSubjectCourseByOrganizationHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
 
-    public GetSubjectCourseByOrganisationHandler(IShreksDatabaseContext context)
+    public GetSubjectCourseByOrganizationHandler(IShreksDatabaseContext context)
     {
         _context = context;
     }
