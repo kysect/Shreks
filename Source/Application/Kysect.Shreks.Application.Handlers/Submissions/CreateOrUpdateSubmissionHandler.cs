@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Users;
@@ -13,11 +15,13 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 
 public class CreateOrUpdateSubmissionHandler : IRequestHandler<Command, Response>
 {
+    private readonly ITableUpdateQueue _tableUpdateQueue;
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
 
-    public CreateOrUpdateSubmissionHandler(IShreksDatabaseContext context, IMapper mapper)
+    public CreateOrUpdateSubmissionHandler(ITableUpdateQueue tableUpdateQueue, IShreksDatabaseContext context, IMapper mapper)
     {
+        _tableUpdateQueue = tableUpdateQueue;
         _context = context;
         _mapper = mapper;
     }
@@ -53,6 +57,7 @@ public class CreateOrUpdateSubmissionHandler : IRequestHandler<Command, Response
             await _context.SaveChangesAsync(cancellationToken);
         }
 
+        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId());
         var dto = _mapper.Map<SubmissionDto>(submission);
 
         return new Response(dto);
