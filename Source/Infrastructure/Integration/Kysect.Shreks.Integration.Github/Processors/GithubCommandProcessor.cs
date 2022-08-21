@@ -40,7 +40,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
                 $"Updated submission - " +
                 $"points: {submissionDto.Points}, " +
                 $"Extra points: {submissionDto.ExtraPoints}, " +
-                $"Date: {submissionDto.SubmissionDateTime}"); //md?
+                $"Date: {submissionDto.SubmissionDate}"); //md?
         }
         catch(Exception e) //TODO: catch different exceptions and write better messages
         {
