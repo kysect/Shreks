@@ -1,4 +1,5 @@
 using GitHubJwt;
+using Kysect.Shreks.Application.Abstractions.Github;
 using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.CredentialStores;
 using Kysect.Shreks.Integration.Github.Entities;
@@ -20,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IActionNotifier, ActionNotifier>();
         services.AddSingleton<WebhookEventProcessor, ShreksWebhookEventProcessor>();
         services.AddGithubInviteBackgroundService();
+        services.AddSingleton<IOrganizationDetailsProvider, OrganizationDetailsProvider>();
 
         return services;
     }

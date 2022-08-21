@@ -9,6 +9,6 @@ public class SubmissionConfiguration : IEntityTypeConfiguration<Submission>
     public void Configure(EntityTypeBuilder<Submission> builder)
     {
         builder.HasOne(x => x.Student);
-        builder.HasOne(x => x.Assignment);
+        builder.HasOne(x => x.GroupAssignment);
     }
 }
