@@ -63,7 +63,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new StudentPointsDto(studentDto, assignmentPoints);
     }
 
-    private AssignmentPointsDto? FindAssignmentPoints(GroupAssignment groupAssignment, Student student, IEnumerable<Submission> submissions)
+    private AssignmentPointsDto? FindAssignmentPoints(GroupAssignment groupAssignment, IEnumerable<Submission> submissions)
     {
         var deadline = groupAssignment.Deadline;
 
