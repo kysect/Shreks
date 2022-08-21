@@ -20,8 +20,12 @@ public class AddSubmissionGithubPrAssociationHandler : IRequestHandler<Command>
     {
         var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
-        _context.SubmissionAssociations.Add(new GithubPullRequestSubmissionAssociation(submission, 
-                request.Organisation, request.Repository, request.PrNumber));
+        var association = new GithubPullRequestSubmissionAssociation(
+            submission,
+            request.Organisation,
+            request.Repository,
+            request.PrNumber);
+        _context.SubmissionAssociations.Add(association);
         await _context.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;

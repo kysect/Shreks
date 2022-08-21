@@ -5,18 +5,16 @@ using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetCurrentUnratedSubmissionByPrNumber;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
-using static Abstractions.Github.Queries.GetCurrentUnratedSubmissionByPrNumber;
 
 
-public class GetCurrentUnratedSumbissionByPrNumberHandler : IRequestHandler<Query, Response>
+public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
-
-
-    public GetCurrentUnratedSumbissionByPrNumberHandler(IShreksDatabaseContext context, IMapper mapper)
+    public GetCurrentUnratedSubmissionByPrNumberHandler(IShreksDatabaseContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
@@ -36,8 +34,13 @@ public class GetCurrentUnratedSumbissionByPrNumberHandler : IRequestHandler<Quer
             .FirstOrDefaultAsync(cancellationToken);
 
         if (submission is null)
-            throw new EntityNotFoundException($"No unrated submission in pr " +
-                                              $"{request.Organisation}/${request.Repository}/${request.PrNumber}");
+        {
+            var organization = request.Organisation;
+            var repository = request.Repository;
+            var number = request.PrNumber;
+            var message = $"No unrated submission in pr {organization}/{repository}/{number}";
+            throw new EntityNotFoundException(message);
+        }
         
         return new Response(_mapper.Map<SubmissionDto>(submission));
     }
