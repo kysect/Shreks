@@ -27,8 +27,12 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
         if (request.NewRating is null && request.ExtraPoints is null)
-            throw new DomainInvalidOperationException(
-                $"Cannot update submission points, both {nameof(request.NewRating)} and {nameof(request.ExtraPoints)} are null.");
+        {
+            const string ratingName = nameof(request.NewRating);
+            const string extraPointsName = nameof(request.ExtraPoints);
+            const string message = $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
+            throw new DomainInvalidOperationException(message);
+        }
 
         var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
