@@ -6,6 +6,6 @@ public record SubmissionDto(
     Guid StudentId,
     Guid AssignmentId,
     string Payload,
-    double ExtraPoints,
-    double Points,
+    double? ExtraPoints,
+    double? Points,
     string AssignmentShortName);
