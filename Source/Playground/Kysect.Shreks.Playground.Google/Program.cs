@@ -1,46 +1,15 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Drive.v3;
-using Google.Apis.Services;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Util.Store;
-using Kysect.Shreks.Application.Abstractions.Formatters;
-using Kysect.Shreks.Application.Handlers.Extensions;
+﻿using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
-using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-
-var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read);
-var secrets = await GoogleClientSecrets.FromStreamAsync(stream);
-
-var scopes = new[]
-{
-    SheetsService.Scope.Spreadsheets,
-    DriveService.Scope.Drive
-};
-
-var credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-    secrets.Secrets,
-    scopes,
-    "user",
-    CancellationToken.None,
-    new FileDataStore("token.json", true));
-
-var initializer = new BaseClientService.Initializer
-{
-    HttpClientInitializer = credential
-};
-
-var sheetsService = new SheetsService(initializer);
-var driverService = new DriveService(initializer);
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -48,31 +17,17 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 IServiceProvider services = new ServiceCollection()
+    .AddGoogleCredentialsFromWeb()
     .AddGoogleIntegration()
-    .AddSingleton(sheetsService)
-    .AddSingleton(driverService)
-    .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
-    .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
-    .AddEntityGenerators(o => o
-        .ConfigureEntityGenerator<Submission>(s => s.Count = 1000)
-        .ConfigureEntityGenerator<Student>(s => s.Count = 400)
-        .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 20)
-        .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 50)
-        .ConfigureEntityGenerator<Assignment>(a => a.Count = 50)
-        .ConfigureFaker(f => f.Locale = "ru"))
-    .AddDatabaseContext(o => o
-        .UseLazyLoadingProxies()
-        .UseInMemoryDatabase("Data Source=playground.db"))
-    .AddDatabaseSeeders()
     .AddHandlers()
     .AddMappingConfiguration()
     .AddLogging(o => o.AddSerilog())
+    .AddGooglePlaygroundDatabase()
     .BuildServiceProvider();
 
+await services.EnsureDatabaseSeeded();
+
 var databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
-databaseContext.Database.EnsureCreated();
-await databaseContext.SaveChangesAsync();
-await services.UseDatabaseSeeders();
 
 var subjectCourse = databaseContext.SubjectCourses.First();
 
@@ -97,3 +52,32 @@ tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
 tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 
 await Task.Delay(-1);
+
+public static class GooglePlaygroundExtensions
+{
+    public static IServiceCollection AddGooglePlaygroundDatabase(this IServiceCollection serviceCollection)
+    {
+        return serviceCollection
+            .AddEntityGenerators(o => o
+                .ConfigureEntityGenerator<Submission>(s => s.Count = 1000)
+                .ConfigureEntityGenerator<Student>(s => s.Count = 400)
+                .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 20)
+                .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 50)
+                .ConfigureEntityGenerator<Assignment>(a => a.Count = 50)
+                .ConfigureFaker(f => f.Locale = "ru"))
+            .AddDatabaseContext(o => o
+                .UseLazyLoadingProxies()
+                .UseInMemoryDatabase("Data Source=playground.db"))
+            .AddDatabaseSeeders();
+    }
+
+    public static async Task<IServiceProvider> EnsureDatabaseSeeded(this IServiceProvider services)
+    {
+        var databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
+        await databaseContext.Database.EnsureCreatedAsync();
+        await databaseContext.SaveChangesAsync();
+        await services.UseDatabaseSeeders();
+
+        return services;
+    }
+}

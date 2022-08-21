@@ -3,15 +3,22 @@ using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Playground.Github.TestEnv;
 
 public static class TestEnv
 {
-    public static void SetupTestEnv(this IServiceCollection serviceCollection, TestEnvConfiguration config)
+    public static IServiceCollection AddGithubPlaygroundDatabase(this IServiceCollection serviceCollection, TestEnvConfiguration config)
     {
+        serviceCollection
+            .AddDatabaseContext(optionsBuilder => optionsBuilder
+                .UseSqlite("Filename=shreks-gh.db")
+                .UseLazyLoadingProxies());
+
         serviceCollection.AddEntityGenerators(o =>
         {
             o.ConfigureFaker(o => o.Locale = "ru");
@@ -24,9 +31,7 @@ public static class TestEnv
             o.ConfigureEntityGenerator<SubjectCourseAssociation>(o => o.Count = 0);
         });
 
-        serviceCollection.AddDatabaseSeeders();
-        
-        
+        return serviceCollection.AddDatabaseSeeders();
     }
 
     public static async Task UseTestEnv(

@@ -1,5 +1,9 @@
+using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.Integration.Github.Extensions;
+using Kysect.Shreks.Integration.Github.Helpers;
+using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -10,36 +14,62 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog(
     (ctx, lc) => lc.MinimumLevel.Verbose().WriteTo.Console());
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
 
-builder.Services.AddHandlers();
-builder.Services.AddDatabaseContext(
-    opt => opt.UseSqlite("Filename=shreks.db").UseLazyLoadingProxies());
-builder.Services.AddMappingConfiguration();
+InitServiceCollection(builder);
+await InitWebApplication(builder);
 
-if (builder.Environment.IsDevelopment())
+void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 {
-    builder.Services.AddDatabaseSeeders();
-    builder.Services.AddEntityGenerators();
+    webApplicationBuilder.Services.AddControllers();
+    webApplicationBuilder.Services.AddEndpointsApiExplorer();
+    webApplicationBuilder.Services.AddSwaggerGen();
+
+    webApplicationBuilder.Services
+        .AddHandlers()
+        .AddApplicationCommands()
+        .AddMappingConfiguration();
+
+    webApplicationBuilder.Services
+        .AddDatabaseContext(opt => opt
+            .UseSqlite("Filename=shreks.db")
+            .UseLazyLoadingProxies());
+
+    webApplicationBuilder.Services
+        .AddGoogleCredentialsFromWeb()
+        .AddGoogleIntegration();
+
+    webApplicationBuilder.Services
+        .AddGithubServices(shreksConfiguration);
+
+    if (webApplicationBuilder.Environment.IsDevelopment())
+    {
+        webApplicationBuilder.Services
+            .AddDatabaseSeeders()
+            .AddEntityGenerators();
+    }
 }
 
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
 {
-    await app.Services.UseDatabaseSeeders();
-    app.UseSwagger();
-    app.UseSwaggerUI();
-    app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    var app = webApplicationBuilder.Build();
+
+    if (app.Environment.IsDevelopment())
+    {
+        await app.Services.UseDatabaseSeeders();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+        app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    }
+
+    app.UseHttpsRedirection();
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+    app.UseSerilogRequestLogging();
+
+    app.UseGithubIntegration(shreksConfiguration);
+
+    app.Run();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-app.UseSerilogRequestLogging();
-
-app.Run();
