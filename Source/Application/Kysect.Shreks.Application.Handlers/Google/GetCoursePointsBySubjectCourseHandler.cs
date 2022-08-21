@@ -51,7 +51,9 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             .Where(s => s.Student.Equals(student))
             .AsEnumerable()
             .GroupBy(s => s.GroupAssignment)
-            .Select(s => GetAssignmentPoints(s.ToArray()))
+            .Select(FindAssignmentPoints)
+            .Where(a => a is not null)
+            .Select(a => a!)
             .ToArray();
 
         var studentDto = _mapper.Map<StudentDto>(student);
@@ -59,14 +61,20 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new StudentPointsDto(studentDto, assignmentPoints);
     }
 
-    private AssignmentPointsDto GetAssignmentPoints(IEnumerable<Submission> submissions)
+    private AssignmentPointsDto? FindAssignmentPoints(IEnumerable<Submission> submissions)
     {
-        var submission = submissions.OrderBy(s => s.SubmissionDate).First();
+        Submission? submission = submissions
+            .Where(s => s.Points is not null)
+            .MaxBy(s => s.SubmissionDate);
+
         //TODO: add deadlines usage instead of .Last
 
-        var points = submission.Points;
+        if (submission is null || submission.Points is null)
+            return null;
+
+        var points = submission.Points.Value.Value;
 
         var submissionDate = submission.SubmissionDate;
-        return new AssignmentPointsDto(submission.GroupAssignment.AssignmentId, submissionDate, points?.Value);
+        return new AssignmentPointsDto(submission.GroupAssignment.AssignmentId, submissionDate, points);
     }
 }
