@@ -10,22 +10,20 @@ ITableUpdateQueue, представляемый бэкграунд воркер�
 
 - ICultureInfoProvider
 - IUserFullNameFormatter
-- ISpreadsheetIdProvider
-- SheetsService
-- DriveService
 - Базу данных
 - Хэндлеры
 - Маппинг
 - Логгер
+
+И конфигурировать через `options` Google Credentials и DriveId
 
 Создание api:
 
 - Создать проект в https://console.cloud.google.com/
 - Включить Google Sheets API https://console.cloud.google.com/apis/library/sheets.googleapis.com
 - Включить Google Drive API https://console.cloud.google.com/apis/library/drive.googleapis.com
-- Создать OAuth 2.0 Client ID типа web app, добавить в authorized redirect URIs: `http://127.0.0.1/authorize/`
-- Скачать ключи в форме JSON, переименовать в client_secrets.json и положить в Playground.Google
-- При запуске приложения подтвердить гугл пользователя
+- Создать Service Account Credentials, дать в драйве роль Editor `email`у аккаунта
+- Скачать ключи в форме JSON, переименовать client_secrets.json и положить в Playground.Google
 
 Примеры получившихся таблиц:
 
