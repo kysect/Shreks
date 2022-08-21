@@ -12,9 +12,19 @@ public class ValueObjectsProfile : Profile
             .ReverseMap()
             .ConstructUsing(x => new Points(x));
 
+        CreateMap<Points?, double?>()
+            .ConstructUsing(x => x == null ? null : x.Value.Value)
+            .ReverseMap()
+            .ConstructUsing(x => x == null ? null : new Points(x.Value));
+
         CreateMap<Fraction, double>()
             .ConstructUsing(x => x.Value)
             .ReverseMap()
             .ConstructUsing(x => new Fraction(x));
+
+        CreateMap<Fraction?, double?>()
+            .ConstructUsing(x => x == null ? null : x.Value.Value)
+            .ReverseMap()
+            .ConstructUsing(x => x == null ? null : new Fraction(x.Value));
     }
 }

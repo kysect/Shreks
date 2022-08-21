@@ -6,12 +6,12 @@ namespace Kysect.Shreks.Core.Study;
 
 public partial class Submission : IEntity<Guid>
 {
-    public Submission(Student student, Assignment assignment, DateOnly submissionDate, string payload)
+    public Submission(Student student, GroupAssignment groupAssignment, DateOnly submissionDate, string payload)
         : this(Guid.NewGuid())
     {
         SubmissionDate = submissionDate;
         Student = student;
-        Assignment = assignment;
+        GroupAssignment = groupAssignment;
         Payload = payload;
         
         Rating = default;
@@ -22,7 +22,7 @@ public partial class Submission : IEntity<Guid>
 
     public virtual Student Student { get; protected init; }
 
-    public virtual Assignment Assignment { get; protected init; }
+    public virtual GroupAssignment GroupAssignment { get; protected init; }
 
     public string Payload { get; set; }
 
@@ -30,5 +30,5 @@ public partial class Submission : IEntity<Guid>
 
     public Points? ExtraPoints { get; set; }
 
-    public Points? Points => Rating is null ? default : Assignment.MaxPoints * Rating;
+    public Points? Points => Rating is null ? default : GroupAssignment.Assignment.MaxPoints * Rating;
 }

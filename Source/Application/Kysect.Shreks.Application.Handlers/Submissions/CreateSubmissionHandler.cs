@@ -4,6 +4,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Abstractions.Submissions.Commands.CreateSubmissionCommand;
 namespace Kysect.Shreks.Application.Handlers.Submissions;
 
@@ -22,9 +23,10 @@ public class CreateSubmissionHandler : IRequestHandler<Command, Response>
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
         var student = await _context.Students.GetByIdAsync(request.StudentId, cancellationToken);
-        var assignment = await _context.Assignments.GetByIdAsync(request.AssignmentId, cancellationToken);
+        GroupAssignment groupAssignment = await _context.GroupAssignments
+            .SingleAsync(ga => ga.AssignmentId == request.AssignmentId && ga.GroupId == student.Group.Id, cancellationToken);
 
-        var submission = new Submission(student, assignment, DateOnly.FromDateTime(DateTime.Now), request.Payload);
+        var submission = new Submission(student, groupAssignment, DateOnly.FromDateTime(DateTime.Now), request.Payload);
         await _context.Submissions.AddAsync(submission, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
