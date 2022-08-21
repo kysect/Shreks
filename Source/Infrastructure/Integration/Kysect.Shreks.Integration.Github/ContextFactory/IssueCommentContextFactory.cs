@@ -18,23 +18,30 @@ public class IssueCommentContextFactory : ICommandContextFactory
 
     public async Task<BaseContext> CreateBaseContext(CancellationToken cancellationToken)
     {
-        var login = _event.Sender!.Login; //user is always present in this event
-        var query = new GetUserByUsername.Query(login);
-        var response = await _mediator.Send(query, cancellationToken);
-
-        return new BaseContext(_mediator, response.UserId);
+        var userId = await GetUserId(cancellationToken);
+        
+        return new BaseContext(_mediator, userId);
     }
 
     public async Task<SubmissionContext> CreateSubmissionContext(CancellationToken cancellationToken)
     {
-        var login = _event.Sender!.Login; //user is always present in this event
-        var userQuery = new GetUserByUsername.Query(login);
-        var userResponse = await _mediator.Send(userQuery, cancellationToken);
+        var userId = await GetUserId(cancellationToken);
 
-        var submissionQuery = new GetCurrentUnratedSubmissionByPrNumber.Query(_event.Organization!.Login, 
-            _event.Repository!.Name, _event.Issue.Number);
+        ArgumentNullException.ThrowIfNull(_event.Repository);
+        ArgumentNullException.ThrowIfNull(_event.Organization);
+        var submissionQuery = new GetCurrentUnratedSubmissionByPrNumber.Query(_event.Organization.Login, 
+            _event.Repository.Name, _event.Issue.Number);
         var submissionResponse =  await _mediator.Send(submissionQuery, cancellationToken);
 
-        return new SubmissionContext(_mediator, userResponse.UserId, submissionResponse.SubmissionDto);
+        return new SubmissionContext(_mediator, userId, submissionResponse.SubmissionDto);
+    }
+
+    private async Task<Guid> GetUserId(CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(_event.Sender);
+        var login = _event.Sender.Login; 
+        var query = new GetUserByUsername.Query(login);
+        var response = await _mediator.Send(query, cancellationToken);
+        return response.UserId;
     }
 }

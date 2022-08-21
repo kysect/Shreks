@@ -111,7 +111,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                         var contextCreator = new IssueCommentContextFactory(_mediator, issueCommentEvent);
                         var processor = new GithubCommandProcessor(contextCreator, CancellationToken.None);
                         var result = await command.AcceptAsync(processor);
-                        if (result.Message != "")
+                        if (string.IsNullOrEmpty(result.Message))
                         {
                             await _actionNotifier.SendComment(
                                 issueCommentEvent,
