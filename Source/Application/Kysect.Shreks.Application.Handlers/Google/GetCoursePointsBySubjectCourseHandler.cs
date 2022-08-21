@@ -53,7 +53,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             .Where(s => s.Student.Equals(student))
             .AsEnumerable()
             .GroupBy(s => s.Assignment)
-            .Select(GetAssignmentPoints)
+            .Select(g => GetAssignmentPoints(g.Key, student, g))
             .ToArray();
 
         var studentDto = _mapper.Map<StudentDto>(student);
@@ -61,38 +61,41 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new StudentPointsDto(studentDto, assignmentPoints);
     }
 
-    private AssignmentPointsDto GetAssignmentPoints(IEnumerable<Submission> submissions)
+    private AssignmentPointsDto GetAssignmentPoints(Assignment assignment, Student student, IEnumerable<Submission> submissions)
     {
-        var assignment = submissions.First().Assignment;
-        var group = submissions.First().Student.Group;
+        var group = student.Group;
 
         var deadline = assignment.GroupAssignments.First(g => g.Group.Equals(group)).Deadline;
 
-        var (submission, points) = submissions.Select(
-                s => (submission: s, points: GetSubmissionPoints(s, deadline))
-            ).MaxBy(s => s.points);
+        var (submission, points) = submissions
+            .Select(s => (submission: s, points: GetSubmissionPoints(s, deadline)))
+            .MaxBy(s => s.points);
 
         return new AssignmentPointsDto(assignment.Id, submission.SubmissionDate, points.Value);
     }
 
     private Points GetSubmissionPoints(Submission submission, DateOnly deadline)
     {
-        var deadlinePolicies = GetActiveDeadlinePolicies(submission, deadline);
+        var deadlinePolicy = GetActiveDeadlinePolicy(submission, deadline);
 
-        var points = deadlinePolicies.Aggregate(
-            submission.Points, (current, deadlinePolicy) => deadlinePolicy.Apply(current));
+        if (deadlinePolicy is null)
+            return submission.Points;
+
+        var points = deadlinePolicy.Apply(submission.Points);
 
         return points;
     }
 
-    private IEnumerable<DeadlinePolicy> GetActiveDeadlinePolicies(Submission submission, DateOnly deadline)
+    private DeadlinePolicy? GetActiveDeadlinePolicy(Submission submission, DateOnly deadline)
     {
-        if (submission.SubmissionDate <= deadline) return Array.Empty<DeadlinePolicy>();
+        if (submission.SubmissionDate <= deadline)
+            return null;
 
         var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDate.DayNumber - deadline.DayNumber);
         return submission
             .Assignment
             .DeadlinePolicies
-            .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset);
+            .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)
+            .MaxBy(dp => dp.SpanBeforeActivation);
     }
 }
