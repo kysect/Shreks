@@ -8,7 +8,7 @@ public class SubjectCourseAssociationConfiguration : IEntityTypeConfiguration<Su
 {
     public void Configure(EntityTypeBuilder<SubjectCourseAssociation> builder)
     {
-        builder.HasDiscriminator<string>("SubjectCourseAssociationType")
+        builder.HasDiscriminator<string>("Discriminator")
             .HasValue<GithubSubjectCourseAssociation>(nameof(GithubSubjectCourseAssociation));
     }
 }
