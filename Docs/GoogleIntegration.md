@@ -1,6 +1,8 @@
 # Google integration
 
-GoogleTableAccessor содержит в себе методы UpdatePointsAsync и UpdateQueueAsync, создающие таблицы на листах "Баллы" и "Очередь" соответсвенно (Создает листы если их не было)
+ITableUpdateQueue, представляемый бэкграунд воркером GoogleTableUpdateWorker содержит в себе методы EnqueueCoursePointsUpdate и EnqueueSubmissionsQueueUpdate, добавляющие курс для обновления его таблицы на листах "Баллы" и "Очередь" соответственно (Создает листы если их не было)
+Обновлении таблиц происходит с периодичностью в одну минуту
+Также если у курса нет ассоциации с таблицей, создает таблицу в драйве и записывает новую ассоциацию в базу.
 
 Пример использования находится в проекте Playground.Google:
 
@@ -10,18 +12,20 @@ GoogleTableAccessor содержит в себе методы UpdatePointsAsync 
 - IUserFullNameFormatter
 - ISpreadsheetIdProvider
 - SheetsService
-
-Создание таблицы:
-- Создать таблицу в https://docs.google.com/spreadsheets
-- Получить spreadsheet ID из ссылки docs.google.com/spreadsheets/d/**1buz1imYXq7ijn8DFThyB-j59BP-L8Sj_t3EmJBOar90**/edit#gid=0
-- Создать ConstSpreadsheetIdProvider
+- DriveService
+- Базу данных
+- Хэндлеры
+- Маппинг
+- Логгер
 
 Создание api:
 
 - Создать проект в https://console.cloud.google.com/
 - Включить Google Sheets API https://console.cloud.google.com/apis/library/sheets.googleapis.com
-- Создать Service Account Credentials, дать доступ на изменение в созданной ранее гугл таблице `email`у аккаунта
-- Скачать ключи в форме JSON, переименовать client_secrets.json и положить в Playground.Google
+- Включить Google Drive API https://console.cloud.google.com/apis/library/drive.googleapis.com
+- Создать OAuth 2.0 Client ID типа web app, добавить в authorized redirect URIs: `http://127.0.0.1/authorize/`
+- Скачать ключи в форме JSON, переименовать в client_secrets.json и положить в Playground.Google
+- При запуске приложения подтвердить гугл пользователя
 
 Примеры получившихся таблиц:
 
