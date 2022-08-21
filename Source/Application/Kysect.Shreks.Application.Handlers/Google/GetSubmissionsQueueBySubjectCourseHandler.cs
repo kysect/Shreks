@@ -2,7 +2,6 @@
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +23,7 @@ public class GetSubmissionsQueueBySubjectCourseHandler : IRequestHandler<Query, 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
         var submissions = await _context.Submissions
-            .Where(s => s.GetCourseId() == request.SubjectCourseId)
+            .Where(s => s.GroupAssignment.Assignment.SubjectCourse.Id == request.SubjectCourseId)
             .ToArrayAsync(cancellationToken);
 
         //TODO: add queue logic
