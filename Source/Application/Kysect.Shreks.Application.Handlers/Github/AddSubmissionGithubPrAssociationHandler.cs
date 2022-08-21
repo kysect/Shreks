@@ -22,7 +22,7 @@ public class AddSubmissionGithubPrAssociationHandler : IRequestHandler<Command>
 
         var association = new GithubPullRequestSubmissionAssociation(
             submission,
-            request.Organisation,
+            request.Organization,
             request.Repository,
             request.PrNumber);
         _context.SubmissionAssociations.Add(association);

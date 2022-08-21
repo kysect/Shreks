@@ -25,7 +25,7 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
         var submission =  await _context.SubmissionAssociations
             .OfType<GithubPullRequestSubmissionAssociation>()
             .Where(a => 
-                a.Organization == request.Organisation 
+                a.Organization == request.Organization 
                 && a.Repository == request.Repository
                 && a.PullRequestNumber == request.PrNumber
                 && a.Submission.Rating == null)
@@ -35,7 +35,7 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
 
         if (submission is null)
         {
-            var organization = request.Organisation;
+            var organization = request.Organization;
             var repository = request.Repository;
             var number = request.PrNumber;
             var message = $"No unrated submission in pr {organization}/{repository}/{number}";
