@@ -24,13 +24,15 @@ public class StudentGenerator : EntityGeneratorBase<Student>
 
     protected override Student Generate(int index)
     {
+        if (index >= _userGenerator.GeneratedEntities.Count)
+            throw new IndexOutOfRangeException("Student count is greater than count of users.");
+        
         var groupCount = _studentGroupGenerator.GeneratedEntities.Count;
         var groupNumber = index % groupCount;
 
         StudentGroup group = _studentGroupGenerator.GeneratedEntities[groupNumber];
 
-        var userIndex = _faker.Random.Int(0, _userGenerator.GeneratedEntities.Count - 1);
-        var user = _userGenerator.GeneratedEntities[userIndex];
+        var user = _userGenerator.GeneratedEntities[index];
 
         var student = new Student(user, group);
 
