@@ -77,7 +77,7 @@ public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdmin
             .Users
             .SelectMany(u => u.Associations)
             .OfType<GithubUserAssociation>()
-            .FirstOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(a => a.GithubUsername == adminUsername, cancellationToken);
 
         if (userAssociation is not null)
         {
