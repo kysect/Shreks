@@ -38,6 +38,8 @@ public partial class Submission : IEntity<Guid>
 
     public Points? Points => Rating is null ? default : GroupAssignment.Assignment.MaxPoints * Rating;
 
+    public bool IsRated => Rating is not null;
+
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
     
     public void AddAssociation(SubmissionAssociation association)

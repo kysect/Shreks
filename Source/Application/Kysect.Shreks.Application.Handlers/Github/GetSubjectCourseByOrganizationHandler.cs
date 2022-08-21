@@ -22,7 +22,7 @@ public class GetSubjectCourseByOrganizationHandler : IRequestHandler<Query, Resp
             .FirstOrDefaultAsync(gsc => gsc.GithubOrganizationName == request.OrganizationName, cancellationToken);
 
         if (subjectCourseAssociation is null)
-            throw new EntityNotFoundException($"SubjectCourse with organisation {request.OrganizationName} not found");
+            throw new EntityNotFoundException($"SubjectCourse with organization {request.OrganizationName} not found");
 
         return new Response(subjectCourseAssociation.SubjectCourse.Id);
     }
