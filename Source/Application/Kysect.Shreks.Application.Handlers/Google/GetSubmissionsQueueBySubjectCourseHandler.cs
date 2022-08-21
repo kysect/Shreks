@@ -24,7 +24,7 @@ public class GetSubmissionsQueueBySubjectCourseHandler : IRequestHandler<Query, 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
         var submissions = await _context.Submissions
-            .Where(s => s.GetCourseId() == request.SubjectCourseId)
+            .Where(s => s.GroupAssignment.Assignment.SubjectCourse.Id == request.SubjectCourseId)
             .ToArrayAsync(cancellationToken);
 
         //TODO: add queue logic
