@@ -2,13 +2,16 @@
 using Google.Apis.Drive.v3.Data;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
+using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
+using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
 
 public class SheetManagementService : ISheetManagementService
 {
     private const string AllFields = "*";
+    private const string SpreadsheetType = "application/vnd.google-apps.spreadsheet";
 
     private static readonly Permission AnyoneViewerPermission = new()
     {
@@ -18,11 +21,16 @@ public class SheetManagementService : ISheetManagementService
 
     private readonly SheetsService _sheetsService;
     private readonly DriveService _driveService;
+    private readonly ITablesParentsProvider _tablesParentsProvider;
 
-    public SheetManagementService(SheetsService sheetsService, DriveService driveService)
+    public SheetManagementService(
+        SheetsService sheetsService,
+        DriveService driveService,
+        ITablesParentsProvider tablesParentsProvider)
     {
         _sheetsService = sheetsService;
         _driveService = driveService;
+        _tablesParentsProvider = tablesParentsProvider;
     }
 
     public async Task CreateOrClearSheetAsync(string spreadsheetId, ISheet sheet, CancellationToken token)
@@ -43,19 +51,18 @@ public class SheetManagementService : ISheetManagementService
 
     public async Task<string> CreateSpreadsheetAsync(string title, CancellationToken token)
     {
-        var spreadsheetToCreate = new Spreadsheet
+        var spreadsheetToCreate = new File
         {
-            Properties = new SpreadsheetProperties
-            {
-                Title = title
-            }
+            Parents = _tablesParentsProvider.GetParents(),
+            MimeType = SpreadsheetType,
+            Name = title
         };
 
-        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
+        var spreadsheet = await _driveService.Files
             .Create(spreadsheetToCreate)
             .ExecuteAsync(token);
 
-        string spreadsheetId = spreadsheet.SpreadsheetId;
+        string spreadsheetId = spreadsheet.Id;
 
         await _driveService.Permissions
             .Create(AnyoneViewerPermission, spreadsheetId)

@@ -1,4 +1,7 @@
 ﻿using Kysect.Shreks.Application.Handlers.Extensions;
+﻿using Google.Apis.Auth.OAuth2;
+using Kysect.Shreks.Application.Abstractions.Formatters;
+using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
@@ -11,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
+var googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
     .WriteTo.Console()
@@ -19,6 +24,23 @@ Log.Logger = new LoggerConfiguration()
 IServiceProvider services = new ServiceCollection()
     .AddGoogleCredentialsFromWeb()
     .AddGoogleIntegration()
+    .AddGoogleIntegration(o => o
+        .ConfigureGoogleCredentials(googleCredentials)
+        .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"))
+    .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
+    .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
+    .AddEntityGenerators(o => o
+        .ConfigureEntityGenerator<Submission>(s => s.Count = 1000)
+        .ConfigureEntityGenerator<User>(s => s.Count = 500)
+        .ConfigureEntityGenerator<Student>(s => s.Count = 400)
+        .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 20)
+        .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 50)
+        .ConfigureEntityGenerator<Assignment>(a => a.Count = 50)
+        .ConfigureFaker(f => f.Locale = "ru"))
+    .AddDatabaseContext(o => o
+        .UseLazyLoadingProxies()
+        .UseInMemoryDatabase("Data Source=playground.db"))
+    .AddDatabaseSeeders()
     .AddHandlers()
     .AddMappingConfiguration()
     .AddLogging(o => o.AddSerilog())

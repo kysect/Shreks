@@ -10,6 +10,7 @@ using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Factories;
+using Kysect.Shreks.Integration.Google.Options;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tools;
@@ -40,8 +41,15 @@ public static class ServiceCollectionExtensions
             .AddSingleton(initializer);
     }
 
-    public static IServiceCollection AddGoogleIntegration(this IServiceCollection serviceCollection)
+    public static IServiceCollection AddGoogleIntegration(
+        this IServiceCollection serviceCollection,
+        Action<GoogleIntegrationOptions> action)
     {
+        ArgumentNullException.ThrowIfNull(action);
+
+        var options = new GoogleIntegrationOptions(serviceCollection);
+        action.Invoke(options);
+
         return serviceCollection
             .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
             .AddSingleton<ISheetComponentFactory<CoursePointsDto>, PointsSheetComponentFactory>()
