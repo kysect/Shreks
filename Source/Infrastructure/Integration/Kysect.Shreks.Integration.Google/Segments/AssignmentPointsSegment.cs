@@ -40,7 +40,7 @@ public class AssignmentPointsSegment
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
         AssignmentPointsDto? assignmentPoints = data.RowData;
 
-        IComponent pointsComponent = assignmentPoints?.Points is null
+        IComponent pointsComponent = assignmentPoints is null
             ? Empty()
             : Label(assignmentPoints.Points.ToSheetPoints(currentCulture));
 
