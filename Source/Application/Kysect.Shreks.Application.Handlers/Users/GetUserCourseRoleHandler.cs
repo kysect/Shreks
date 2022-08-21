@@ -2,7 +2,7 @@
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Github.Queries.GerUserCourseRole;
+using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetUserCourseRole;
 
 namespace Kysect.Shreks.Application.Handlers.Users;
 
