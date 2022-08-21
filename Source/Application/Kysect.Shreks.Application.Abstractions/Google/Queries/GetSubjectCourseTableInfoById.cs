@@ -2,7 +2,7 @@
 
 namespace Kysect.Shreks.Application.Abstractions.Google.Queries;
 
-public class GetSubjectCourseTableInfoById
+public static class GetSubjectCourseTableInfoById
 {
     public record Query(Guid SubjectCourseId) : IRequest<Response>;
 
