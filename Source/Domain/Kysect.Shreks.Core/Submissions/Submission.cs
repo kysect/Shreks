@@ -7,9 +7,9 @@ using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Submissions;
 
-public partial class Submission : IEntity<Guid>
+public abstract partial class Submission : IEntity<Guid>
 {
-    private HashSet<SubmissionAssociation> _associations;
+    private readonly HashSet<SubmissionAssociation> _associations;
 
     protected Submission(Student student, GroupAssignment groupAssignment, DateOnly submissionDate, string payload)
         : this(Guid.NewGuid())

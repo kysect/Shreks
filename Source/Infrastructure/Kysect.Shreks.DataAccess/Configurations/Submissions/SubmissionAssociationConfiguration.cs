@@ -2,7 +2,7 @@ using Kysect.Shreks.Core.SubmissionAssociations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Kysect.Shreks.DataAccess.Configurations;
+namespace Kysect.Shreks.DataAccess.Configurations.Submissions;
 
 public class SubmissionAssociationConfiguration : IEntityTypeConfiguration<SubmissionAssociation>
 {
