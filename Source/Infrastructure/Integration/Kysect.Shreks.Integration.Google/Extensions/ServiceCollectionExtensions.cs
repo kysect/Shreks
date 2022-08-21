@@ -1,8 +1,6 @@
 ﻿using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.SheetBuilders;
-using Google.Apis.Drive.v3;
-using Google.Apis.Sheets.v4;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Factories;
@@ -19,6 +17,8 @@ public static class ServiceCollectionExtensions
         this IServiceCollection serviceCollection,
         Action<GoogleIntegrationOptions> action)
     {
+        ArgumentNullException.ThrowIfNull(action);
+
         var options = new GoogleIntegrationOptions(serviceCollection);
         action.Invoke(options);
 

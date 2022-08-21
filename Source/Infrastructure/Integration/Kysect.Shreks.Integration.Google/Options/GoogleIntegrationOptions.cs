@@ -24,6 +24,8 @@ public class GoogleIntegrationOptions
 
     public GoogleIntegrationOptions ConfigureGoogleCredentials(GoogleCredential credentials)
     {
+        ArgumentNullException.ThrowIfNull(credentials);
+
         var initializer = new BaseClientService.Initializer
         {
             HttpClientInitializer = credentials.CreateScoped(AccessScopes)
