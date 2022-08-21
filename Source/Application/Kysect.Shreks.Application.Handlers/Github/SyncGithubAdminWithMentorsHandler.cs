@@ -1,0 +1,96 @@
+﻿using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.Application.Abstractions.Github;
+using Kysect.Shreks.Application.Abstractions.Github.Commands;
+using Kysect.Shreks.Core.SubjectCourseAssociations;
+using Kysect.Shreks.Core.UserAssociations;
+using Kysect.Shreks.DataAccess.Abstractions;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Kysect.Shreks.Core.Study;
+using Microsoft.Extensions.Logging;
+
+namespace Kysect.Shreks.Application.Handlers.Github;
+
+public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdminWithMentors.Command>
+{
+    private readonly IShreksDatabaseContext _shreksDatabaseContext;
+    private readonly IOrganizationDetailsProvider _organizationDetailsProvider;
+    private readonly ILogger<SyncGithubAdminWithMentorsHandler> _logger;
+
+    public SyncGithubAdminWithMentorsHandler(
+        IShreksDatabaseContext shreksDatabaseContext,
+        IOrganizationDetailsProvider organizationDetailsProvider,
+        ILogger<SyncGithubAdminWithMentorsHandler> logger)
+    {
+        _shreksDatabaseContext = shreksDatabaseContext;
+        _organizationDetailsProvider = organizationDetailsProvider;
+        _logger = logger;
+    }
+
+    public async Task<Unit> Handle(SyncGithubAdminWithMentors.Command request, CancellationToken cancellationToken)
+    {
+        GithubSubjectCourseAssociation? courseGithub = await _shreksDatabaseContext
+            .SubjectCourseAssociations
+            .OfType<GithubSubjectCourseAssociation>()
+            .FirstOrDefaultAsync(a => a.GithubOrganizationName == request.OrganizationName, cancellationToken);
+
+        if (courseGithub is null)
+            throw new EntityNotFoundException($"Cannot found organization {request.OrganizationName} in database");
+
+        IReadOnlyCollection<string> organizationOwners = await _organizationDetailsProvider.GetOrganizationOwners(courseGithub.GithubOrganizationName);
+        HashSet<string> mentorUsernames = await GetMentorUsernames(courseGithub.SubjectCourse.Id, cancellationToken);
+
+        List<string> notMentorOwner = organizationOwners.Where(a => !mentorUsernames.Contains(a)).ToList();
+        if (!notMentorOwner.Any())
+        {
+            _logger.LogWarning($"All github owners ({organizationOwners.Count}) already added as mentors.");
+            return Unit.Value;
+        }
+
+        foreach (string owner in notMentorOwner)
+        {
+            _logger.LogInformation($"Github user {owner} is owner and will be added as mentor to {courseGithub.SubjectCourse.Name}");
+            await CreateMentorFromAdmin(courseGithub.SubjectCourse, owner, cancellationToken);
+        }
+
+        await _shreksDatabaseContext.SaveChangesAsync(cancellationToken);
+        return Unit.Value;
+    }
+
+    private async Task<HashSet<string>> GetMentorUsernames(Guid subjectCourseId, CancellationToken cancellationToken)
+    {
+        List<string> currentMentors = await _shreksDatabaseContext
+            .SubjectCourses
+            .Where(s => s.Id == subjectCourseId)
+            .SelectMany(a => a.Mentors)
+            .Select(m => m.User.Associations)
+            .OfType<GithubUserAssociation>()
+            .Select(a => a.GithubUsername)
+            .ToListAsync(cancellationToken);
+
+        return currentMentors.ToHashSet();
+    }
+
+    private async Task CreateMentorFromAdmin(SubjectCourse subjectCourse, string adminUsername, CancellationToken cancellationToken)
+    {
+        GithubUserAssociation? userAssociation = await _shreksDatabaseContext
+            .Users
+            .SelectMany(u => u.Associations)
+            .OfType<GithubUserAssociation>()
+            .FirstOrDefaultAsync(a => a.GithubUsername == adminUsername, cancellationToken);
+
+        if (userAssociation is not null)
+        {
+            subjectCourse.AddMentor(userAssociation.User);
+        }
+        else
+        {
+            var adminUser = new Core.Users.User(adminUsername, adminUsername, adminUsername);
+            var githubUserAssociation = new GithubUserAssociation(adminUser, adminUsername);
+
+            _shreksDatabaseContext.Users.Add(adminUser);
+            _shreksDatabaseContext.UserAssociations.Add(githubUserAssociation);
+            subjectCourse.AddMentor(adminUser);
+        }
+    }
+}
