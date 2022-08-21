@@ -1,3 +1,4 @@
+using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
@@ -22,6 +23,7 @@ builder.Host.UseSerilog(
 
 ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
 TestEnvConfiguration testEnvConfiguration = builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
+GoogleCredential? googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
 
 InitServiceCollection(builder);
 await InitWebApplication(builder);
@@ -43,8 +45,9 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .UseLazyLoadingProxies());
 
     webApplicationBuilder.Services
-        .AddGoogleCredentialsFromWeb()
-        .AddGoogleIntegration();
+    .AddGoogleIntegration(o => o
+        .ConfigureGoogleCredentials(googleCredentials)
+        .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"));
 
     webApplicationBuilder.Services
         .AddGithubServices(shreksConfiguration);

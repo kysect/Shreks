@@ -1,11 +1,6 @@
 ﻿using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.SheetBuilders;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Drive.v3;
-using Google.Apis.Services;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Util.Store;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Tables;
@@ -20,27 +15,6 @@ namespace Kysect.Shreks.Integration.Google.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddGoogleCredentialsFromWeb(this IServiceCollection serviceCollection)
-    {
-        var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read);
-        var secrets = GoogleClientSecrets.FromStream(stream);
-
-        UserCredential credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-            secrets.Secrets,
-            GoogleRequiredScopes.GetRequiredScopes(),
-            "user",
-            CancellationToken.None,
-            new FileDataStore("token.json", true)).Result;
-
-        var initializer = new BaseClientService.Initializer
-        {
-            HttpClientInitializer = credential
-        };
-
-        return serviceCollection
-            .AddSingleton(initializer);
-    }
-
     public static IServiceCollection AddGoogleIntegration(
         this IServiceCollection serviceCollection,
         Action<GoogleIntegrationOptions> action)
@@ -61,8 +35,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
             .AddSingleton<GoogleTableAccessor>()
             .AddGoogleTableUpdateWorker()
-            .AddGoogleFormatter()
-            .AddGoogleServices();
+            .AddGoogleFormatter();
     }
 
     private static IServiceCollection AddGoogleTableUpdateWorker(this IServiceCollection serviceCollection)
@@ -78,12 +51,5 @@ public static class ServiceCollectionExtensions
         return serviceCollection
             .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
             .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>();
-    }
-
-    private static IServiceCollection AddGoogleServices(this IServiceCollection serviceCollection)
-    {
-        return serviceCollection
-            .AddSingleton(p => new SheetsService(p.GetRequiredService<BaseClientService.Initializer>()))
-            .AddSingleton(p => new DriveService(p.GetRequiredService<BaseClientService.Initializer>()));
     }
 }

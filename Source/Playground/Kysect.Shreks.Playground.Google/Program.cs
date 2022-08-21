@@ -1,7 +1,5 @@
 ﻿using Kysect.Shreks.Application.Handlers.Extensions;
 ﻿using Google.Apis.Auth.OAuth2;
-using Kysect.Shreks.Application.Abstractions.Formatters;
-using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
@@ -22,13 +20,9 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 IServiceProvider services = new ServiceCollection()
-    .AddGoogleCredentialsFromWeb()
-    .AddGoogleIntegration()
     .AddGoogleIntegration(o => o
         .ConfigureGoogleCredentials(googleCredentials)
         .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"))
-    .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
-    .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
     .AddEntityGenerators(o => o
         .ConfigureEntityGenerator<Submission>(s => s.Count = 1000)
         .ConfigureEntityGenerator<User>(s => s.Count = 500)
