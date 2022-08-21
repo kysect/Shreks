@@ -22,8 +22,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
         EntityGeneratorOptions<GithubSubmission> options,
         IEntityGenerator<Student> studentGenerator,
         IEntityGenerator<GroupAssignment> assignmentGenerator,
-        Faker faker,
-        IEntityGenerator<GithubSubmissionAssociation> associationGenerator)
+        Faker faker)
         : base(options)
     {
         _faker = faker;

@@ -1,22 +1,23 @@
 ﻿using FluentAssertions;
-using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 namespace Kysect.Shreks.Tests.DataAccess;
 
-public class SubmissionTest : DataAccessTestBase
+public class GithubSubmissionTest : DataAccessTestBase
 {
-    private readonly IEntityGenerator<Submission> _submissionGenerator;
+    private readonly IEntityGenerator<GithubSubmission> _submissionGenerator;
 
-    public SubmissionTest()
+    public GithubSubmissionTest()
     {
         var studentGenerator = Provider.GetRequiredService<IEntityGenerator<Student>>();
         var _ = studentGenerator.GeneratedEntities;
 
-        _submissionGenerator = Provider.GetRequiredService<IEntityGenerator<Submission>>();
+        _submissionGenerator = Provider.GetRequiredService<IEntityGenerator<GithubSubmission>>();
     }
 
     [Fact]

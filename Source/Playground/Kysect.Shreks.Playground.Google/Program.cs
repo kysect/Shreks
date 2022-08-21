@@ -17,6 +17,7 @@ using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
+using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read);
 var secrets = await GoogleClientSecrets.FromStreamAsync(stream);
