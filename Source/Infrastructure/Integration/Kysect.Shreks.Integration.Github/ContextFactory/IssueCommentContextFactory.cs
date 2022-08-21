@@ -29,9 +29,12 @@ public class IssueCommentContextFactory : ICommandContextFactory
 
         ArgumentNullException.ThrowIfNull(_event.Repository);
         ArgumentNullException.ThrowIfNull(_event.Organization);
-        var submissionQuery = new GetCurrentUnratedSubmissionByPrNumber.Query(_event.Organization.Login, 
-            _event.Repository.Name, _event.Issue.Number);
-        var submissionResponse =  await _mediator.Send(submissionQuery, cancellationToken);
+        var organizationName = _event.Organization.Login;
+        var repositoryName = _event.Repository.Name;
+        var issueNumber = _event.Issue.Number;
+        var submissionQuery = new GetCurrentUnratedSubmissionByPrNumber.Query(
+            organizationName, repositoryName, issueNumber);
+        var submissionResponse = await _mediator.Send(submissionQuery, cancellationToken)
 
         return new SubmissionContext(_mediator, userId, submissionResponse.SubmissionDto);
     }
