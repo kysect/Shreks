@@ -15,9 +15,7 @@ public partial class AssignmentDeadlineStateEvaluator : SubmissionEvaluator
     {
         ArgumentNullException.ThrowIfNull(submission);
 
-        var groupAssignment = submission.Assignment
-            .GroupAssignments
-            .Single(x => x.Group.Equals(submission.Student.Group));
+        var groupAssignment = submission.GroupAssignment;
 
         if (groupAssignment.Deadline < submission.SubmissionDate)
             return ExpiredAssignmentPriority;
@@ -25,6 +23,7 @@ public partial class AssignmentDeadlineStateEvaluator : SubmissionEvaluator
         var now = DateOnly.FromDateTime(DateTime.Now);
 
         var closestDeadline = submission
+            .GroupAssignment
             .Assignment
             .SubjectCourse
             .Assignments

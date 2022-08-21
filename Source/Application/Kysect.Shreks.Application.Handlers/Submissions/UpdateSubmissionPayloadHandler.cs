@@ -1,5 +1,7 @@
 using AutoMapper;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -9,11 +11,13 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 public class UpdateSubmissionPayloadHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly ITableUpdateQueue _tableUpdateQueue;
     private readonly IMapper _mapper;
 
-    public UpdateSubmissionPayloadHandler(IShreksDatabaseContext context, IMapper mapper)
+    public UpdateSubmissionPayloadHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue, IMapper mapper)
     {
         _context = context;
+        _tableUpdateQueue = tableUpdateQueue;
         _mapper = mapper;
     }
 
@@ -24,6 +28,8 @@ public class UpdateSubmissionPayloadHandler : IRequestHandler<Command, Response>
         submission.Payload = request.NewPayload;
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
+
+        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId());
 
         var dto = _mapper.Map<SubmissionDto>(submission);
 

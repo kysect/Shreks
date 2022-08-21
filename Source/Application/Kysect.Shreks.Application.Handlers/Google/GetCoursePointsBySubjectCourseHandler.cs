@@ -33,7 +33,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         var assignments = subjectCourse.Assignments;
 
         var submission = _context.Submissions
-            .Where(s => assignments.Any(a => a.Equals(s.Assignment)));
+            .Where(s => assignments.Any(a => a.Equals(s.GroupAssignment.Assignment)));
 
         var studentPoints = subjectCourse.Groups
             .SelectMany(g => g.StudentGroup.Students.Select(s => GetStudentPoints(s, submission)))
@@ -52,8 +52,10 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         var assignmentPoints = submissions
             .Where(s => s.Student.Equals(student))
             .AsEnumerable()
-            .GroupBy(s => s.Assignment)
-            .Select(g => GetAssignmentPoints(g.Key, student, g))
+            .GroupBy(s => s.GroupAssignment)
+            .Select(g => FindAssignmentPoints(g.Key, student, g))
+            .Where(a => a is not null)
+            .Select(a => a!)
             .ToArray();
 
         var studentDto = _mapper.Map<StudentDto>(student);
@@ -61,27 +63,36 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new StudentPointsDto(studentDto, assignmentPoints);
     }
 
-    private AssignmentPointsDto GetAssignmentPoints(Assignment assignment, Student student, IEnumerable<Submission> submissions)
+    private AssignmentPointsDto? FindAssignmentPoints(GroupAssignment groupAssignment, Student student, IEnumerable<Submission> submissions)
     {
         var group = student.Group;
 
-        var deadline = assignment.GroupAssignments.First(g => g.Group.Equals(group)).Deadline;
+        var deadline = groupAssignment.Deadline;
 
         var (submission, points) = submissions
             .Select(s => (submission: s, points: GetSubmissionPoints(s, deadline)))
+            .Where(s => s.points is not null)
             .MaxBy(s => s.points);
 
-        return new AssignmentPointsDto(assignment.Id, submission.SubmissionDate, points.Value);
+        if (points is null)
+            return null;
+
+        return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDate, points.Value.Value);
     }
 
-    private Points GetSubmissionPoints(Submission submission, DateOnly deadline)
+    private Points? GetSubmissionPoints(Submission submission, DateOnly deadline)
     {
+        if (submission.Points is null)
+            return submission.Points;
+
+        var points = submission.Points.Value;
+
         var deadlinePolicy = GetActiveDeadlinePolicy(submission, deadline);
 
         if (deadlinePolicy is null)
-            return submission.Points;
+            return points;
 
-        var points = deadlinePolicy.Apply(submission.Points);
+        points = deadlinePolicy.Apply(points);
 
         return points;
     }
@@ -93,6 +104,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDate.DayNumber - deadline.DayNumber);
         return submission
+            .GroupAssignment
             .Assignment
             .DeadlinePolicies
             .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)

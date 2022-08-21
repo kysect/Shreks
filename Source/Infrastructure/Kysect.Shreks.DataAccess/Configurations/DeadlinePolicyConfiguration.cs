@@ -11,7 +11,7 @@ public class DeadlinePolicyConfiguration : IEntityTypeConfiguration<DeadlinePoli
         builder.Property<Guid>("Id");
         builder.HasKey("Id");
 
-        builder.HasDiscriminator<string>("DeadlinePolicyType")
+        builder.HasDiscriminator<string>("Discriminator")
             .HasValue<AbsoluteDeadlinePolicy>(nameof(AbsoluteDeadlinePolicy))
             .HasValue<FractionDeadlinePolicy>(nameof(FractionDeadlinePolicy))
             .HasValue<CappingDeadlinePolicy>(nameof(CappingDeadlinePolicy));
