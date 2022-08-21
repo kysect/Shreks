@@ -1,4 +1,4 @@
-using Submission = Kysect.Shreks.Core.Submissions.Submission;
+using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 

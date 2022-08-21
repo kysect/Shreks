@@ -1,6 +1,6 @@
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Submissions;
 using RichEntity.Annotations;
-using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 namespace Kysect.Shreks.Core.Queue.Evaluators;
 

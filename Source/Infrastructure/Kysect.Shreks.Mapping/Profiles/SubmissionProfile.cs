@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
-using Submission = Kysect.Shreks.Core.Submissions.Submission;
+using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Mapping.Profiles;
 

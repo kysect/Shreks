@@ -4,7 +4,6 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 namespace Kysect.Shreks.Tests.DataAccess;
 

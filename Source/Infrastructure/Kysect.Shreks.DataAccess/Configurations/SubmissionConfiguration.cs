@@ -1,6 +1,6 @@
+using Kysect.Shreks.Core.Submissions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 namespace Kysect.Shreks.DataAccess.Configurations;
 

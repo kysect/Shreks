@@ -6,6 +6,7 @@ using Google.Apis.Util.Store;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
@@ -17,7 +18,6 @@ using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read);
 var secrets = await GoogleClientSecrets.FromStreamAsync(stream);

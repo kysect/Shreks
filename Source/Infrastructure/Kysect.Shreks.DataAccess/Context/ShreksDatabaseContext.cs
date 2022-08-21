@@ -2,13 +2,13 @@ using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.SubmissionAssociations;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.ValueConverters;
 using Microsoft.EntityFrameworkCore;
-using Submission = Kysect.Shreks.Core.Submissions.Submission;
 
 namespace Kysect.Shreks.DataAccess.Context;
 

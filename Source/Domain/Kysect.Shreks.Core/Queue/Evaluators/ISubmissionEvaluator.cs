@@ -1,5 +1,5 @@
 using Kysect.Shreks.Core.Models;
-using Submission = Kysect.Shreks.Core.Submissions.Submission;
+using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Evaluators;
 
