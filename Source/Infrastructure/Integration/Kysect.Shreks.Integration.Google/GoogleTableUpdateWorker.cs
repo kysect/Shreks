@@ -5,21 +5,17 @@ using Microsoft.Extensions.Hosting;
 
 namespace Kysect.Shreks.Integration.Google;
 
-public class GoogleTableUpdateWorker : BackgroundService, ITableUpdateQueue
+public class GoogleTableUpdateWorker : BackgroundService
 {
     private static readonly TimeSpan DelayBetweenSheetUpdates = TimeSpan.FromMinutes(1);
 
-    private readonly ConcurrentHashSet<Guid> _queueUpdateSubjectCourseIds;
-    private readonly ConcurrentHashSet<Guid> _pointsUpdateSubjectCourseIds;
-
+    private readonly TableUpdateQueue _tableUpdateQueue;
     private readonly IServiceScopeFactory _serviceProvider;
-    
-    public GoogleTableUpdateWorker(IServiceScopeFactory serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
 
-        _queueUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
-        _pointsUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
+    internal GoogleTableUpdateWorker(TableUpdateQueue tableUpdateQueue, IServiceScopeFactory serviceProvider)
+    {
+        _tableUpdateQueue = tableUpdateQueue;
+        _serviceProvider = serviceProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken token)
@@ -30,21 +26,17 @@ public class GoogleTableUpdateWorker : BackgroundService, ITableUpdateQueue
             using IServiceScope serviceScope = _serviceProvider.CreateScope();
             using var googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<GoogleTableAccessor>();
             
-            var pointsUpdateTasks = _pointsUpdateSubjectCourseIds
+            var pointsUpdateTasks = _tableUpdateQueue
+                .PointsUpdateSubjectCourseIds
                 .GetAndClearValues()
                 .Select(i => googleTableAccessor.UpdatePointsAsync(i, token));
 
-            var queueUpdateTasks = _queueUpdateSubjectCourseIds
+            var queueUpdateTasks = _tableUpdateQueue
+                .QueueUpdateSubjectCourseIds
                 .GetAndClearValues()
                 .Select(i => googleTableAccessor.UpdateQueueAsync(i, token));
 
             await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
         }
     }
-
-    public void EnqueueCoursePointsUpdate(Guid subjectCourseId)
-        => _pointsUpdateSubjectCourseIds.Add(subjectCourseId);
-
-    public void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId)
-        => _queueUpdateSubjectCourseIds.Add(subjectCourseId);
 }
