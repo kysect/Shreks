@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Application.Handlers.Extensions;
 

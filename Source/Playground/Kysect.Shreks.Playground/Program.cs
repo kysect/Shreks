@@ -1,5 +1,6 @@
 ﻿using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Context;
@@ -22,13 +23,16 @@ await context.Database.EnsureCreatedAsync();
 
 
 var assignment = new Assignment("adw", "", new Points(1), new Points(2), new SubjectCourse(new Subject(""), ""));
-var submission = new Submission
+var submission = new GithubSubmission
 (
     new Student(new User("John", "Doe", "adw"),
         new StudentGroup("")),
     new GroupAssignment(new StudentGroup(""), assignment, DateOnly.FromDateTime(DateTime.Now)),
     DateOnly.FromDateTime(DateTime.Now),
-    ""
+    "",
+    "",
+    "",
+    0
 );
 
 var positionedSubmission = new PositionedSubmission

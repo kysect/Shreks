@@ -1,23 +1,24 @@
 using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using RichEntity.Annotations;
 
-namespace Kysect.Shreks.Core.Study;
+namespace Kysect.Shreks.Core.Submissions;
 
-public partial class Submission : IEntity<Guid>
+public abstract partial class Submission : IEntity<Guid>
 {
-    private HashSet<SubmissionAssociation> _associations;
-    
-    public Submission(Student student, GroupAssignment groupAssignment, DateOnly submissionDate, string payload)
+    private readonly HashSet<SubmissionAssociation> _associations;
+
+    protected Submission(Student student, GroupAssignment groupAssignment, DateOnly submissionDate, string payload)
         : this(Guid.NewGuid())
     {
         SubmissionDate = submissionDate;
         Student = student;
         GroupAssignment = groupAssignment;
         Payload = payload;
-        
+
         Rating = default;
         ExtraPoints = default;
 
@@ -41,20 +42,12 @@ public partial class Submission : IEntity<Guid>
     public bool IsRated => Rating is not null;
 
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
-    
-    public void AddAssociation(SubmissionAssociation association)
+
+    protected void AddAssociation(SubmissionAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
 
         if (!_associations.Add(association))
             throw new DomainInvalidOperationException($"Submission {this} already has association {association}");
-    }
-    
-    public void RemoveAssociation(SubmissionAssociation association)
-    {
-        ArgumentNullException.ThrowIfNull(association);
-
-        if (!_associations.Remove(association))
-            throw new DomainInvalidOperationException($"Submission {this} could not remove association {association}");
     }
 }

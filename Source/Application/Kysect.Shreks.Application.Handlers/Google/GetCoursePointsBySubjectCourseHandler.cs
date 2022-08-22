@@ -4,6 +4,7 @@ using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
