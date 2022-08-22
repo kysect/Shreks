@@ -1,11 +1,9 @@
 using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
-using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Playground.Github.TestEnv;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -15,20 +13,16 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = builder.Configuration;
-var shreksConfiguration = configuration.GetSection(nameof(ShreksConfiguration)).Get<ShreksConfiguration>();
-shreksConfiguration.AppendSecret(builder.Configuration["GithubAppSecret"]).Verify();
+ConfigurationManager configuration = builder.Configuration;
+ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
 TestEnvConfiguration testEnvConfiguration = configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
 
 builder.Services
     .AddMappingConfiguration()
-    .AddDatabaseContext(optionsBuilder => optionsBuilder
-            .UseSqlite("Filename=shreks-gh.db")
-            .UseLazyLoadingProxies())
     .AddHandlers()
     .AddApplicationCommands()
     .AddGithubServices(shreksConfiguration)
-    .SetupTestEnv(testEnvConfiguration);
+    .AddGithubPlaygroundDatabase(testEnvConfiguration);
 
 builder.Services
     .AddLogging(logBuilder => logBuilder.AddSerilog());

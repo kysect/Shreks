@@ -1,10 +1,12 @@
 ﻿using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.SheetBuilders;
+using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Factories;
 using Kysect.Shreks.Integration.Google.Options;
+using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tools;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,9 +33,23 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<ISheetBuilder, SheetBuilder>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
+            .AddGoogleTableUpdateWorker()
+            .AddGoogleFormatter();
+    }
+
+    private static IServiceCollection AddGoogleTableUpdateWorker(this IServiceCollection serviceCollection)
+    {
+        return serviceCollection
             .AddSingleton<TableUpdateQueue>()
             .AddSingleton<ITableUpdateQueue>(p => p.GetRequiredService<TableUpdateQueue>())
             .AddScoped<GoogleTableAccessor>()
             .AddHostedService<GoogleTableUpdateWorker>();
+    }
+
+    private static IServiceCollection AddGoogleFormatter(this IServiceCollection serviceCollection)
+    {
+        return serviceCollection
+            .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
+            .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>();
     }
 }
