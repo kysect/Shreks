@@ -13,7 +13,7 @@ public class GetCoursePointsBySubjectCourseHandlerTest : ApplicationTestBase
     {
         var handler = new GetCoursePointsBySubjectCourseHandler(Context, Mapper);
 
-        var subjectCourse = await Context.SubjectCourses.FirstAsync();
+        var subjectCourse = await Context.SubjectCourses.FirstAsync(x => x.Groups.Any());
         var response = await handler.Handle(new Query(subjectCourse.Id), CancellationToken.None);
 
         response.Points.Should().NotBeNull();

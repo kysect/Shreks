@@ -3,9 +3,9 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Abstractions.Google.Queries;
 
-public static class GetSubmissionsQueueBySubjectCourse
+public static class GetSubjectCourseGroupSubmissionQueue
 {
-    public record Query(Guid SubjectCourseId) : IRequest<Response>;
+    public record Query(Guid SubjectCourseId, Guid StudentGroupId) : IRequest<Response>;
 
     public record Response(SubmissionsQueueDto Queue);
 }

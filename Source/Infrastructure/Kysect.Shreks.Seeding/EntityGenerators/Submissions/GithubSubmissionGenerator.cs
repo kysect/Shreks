@@ -11,7 +11,8 @@ namespace Kysect.Shreks.Seeding.EntityGenerators.Submissions;
 public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
 {
     private const double MaxExtraPoints = 15;
-    private const float ChangeOfHavingExtraPoints = 0.1f;
+    private const float PointsPresenceProbability = 0.5f;
+    private const float ExtraPointsPresenceProbability = 0.1f;
 
     private readonly Faker _faker;
     private readonly IEntityGenerator<Student> _studentGenerator;
@@ -45,8 +46,10 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
             _faker.Random.Long(0, 100)
         )
         {
-            Rating = _faker.Random.Fraction(),
-            ExtraPoints = _faker.Random.Bool(ChangeOfHavingExtraPoints)
+            Rating = _faker.Random.Bool(PointsPresenceProbability)
+                ? _faker.Random.Fraction()
+                : null,
+            ExtraPoints = _faker.Random.Bool(ExtraPointsPresenceProbability)
                 ? _faker.Random.Points(0, MaxExtraPoints)
                 : Points.None
         };
