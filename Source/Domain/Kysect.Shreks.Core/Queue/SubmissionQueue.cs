@@ -1,7 +1,7 @@
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue.Evaluators;
 using Kysect.Shreks.Core.Queue.Filters;
-using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Submissions;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Queue;

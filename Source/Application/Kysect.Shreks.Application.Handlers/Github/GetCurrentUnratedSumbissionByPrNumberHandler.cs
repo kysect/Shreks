@@ -23,11 +23,11 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
         var submission =  await _context.SubmissionAssociations
-            .OfType<GithubPullRequestSubmissionAssociation>()
+            .OfType<GithubSubmissionAssociation>()
             .Where(a => 
                 a.Organization == request.Organization 
                 && a.Repository == request.Repository
-                && a.PullRequestNumber == request.PrNumber
+                && a.PrNumber == request.PrNumber
                 && a.Submission.Rating == null)
             .OrderByDescending(a => a.Submission.SubmissionDate)
             .Select(a => a.Submission)

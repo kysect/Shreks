@@ -2,13 +2,13 @@ using Kysect.Shreks.Core.SubmissionAssociations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Kysect.Shreks.DataAccess.Configurations;
+namespace Kysect.Shreks.DataAccess.Configurations.Submissions;
 
 public class SubmissionAssociationConfiguration : IEntityTypeConfiguration<SubmissionAssociation>
 {
     public void Configure(EntityTypeBuilder<SubmissionAssociation> builder)
     {
         builder.HasDiscriminator<string>("Discriminator")
-            .HasValue<GithubPullRequestSubmissionAssociation>(nameof(GithubPullRequestSubmissionAssociation));
+            .HasValue<GithubSubmissionAssociation>(nameof(GithubSubmissionAssociation));
     }
 }
