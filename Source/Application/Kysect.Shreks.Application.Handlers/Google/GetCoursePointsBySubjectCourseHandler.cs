@@ -2,8 +2,10 @@
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.DeadlinePolicies;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -51,7 +53,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             .Where(s => s.Student.Equals(student))
             .AsEnumerable()
             .GroupBy(s => s.GroupAssignment)
-            .Select(FindAssignmentPoints)
+            .Select(g => FindAssignmentPoints(g.Key, g))
             .Where(a => a is not null)
             .Select(a => a!)
             .ToArray();
@@ -61,20 +63,49 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new StudentPointsDto(studentDto, assignmentPoints);
     }
 
-    private AssignmentPointsDto? FindAssignmentPoints(IEnumerable<Submission> submissions)
+    private AssignmentPointsDto? FindAssignmentPoints(GroupAssignment groupAssignment, IEnumerable<Submission> submissions)
     {
-        Submission? submission = submissions
-            .Where(s => s.Points is not null)
-            .MaxBy(s => s.SubmissionDate);
+        var deadline = groupAssignment.Deadline;
 
-        //TODO: add deadlines usage instead of .Last
+        var (submission, points) = submissions
+            .Select(s => (submission: s, points: GetSubmissionPoints(s, deadline)))
+            .Where(s => s.points is not null)
+            .MaxBy(s => s.points);
 
-        if (submission is null || submission.Points is null)
+        if (points is null)
             return null;
 
-        var points = submission.Points.Value.Value;
+        return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDate, points.Value.Value);
+    }
 
-        var submissionDate = submission.SubmissionDate;
-        return new AssignmentPointsDto(submission.GroupAssignment.AssignmentId, submissionDate, points);
+    private Points? GetSubmissionPoints(Submission submission, DateOnly deadline)
+    {
+        if (submission.Points is null)
+            return submission.Points;
+
+        var points = submission.Points.Value;
+
+        var deadlinePolicy = GetActiveDeadlinePolicy(submission, deadline);
+
+        if (deadlinePolicy is null)
+            return points;
+
+        points = deadlinePolicy.Apply(points);
+
+        return points;
+    }
+
+    private DeadlinePolicy? GetActiveDeadlinePolicy(Submission submission, DateOnly deadline)
+    {
+        if (submission.SubmissionDate <= deadline)
+            return null;
+
+        var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDate.DayNumber - deadline.DayNumber);
+        return submission
+            .GroupAssignment
+            .Assignment
+            .DeadlinePolicies
+            .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)
+            .MaxBy(dp => dp.SpanBeforeActivation);
     }
 }
