@@ -40,14 +40,14 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
         .AddMappingConfiguration();
 
     webApplicationBuilder.Services
-        .AddDatabaseContext(opt => opt
+        .AddDatabaseContext(o => o
             .UseSqlite("Filename=shreks.db")
             .UseLazyLoadingProxies());
 
     webApplicationBuilder.Services
-    .AddGoogleIntegration(o => o
-        .ConfigureGoogleCredentials(googleCredentials)
-        .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"));
+        .AddGoogleIntegration(o => o
+            .ConfigureGoogleCredentials(googleCredentials)
+            .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"));
 
     webApplicationBuilder.Services
         .AddGithubServices(shreksConfiguration);
@@ -69,7 +69,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
         await app.Services.UseDatabaseSeeders();
         app.UseSwagger();
         app.UseSwaggerUI();
-        app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
     }
 
     //app.UseHttpsRedirection();
@@ -98,7 +98,7 @@ async Task InitTestEnvironment(
     var users = userGenerator.GeneratedEntities;
     dbContext.Users.AttachRange(users);
 
-    User first = users.First();
+    User first = users[0];
     var login = config.Users[0];
     dbContext.UserAssociations.Add(new GithubUserAssociation(first, login));
 
@@ -108,10 +108,4 @@ async Task InitTestEnvironment(
     dbContext.SubjectCourseAssociations.Add(new GithubSubjectCourseAssociation(subjectCourse, config.Organization));
 
     await dbContext.SaveChangesAsync(cancellationToken);
-}
-
-public class TestEnvConfiguration
-{
-    public string Organization { get; init; }
-    public List<string> Users { get; init; }
 }
