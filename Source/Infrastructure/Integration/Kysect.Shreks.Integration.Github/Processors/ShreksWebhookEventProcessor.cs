@@ -1,3 +1,6 @@
+using Kysect.Shreks.Application.Abstractions.Github.Queries;
+using Kysect.Shreks.Application.Abstractions.Students;
+using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Integration.Github.ContextFactory;
@@ -46,17 +49,32 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
         switch (action)
         {
             case PullRequestActionValue.Synchronize:
-                //here we should update time and payload
+            case PullRequestActionValue.Opened:
+
+                CancellationToken cancellationToken = CancellationToken.None;
+                string organization = pullRequestEvent.Organization!.Login;
+                var subjectCourseId = await GetSubjectCourseByOrganization(organization, cancellationToken);
+                
+                var login = pullRequestEvent.Sender!.Login;
+                var userId = await GetUserByGithubLogin(login, cancellationToken);
+                var studentId = await GetStudentByUser(userId, cancellationToken);
+
+                string branch = pullRequestEvent.PullRequest.Head.Ref;
+                var assignmentId =
+                    await GetAssignemntByBranchAndSubjectCourse(branch, subjectCourseId, cancellationToken);
+                
+                long prNum = pullRequestEvent.PullRequest.Number;
+                string repository = pullRequestEvent.Repository!.Name;
+                string payload = pullRequestEvent.PullRequest.DiffUrl;
+
+                var command = new CreateOrUpdateSubmissionCommand.Command(studentId, assignmentId, payload, 
+                    organization, repository, prNum);
+
+                await _mediator.Send(command, cancellationToken);
                 break;
             case PullRequestActionValue.Reopened:
-            case PullRequestActionValue.Opened:
                 break;
         }
-
-        await _actionNotifier.ApplyInComments(
-            pullRequestEvent,
-            pullRequestEvent.PullRequest.Number,
-            nameof(ProcessPullRequestWebhookAsync));
     }
 
     protected override async Task ProcessPullRequestReviewWebhookAsync(WebhookHeaders headers,
@@ -136,6 +154,33 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             case IssueCommentActionValue.Deleted:
                 break;
         }
+    }
+
+    private async Task<Guid> GetSubjectCourseByOrganization(string organization, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new GetSubjectCourseByOrganization.Query(organization));
+        return response.SubjectCourseId;
+    }
+    
+    private async Task<Guid> GetUserByGithubLogin(string login, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new GetUserByUsername.Query(login));
+        return response.UserId;
+    }
+    
+    private async Task<Guid> GetStudentByUser(Guid userId, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new GetStudentByUser.Query(userId));
+        return response.StudentId;
+    }
+    
+    private async Task<Guid> GetAssignemntByBranchAndSubjectCourse(string branch, Guid subjectCourseId,
+        CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(
+            new GetAssignmentByBranchAndSubjectCourse.Query(branch,
+                subjectCourseId));
+        return response.AssignmentId;
     }
 
     private bool IsSenderBotOrNull(WebhookEvent webhookEvent) =>
