@@ -1,4 +1,5 @@
 ﻿using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
