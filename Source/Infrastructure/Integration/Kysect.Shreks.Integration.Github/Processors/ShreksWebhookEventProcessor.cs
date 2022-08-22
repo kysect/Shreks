@@ -161,6 +161,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
         var response = await _mediator.Send(new GetSubjectCourseByOrganization.Query(organization));
         return response.SubjectCourseId;
     }
+    
     private async Task<Guid> GetUserByGithubLogin(string login, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetUserByUsername.Query(login));
