@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Tests.DataAccess;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,9 +18,9 @@ public class MappingTest : DataAccessTestBase
     }
 
     [Fact]
-    public async Task Map_Should_MapSubmissionToSubmissionDto()
+    public void Map_Should_MapGithubSubmissionToSubmissionDto()
     {
-        Submission submission = Provider.GetRequiredService<IEntityGenerator<Submission>>().Generate();
+        var submission = Provider.GetRequiredService<IEntityGenerator<GithubSubmission>>().Generate();
         
         var submissionDto = _mapper.Map<SubmissionDto>(submission);
 

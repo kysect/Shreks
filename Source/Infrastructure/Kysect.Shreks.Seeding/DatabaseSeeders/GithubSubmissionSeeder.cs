@@ -1,14 +1,14 @@
-﻿using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 
 namespace Kysect.Shreks.Seeding.DatabaseSeeders;
 
-public class SubmissionSeeder : IDatabaseSeeder
+public class GithubSubmissionSeeder : IDatabaseSeeder
 {
-    private readonly IEntityGenerator<Submission> _generator;
+    private readonly IEntityGenerator<GithubSubmission> _generator;
 
-    public SubmissionSeeder(IEntityGenerator<Submission> generator)
+    public GithubSubmissionSeeder(IEntityGenerator<GithubSubmission> generator)
     {
         _generator = generator;
     }
