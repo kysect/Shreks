@@ -3,7 +3,7 @@ using Kysect.Shreks.Integration.Google.Models;
 
 namespace Kysect.Shreks.Integration.Google;
 
-public class TableUpdateQueue : ITableUpdateQueue
+internal class TableUpdateQueue : ITableUpdateQueue
 {
     public ConcurrentHashSet<Guid> QueueUpdateSubjectCourseIds { get; }
     public ConcurrentHashSet<Guid> PointsUpdateSubjectCourseIds { get; }

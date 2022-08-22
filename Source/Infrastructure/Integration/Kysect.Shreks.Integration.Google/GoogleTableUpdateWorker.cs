@@ -9,7 +9,7 @@ public class GoogleTableUpdateWorker : BackgroundService
     private readonly GoogleTableAccessor _tableAccessor;
     private readonly TableUpdateQueue _tableUpdateQueue;
 
-    public GoogleTableUpdateWorker(GoogleTableAccessor tableAccessor, TableUpdateQueue tableUpdateQueue)
+    internal GoogleTableUpdateWorker(GoogleTableAccessor tableAccessor, TableUpdateQueue tableUpdateQueue)
     {
         _tableAccessor = tableAccessor;
         _tableUpdateQueue = tableUpdateQueue;

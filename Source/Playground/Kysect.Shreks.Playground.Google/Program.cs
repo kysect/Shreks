@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Abstractions.Formatters;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
@@ -51,7 +52,7 @@ await services.UseDatabaseSeeders();
 
 var subjectCourse = databaseContext.SubjectCourses.First();
 
-var tableQueue = services.GetRequiredService<TableUpdateQueue>();
+var tableQueue = services.GetRequiredService<ITableUpdateQueue>();
 var tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
 
 await tableWorker.StartAsync(default);
