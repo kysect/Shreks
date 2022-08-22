@@ -6,7 +6,7 @@ using Kysect.Shreks.Application.Commands.Result;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
-[Verb("/rate", aliases: new []{"/assess", "/gachi-rate"})]
+[Verb("/rate", aliases: new []{"/assess"})]
 public class RateCommand : IShreksCommand<SubmissionContext, Guid>
 {
     public RateCommand(double ratingPercent, double? extraPoints)

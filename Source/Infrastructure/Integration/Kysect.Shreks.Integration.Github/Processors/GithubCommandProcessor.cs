@@ -40,11 +40,18 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
                 $"Updated submission - " +
                 $"points: {submissionDto.Points}, " +
                 $"Extra points: {submissionDto.ExtraPoints}, " +
-                $"Date: {submissionDto.SubmissionDate}"); //md?
+                $"Date: {submissionDto.SubmissionDate}"); // TODO: md?
         }
         catch(Exception e) //TODO: catch different exceptions and write better messages
         {
             return new BaseShreksCommandResult(false, e.Message); 
         }
+    }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(HelpCommand helpCommand)
+    {
+        BaseContext context = await _contextFactory.CreateBaseContext(_cancellationToken);
+        string result = await helpCommand.ExecuteAsync(context, _cancellationToken);
+        return new BaseShreksCommandResult(true, result);
     }
 }
