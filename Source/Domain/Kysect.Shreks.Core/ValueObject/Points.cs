@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace Kysect.Shreks.Core.ValueObject;
 
-public readonly record struct Points
+public readonly record struct Points : IComparable<Points>
 {
     public Points(double value)
     {
@@ -35,4 +35,7 @@ public readonly record struct Points
 
     public override string ToString()
         => Value.ToString(CultureInfo.InvariantCulture);
+
+    public int CompareTo(Points other)
+        => Value.CompareTo(other.Value);
 }

@@ -1,4 +1,5 @@
 using AutoMapper;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Mapping.Extensions;
@@ -24,7 +25,10 @@ public class ApplicationTestBase : IDisposable
             x.UseLazyLoadingProxies().UseSqlite($"Data Source={id}.db");
         });
 
-        collection.AddEntityGenerators();
+        collection.AddEntityGenerators(x =>
+        {
+            x.ConfigureEntityGenerator<GithubSubmission>(xx => xx.Count = 500);
+        });
         collection.AddDatabaseSeeders();
         collection.AddMappingConfiguration();
 
