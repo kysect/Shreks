@@ -27,21 +27,18 @@ public class GoogleTableUpdateWorker : BackgroundService, ITableUpdateQueue
         using var timer = new PeriodicTimer(DelayBetweenSheetUpdates);
         while (!token.IsCancellationRequested && await timer.WaitForNextTickAsync(token))
         {
-            using (IServiceScope serviceScope = _serviceProvider.CreateScope())
-            {
-                using (var googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<GoogleTableAccessor>())
-                {
-                    var pointsUpdateTasks = _pointsUpdateSubjectCourseIds
-                        .GetAndClearValues()
-                        .Select(i => googleTableAccessor.UpdatePointsAsync(i, token));
+            using IServiceScope serviceScope = _serviceProvider.CreateScope();
+            using var googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<GoogleTableAccessor>();
+            
+            var pointsUpdateTasks = _pointsUpdateSubjectCourseIds
+                .GetAndClearValues()
+                .Select(i => googleTableAccessor.UpdatePointsAsync(i, token));
 
-                    var queueUpdateTasks = _queueUpdateSubjectCourseIds
-                        .GetAndClearValues()
-                        .Select(i => googleTableAccessor.UpdateQueueAsync(i, token));
+            var queueUpdateTasks = _queueUpdateSubjectCourseIds
+                .GetAndClearValues()
+                .Select(i => googleTableAccessor.UpdateQueueAsync(i, token));
 
-                    await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
-                }
-            }
+            await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
         }
     }
 
