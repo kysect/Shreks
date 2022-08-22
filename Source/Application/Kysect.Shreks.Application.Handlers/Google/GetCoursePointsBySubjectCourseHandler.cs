@@ -81,7 +81,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
     private Points? GetSubmissionPoints(Submission submission, DateOnly deadline)
     {
-        if (!submission.Points.HasValue)
+        if (submission.Points is null)
             return submission.Points;
 
         var points = submission.Points.Value;
