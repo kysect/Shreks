@@ -48,7 +48,7 @@ public static class TestEnv
         var userGenerator = serviceProvider.GetRequiredService<IEntityGenerator<User>>();
         var users = userGenerator.GeneratedEntities;
         dbContext.Users.AttachRange(users);
-        for (var index = 0; index < users.Count; index++)
+        for (var index = 0; index < config.Users.Count; index++)
         {
             var user = users[index];
             var login = config.Users[index];

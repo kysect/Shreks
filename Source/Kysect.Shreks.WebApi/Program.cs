@@ -99,9 +99,13 @@ async Task InitTestEnvironment(
     var users = userGenerator.GeneratedEntities;
     dbContext.Users.AttachRange(users);
 
-    User first = users[0];
-    var login = config.Users[0];
-    dbContext.UserAssociations.Add(new GithubUserAssociation(first, login));
+    for (var index = 0; index < config.Users.Count; index++)
+    {
+        var user = users[index];
+        var login = config.Users[index];
+        dbContext.UserAssociations.Add(new GithubUserAssociation(user, login));
+    }
+
 
     var subjectCourseGenerator = serviceProvider.GetRequiredService<IEntityGenerator<SubjectCourse>>();
     var subjectCourse = subjectCourseGenerator.GeneratedEntities[0];
