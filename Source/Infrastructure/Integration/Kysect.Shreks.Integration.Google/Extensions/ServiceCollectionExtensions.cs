@@ -17,9 +17,13 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddGoogleIntegration(
         this IServiceCollection serviceCollection,
+        bool useDummyIntegration,
         Action<GoogleIntegrationOptions> action)
     {
         ArgumentNullException.ThrowIfNull(action);
+
+        if (useDummyIntegration)
+            return serviceCollection.AddDummyGoogleIntegration();
 
         var options = new GoogleIntegrationOptions(serviceCollection);
         action.Invoke(options);
@@ -35,6 +39,15 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
             .AddGoogleTableUpdateWorker()
             .AddGoogleFormatter();
+    }
+
+    public static IServiceCollection AddDummyGoogleIntegration(this IServiceCollection serviceCollection)
+    {
+        return serviceCollection
+            .AddSingleton<TableUpdateQueue>()
+            .AddSingleton<ITableUpdateQueue>(p => p.GetRequiredService<TableUpdateQueue>())
+            .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
+            .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>();
     }
 
     private static IServiceCollection AddGoogleTableUpdateWorker(this IServiceCollection serviceCollection)

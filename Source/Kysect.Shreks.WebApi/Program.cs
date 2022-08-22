@@ -46,7 +46,8 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .UseLazyLoadingProxies());
 
     webApplicationBuilder.Services
-        .AddGoogleIntegration(o => o
+        .AddGoogleIntegration(testEnvConfiguration.UseDummyGithubImplementation,
+            o => o
             .ConfigureGoogleCredentials(googleCredentials)
             .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"));
 

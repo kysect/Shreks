@@ -17,7 +17,8 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 IServiceProvider services = new ServiceCollection()
-    .AddGoogleIntegration(o => o
+    .AddGoogleIntegration(useDummyIntegration: false,
+        o => o
         .ConfigureGoogleCredentials(googleCredentials)
         .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"))
     .AddHandlers()
