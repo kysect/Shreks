@@ -7,6 +7,7 @@ using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
 
+/// <inheritdoc/>
 public class SheetManagementService : ISheetManagementService
 {
     private const string AllFields = "*";
