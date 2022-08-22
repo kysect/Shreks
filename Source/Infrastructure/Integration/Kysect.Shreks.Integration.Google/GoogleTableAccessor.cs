@@ -34,7 +34,7 @@ public class GoogleTableAccessor : IDisposable
         _spreadsheetCreationSemaphore = new SemaphoreSlim(1, 1);
     }
 
-    public async Task UpdatePointsAsync(Guid subjectCourseId, CancellationToken token = default)
+    public async Task UpdatePointsAsync(Guid subjectCourseId, CancellationToken token)
     {
         try
         {
@@ -53,7 +53,7 @@ public class GoogleTableAccessor : IDisposable
         }
     }
 
-    public async Task UpdateQueueAsync(Guid subjectCourseId, Guid studentGroupId, CancellationToken token = default)
+    public async Task UpdateQueueAsync(Guid subjectCourseId, Guid studentGroupId, CancellationToken token)
     {
         try
         {
@@ -64,11 +64,13 @@ public class GoogleTableAccessor : IDisposable
             var spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
             await _queueSheet.UpdateAsync(spreadsheetId, queue, token);
 
-            _logger.LogInformation("Successfully updated queue sheet of course {SubjectCourseId}.", subjectCourseId);
+            const string infoMessage = "Successfully updated queue sheet of group: {GroupId}, course: {CourseId}.";
+            _logger.LogInformation(infoMessage, studentGroupId, subjectCourseId);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to update queue sheet of course {SubjectCourseId}.", subjectCourseId);
+            const string errorMessage = "Failed to update queue sheet of group: {GroupId}, course: {CourseId}.";
+            _logger.LogError(e, errorMessage, studentGroupId, subjectCourseId);
         }
     }
 
