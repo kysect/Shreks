@@ -6,7 +6,7 @@ public readonly record struct Points : IComparable<Points>
 {
     public Points(double value)
     {
-        Value = value >= 0 ? value : 0;
+        Value = value >= 0 ? Math.Round(value, 2) : 0;
     }
 
     public double Value { get; }
