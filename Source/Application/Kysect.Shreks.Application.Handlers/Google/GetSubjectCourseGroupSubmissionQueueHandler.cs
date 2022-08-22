@@ -6,16 +6,16 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetSubmissionsQueueByCourseAndGroup;
+using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetSubjectCourseGroupSubmissionQueue;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 
-public class GetSubmissionsQueueByCourseAndGroupHandler : IRequestHandler<Query, Response>
+public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
 
-    public GetSubmissionsQueueByCourseAndGroupHandler(IShreksDatabaseContext context, IMapper mapper)
+    public GetSubjectCourseGroupSubmissionQueueHandler(IShreksDatabaseContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;

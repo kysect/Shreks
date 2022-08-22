@@ -57,7 +57,7 @@ public class GoogleTableAccessor : IDisposable
     {
         try
         {
-            var query = new GetSubmissionsQueueByCourseAndGroup.Query(subjectCourseId, studentGroupId);
+            var query = new GetSubjectCourseGroupSubmissionQueue.Query(subjectCourseId, studentGroupId);
             var response = await _mediator.Send(query, token);
 
             var queue = response.Queue;
