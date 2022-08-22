@@ -1,7 +1,6 @@
 using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Application.Abstractions.Github.Queries;
 using Kysect.Shreks.Application.Abstractions.Students;
-using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Integration.Github.ContextFactory;

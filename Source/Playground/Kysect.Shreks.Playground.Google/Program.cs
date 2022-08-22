@@ -1,11 +1,6 @@
 ﻿using Kysect.Shreks.Application.Handlers.Extensions;
 using Google.Apis.Auth.OAuth2;
-using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Application.Handlers.Extensions;
-using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.Submissions;
-using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
