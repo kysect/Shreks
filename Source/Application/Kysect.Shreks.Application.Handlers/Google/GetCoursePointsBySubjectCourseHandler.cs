@@ -69,10 +69,10 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var (submission, points) = submissions
             .Select(s => (submission: s, points: GetSubmissionPoints(s, deadline)))
-            .Where(s => s.points is not null)
-            .MaxBy(s => s.points);
+            .Where(s => s.points.HasValue)
+            .MaxBy(s => s.points!.Value.Value);
 
-        if (points is null)
+        if (!points.HasValue)
             return null;
 
         return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDate, points.Value.Value);
@@ -80,7 +80,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
     private Points? GetSubmissionPoints(Submission submission, DateOnly deadline)
     {
-        if (submission.Points is null)
+        if (!submission.Points.HasValue)
             return submission.Points;
 
         var points = submission.Points.Value;
