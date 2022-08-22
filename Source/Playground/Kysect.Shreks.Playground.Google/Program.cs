@@ -1,5 +1,10 @@
 ﻿using Kysect.Shreks.Application.Handlers.Extensions;
-﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2;
+using Kysect.Shreks.Application.Abstractions.Formatters;
+using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
@@ -31,24 +36,25 @@ var databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
 
 var subjectCourse = databaseContext.SubjectCourses.First();
 
+var tableQueue = services.GetRequiredService<ITableUpdateQueue>();
 var tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
 
 await tableWorker.StartAsync(default);
 
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
+tableQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 
 var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
-tableWorker.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
-tableWorker.EnqueueSubmissionsQueueUpdate(anotherSubjectCourse.Id);
+tableQueue.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
+tableQueue.EnqueueSubmissionsQueueUpdate(anotherSubjectCourse.Id);
 
 await Task.Delay(TimeSpan.FromMinutes(2));
 
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
-tableWorker.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableWorker.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
+tableQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
+tableQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
+tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
 
 await Task.Delay(-1);
