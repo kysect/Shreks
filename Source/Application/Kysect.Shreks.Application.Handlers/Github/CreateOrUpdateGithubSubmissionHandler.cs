@@ -50,7 +50,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId());
+        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         var dto = _mapper.Map<SubmissionDto>(submission);
 
         return new Response(dto);
