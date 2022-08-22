@@ -33,7 +33,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
             .AddSingleton<TableUpdateQueue>()
             .AddSingleton<ITableUpdateQueue>(p => p.GetRequiredService<TableUpdateQueue>())
-            .AddSingleton<GoogleTableAccessor>()
+            .AddScoped<GoogleTableAccessor>()
             .AddHostedService<GoogleTableUpdateWorker>();
     }
 }
