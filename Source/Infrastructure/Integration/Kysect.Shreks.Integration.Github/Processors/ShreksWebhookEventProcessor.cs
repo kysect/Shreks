@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Application.Abstractions.Github.Queries;
 using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
@@ -67,7 +68,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 string repository = pullRequestEvent.Repository!.Name;
                 string payload = pullRequestEvent.PullRequest.DiffUrl;
 
-                var command = new CreateOrUpdateSubmissionCommand.Command(studentId, assignmentId, payload, 
+                var command = new CreateOrUpdateGithubSubmission.Command(studentId, assignmentId, payload, 
                     organization, repository, prNum);
 
                 await _mediator.Send(command, cancellationToken);
