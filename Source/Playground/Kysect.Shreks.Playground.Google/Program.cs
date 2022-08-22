@@ -29,11 +29,11 @@ IServiceProvider services = new ServiceCollection()
     .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
     .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>()
     .AddEntityGenerators(o => o
-        .ConfigureEntityGenerator<Submission>(s => s.Count = 1000)
+        .ConfigureEntityGenerator<Submission>(s => s.Count = 2000)
         .ConfigureEntityGenerator<User>(s => s.Count = 500)
         .ConfigureEntityGenerator<Student>(s => s.Count = 400)
         .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 20)
-        .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 50)
+        .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 200)
         .ConfigureEntityGenerator<Assignment>(a => a.Count = 50)
         .ConfigureFaker(f => f.Locale = "ru"))
     .AddDatabaseContext(o => o
@@ -43,6 +43,7 @@ IServiceProvider services = new ServiceCollection()
     .AddHandlers()
     .AddMappingConfiguration()
     .AddLogging(o => o.AddSerilog())
+    .AddSingleton<GoogleTableUpdateWorker>()
     .BuildServiceProvider();
 
 var databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
@@ -50,27 +51,32 @@ databaseContext.Database.EnsureCreated();
 await databaseContext.SaveChangesAsync();
 await services.UseDatabaseSeeders();
 
-var subjectCourse = databaseContext.SubjectCourses.First();
-
 var tableQueue = services.GetRequiredService<ITableUpdateQueue>();
 var tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
 
 await tableWorker.StartAsync(default);
 
+var subjectCourse = databaseContext.SubjectCourses.First();
+var group = subjectCourse.Groups.First().StudentGroup;
+
 tableQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
+tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, group.Id);
+
+var sameCourseGroup = subjectCourse.Groups.Skip(1).First().StudentGroup;
+tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, sameCourseGroup.Id);
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 
 var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
+var anotherGroup = anotherSubjectCourse.Groups.First().StudentGroup;
 tableQueue.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
-tableQueue.EnqueueSubmissionsQueueUpdate(anotherSubjectCourse.Id);
+tableQueue.EnqueueSubmissionsQueueUpdate(anotherSubjectCourse.Id, anotherGroup.Id);
 
 await Task.Delay(TimeSpan.FromMinutes(2));
 
 tableQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
+tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, group.Id);
 tableQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
-tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id);
+tableQueue.EnqueueSubmissionsQueueUpdate(anotherSubjectCourse.Id, anotherGroup.Id);
 
 await Task.Delay(-1);
