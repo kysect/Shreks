@@ -3,7 +3,6 @@ using Google.Apis.Drive.v3.Data;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Integration.Google.Providers;
-using Kysect.Shreks.Integration.Google.Sheets;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
@@ -33,20 +32,17 @@ public class SheetManagementService : ISheetManagementService
         _tablesParentsProvider = tablesParentsProvider;
     }
 
-    public async Task CreateOrClearSheetAsync(string spreadsheetId, ISheet sheet, CancellationToken token)
+    public async Task<int> CreateOrClearSheetAsync(string spreadsheetId, string sheetTitle, CancellationToken token)
     {
-        ArgumentNullException.ThrowIfNull(sheet);
+        int? sheetId = await GetSheetIdAsync(spreadsheetId, sheetTitle, token);
 
-        bool sheetExists = await CheckSheetExistsAsync(spreadsheetId, sheet.Title, token);
-
-        if (sheetExists)
+        if (sheetId is null)
         {
-            await ClearSheetAsync(spreadsheetId, sheet.Id, token);
+            return await CreateSheetAsync(spreadsheetId, sheetTitle, token);
         }
-        else
-        {
-            await CreateSheetAsync(spreadsheetId, sheet, token);
-        }
+        
+        await ClearSheetAsync(spreadsheetId, sheetId.Value, token);
+        return sheetId.Value;
     }
 
     public async Task<string> CreateSpreadsheetAsync(string title, CancellationToken token)
@@ -71,7 +67,7 @@ public class SheetManagementService : ISheetManagementService
         return spreadsheetId;
     }
 
-    private async Task<bool> CheckSheetExistsAsync(string spreadsheetId, string title, CancellationToken token)
+    private async Task<int?> GetSheetIdAsync(string spreadsheetId, string title, CancellationToken token)
     {
         Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
             .Get(spreadsheetId)
@@ -79,10 +75,10 @@ public class SheetManagementService : ISheetManagementService
 
         Sheet? sheet = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == title);
 
-        return sheet is not null;
+        return sheet?.Properties.SheetId;
     }
 
-    private async Task CreateSheetAsync(string spreadsheetId, ISheet sheet, CancellationToken token)
+    private async Task<int> CreateSheetAsync(string spreadsheetId, string sheetTitle, CancellationToken token)
     {
         var addSheetRequest = new Request
         {
@@ -90,13 +86,15 @@ public class SheetManagementService : ISheetManagementService
             {
                 Properties = new SheetProperties
                 {
-                    Title = sheet.Title,
-                    SheetId = sheet.Id
+                    Title = sheetTitle
                 }
             }
         };
 
-        await ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
+        var batchUpdateResponse = await ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
+        var addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
+
+        return addedSheetProperties.SheetId!.Value;
     }
 
     private async Task ClearSheetAsync(string spreadsheetId, int sheetId, CancellationToken token)
@@ -134,14 +132,26 @@ public class SheetManagementService : ISheetManagementService
         await ExecuteBatchUpdateAsync(spreadsheetId, requests, token);
     }
 
-    private Task ExecuteBatchUpdateAsync(string spreadsheetId, Request request, CancellationToken token)
-        => ExecuteBatchUpdateAsync(spreadsheetId, new[] { request }, token);
-
-    private async Task ExecuteBatchUpdateAsync(string spreadsheetId, IList<Request> requests, CancellationToken token)
+    private async Task<BatchUpdateSpreadsheetResponse> ExecuteBatchUpdateAsync(
+        string spreadsheetId,
+        Request request,
+        CancellationToken token)
     {
-        var batchUpdateRequest = new BatchUpdateSpreadsheetRequest { Requests = requests };
+        var requests = new[] { request };
+        return await ExecuteBatchUpdateAsync(spreadsheetId, requests, token);
+    }
 
-        await _sheetsService.Spreadsheets
+    private async Task<BatchUpdateSpreadsheetResponse> ExecuteBatchUpdateAsync(
+        string spreadsheetId,
+        IList<Request> requests,
+        CancellationToken token)
+    {
+        var batchUpdateRequest = new BatchUpdateSpreadsheetRequest
+        {
+            Requests = requests
+        };
+
+        return await _sheetsService.Spreadsheets
             .BatchUpdate(batchUpdateRequest, spreadsheetId)
             .ExecuteAsync(token);
     }

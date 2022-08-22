@@ -11,6 +11,8 @@ namespace Kysect.Shreks.Integration.Google.Sheets;
 
 public class PointsSheet : ISheet<CoursePointsDto>
 {
+    private const string Title = "Баллы";
+
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ISheetManagementService _sheetEditor;
     private readonly ISheetComponentFactory<CoursePointsDto> _sheetDataFactory;
@@ -28,17 +30,14 @@ public class PointsSheet : ISheet<CoursePointsDto>
         _renderer = renderer;
     }
 
-    public string Title => "Баллы";
-    public int Id => 2;
-
     public async Task UpdateAsync(string spreadsheetId, CoursePointsDto points, CancellationToken token)
     {
-        await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, this, token);
+        var sheetId = await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, Title, token);
 
         CoursePointsDto sortedPoints = SortPoints(points);
 
         IComponent sheetData = _sheetDataFactory.Create(sortedPoints);
-        var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, Id, Title, sheetData);
+        var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, sheetId, Title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
     }
 
