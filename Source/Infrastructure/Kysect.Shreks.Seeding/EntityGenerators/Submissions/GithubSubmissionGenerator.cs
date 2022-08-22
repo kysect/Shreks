@@ -1,6 +1,5 @@
 ﻿using Bogus;
 using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;

@@ -1,6 +1,4 @@
-﻿using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Integration.Google.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Kysect.Shreks.Integration.Google;
