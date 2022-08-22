@@ -23,6 +23,7 @@ IServiceProvider services = new ServiceCollection()
     .AddHandlers()
     .AddMappingConfiguration()
     .AddLogging(o => o.AddSerilog())
+    .AddSingleton<GoogleTableUpdateWorker>()
     .AddGooglePlaygroundDatabase()
     .BuildServiceProvider();
 
