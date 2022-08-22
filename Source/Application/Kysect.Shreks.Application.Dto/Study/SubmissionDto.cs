@@ -2,6 +2,7 @@ namespace Kysect.Shreks.Application.Dto.Study;
 
 public record SubmissionDto(
     Guid Id,
+    int Code,
     DateOnly SubmissionDate,
     Guid StudentId,
     Guid AssignmentId,
