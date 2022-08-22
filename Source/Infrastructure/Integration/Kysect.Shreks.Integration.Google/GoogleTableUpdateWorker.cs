@@ -1,5 +1,6 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Integration.Google.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Kysect.Shreks.Integration.Google;
@@ -11,11 +12,11 @@ public class GoogleTableUpdateWorker : BackgroundService, ITableUpdateQueue
     private readonly ConcurrentHashSet<Guid> _queueUpdateSubjectCourseIds;
     private readonly ConcurrentHashSet<Guid> _pointsUpdateSubjectCourseIds;
 
-    private readonly GoogleTableAccessor _tableAccessor;
-
-    public GoogleTableUpdateWorker(GoogleTableAccessor tableAccessor)
+    private readonly IServiceScopeFactory _serviceProvider;
+    
+    public GoogleTableUpdateWorker(IServiceScopeFactory serviceProvider)
     {
-        _tableAccessor = tableAccessor;
+        _serviceProvider = serviceProvider;
 
         _queueUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
         _pointsUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
@@ -26,13 +27,16 @@ public class GoogleTableUpdateWorker : BackgroundService, ITableUpdateQueue
         using var timer = new PeriodicTimer(DelayBetweenSheetUpdates);
         while (!token.IsCancellationRequested && await timer.WaitForNextTickAsync(token))
         {
+            using IServiceScope serviceScope = _serviceProvider.CreateScope();
+            using var googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<GoogleTableAccessor>();
+            
             var pointsUpdateTasks = _pointsUpdateSubjectCourseIds
                 .GetAndClearValues()
-                .Select(i => _tableAccessor.UpdatePointsAsync(i, token));
+                .Select(i => googleTableAccessor.UpdatePointsAsync(i, token));
 
             var queueUpdateTasks = _queueUpdateSubjectCourseIds
                 .GetAndClearValues()
-                .Select(i => _tableAccessor.UpdateQueueAsync(i, token));
+                .Select(i => googleTableAccessor.UpdateQueueAsync(i, token));
 
             await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
         }
