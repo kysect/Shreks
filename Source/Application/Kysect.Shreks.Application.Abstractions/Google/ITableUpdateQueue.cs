@@ -2,6 +2,6 @@
 
 public interface ITableUpdateQueue
 {
-    void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId);
+    void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId, Guid studentGroupId);
     void EnqueueCoursePointsUpdate(Guid subjectCourseId);
 }

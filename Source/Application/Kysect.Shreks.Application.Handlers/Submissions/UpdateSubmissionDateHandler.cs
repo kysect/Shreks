@@ -29,7 +29,7 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId());
+        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
         var dto = _mapper.Map<SubmissionDto>(submission);
 

@@ -53,11 +53,11 @@ public class GoogleTableAccessor : IDisposable
         }
     }
 
-    public async Task UpdateQueueAsync(Guid subjectCourseId, CancellationToken token = default)
+    public async Task UpdateQueueAsync(Guid subjectCourseId, Guid studentGroupId, CancellationToken token = default)
     {
         try
         {
-            var query = new GetSubmissionsQueueBySubjectCourse.Query(subjectCourseId);
+            var query = new GetSubmissionsQueueByCourseAndGroup.Query(subjectCourseId, studentGroupId);
             var response = await _mediator.Send(query, token);
 
             var queue = response.Queue;

@@ -34,7 +34,7 @@ public class CreateSubmissionHandler : IRequestHandler<Command, Response>
         await _context.Submissions.AddAsync(submission, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId());
+        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
         var dto = _mapper.Map<SubmissionDto>(submission);
 

@@ -3,24 +3,20 @@ using Kysect.Shreks.Integration.Google.Models;
 
 namespace Kysect.Shreks.Integration.Google;
 
-internal class TableUpdateQueue : ITableUpdateQueue
+public class TableUpdateQueue : ITableUpdateQueue
 {
-    public ConcurrentHashSet<Guid> QueueUpdateSubjectCourseIds { get; }
+    public ConcurrentHashSet<(Guid, Guid)> QueueUpdateSubjectCourseGroupIds { get; }
     public ConcurrentHashSet<Guid> PointsUpdateSubjectCourseIds { get; }
 
     public TableUpdateQueue()
     {
-        QueueUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
+        QueueUpdateSubjectCourseGroupIds = new ConcurrentHashSet<(Guid, Guid)>();
         PointsUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
     }
 
-    public void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId)
-    {
-        QueueUpdateSubjectCourseIds.Add(subjectCourseId);
-    }
+    public void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId, Guid studentGroupId)
+        => QueueUpdateSubjectCourseGroupIds.Add((subjectCourseId, studentGroupId));
 
     public void EnqueueCoursePointsUpdate(Guid subjectCourseId)
-    {
-        PointsUpdateSubjectCourseIds.Add(subjectCourseId);
-    }
+        => PointsUpdateSubjectCourseIds.Add(subjectCourseId);
 }

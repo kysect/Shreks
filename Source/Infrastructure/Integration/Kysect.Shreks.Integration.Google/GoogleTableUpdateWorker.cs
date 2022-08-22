@@ -1,6 +1,4 @@
-﻿using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Integration.Google.Models;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Kysect.Shreks.Integration.Google;
@@ -12,7 +10,7 @@ public class GoogleTableUpdateWorker : BackgroundService
     private readonly TableUpdateQueue _tableUpdateQueue;
     private readonly IServiceScopeFactory _serviceProvider;
 
-    internal GoogleTableUpdateWorker(TableUpdateQueue tableUpdateQueue, IServiceScopeFactory serviceProvider)
+    public GoogleTableUpdateWorker(TableUpdateQueue tableUpdateQueue, IServiceScopeFactory serviceProvider)
     {
         _tableUpdateQueue = tableUpdateQueue;
         _serviceProvider = serviceProvider;
@@ -29,12 +27,16 @@ public class GoogleTableUpdateWorker : BackgroundService
             var pointsUpdateTasks = _tableUpdateQueue
                 .PointsUpdateSubjectCourseIds
                 .GetAndClearValues()
-                .Select(i => googleTableAccessor.UpdatePointsAsync(i, token));
+                .Select(c => googleTableAccessor.UpdatePointsAsync(c, token));
 
             var queueUpdateTasks = _tableUpdateQueue
-                .QueueUpdateSubjectCourseIds
+                .QueueUpdateSubjectCourseGroupIds
                 .GetAndClearValues()
-                .Select(i => googleTableAccessor.UpdateQueueAsync(i, token));
+                .Select(t =>
+                {
+                    var (courseId, groupId) = t;
+                    return googleTableAccessor.UpdateQueueAsync(courseId, groupId, token);
+                });
 
             await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
         }
