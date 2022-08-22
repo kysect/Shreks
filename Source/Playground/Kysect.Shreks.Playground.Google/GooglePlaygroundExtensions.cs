@@ -6,6 +6,8 @@ using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+namespace Kysect.Shreks.Playground.Google;
+
 public static class GooglePlaygroundExtensions
 {
     public static IServiceCollection AddGooglePlaygroundDatabase(this IServiceCollection serviceCollection)

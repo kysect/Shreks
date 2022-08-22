@@ -1,3 +1,5 @@
+namespace Kysect.Shreks.WebApi;
+
 public class TestEnvConfiguration
 {
     public string Organization { get; init; }

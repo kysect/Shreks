@@ -4,6 +4,7 @@ using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Mapping.Extensions;
+using Kysect.Shreks.Playground.Google;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
