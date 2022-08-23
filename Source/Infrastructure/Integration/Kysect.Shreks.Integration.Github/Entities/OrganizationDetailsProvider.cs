@@ -6,19 +6,16 @@ namespace Kysect.Shreks.Integration.Github.Entities;
 
 public class OrganizationDetailsProvider : IOrganizationDetailsProvider
 {
-    private readonly IGitHubClient _appClient;
-    private readonly IInstallationClientFactory _clientFactory;
+    private readonly IOrganizationGithubClientProvider _clientProvider;
 
-    public OrganizationDetailsProvider(IGitHubClient appClient, IInstallationClientFactory clientFactory)
+    public OrganizationDetailsProvider(IOrganizationGithubClientProvider clientProvider)
     {
-        _appClient = appClient;
-        _clientFactory = clientFactory;
+        _clientProvider = clientProvider;
     }
 
     public async Task<IReadOnlyCollection<string>> GetOrganizationOwners(string organizationName)
     {
-        Installation installation = await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(organizationName);
-        GitHubClient client = _clientFactory.GetClient(installation.Id);
+        IGitHubClient client = await _clientProvider.GetClient(organizationName);
         IReadOnlyList<User> owners = await client.Organization.Member.GetAll(organizationName, OrganizationMembersRole.Admin);
         return owners.Select(u => u.Login).ToList();
     }
