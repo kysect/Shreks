@@ -43,6 +43,15 @@ public class ActionNotifier : IActionNotifier
             (int) issueNumber, 
             message);
     }
+    
+    public async Task SendCommitComment(WebhookEvent webhookEvent, string sha, string message)
+    {
+        ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
+
+        var installationClient = _installationClientFactory.GetClient(installation.Id);
+
+        await installationClient.Repository.Comment.Create(repository.Id, sha, new NewCommitComment(message));
+    }
 
     public async Task ReactInComments(WebhookEvent webhookEvent, long commentId, bool isSuccessful)
     {

@@ -89,6 +89,13 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                         prNum,
                         $"Created submission with id {response.Submission.Id}");
                 }
+                else
+                {
+                    await _actionNotifier.SendCommitComment(
+                        pullRequestEvent,
+                        pullRequestEvent.PullRequest.Head.Sha,
+                        $"Updated submission with id {response.Submission.Id}");
+                }
 
                 break;
             case PullRequestActionValue.Reopened:
