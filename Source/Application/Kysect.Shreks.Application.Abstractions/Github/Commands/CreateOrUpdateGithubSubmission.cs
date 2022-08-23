@@ -13,5 +13,5 @@ public static class CreateOrUpdateGithubSubmission
         string Repository,
         long PrNumber) : IRequest<Response>;
 
-    public record Response(SubmissionDto Submission);
+    public record Response(bool IsCreated, SubmissionDto Submission);
 }
