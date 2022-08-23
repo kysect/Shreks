@@ -45,10 +45,18 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .UseSqlite("Filename=shreks.db")
             .UseLazyLoadingProxies());
 
-    webApplicationBuilder.Services
-        .AddGoogleIntegration(o => o
-            .ConfigureGoogleCredentials(googleCredentials)
-            .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"));
+    if (testEnvConfiguration.UseDummyGithubImplementation)
+    {
+        webApplicationBuilder.Services
+            .AddDummyGoogleIntegration();
+    }
+    else
+    {
+        webApplicationBuilder.Services
+            .AddGoogleIntegration(o => o
+                .ConfigureGoogleCredentials(googleCredentials)
+                .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"));
+    }
 
     webApplicationBuilder.Services
         .AddGithubServices(shreksConfiguration);

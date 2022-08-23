@@ -37,6 +37,15 @@ public static class ServiceCollectionExtensions
             .AddGoogleFormatter();
     }
 
+    public static IServiceCollection AddDummyGoogleIntegration(this IServiceCollection serviceCollection)
+    {
+        return serviceCollection
+            .AddSingleton<TableUpdateQueue>()
+            .AddSingleton<ITableUpdateQueue>(p => p.GetRequiredService<TableUpdateQueue>())
+            .AddSingleton<IUserFullNameFormatter, UserFullNameFormatter>()
+            .AddSingleton<ICultureInfoProvider, RuCultureInfoProvider>();
+    }
+
     private static IServiceCollection AddGoogleTableUpdateWorker(this IServiceCollection serviceCollection)
     {
         return serviceCollection
