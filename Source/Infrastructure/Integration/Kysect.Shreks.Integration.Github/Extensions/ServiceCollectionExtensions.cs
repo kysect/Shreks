@@ -71,6 +71,8 @@ public static class ServiceCollectionExtensions
             return new InstallationClientFactory(appClient, memoryCache);
         });
 
+        services.AddSingleton<IOrganizationGithubClientProvider, OrganizationGithubClientProvider>();
+
         return services;
     }
 

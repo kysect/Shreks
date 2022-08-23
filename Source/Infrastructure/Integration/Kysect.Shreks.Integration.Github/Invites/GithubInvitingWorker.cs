@@ -20,19 +20,16 @@ public class GithubInvitingWorker : BackgroundService
     private readonly TimeSpan _delayBetweenInviteIteration = TimeSpan.FromHours(24).Add(TimeSpan.FromMinutes(1));
 
     private readonly ILogger<GithubInvitingWorker> _logger;
-    private readonly IInstallationClientFactory _clientFactory;
-    private readonly IGitHubClient _appClient;
+    private readonly IOrganizationGithubClientProvider _clientProvider;
     private readonly IMediator _mediator;
 
     public GithubInvitingWorker(
-        IInstallationClientFactory clientFactory,
-        IGitHubClient appClient,
+        IOrganizationGithubClientProvider clientProvider,
         IMediator mediator,
         ILogger<GithubInvitingWorker> logger)
     {
+        _clientProvider = clientProvider;
         _logger = logger;
-        _clientFactory = clientFactory;
-        _appClient = appClient;
         _mediator = mediator;
     }
 
@@ -115,8 +112,7 @@ public class GithubInvitingWorker : BackgroundService
 
     private async Task<OrganizationInviteSender> CreateOrganizationInviteSender(string githubOrganization)
     {
-        var installation = await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(githubOrganization);
-        var client = _clientFactory.GetClient(installation.Id);
+        GitHubClient client = await _clientProvider.GetClient(githubOrganization);
 
         return new OrganizationInviteSender(client);
     }
