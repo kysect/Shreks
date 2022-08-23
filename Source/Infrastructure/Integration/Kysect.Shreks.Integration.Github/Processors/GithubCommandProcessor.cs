@@ -2,9 +2,11 @@ using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
+using Kysect.Shreks.Application.Dto.Study;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
 
+//TODO: catch different exceptions and write better messages
 public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
     private readonly ICommandContextFactory _contextFactory;
@@ -20,13 +22,13 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            await rateCommand.ExecuteAsync(context, _cancellationToken);
-            return new BaseShreksCommandResult(true, string.Empty);
+            SubmissionContext context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
+            SubmissionDto submission = await rateCommand.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, $"Submission rated - {submission.ToPullRequestString()}");
         }
-        catch(Exception e) //TODO: catch different exceptions and write better messages
+        catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, e.Message); 
+            return new BaseShreksCommandResult(false, $"Received error while process rate command: {e.ToString()}");
         }
     }
 
@@ -34,17 +36,13 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            var context = await _contextFactory.CreateBaseContext(_cancellationToken);
-            var submissionDto = await updateCommand.ExecuteAsync(context, _cancellationToken);
-            return new BaseShreksCommandResult(true, 
-                $"Updated submission - " +
-                $"points: {submissionDto.Points}, " +
-                $"Extra points: {submissionDto.ExtraPoints}, " +
-                $"Date: {submissionDto.SubmissionDate}"); //md?
+            BaseContext context = await _contextFactory.CreateBaseContext(_cancellationToken);
+            SubmissionDto submission = await updateCommand.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, $"Submission updated - {submission.ToPullRequestString()}");
         }
-        catch(Exception e) //TODO: catch different exceptions and write better messages
+        catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, e.Message); 
+            return new BaseShreksCommandResult(false, $"Received error while process update command: {e.ToString()}");
         }
     }
 }

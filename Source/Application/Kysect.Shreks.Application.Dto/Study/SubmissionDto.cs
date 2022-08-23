@@ -9,4 +9,10 @@ public record SubmissionDto(
     string Payload,
     double? ExtraPoints,
     double? Points,
-    string AssignmentShortName);
+    string AssignmentShortName)
+{
+    public string ToPullRequestString()
+    {
+        return $"#{Code} from {SubmissionDate} (Point: {Points}, Extra points: {ExtraPoints})";
+    }
+}
