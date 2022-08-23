@@ -143,7 +143,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             return;
         }
 
-        if (IsPullRequestCommand(issueCommentEvent))
+        if (!IsPullRequestCommand(issueCommentEvent))
         {
             _logger.LogTrace($"Skip commit in {issueCommentEvent.Issue.Id}. Issue comments is not supported.");
             return;
