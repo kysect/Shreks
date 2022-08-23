@@ -17,13 +17,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddGoogleIntegration(
         this IServiceCollection serviceCollection,
-        bool useDummyIntegration,
         Action<GoogleIntegrationOptions> action)
     {
         ArgumentNullException.ThrowIfNull(action);
-
-        if (useDummyIntegration)
-            return serviceCollection.AddDummyGoogleIntegration();
 
         var options = new GoogleIntegrationOptions(serviceCollection);
         action.Invoke(options);
