@@ -45,4 +45,11 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             return new BaseShreksCommandResult(false, $"Received error while process update command: {e.ToString()}");
         }
     }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(HelpCommand helpCommand)
+    {
+        BaseContext context = await _contextFactory.CreateBaseContext(_cancellationToken);
+        string result = await helpCommand.ExecuteAsync(context, _cancellationToken);
+        return new BaseShreksCommandResult(true, result);
+    }
 }
