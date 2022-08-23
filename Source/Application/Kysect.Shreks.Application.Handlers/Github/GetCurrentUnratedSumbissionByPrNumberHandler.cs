@@ -25,9 +25,9 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
         var submission =  await _context.SubmissionAssociations
             .OfType<GithubSubmissionAssociation>()
             .Where(a => 
-                a.Organization == request.Organization 
-                && a.Repository == request.Repository
-                && a.PrNumber == request.PrNumber
+                a.Organization == request.PullRequestDescriptor.Organization 
+                && a.Repository == request.PullRequestDescriptor.Repository
+                && a.PrNumber == request.PullRequestDescriptor.PrNumber
                 && a.Submission.Rating == null)
             .OrderByDescending(a => a.Submission.SubmissionDate)
             .Select(a => a.Submission)
@@ -35,9 +35,9 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
 
         if (submission is null)
         {
-            var organization = request.Organization;
-            var repository = request.Repository;
-            var number = request.PrNumber;
+            var organization = request.PullRequestDescriptor.Organization;
+            var repository = request.PullRequestDescriptor.Repository;
+            var number = request.PullRequestDescriptor.PrNumber;
             var message = $"No unrated submission in pr {organization}/{repository}/{number}";
             throw new EntityNotFoundException(message);
         }

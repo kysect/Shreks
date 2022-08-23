@@ -32,15 +32,20 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var submissionSpec = new FindLatestGithubSubmission(request.Organization, request.Repository, request.PrNumber);
+        var submissionSpec = new FindLatestGithubSubmission(
+            request.PullRequestDescriptor.Organization,
+            request.PullRequestDescriptor.Repository,
+            request.PullRequestDescriptor.PrNumber);
 
         var submission = await _context.SubmissionAssociations
             .WithSpecification(submissionSpec)
             .FirstOrDefaultAsync(cancellationToken);
 
+        bool isCreated = false;
         if (submission is null || submission.IsRated)
         {
             submission = await CreateSubmission(request, cancellationToken);
+            isCreated = true;
         }
         else
         {
@@ -53,7 +58,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         var dto = _mapper.Map<SubmissionDto>(submission);
 
-        return new Response(dto);
+        return new Response(isCreated, dto);
     }
 
     private async Task<GithubSubmission> CreateSubmission(Command request, CancellationToken cancellationToken)
@@ -65,15 +70,23 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             .WithSpecification(groupAssignmentSpec)
             .SingleAsync(cancellationToken);
 
+        var studentAssignmentSubmissionsSpec = new GetStudentAssignmentSubmissions(
+            request.StudentId, request.AssignmentId);
+
+        var count = await _context.Submissions
+            .WithSpecification(studentAssignmentSubmissionsSpec)
+            .CountAsync(cancellationToken);
+
         var submission = new GithubSubmission
         (
+            count + 1,
             student,
             groupAssignment,
             DateOnly.FromDateTime(DateTime.Now),
-            request.Payload,
-            request.Organization,
-            request.Repository,
-            request.PrNumber
+            request.PullRequestDescriptor.Payload,
+            request.PullRequestDescriptor.Organization,
+            request.PullRequestDescriptor.Repository,
+            request.PullRequestDescriptor.PrNumber
         );
 
         await _context.Submissions.AddAsync(submission, cancellationToken);

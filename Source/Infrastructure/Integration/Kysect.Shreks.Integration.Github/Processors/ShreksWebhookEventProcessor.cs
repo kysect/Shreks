@@ -3,6 +3,8 @@ using Kysect.Shreks.Application.Abstractions.Github.Queries;
 using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
+using Kysect.Shreks.Application.Dto.Github;
+using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.ContextFactory;
 using Kysect.Shreks.Integration.Github.Entities;
 using MediatR;
@@ -22,17 +24,20 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
     private readonly ILogger<ShreksWebhookEventProcessor> _logger;
     private readonly IShreksCommandParser _commandParser;
     private readonly IMediator _mediator;
+    private readonly IInstallationClientFactory _installationClientFactory;
 
     public ShreksWebhookEventProcessor(
         IActionNotifier actionNotifier, 
         ILogger<ShreksWebhookEventProcessor> logger,
         IShreksCommandParser commandParser, 
-        IMediator mediator)
+        IMediator mediator,
+        IInstallationClientFactory installationClientFactory)
     {
         _actionNotifier = actionNotifier;
         _logger = logger;
         _commandParser = commandParser;
         _mediator = mediator;
+        _installationClientFactory = installationClientFactory;
     }
 
     protected override async Task ProcessPullRequestWebhookAsync(WebhookHeaders headers,
@@ -67,10 +72,24 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 string repository = pullRequestEvent.Repository!.Name;
                 string payload = pullRequestEvent.PullRequest.DiffUrl;
 
-                var command = new CreateOrUpdateGithubSubmission.Command(studentId, assignmentId, payload, 
-                    organization, repository, prNum);
+                GithubPullRequestDescriptor pullRequestDescriptor = new GithubPullRequestDescriptor(
+                    payload,
+                    organization,
+                    repository,
+                    branch,
+                    prNum);
 
-                await _mediator.Send(command, cancellationToken);
+                var command = new CreateOrUpdateGithubSubmission.Command(studentId, assignmentId, pullRequestDescriptor);
+
+                var response = await _mediator.Send(command, cancellationToken);
+                if (response.IsCreated)
+                {
+                    await _actionNotifier.SendComment(
+                        pullRequestEvent,
+                        prNum,
+                        $"Created submission with id {response.Submission.Id}");
+                }
+
                 break;
             case PullRequestActionValue.Reopened:
                 break;
@@ -126,8 +145,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                     if (comment.FirstOrDefault() == '/')
                     {
                         IShreksCommand command = _commandParser.Parse(comment);
-
-                        var contextCreator = new IssueCommentContextFactory(_mediator, issueCommentEvent);
+                        var contextCreator = new IssueCommentContextFactory(_mediator, issueCommentEvent, _installationClientFactory);
                         var processor = new GithubCommandProcessor(contextCreator, CancellationToken.None);
 
                         var result = await command.AcceptAsync(processor);

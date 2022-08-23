@@ -11,9 +11,10 @@ public abstract partial class Submission : IEntity<Guid>
 {
     private readonly HashSet<SubmissionAssociation> _associations;
 
-    protected Submission(Student student, GroupAssignment groupAssignment, DateOnly submissionDate, string payload)
+    protected Submission(int code, Student student, GroupAssignment groupAssignment, DateOnly submissionDate, string payload)
         : this(Guid.NewGuid())
     {
+        Code = code;
         SubmissionDate = submissionDate;
         Student = student;
         GroupAssignment = groupAssignment;
@@ -24,6 +25,8 @@ public abstract partial class Submission : IEntity<Guid>
 
         _associations = new HashSet<SubmissionAssociation>();
     }
+    
+    public int Code { get; protected init; }
 
     public DateOnly SubmissionDate { get; set; }
 

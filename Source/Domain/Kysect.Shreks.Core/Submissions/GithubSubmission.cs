@@ -7,6 +7,7 @@ namespace Kysect.Shreks.Core.Submissions;
 public partial class GithubSubmission : Submission
 {
     public GithubSubmission(
+        int code,
         Student student,
         GroupAssignment groupAssignment,
         DateOnly submissionDate,
@@ -14,7 +15,7 @@ public partial class GithubSubmission : Submission
         string organization,
         string repository,
         long prNumber)
-        : base(student, groupAssignment, submissionDate, payload)
+        : base(code, student, groupAssignment, submissionDate, payload)
     {
         var association = new GithubSubmissionAssociation
         (
