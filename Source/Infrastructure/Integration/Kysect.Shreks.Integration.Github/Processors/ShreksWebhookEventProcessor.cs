@@ -81,7 +81,15 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 
                 var command = new CreateOrUpdateGithubSubmission.Command(studentId, assignmentId, pullRequestDescriptor);
 
-                await _mediator.Send(command, cancellationToken);
+                var response = await _mediator.Send(command, cancellationToken);
+                if (response.IsCreated)
+                {
+                    await _actionNotifier.SendComment(
+                        pullRequestEvent,
+                        prNum,
+                        $"Created submission with id {response.Submission.Id}");
+                }
+
                 break;
             case PullRequestActionValue.Reopened:
                 break;
@@ -140,7 +148,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                         var contextCreator = new IssueCommentContextFactory(_mediator, issueCommentEvent, _installationClientFactory);
                         var processor = new GithubCommandProcessor(contextCreator, CancellationToken.None);
                         var result = await command.AcceptAsync(processor);
-                        if (string.IsNullOrEmpty(result.Message))
+                        if (!string.IsNullOrEmpty(result.Message))
                         {
                             await _actionNotifier.SendComment(
                                 issueCommentEvent,
