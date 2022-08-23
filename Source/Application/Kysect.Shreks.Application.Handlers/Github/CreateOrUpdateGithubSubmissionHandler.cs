@@ -32,7 +32,10 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var submissionSpec = new FindLatestGithubSubmission(request.Organization, request.Repository, request.PrNumber);
+        var submissionSpec = new FindLatestGithubSubmission(
+            request.PullRequestDescriptor.Organization,
+            request.PullRequestDescriptor.Repository,
+            request.PullRequestDescriptor.PrNumber);
 
         var submission = await _context.SubmissionAssociations
             .WithSpecification(submissionSpec)
@@ -78,10 +81,10 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             student,
             groupAssignment,
             DateOnly.FromDateTime(DateTime.Now),
-            request.Payload,
-            request.Organization,
-            request.Repository,
-            request.PrNumber
+            request.PullRequestDescriptor.Payload,
+            request.PullRequestDescriptor.Organization,
+            request.PullRequestDescriptor.Repository,
+            request.PullRequestDescriptor.PrNumber
         );
 
         await _context.Submissions.AddAsync(submission, cancellationToken);

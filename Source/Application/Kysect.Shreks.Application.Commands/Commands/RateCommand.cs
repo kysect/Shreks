@@ -3,11 +3,12 @@ using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
+using Kysect.Shreks.Application.Dto.Study;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/rate", aliases: new []{"/assess", "/gachi-rate"})]
-public class RateCommand : IShreksCommand<SubmissionContext, Guid>
+public class RateCommand : IShreksCommand<SubmissionContext, SubmissionDto>
 {
     public RateCommand(double ratingPercent, double? extraPoints)
     {
@@ -27,11 +28,11 @@ public class RateCommand : IShreksCommand<SubmissionContext, Guid>
         return visitor.VisitAsync(this);
     }
 
-    public async Task<Guid> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
+    public async Task<SubmissionDto> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
     {
         var submissionId = context.Submission.Id;
         var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent, ExtraPoints);
         var response = await context.Mediator.Send(command, cancellationToken);
-        return response.Submission.Id;
+        return response.Submission;
     }
 }
