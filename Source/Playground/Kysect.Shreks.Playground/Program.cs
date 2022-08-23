@@ -25,6 +25,7 @@ await context.Database.EnsureCreatedAsync();
 var assignment = new Assignment("adw", "", new Points(1), new Points(2), new SubjectCourse(new Subject(""), ""));
 var submission = new GithubSubmission
 (
+    0,
     new Student(new User("John", "Doe", "adw"),
         new StudentGroup("")),
     new GroupAssignment(new StudentGroup(""), assignment, DateOnly.FromDateTime(DateTime.Now)),

@@ -37,6 +37,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
 
         var submission = new GithubSubmission
         (
+            index,
             student,
             assignment,
             DateOnly.FromDateTime(_faker.Date.Future()),
@@ -51,7 +52,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
                 : null,
             ExtraPoints = _faker.Random.Bool(ExtraPointsPresenceProbability)
                 ? _faker.Random.Points(0, MaxExtraPoints)
-                : Points.None
+                : Points.None,
         };
 
         return submission;
