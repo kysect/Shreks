@@ -4,9 +4,10 @@ namespace Kysect.Shreks.Core.ValueObject;
 
 public readonly record struct Points : IComparable<Points>
 {
+    private const int MaxSignCount = 2;
     public Points(double value)
     {
-        Value = value >= 0 ? value : 0;
+        Value = value >= 0 ? Math.Round(value, MaxSignCount) : 0;
     }
 
     public double Value { get; }

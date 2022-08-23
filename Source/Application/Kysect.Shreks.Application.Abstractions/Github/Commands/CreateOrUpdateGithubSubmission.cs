@@ -11,5 +11,5 @@ public static class CreateOrUpdateGithubSubmission
         Guid AssignmentId,
         GithubPullRequestDescriptor PullRequestDescriptor) : IRequest<Response>;
 
-    public record Response(SubmissionDto Submission);
+    public record Response(bool IsCreated, SubmissionDto Submission);
 }

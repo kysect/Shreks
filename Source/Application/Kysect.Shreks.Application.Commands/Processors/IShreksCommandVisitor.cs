@@ -7,4 +7,5 @@ public interface IShreksCommandVisitor<TResult> where TResult : IShreksCommandRe
 {
     Task<TResult> VisitAsync(RateCommand rateCommand);
     Task<TResult> VisitAsync(UpdateCommand updateCommand);
+    Task<TResult> VisitAsync(HelpCommand helpCommand);
 }

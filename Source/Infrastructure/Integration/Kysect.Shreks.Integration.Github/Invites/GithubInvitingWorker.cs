@@ -5,6 +5,7 @@ using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Dto.SubjectCourseAssociations;
 using Kysect.Shreks.Integration.Github.Client;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Octokit;
@@ -21,16 +22,17 @@ public class GithubInvitingWorker : BackgroundService
 
     private readonly ILogger<GithubInvitingWorker> _logger;
     private readonly IOrganizationGithubClientProvider _clientProvider;
-    private readonly IMediator _mediator;
+
+    private readonly IServiceScopeFactory _serviceProvider;
 
     public GithubInvitingWorker(
         IOrganizationGithubClientProvider clientProvider,
-        IMediator mediator,
+        IServiceScopeFactory serviceProvider,
         ILogger<GithubInvitingWorker> logger)
     {
         _clientProvider = clientProvider;
         _logger = logger;
-        _mediator = mediator;
+        _serviceProvider = serviceProvider;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -42,11 +44,16 @@ public class GithubInvitingWorker : BackgroundService
         {
             try
             {
-                var response = await _mediator.Send(query, stoppingToken);
-
-                foreach (var association in response.Associations)
+                using (IServiceScope scope = _serviceProvider.CreateScope())
                 {
-                    await ProcessSubject(association, stoppingToken);
+                    var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+                    var response = await mediator.Send(query, stoppingToken);
+
+                    foreach (var association in response.Associations)
+                    {
+                        await ProcessSubject(mediator, association, stoppingToken);
+                    }
                 }
             }
             catch (Exception ex)
@@ -57,7 +64,7 @@ public class GithubInvitingWorker : BackgroundService
         }
     }
 
-    private async Task ProcessSubject(GithubSubjectCourseAssociationDto association, CancellationToken stoppingToken)
+    private async Task ProcessSubject(IMediator mediator, GithubSubjectCourseAssociationDto association, CancellationToken stoppingToken)
     {
         const string template = "Start inviting to organization {OrganizationName} for course {CourseName}";
 
@@ -66,7 +73,7 @@ public class GithubInvitingWorker : BackgroundService
         _logger.LogInformation(template, organizationName, courseName);
 
         var usernamesQuery = new GetGithubUsernamesForSubjectCourse.Query(subjectCourseId);
-        var response = await _mediator.Send(usernamesQuery, stoppingToken);
+        var response = await mediator.Send(usernamesQuery, stoppingToken);
 
         IReadOnlyCollection<string> organizationUsers = response.StudentGithubUsernames;
         var inviteSender = await CreateOrganizationInviteSender(organizationName);

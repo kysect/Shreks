@@ -41,9 +41,11 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             .WithSpecification(submissionSpec)
             .FirstOrDefaultAsync(cancellationToken);
 
+        bool isCreated = false;
         if (submission is null || submission.IsRated)
         {
             submission = await CreateSubmission(request, cancellationToken);
+            isCreated = true;
         }
         else
         {
@@ -56,7 +58,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         var dto = _mapper.Map<SubmissionDto>(submission);
 
-        return new Response(dto);
+        return new Response(isCreated, dto);
     }
 
     private async Task<GithubSubmission> CreateSubmission(Command request, CancellationToken cancellationToken)
