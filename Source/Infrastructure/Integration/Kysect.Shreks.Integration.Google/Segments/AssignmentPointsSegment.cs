@@ -42,7 +42,7 @@ public class AssignmentPointsSegment
 
         IComponent pointsComponent = assignmentPoints is null
             ? Empty()
-            : Label(assignmentPoints.Points.ToString(currentCulture));
+            : Label(assignmentPoints.Points, currentCulture);
 
         IComponent dateComponent = assignmentPoints is null
             ? Empty()
