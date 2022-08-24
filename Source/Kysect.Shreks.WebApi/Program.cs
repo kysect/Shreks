@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
@@ -14,6 +15,8 @@ using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -39,6 +42,46 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
         .AddHandlers()
         .AddApplicationCommands()
         .AddMappingConfiguration();
+
+
+    webApplicationBuilder.Services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/api/auth/github/sign-in";
+        })
+        .AddGitHub(options =>
+        {
+            options.ClientId = builder.Configuration["OAuth:GitHub:ClientId"];
+            options.ClientSecret = builder.Configuration["OAuth:GitHub:ClientSecret"];
+
+            options.CallbackPath = new PathString("/signin-github");
+            options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
+            options.TokenEndpoint = "https://github.com/login/oauth/access_token";
+            options.UserInformationEndpoint = "https://api.github.com/user";
+
+            options.Scope.Add("read:user");
+
+            options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+            options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
+            options.ClaimActions.MapJsonKey("urn:github:name", "name");
+            options.ClaimActions.MapJsonKey("urn:github:url", "url");
+
+            options.Events.OnCreatingTicket += context =>
+            {
+                if (context.AccessToken is { })
+                {
+                    context.Identity?.AddClaim(new Claim("access_token", context.AccessToken));
+                }
+
+                return Task.CompletedTask;
+            };
+
+            options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+        });
+
 
     webApplicationBuilder.Services
         .AddDatabaseContext(o => o
@@ -81,9 +124,13 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
         app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
     }
 
-    //app.UseHttpsRedirection();
+    app.UseBlazorFrameworkFiles();
+    app.UseStaticFiles();
 
-    //app.UseAuthorization();
+    app.UseRouting();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
 
     app.MapControllers();
     app.UseSerilogRequestLogging();
