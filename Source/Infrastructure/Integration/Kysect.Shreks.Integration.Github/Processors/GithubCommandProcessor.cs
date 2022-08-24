@@ -52,4 +52,32 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         string result = await helpCommand.ExecuteAsync(context, _cancellationToken);
         return new BaseShreksCommandResult(true, result);
     }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(ActivateCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
+            await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, "Submission activated successfully");
+        }
+        catch (Exception e)
+        {
+            return new BaseShreksCommandResult(false, $"Received error while process update command: {e}");
+        }
+    }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(DeactivateCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
+            await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, "Submission deactivated successfully");
+        }
+        catch (Exception e)
+        {
+            return new BaseShreksCommandResult(false, $"Received error while process update command: {e}");
+        }
+    }
 }
