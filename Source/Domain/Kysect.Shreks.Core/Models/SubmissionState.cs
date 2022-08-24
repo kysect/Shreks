@@ -5,4 +5,5 @@ public enum SubmissionState
     Active,
     Inactive,
     Invalid,
+    Completed,
 }
