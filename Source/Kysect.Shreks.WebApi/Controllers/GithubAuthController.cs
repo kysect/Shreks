@@ -23,8 +23,8 @@ public class GithubAuthController : Controller
         return Challenge(new AuthenticationProperties() { RedirectUri = "/" }, "GitHub");
     }
 
-    [HttpGet("user")]
-    public async Task<IActionResult> GetAuthorizedGithubUser()
+    [HttpPut("user")]
+    public async Task<IActionResult> UpdateAuthorizedUserGithubUsername()
     {
         ClaimsPrincipal userClaims = HttpContext.User;
 
