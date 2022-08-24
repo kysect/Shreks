@@ -26,7 +26,7 @@ var assignment = new Assignment("adw", "", new Points(1), new Points(2), new Sub
 var submission = new GithubSubmission
 (
     0,
-    new Student(new User("John", "Doe", "adw"),
+    new Student(new User("John", "Doe", "adw", "githubUsername"),
         new StudentGroup("")),
     new GroupAssignment(new StudentGroup(""), assignment, DateOnly.FromDateTime(DateTime.Now)),
     DateOnly.FromDateTime(DateTime.Now),

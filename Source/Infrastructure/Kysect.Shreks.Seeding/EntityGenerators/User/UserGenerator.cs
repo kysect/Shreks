@@ -20,7 +20,8 @@ public class UserGenerator : EntityGeneratorBase<User>
         (
             _faker.Name.FirstName(), 
             _faker.Name.MiddleName(), 
-            _faker.Name.LastName()
+            _faker.Name.LastName(),
+            _faker.Internet.UserName()
         );
     }
 }
