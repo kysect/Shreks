@@ -1,4 +1,5 @@
 using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Users;
@@ -10,8 +11,14 @@ namespace Kysect.Shreks.Core.Submissions;
 public abstract partial class Submission : IEntity<Guid>
 {
     private readonly HashSet<SubmissionAssociation> _associations;
+    private SubmissionState _state;
 
-    protected Submission(int code, Student student, GroupAssignment groupAssignment, DateOnly submissionDate, string payload)
+    protected Submission(
+        int code,
+        Student student,
+        GroupAssignment groupAssignment,
+        DateOnly submissionDate,
+        string payload)
         : this(Guid.NewGuid())
     {
         Code = code;
@@ -24,8 +31,9 @@ public abstract partial class Submission : IEntity<Guid>
         ExtraPoints = default;
 
         _associations = new HashSet<SubmissionAssociation>();
+        _state = SubmissionState.Active;
     }
-    
+
     public int Code { get; protected init; }
 
     public DateOnly SubmissionDate { get; set; }
@@ -33,6 +41,12 @@ public abstract partial class Submission : IEntity<Guid>
     public virtual Student Student { get; protected init; }
 
     public virtual GroupAssignment GroupAssignment { get; protected init; }
+
+    public SubmissionState State
+    {
+        get => _state;
+        set => SetState(value);
+    }
 
     public string Payload { get; set; }
 
@@ -52,5 +66,13 @@ public abstract partial class Submission : IEntity<Guid>
 
         if (!_associations.Add(association))
             throw new DomainInvalidOperationException($"Submission {this} already has association {association}");
+    }
+
+    private void SetState(SubmissionState state)
+    {
+        if (_state is SubmissionState.Completed)
+            throw new DomainInvalidOperationException($"Submission {this} is already completed");
+
+        _state = state;
     }
 }

@@ -4,9 +4,11 @@ using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
@@ -28,6 +30,7 @@ builder.Host.UseSerilog(
 ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
 TestEnvConfiguration testEnvConfiguration = builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
 GoogleCredential? googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
+string googleDriveId = builder.Configuration["GoogleDriveId"];
 
 InitServiceCollection(builder);
 await InitWebApplication(builder);
@@ -98,7 +101,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
         webApplicationBuilder.Services
             .AddGoogleIntegration(o => o
                 .ConfigureGoogleCredentials(googleCredentials)
-                .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"));
+                .ConfigureDriveId(googleDriveId));
     }
 
     webApplicationBuilder.Services
@@ -107,8 +110,18 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     if (webApplicationBuilder.Environment.IsDevelopment())
     {
         webApplicationBuilder.Services
-            .AddDatabaseSeeders()
-            .AddEntityGenerators();
+            .AddEntityGenerators(o =>
+            {
+                o.ConfigureFaker(o => o.Locale = "ru");
+                o.ConfigureEntityGenerator<User>(o => o.Count = testEnvConfiguration.Users.Count);
+                o.ConfigureEntityGenerator<Student>(o => o.Count = testEnvConfiguration.Users.Count);
+                o.ConfigureEntityGenerator<GithubUserAssociation>(o => o.Count = 0);
+                o.ConfigureEntityGenerator<IsuUserAssociation>(o => o.Count = 0);
+                o.ConfigureEntityGenerator<Submission>(o => o.Count = 0);
+                o.ConfigureEntityGenerator<SubjectCourse>(o => o.Count = 1);
+                o.ConfigureEntityGenerator<SubjectCourseAssociation>(o => o.Count = 0);
+            })
+            .AddDatabaseSeeders();
     }
 }
 
@@ -118,6 +131,10 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
 
     if (app.Environment.IsDevelopment())
     {
+        using (IServiceScope scope = app.Services.CreateScope())
+        {
+            scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
+        }
         await app.Services.UseDatabaseSeeders();
         app.UseSwagger();
         app.UseSwaggerUI();
