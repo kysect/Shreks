@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
+using Kysect.Shreks.Application.Abstractions.Students.Commands;
 using MediatR;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +10,36 @@ namespace Kysect.Shreks.WebApi.Controllers;
 [Route("api/auth/github")]
 public class GithubAuthController : Controller
 {
+    private readonly IMediator _mediator;
+
+    public GithubAuthController(IMediator mediator)
+    {
+        _mediator = mediator;
+    }
+
     [HttpGet("sign-in")]
     public IActionResult SignInGithubUser()
     {
         return Challenge(new AuthenticationProperties() { RedirectUri = "/" }, "GitHub");
+    }
+
+    [HttpGet("user")]
+    public async Task<IActionResult> GetAuthorizedGithubUser()
+    {
+        ClaimsPrincipal userClaims = HttpContext.User;
+
+        String? githubUsername = userClaims
+            .FindFirst("urn:github:url")?.Value
+            .Split('/')
+            .LastOrDefault();
+
+        if (githubUsername is null)
+            return BadRequest();
+
+        // TODO: use real UserId here
+        var command = new UpdateUserGithubUsername.Command(UserId: Guid.NewGuid(), GithubUsername: githubUsername);
+        var response = await _mediator.Send(command);
+
+        return Ok(response);
     }
 }
