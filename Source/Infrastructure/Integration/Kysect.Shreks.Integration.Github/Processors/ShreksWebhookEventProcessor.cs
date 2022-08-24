@@ -210,7 +210,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         return new GithubPullRequestDescriptor(
             issueCommentEvent.Sender.Login,
-            Payload: pullRequest.DiffUrl,
+            Payload: pullRequest.Url,
             issueCommentEvent.Organization.Login,
             issueCommentEvent.Repository.Name,
             BranchName: pullRequest.Head.Ref,
