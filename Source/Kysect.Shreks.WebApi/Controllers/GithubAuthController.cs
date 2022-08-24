@@ -28,13 +28,13 @@ public class GithubAuthController : Controller
     {
         ClaimsPrincipal userClaims = HttpContext.User;
 
-        String? githubUsername = userClaims
+        string? githubUsername = userClaims
             .FindFirst("urn:github:url")?.Value
             .Split('/')
             .LastOrDefault();
 
         if (githubUsername is null)
-            return BadRequest();
+            return Unauthorized();
 
         // TODO: use real UserId here
         var command = new UpdateUserGithubUsername.Command(UserId: Guid.NewGuid(), GithubUsername: githubUsername);

@@ -112,7 +112,7 @@ public static class ServiceCollectionExtensions
 
             options.Events.OnCreatingTicket += context =>
             {
-                if (context.AccessToken is { })
+                if (context.AccessToken is not null)
                 {
                     context.Identity?.AddClaim(new Claim("access_token", context.AccessToken));
                 }
