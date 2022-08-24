@@ -1,9 +1,13 @@
-using Kysect.Shreks.Application.Abstractions.Exceptions;
-using Kysect.Shreks.Core.UserAssociations;
+using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Core.Extensions;
+using Kysect.Shreks.Core.Specifications.Github;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetUserByUsername;
+
+using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetUserByGithubUsername;
+
 namespace Kysect.Shreks.Application.Handlers.Github;
 
 public class GetUserByUsernameHandler : IRequestHandler<Query, Response>
@@ -17,13 +21,14 @@ public class GetUserByUsernameHandler : IRequestHandler<Query, Response>
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-         var userAssociation = await _context.UserAssociations
-             .OfType<GithubUserAssociation>()
-             .FirstOrDefaultAsync(gua => gua.GithubUsername == request.Username, cancellationToken);
+        string userGithubUsername = request.Username;
+        User? user = await _context.UserAssociations
+            .WithSpecification(new FindUserByGithubUsernameSpec(userGithubUsername))
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
-        if (userAssociation is null)
-            throw new EntityNotFoundException($"User with github username {request.Username} not found");
-
-        return new Response(userAssociation.User.Id);
+        if (user is null)
+            throw new UserWasNotFoundByGithubUsernameException(request.Username);
+        
+        return new Response(user.Id);
     }
 }
