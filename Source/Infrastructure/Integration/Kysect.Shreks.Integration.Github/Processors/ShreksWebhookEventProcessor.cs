@@ -1,6 +1,5 @@
 using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Application.Abstractions.Github.Queries;
-using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Dto.Github;
@@ -78,10 +77,9 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 
                 var subjectCourseId = await GetSubjectCourseByOrganization(organization, cancellationToken);
                 var userId = await GetUserByGithubLogin(login, cancellationToken);
-                var studentId = await GetStudentByUser(userId, cancellationToken);
                 var assignmentId = await GetAssignemntByBranchAndSubjectCourse(branch, subjectCourseId, cancellationToken);
 
-                var command = new CreateOrUpdateGithubSubmission.Command(studentId, assignmentId, pullRequestDescriptor);
+                var command = new CreateOrUpdateGithubSubmission.Command(userId, assignmentId, pullRequestDescriptor);
 
                 var response = await _mediator.Send(command, cancellationToken);
                 if (response.IsCreated)
@@ -227,12 +225,6 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
     {
         var response = await _mediator.Send(new GetUserByGithubUsername.Query(login));
         return response.UserId;
-    }
-    
-    private async Task<Guid> GetStudentByUser(Guid userId, CancellationToken cancellationToken)
-    {
-        var response = await _mediator.Send(new GetStudentByUser.Query(userId));
-        return response.StudentId;
     }
     
     private async Task<Guid> GetAssignemntByBranchAndSubjectCourse(string branch, Guid subjectCourseId,
