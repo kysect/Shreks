@@ -85,7 +85,7 @@ public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdmin
         }
         else
         {
-            var adminUser = new Core.Users.User(adminUsername, adminUsername, adminUsername, adminUsername);
+            var adminUser = new Core.Users.User(adminUsername, adminUsername, adminUsername);
             var githubUserAssociation = new GithubUserAssociation(adminUser, adminUsername);
 
             _shreksDatabaseContext.Users.Add(adminUser);

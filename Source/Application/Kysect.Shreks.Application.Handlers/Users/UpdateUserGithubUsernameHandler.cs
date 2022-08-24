@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 
-using static Kysect.Shreks.Application.Abstractions.Students.Commands.UpdateUserGithubUsername;
+using static Kysect.Shreks.Application.Abstractions.Users.Commands.UpdateUserGithubUsername;
 
 namespace Kysect.Shreks.Application.Handlers.Users;
 
@@ -23,10 +24,13 @@ public class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
         User user = await _context.Users.GetByIdAsync(request.UserId, cancellationToken);
-        user.GithubUsername = request.GithubUsername;
 
-        _context.Users.Update(user);
+        var association = new GithubUserAssociation(user, request.GithubUsername);
+
+        await _context.UserAssociations.AddAsync(association, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+
+        user.AddAssociation(association);
 
         var dto = _mapper.Map<UserDto>(user);
 

@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using Kysect.Shreks.Application.Abstractions.Students.Commands;
+using Kysect.Shreks.Application.Abstractions.Users.Commands;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
