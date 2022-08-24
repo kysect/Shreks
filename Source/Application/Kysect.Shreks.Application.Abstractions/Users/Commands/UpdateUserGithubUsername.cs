@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Application.Dto.Users;
 using MediatR;
 
-namespace Kysect.Shreks.Application.Abstractions.Students.Commands;
+namespace Kysect.Shreks.Application.Abstractions.Users.Commands;
 
 public static class UpdateUserGithubUsername
 {
