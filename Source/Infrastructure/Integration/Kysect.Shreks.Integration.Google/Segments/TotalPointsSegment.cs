@@ -26,6 +26,8 @@ public class TotalPointsSegment : SheetSegmentBase<CoursePointsDto, StudentPoint
             .Points
             .Sum(p => p.Points);
 
-        return Label(totalPoints, _cultureInfoProvider.GetCultureInfo()).WithDefaultStyle();
+        double roundedPoints = Math.Round(totalPoints, 2);
+
+        return Label(roundedPoints, _cultureInfoProvider.GetCultureInfo()).WithDefaultStyle();
     }
 }
