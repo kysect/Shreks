@@ -4,11 +4,10 @@
         <TargetFramework>net6.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-      <UserSecretsId>9d2347e8-b589-4401-b0e7-f78797f6c5de</UserSecretsId>
+    <UserSecretsId>dcb623c6-ceae-4ac4-9f2c-a7bfc6535dcb</UserSecretsId>
   </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AspNet.Security.OAuth.GitHub" Version="6.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />

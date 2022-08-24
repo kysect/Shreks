@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using GitHubJwt;
 using Kysect.Shreks.Application.Abstractions.Github;
 using Kysect.Shreks.Integration.Github.Client;
@@ -6,6 +7,9 @@ using Kysect.Shreks.Integration.Github.Entities;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Github.Invites;
 using Kysect.Shreks.Integration.Github.Processors;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
@@ -18,6 +22,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddGithubServices(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
     {
         services.AddClientFactory(shreksConfiguration);
+        services.AddGithubAuth(shreksConfiguration);
         services.AddScoped<IActionNotifier, ActionNotifier>();
         services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessor>();
         services.AddGithubInviteBackgroundService();
@@ -72,6 +77,51 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddSingleton<IOrganizationGithubClientProvider, OrganizationGithubClientProvider>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddGithubAuth(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
+    {
+        var gitHubConfiguration = shreksConfiguration.GithubConfiguration;
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/api/auth/github/sign-in";
+        })
+        .AddGitHub(options =>
+        {
+            options.ClientId = gitHubConfiguration.OAuthClientId!;
+            options.ClientSecret = gitHubConfiguration.OAuthClientSecret!;
+
+            options.CallbackPath = new PathString("/signin-github");
+            options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
+            options.TokenEndpoint = "https://github.com/login/oauth/access_token";
+            options.UserInformationEndpoint = "https://api.github.com/user";
+
+            options.Scope.Add("read:user");
+
+            options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+            options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
+            options.ClaimActions.MapJsonKey("urn:github:name", "name");
+            options.ClaimActions.MapJsonKey("urn:github:url", "url");
+
+            options.Events.OnCreatingTicket += context =>
+            {
+                if (context.AccessToken is { })
+                {
+                    context.Identity?.AddClaim(new Claim("access_token", context.AccessToken));
+                }
+
+                return Task.CompletedTask;
+            };
+
+            options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+        });
 
         return services;
     }
