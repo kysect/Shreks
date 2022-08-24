@@ -15,12 +15,13 @@ public static class GooglePlaygroundExtensions
     {
         return serviceCollection
             .AddEntityGenerators(o => o
-                .ConfigureEntityGenerator<Submission>(s => s.Count = 2000)
+                .ConfigureEntityGenerator<GithubSubmission>(s => s.Count = 5000)
                 .ConfigureEntityGenerator<User>(s => s.Count = 500)
                 .ConfigureEntityGenerator<Student>(s => s.Count = 400)
                 .ConfigureEntityGenerator<StudentGroup>(s => s.Count = 20)
                 .ConfigureEntityGenerator<SubjectCourseGroup>(s => s.Count = 200)
                 .ConfigureEntityGenerator<Assignment>(a => a.Count = 50)
+                .ConfigureEntityGenerator<GroupAssignment>(a => a.Count = 500)
                 .ConfigureFaker(f => f.Locale = "ru"))
             .AddDatabaseContext(o => o
                 .UseLazyLoadingProxies()
