@@ -19,11 +19,9 @@ public class StudentComponentFactory : IStudentComponentFactory
     {
         return HStack
         (
-            Label("ФИО")
-                .WithColumnWidth(240)
-                .WithDefaultStyle(),
-            Label("Группа").WithDefaultStyle()
-        );
+            Label("ФИО").WithColumnWidth(240),
+            Label("Группа")
+        ).WithDefaultStyle();
     }
 
     public IComponent BuildRow(StudentDto student)
@@ -35,8 +33,8 @@ public class StudentComponentFactory : IStudentComponentFactory
 
         return HStack
         (
-            Label(studentName).WithDefaultStyle(),
-            Label(groupName).WithDefaultStyle()
-        );
+            Label(studentName),
+            Label(groupName)
+        ).WithDefaultStyle();
     }
 }

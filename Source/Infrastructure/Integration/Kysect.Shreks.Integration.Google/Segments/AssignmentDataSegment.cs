@@ -21,15 +21,10 @@ public class AssignmentDataSegment : SheetSegmentBase<Unit, QueueSubmissionDto, 
     {
         return HStack
         (
-            Label("Лабораторная работа")
-                .WithColumnWidth(150)
-                .WithDefaultStyle(),
-            Label("Дата")
-                .WithDefaultStyle(),
-            Label("GitHub")
-                .WithColumnWidth(400)
-                .WithDefaultStyle()
-        );
+            Label("Лабораторная работа").WithColumnWidth(150),
+            Label("Дата"),
+            Label("GitHub").WithColumnWidth(400)
+        ).WithDefaultStyle();
     }
 
     protected override IComponent BuildRow(HeaderRowData<Unit, QueueSubmissionDto> data, int rowIndex)
@@ -38,9 +33,9 @@ public class AssignmentDataSegment : SheetSegmentBase<Unit, QueueSubmissionDto, 
 
         return HStack
         (
-            Label(submission.AssignmentShortName).WithDefaultStyle(),
-            Label(submission.SubmissionDate, _cultureInfoProvider.GetCultureInfo()).WithDefaultStyle(),
-            Label(submission.Payload).WithDefaultStyle()
-        );
+            Label(submission.AssignmentShortName),
+            Label(submission.SubmissionDate, _cultureInfoProvider.GetCultureInfo()),
+            Label(submission.Payload)
+        ).WithDefaultStyle();
     }
 }

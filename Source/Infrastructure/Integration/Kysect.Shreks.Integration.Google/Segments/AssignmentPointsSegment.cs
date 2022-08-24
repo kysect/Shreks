@@ -26,13 +26,13 @@ public class AssignmentPointsSegment
 
         return VStack
         (
-            Label(data.ShortName).WithDefaultStyle(),
+            Label(data.ShortName),
             HStack
             (
-                Label("Балл").WithDefaultStyle(),
-                Label("Дата").WithDefaultStyle()
+                Label("Балл"),
+                Label("Дата")
             )
-        );
+        ).WithDefaultStyle();
     }
 
     protected override IComponent BuildRow(HeaderRowData<AssignmentDto, AssignmentPointsDto?> data, int rowIndex)
@@ -50,9 +50,9 @@ public class AssignmentPointsSegment
 
         return HStack
         (
-            pointsComponent.WithDefaultStyle(),
-            dateComponent.WithDefaultStyle()
-        );
+            pointsComponent,
+            dateComponent
+        ).WithDefaultStyle();
     }
 
     protected override IEnumerable<AssignmentDto> SelectHeaderData(CoursePointsDto data)
