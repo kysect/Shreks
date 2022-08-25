@@ -4,6 +4,7 @@ using Google.Apis.Drive.v3.Data;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Integration.Google.Providers;
+using Kysect.Shreks.Integration.Google.Sheets;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
@@ -14,6 +15,10 @@ public class SheetManagementService : ISheetManagementService
     private const string AllFields = "*";
     private const string SpreadsheetType = "application/vnd.google-apps.spreadsheet";
     private const int NumberOfAdditionalRows = 1000;
+
+    private const int DefaultSheetId = 0;
+    private const string DefaultSheetTitle = PointsSheet.Title;
+    private const string UpdateTitle = "title";
 
     private static readonly Permission AnyoneViewerPermission = new()
     {
@@ -43,6 +48,7 @@ public class SheetManagementService : ISheetManagementService
         {
             sheetId = await CreateSheetAsync(spreadsheetId, sheetTitle, token);
             await AddRowsAsync(spreadsheetId, sheetId.Value, token);
+            await SortSheetsAsync(spreadsheetId, token);
         }
         else
         {
@@ -67,11 +73,34 @@ public class SheetManagementService : ISheetManagementService
 
         string spreadsheetId = spreadsheet.Id;
 
+        await ConfigureDefaultSheetAsync(spreadsheetId, token);
+
         await _driveService.Permissions
             .Create(AnyoneViewerPermission, spreadsheetId)
             .ExecuteAsync(token);
 
         return spreadsheetId;
+    }
+
+    private async Task ConfigureDefaultSheetAsync(string spreadsheetId, CancellationToken token)
+    {
+        var defaultSheetProperties = new SheetProperties
+        {
+            SheetId = DefaultSheetId,
+            Title = DefaultSheetTitle
+        };
+
+        var updatePropertiesRequest = new Request
+        {
+            UpdateSheetProperties = new UpdateSheetPropertiesRequest
+            {
+                Properties = defaultSheetProperties,
+                Fields = UpdateTitle
+            }
+        };
+
+        await ExecuteBatchUpdateAsync(spreadsheetId, updatePropertiesRequest, token);
+        await AddRowsAsync(spreadsheetId, DefaultSheetId, token);
     }
 
     private async Task<int?> GetSheetIdAsync(string spreadsheetId, string title, CancellationToken token)
@@ -123,6 +152,37 @@ public class SheetManagementService : ISheetManagementService
         };
 
         await ExecuteBatchUpdateAsync(spreadsheetId, addRowsRequest, token);
+    }
+
+    private async Task SortSheetsAsync(string spreadsheetId, CancellationToken token)
+    {
+        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
+            .Get(spreadsheetId)
+            .ExecuteAsync(token);
+
+        var updateSheetIndexRequests = spreadsheet.Sheets
+            .Where(s => s.Properties.SheetId is not DefaultSheetId)
+            .OrderBy(s => s.Properties.Title)
+            .Select((s, i) => (Sheet: s, NewIndex: i + 1))
+            .Where(t => t.Sheet.Properties.Index != t.NewIndex)
+            .Select(t =>
+            {
+                var newProperties = t.Sheet.Properties;
+                newProperties.Index = t.NewIndex;
+                
+                return new Request
+                {
+                    UpdateSheetProperties = new UpdateSheetPropertiesRequest
+                    {
+                        Properties = newProperties,
+                        Fields = AllFields
+                    }
+                };
+            })
+            .ToArray();
+
+        if (updateSheetIndexRequests.Length != 0)
+            await ExecuteBatchUpdateAsync(spreadsheetId, updateSheetIndexRequests, token);
     }
 
     private async Task ClearSheetAsync(string spreadsheetId, int sheetId, CancellationToken token)
