@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Seeding.EntityGenerators;

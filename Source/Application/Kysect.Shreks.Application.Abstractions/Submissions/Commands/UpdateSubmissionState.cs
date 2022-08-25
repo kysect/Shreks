@@ -1,5 +1,4 @@
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.Dto.Users;
 using MediatR;
 
 namespace Kysect.Shreks.Application.Abstractions.Submissions.Commands;
