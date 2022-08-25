@@ -1,5 +1,5 @@
 using AutoMapper;
-using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.ValueObject;
 

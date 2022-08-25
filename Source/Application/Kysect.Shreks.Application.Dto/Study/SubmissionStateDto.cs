@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.Application.Dto.Users;
+namespace Kysect.Shreks.Application.Dto.Study;
 
 public enum SubmissionStateDto
 {
