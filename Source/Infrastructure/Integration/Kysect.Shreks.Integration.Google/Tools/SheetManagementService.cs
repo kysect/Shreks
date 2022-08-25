@@ -105,11 +105,9 @@ public class SheetManagementService : ISheetManagementService
 
     private async Task<int?> GetSheetIdAsync(string spreadsheetId, string title, CancellationToken token)
     {
-        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
-            .Get(spreadsheetId)
-            .ExecuteAsync(token);
+        IList<Sheet> sheets = await GetSheetsAsync(spreadsheetId, token);
 
-        Sheet? sheet = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == title);
+        Sheet? sheet = sheets.FirstOrDefault(s => s.Properties.Title == title);
 
         return sheet?.Properties.SheetId;
     }
@@ -156,11 +154,9 @@ public class SheetManagementService : ISheetManagementService
 
     private async Task SortSheetsAsync(string spreadsheetId, CancellationToken token)
     {
-        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
-            .Get(spreadsheetId)
-            .ExecuteAsync(token);
+        IList<Sheet> sheets = await GetSheetsAsync(spreadsheetId, token);
 
-        var updateSheetIndexRequests = spreadsheet.Sheets
+        Request[] updateSheetIndexRequests = sheets
             .Where(s => s.Properties.SheetId is not DefaultSheetId)
             .OrderBy(s => s.Properties.Title)
             .Select((s, i) => (Sheet: s, NewIndex: i + 1))
@@ -181,7 +177,7 @@ public class SheetManagementService : ISheetManagementService
             })
             .ToArray();
 
-        if (updateSheetIndexRequests.Length != 0)
+        if (updateSheetIndexRequests.Length is not 0)
             await ExecuteBatchUpdateAsync(spreadsheetId, updateSheetIndexRequests, token);
     }
 
@@ -218,6 +214,15 @@ public class SheetManagementService : ISheetManagementService
         };
 
         await ExecuteBatchUpdateAsync(spreadsheetId, requests, token);
+    }
+
+    private async Task<IList<Sheet>> GetSheetsAsync(string spreadsheetId, CancellationToken token)
+    {
+        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
+            .Get(spreadsheetId)
+            .ExecuteAsync(token);
+
+        return spreadsheet.Sheets;
     }
 
     private async Task<BatchUpdateSpreadsheetResponse> ExecuteBatchUpdateAsync(
