@@ -23,7 +23,7 @@ public class GetUserByUsernameHandler : IRequestHandler<Query, Response>
     {
         string userGithubUsername = request.Username;
         User? user = await _context.UserAssociations
-            .WithSpecification(new FindUserByGithubUsernameSpec(userGithubUsername))
+            .WithSpecification(new FindUserByGithubUsername(userGithubUsername))
             .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         if (user is null)

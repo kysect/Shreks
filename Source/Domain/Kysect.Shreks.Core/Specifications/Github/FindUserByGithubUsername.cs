@@ -3,11 +3,11 @@ using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.Core.Specifications.Github;
 
-public class FindUserByGithubUsernameSpec : ISpecification<UserAssociation, User>
+public class FindUserByGithubUsername : ISpecification<UserAssociation, User>
 {
     private readonly string _githubUsername;
 
-    public FindUserByGithubUsernameSpec(string githubUsername)
+    public FindUserByGithubUsername(string githubUsername)
     {
         _githubUsername = githubUsername;
     }
