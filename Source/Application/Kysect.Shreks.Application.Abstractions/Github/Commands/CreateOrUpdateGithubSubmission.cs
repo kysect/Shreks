@@ -7,7 +7,7 @@ namespace Kysect.Shreks.Application.Abstractions.Github.Commands;
 public static class CreateOrUpdateGithubSubmission
 {
     public record Command(
-        Guid StudentId,
+        Guid UserId,
         Guid AssignmentId,
         GithubPullRequestDescriptor PullRequestDescriptor) : IRequest<Response>;
 

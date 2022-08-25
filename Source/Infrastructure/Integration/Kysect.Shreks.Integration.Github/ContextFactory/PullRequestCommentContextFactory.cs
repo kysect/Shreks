@@ -41,7 +41,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
 
     private async Task<Guid> GetUserId(CancellationToken cancellationToken)
     {
-        var query = new GetUserByUsername.Query(_pullRequestDescriptor.Sender);
+        var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Sender);
         var response = await _mediator.Send(query, cancellationToken);
         return response.UserId;
     }

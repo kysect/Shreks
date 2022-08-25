@@ -3,14 +3,17 @@ using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Extensions;
+using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Specifications.Submissions;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+
 using static Kysect.Shreks.Application.Abstractions.Github.Commands.CreateOrUpdateGithubSubmission;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
@@ -33,6 +36,8 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
+        Guid userId = request.UserId;
+
         var submissionSpec = new FindLatestGithubSubmission(
             request.PullRequestDescriptor.Organization,
             request.PullRequestDescriptor.Repository,
@@ -43,17 +48,20 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             .FirstOrDefaultAsync(cancellationToken);
 
         bool isCreated = false;
+
         if (submission is null || submission.IsRated)
         {
             submission = await CreateSubmission(request, cancellationToken);
             isCreated = true;
+            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         }
-        else
+        else if (!await TriggeredByMentor(userId, request.PullRequestDescriptor.Organization))
         {
             submission.SubmissionDate = Calendar.CurrentDate;
 
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync(cancellationToken);
+            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         }
 
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
@@ -64,15 +72,15 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
     private async Task<GithubSubmission> CreateSubmission(Command request, CancellationToken cancellationToken)
     {
-        var student = await _context.Students.GetByIdAsync(request.StudentId, cancellationToken);
-        var groupAssignmentSpec = new GetStudentGroupAssignment(request.StudentId, request.AssignmentId);
+        var student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
+        var groupAssignmentSpec = new GetStudentGroupAssignment(student.Id, request.AssignmentId);
 
         var groupAssignment = await _context.GroupAssignments
             .WithSpecification(groupAssignmentSpec)
             .SingleAsync(cancellationToken);
 
         var studentAssignmentSubmissionsSpec = new GetStudentAssignmentSubmissions(
-            request.StudentId, request.AssignmentId);
+            student.Id, request.AssignmentId);
 
         var count = await _context.Submissions
             .WithSpecification(studentAssignmentSubmissionsSpec)
@@ -94,5 +102,14 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         await _context.SaveChangesAsync(cancellationToken);
 
         return submission;
+    }
+
+    private async Task<Boolean> TriggeredByMentor(Guid userId, string organizationName)
+    {
+        Mentor? mentor = await _context.SubjectCourseAssociations
+            .WithSpecification(new FindMentorByUsernameAndOrganization(userId, organizationName))
+            .FirstOrDefaultAsync();
+
+        return mentor is not null;
     }
 }
