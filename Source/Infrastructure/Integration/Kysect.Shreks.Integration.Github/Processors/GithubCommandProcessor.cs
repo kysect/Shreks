@@ -28,7 +28,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process rate command: {e.ToString()}");
+            return new BaseShreksCommandResult(false, $"Received error while process rate command: {e}");
         }
     }
 
@@ -42,7 +42,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process update command: {e.ToString()}");
+            return new BaseShreksCommandResult(false, $"Received error while process update command: {e}");
         }
     }
 
@@ -63,7 +63,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process update command: {e}");
+            return new BaseShreksCommandResult(false, $"Received error while process activate command: {e}");
         }
     }
 
@@ -77,7 +77,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process update command: {e}");
+            return new BaseShreksCommandResult(false, $"Received error while process deactivate command: {e}");
         }
     }
 }
