@@ -1,5 +1,6 @@
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Tools;
 
 namespace Kysect.Shreks.Core.Queue.Evaluators;
 
@@ -20,7 +21,7 @@ public partial class AssignmentDeadlineStateEvaluator : SubmissionEvaluator
         if (groupAssignment.Deadline < submission.SubmissionDate)
             return ExpiredAssignmentPriority;
 
-        var now = DateOnly.FromDateTime(DateTime.Now);
+        var now = Calendar.CurrentDate;
 
         var closestDeadline = submission
             .GroupAssignment
