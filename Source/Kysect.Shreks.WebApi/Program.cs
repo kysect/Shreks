@@ -98,9 +98,13 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
         app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
     }
 
-    //app.UseHttpsRedirection();
+    app.UseBlazorFrameworkFiles();
+    app.UseStaticFiles();
 
-    //app.UseAuthorization();
+    app.UseRouting();
+
+    app.UseAuthentication();
+    app.UseAuthorization();
 
     app.MapControllers();
     app.UseSerilogRequestLogging();
