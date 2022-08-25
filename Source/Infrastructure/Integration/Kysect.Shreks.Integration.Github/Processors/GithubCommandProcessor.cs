@@ -28,7 +28,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process rate command: {e.ToString()}");
+            return new BaseShreksCommandResult(false, $"Received error while process rate command: {e}");
         }
     }
 
@@ -42,7 +42,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process update command: {e.ToString()}");
+            return new BaseShreksCommandResult(false, $"Received error while process update command: {e}");
         }
     }
 
@@ -51,5 +51,33 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         BaseContext context = await _contextFactory.CreateBaseContext(_cancellationToken);
         string result = await helpCommand.ExecuteAsync(context, _cancellationToken);
         return new BaseShreksCommandResult(true, result);
+    }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(ActivateCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
+            await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, "Submission activated successfully");
+        }
+        catch (Exception e)
+        {
+            return new BaseShreksCommandResult(false, $"Received error while process activate command: {e}");
+        }
+    }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(DeactivateCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
+            await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, "Submission deactivated successfully");
+        }
+        catch (Exception e)
+        {
+            return new BaseShreksCommandResult(false, $"Received error while process deactivate command: {e}");
+        }
     }
 }
