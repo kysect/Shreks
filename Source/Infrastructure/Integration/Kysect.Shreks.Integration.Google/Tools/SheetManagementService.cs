@@ -160,7 +160,6 @@ public class SheetManagementService : ISheetManagementService
             .Where(s => s.Properties.SheetId is not DefaultSheetId)
             .OrderBy(s => s.Properties.Title)
             .Select((s, i) => (Sheet: s, NewIndex: i + 1))
-            .Where(t => t.Sheet.Properties.Index != t.NewIndex)
             .Select(t =>
             {
                 var newProperties = t.Sheet.Properties;
