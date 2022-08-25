@@ -48,7 +48,6 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             .FirstOrDefaultAsync(cancellationToken);
 
         bool isCreated = false;
-        bool triggeredByMentor = await TriggeredByMentor(userId, request.PullRequestDescriptor.Organization);
 
         if (submission is null || submission.IsRated)
         {
@@ -56,7 +55,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             isCreated = true;
             _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         }
-        else if (!triggeredByMentor)
+        else if (!await TriggeredByMentor(userId, request.PullRequestDescriptor.Organization))
         {
             submission.SubmissionDate = Calendar.CurrentDate;
 
