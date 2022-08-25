@@ -1,3 +1,5 @@
+using Kysect.Shreks.Application.Dto.Users;
+
 namespace Kysect.Shreks.Application.Dto.Study;
 
 public record SubmissionDto(
@@ -9,7 +11,8 @@ public record SubmissionDto(
     string Payload,
     double? ExtraPoints,
     double? Points,
-    string AssignmentShortName)
+    string AssignmentShortName,
+    SubmissionStateDto State)
 {
     public string ToPullRequestString()
     {
