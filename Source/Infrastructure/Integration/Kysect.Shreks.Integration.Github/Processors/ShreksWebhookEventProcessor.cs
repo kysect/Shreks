@@ -204,7 +204,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
         ArgumentNullException.ThrowIfNull(issueCommentEvent.Repository);
 
         GitHubClient gitHubClient = await _clientProvider.GetClient(issueCommentEvent.Organization.Login);
-        PullRequest pullRequest = await gitHubClient.PullRequest.Get(issueCommentEvent.Repository.Id, (int)issueCommentEvent.Issue.Id);
+        PullRequest pullRequest = await gitHubClient.PullRequest.Get(issueCommentEvent.Repository.Id, (int)issueCommentEvent.Issue.Number);
 
         return new GithubPullRequestDescriptor(
             issueCommentEvent.Sender.Login,

@@ -8,6 +8,7 @@ using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Specifications.Submissions;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -57,7 +58,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         }
         else if (!triggeredByMentor)
         {
-            submission.SubmissionDate = DateOnly.FromDateTime(DateTime.Now);
+            submission.SubmissionDate = Calendar.CurrentDate;
 
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync(cancellationToken);
@@ -91,7 +92,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             count + 1,
             student,
             groupAssignment,
-            DateOnly.FromDateTime(DateTime.Now),
+            Calendar.CurrentDate,
             request.PullRequestDescriptor.Payload,
             request.PullRequestDescriptor.Organization,
             request.PullRequestDescriptor.Repository,

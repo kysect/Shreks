@@ -8,12 +8,12 @@ namespace Kysect.Shreks.Core.Queue;
 
 public partial class SubmissionQueue : IEntity<Guid>
 {
-    private readonly IReadOnlyCollection<QueueFilter> _filters;
+    private readonly IReadOnlyCollection<SubmissionQueueFilter> _filters;
     private readonly IReadOnlyCollection<SubmissionEvaluator> _evaluators;
     private readonly Lazy<IReadOnlyList<SubmissionEvaluator>> _orderedEvaluators;
 
     public SubmissionQueue(
-        IReadOnlyCollection<QueueFilter> filters,
+        IReadOnlyCollection<SubmissionQueueFilter> filters,
         IReadOnlyList<SubmissionEvaluator> evaluators)
         : this(Guid.NewGuid())
     {
@@ -27,7 +27,7 @@ public partial class SubmissionQueue : IEntity<Guid>
     }
 
     public virtual IReadOnlyCollection<PositionedSubmission> Submissions { get; protected set; }
-    public virtual IReadOnlyCollection<QueueFilter> Filters => _filters;
+    public virtual IReadOnlyCollection<SubmissionQueueFilter> Filters => _filters;
     public virtual IReadOnlyCollection<SubmissionEvaluator> Evaluators => _evaluators;
 
     public async Task UpdateSubmissions<TComparable>(

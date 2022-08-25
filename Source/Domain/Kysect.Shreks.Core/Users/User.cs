@@ -35,8 +35,12 @@ public partial class User : IEntity<Guid>
     {
         ArgumentNullException.ThrowIfNull(association);
 
-        if (!_associations.Add(association))
-            throw new DomainInvalidOperationException($"User {this} already has association {association}");
+        var associationType = association.GetType();
+
+        if (_associations.Any(a => a.GetType() == associationType))
+            throw new DomainInvalidOperationException($"User {this} already has {associationType} association");
+
+        _associations.Add(association);
     }
 
     public void RemoveAssociation(UserAssociation association)

@@ -1,6 +1,7 @@
 ﻿using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Context;
@@ -28,8 +29,8 @@ var submission = new GithubSubmission
     0,
     new Student(new User("John", "Doe", "adw"),
         new StudentGroup("")),
-    new GroupAssignment(new StudentGroup(""), assignment, DateOnly.FromDateTime(DateTime.Now)),
-    DateOnly.FromDateTime(DateTime.Now),
+    new GroupAssignment(new StudentGroup(""), assignment, Calendar.CurrentDate),
+    Calendar.CurrentDate,
     "",
     "",
     "",

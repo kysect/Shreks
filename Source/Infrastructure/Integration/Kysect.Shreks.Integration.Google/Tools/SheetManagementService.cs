@@ -1,4 +1,5 @@
-﻿using Google.Apis.Drive.v3;
+﻿using FluentSpreadsheets.GoogleSheets.Models;
+using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
@@ -12,6 +13,7 @@ public class SheetManagementService : ISheetManagementService
 {
     private const string AllFields = "*";
     private const string SpreadsheetType = "application/vnd.google-apps.spreadsheet";
+    private const int NumberOfAdditionalRows = 1000;
 
     private static readonly Permission AnyoneViewerPermission = new()
     {
@@ -39,10 +41,14 @@ public class SheetManagementService : ISheetManagementService
 
         if (sheetId is null)
         {
-            return await CreateSheetAsync(spreadsheetId, sheetTitle, token);
+            sheetId = await CreateSheetAsync(spreadsheetId, sheetTitle, token);
+            await AddRowsAsync(spreadsheetId, sheetId.Value, token);
+        }
+        else
+        {
+            await ClearSheetAsync(spreadsheetId, sheetId.Value, token);
         }
         
-        await ClearSheetAsync(spreadsheetId, sheetId.Value, token);
         return sheetId.Value;
     }
 
@@ -96,6 +102,27 @@ public class SheetManagementService : ISheetManagementService
         var addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
 
         return addedSheetProperties.SheetId!.Value;
+    }
+
+    private async Task AddRowsAsync(string spreadsheetId, int sheetId, CancellationToken token)
+    {
+        var addRowsRange = new DimensionRange
+        {
+            StartIndex = 0,
+            EndIndex = NumberOfAdditionalRows,
+            Dimension = Dimension.Rows,
+            SheetId = sheetId
+        };
+
+        var addRowsRequest = new Request
+        {
+            InsertDimension = new InsertDimensionRequest
+            {
+                Range = addRowsRange
+            }
+        };
+
+        await ExecuteBatchUpdateAsync(spreadsheetId, addRowsRequest, token);
     }
 
     private async Task ClearSheetAsync(string spreadsheetId, int sheetId, CancellationToken token)

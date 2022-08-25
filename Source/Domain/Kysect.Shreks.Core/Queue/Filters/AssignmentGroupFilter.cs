@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 
-public partial class AssignmentGroupFilter : QueueFilter
+public partial class AssignmentGroupFilter : SubmissionQueueFilter
 {
     public virtual IReadOnlyCollection<Assignment> Assignments { get; protected init; }
 

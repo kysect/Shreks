@@ -1,4 +1,6 @@
 using AutoMapper;
+using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Mapping.Profiles;
@@ -26,5 +28,7 @@ public class ValueObjectsProfile : Profile
             .ConstructUsing(x => x == null ? null : x.Value.Value)
             .ReverseMap()
             .ConstructUsing(x => x == null ? null : new Fraction(x.Value));
+
+        CreateMap<SubmissionState, SubmissionStateDto>().ReverseMap();
     }
 }

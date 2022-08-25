@@ -66,8 +66,12 @@ public partial class SubjectCourse : IEntity<Guid>
     {
         ArgumentNullException.ThrowIfNull(association);
 
-        if (!_associations.Add(association))
-            throw new DomainInvalidOperationException($"Association {association} is already assigned to this course");
+        var associationType = association.GetType();
+
+        if (_associations.Any(a => a.GetType() == associationType))
+            throw new DomainInvalidOperationException($"Course {this} already has {associationType} association");
+
+        _associations.Add(association);
     }
     
     public void RemoveAssociation(SubjectCourseAssociation association)

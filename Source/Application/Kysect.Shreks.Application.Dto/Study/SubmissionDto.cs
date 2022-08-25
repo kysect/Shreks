@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.Application.Dto.Study;
+﻿namespace Kysect.Shreks.Application.Dto.Study;
 
 public record SubmissionDto(
     Guid Id,
@@ -9,10 +9,14 @@ public record SubmissionDto(
     string Payload,
     double? ExtraPoints,
     double? Points,
-    string AssignmentShortName)
+    string AssignmentShortName,
+    SubmissionStateDto State)
 {
     public string ToPullRequestString()
     {
-        return $"#{Code} from {SubmissionDate} (Point: {Points}, Extra points: {ExtraPoints})";
+        return $"Submission code: {Code}" +
+               $"\n- Point: {Points}" +
+               $"\n- Submitted: {SubmissionDate}" +
+               $"\n- Extra points: {ExtraPoints})";
     }
 }

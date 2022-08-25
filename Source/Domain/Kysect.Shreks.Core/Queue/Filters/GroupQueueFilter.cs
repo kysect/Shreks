@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 
-public partial class GroupQueueFilter : QueueFilter
+public partial class GroupQueueFilter : SubmissionQueueFilter
 {
     protected GroupQueueFilter(IReadOnlyCollection<StudentGroup> groups)
     {
