@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
+using FluentAssertions;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Tests.DataAccess;
@@ -25,5 +28,17 @@ public class MappingTest : DataAccessTestBase
         var submissionDto = _mapper.Map<SubmissionDto>(submission);
 
         Assert.NotNull(submissionDto);
+    }
+
+    [Theory]
+    [InlineData(SubmissionStateDto.Active, SubmissionState.Active)]
+    [InlineData(SubmissionStateDto.Inactive, SubmissionState.Inactive)]
+    [InlineData(SubmissionStateDto.Invalid, SubmissionState.Invalid)]
+    [InlineData(SubmissionStateDto.Completed, SubmissionState.Completed)]
+    public void Map_Should_MapSubmissionStateDtoToSubmissionState(SubmissionStateDto stateDto, SubmissionState state)
+    {
+        var receivedState = _mapper.Map<SubmissionState>(stateDto);
+
+        receivedState.Should().Be(state);
     }
 }
