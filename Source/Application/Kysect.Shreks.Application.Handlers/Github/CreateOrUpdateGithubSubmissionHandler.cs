@@ -2,6 +2,7 @@
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
@@ -44,6 +45,8 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             prNumber) = request.PullRequestDescriptor;
         
         Guid userId = request.UserId;
+        bool triggeredByMentor = await TriggeredByMentor(userId, organization);
+        bool triggeredByAnotherUser = !string.Equals(repository, sender, StringComparison.CurrentCultureIgnoreCase);
 
         var submissionSpec = new FindLatestGithubSubmission(
             organization,
@@ -58,17 +61,28 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
         if (submission is null || submission.IsRated)
         {
+            if (triggeredByAnotherUser && !triggeredByMentor)
+            {
+                var message = $"Repository {repository} is assigned to another student. Close this pull request";
+                throw new DomainInvalidOperationException(message);
+            }
             submission = await CreateSubmission(request, cancellationToken);
             isCreated = true;
             _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         }
-        else if (!await TriggeredByMentor(userId, request.PullRequestDescriptor.Organization))
+        else if (!triggeredByMentor)
         {
             submission.SubmissionDate = Calendar.CurrentDate;
 
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync(cancellationToken);
             _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
+
+            if (triggeredByAnotherUser)
+            {
+                var message = $"Repository {repository} is assigned to another student";
+                throw new DomainInvalidOperationException(message);
+            }
         }
 
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
