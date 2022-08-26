@@ -39,6 +39,7 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
         (
             _faker.Commerce.Product(),
             (index + 1).ToString(),
+            index,
             _faker.Random.Points(0, 5),
             _faker.Random.Points(5, 10),
             subjectCourse

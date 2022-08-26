@@ -23,7 +23,7 @@ var context = new ShreksDatabaseContext(builder.Options);
 await context.Database.EnsureCreatedAsync();
 
 
-var assignment = new Assignment("adw", "", new Points(1), new Points(2), new SubjectCourse(new Subject(""), ""));
+var assignment = new Assignment("adw", "", 1, new Points(1), new Points(2), new SubjectCourse(new Subject(""), ""));
 var submission = new GithubSubmission
 (
     0,
