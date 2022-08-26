@@ -14,7 +14,6 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-
 using static Kysect.Shreks.Application.Abstractions.Github.Commands.CreateOrUpdateGithubSubmission;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
@@ -43,7 +42,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             repository,
             _,
             prNumber) = request.PullRequestDescriptor;
-        
+
         Guid userId = request.UserId;
         bool triggeredByMentor = await TriggeredByMentor(userId, organization);
         bool triggeredByAnotherUser = !string.Equals(repository, sender, StringComparison.CurrentCultureIgnoreCase);
@@ -63,9 +62,11 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         {
             if (triggeredByAnotherUser && !triggeredByMentor)
             {
-                var message = $"Repository {repository} is assigned to another student. Close this pull request";
+                var message = $"Repository {repository} is assigned to another student. " +
+                              $"User {sender} does not have permission here. Close this PR and open new with correct account.";
                 throw new DomainInvalidOperationException(message);
             }
+
             submission = await CreateSubmission(request, cancellationToken);
             isCreated = true;
             _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
@@ -80,7 +81,8 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
             if (triggeredByAnotherUser)
             {
-                var message = $"Repository {repository} is assigned to another student";
+                var message = $"Repository {repository} is assigned to another student. " +
+                              $"Do not use {sender} account for this repository. Submission date will be updated.";
                 throw new DomainInvalidOperationException(message);
             }
         }
