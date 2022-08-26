@@ -36,6 +36,8 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         var (sender,
             _,
             organization,
