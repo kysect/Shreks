@@ -33,10 +33,6 @@ public class SubjectCourseGroupGenerator : EntityGeneratorBase<SubjectCourseGrou
         var subjectCourse = _subjectCourseGenerator.GeneratedEntities[subjectCourseGroupNumber];
         var studentGroup = _studentGroupGenerator.GeneratedEntities[studentGroupNumber];
 
-        var subjectCourseGroup = new SubjectCourseGroup(subjectCourse, studentGroup);
-
-        subjectCourse.AddGroup(subjectCourseGroup);
-
-        return subjectCourseGroup;
+        return subjectCourse.AddGroup(studentGroup);
     }
 }
