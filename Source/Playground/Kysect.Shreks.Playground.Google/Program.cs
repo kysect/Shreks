@@ -1,6 +1,7 @@
 ﻿using Kysect.Shreks.Application.Handlers.Extensions;
 using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
@@ -17,6 +18,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 IServiceProvider services = new ServiceCollection()
+    .AddApplicationConfiguration()
     .AddGoogleIntegration(o => o
         .ConfigureGoogleCredentials(googleCredentials)
         .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"))

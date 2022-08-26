@@ -18,6 +18,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
       <ProjectReference Include="..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
+      <ProjectReference Include="..\Application\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
       <ProjectReference Include="..\Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
       <ProjectReference Include="..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj" />
       <ProjectReference Include="..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />

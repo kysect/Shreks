@@ -1,5 +1,6 @@
 using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Commands.Extensions;
+using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
@@ -37,6 +38,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     webApplicationBuilder.Services.AddControllers();
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
     webApplicationBuilder.Services.AddSwaggerGen();
+    webApplicationBuilder.Services.AddApplicationConfiguration();
 
     webApplicationBuilder.Services
         .AddHandlers()
