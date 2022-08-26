@@ -45,6 +45,8 @@ tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, group.Id);
 var sameCourseGroup = subjectCourse.Groups.Skip(1).First().StudentGroup;
 tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, sameCourseGroup.Id);
 
+subjectCourse.Groups.Take(10).ToList().ForEach(g => tableQueue.EnqueueSubmissionsQueueUpdate(g.SubjectCourseId, g.StudentGroupId));
+
 await Task.Delay(TimeSpan.FromSeconds(30));
 
 var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
