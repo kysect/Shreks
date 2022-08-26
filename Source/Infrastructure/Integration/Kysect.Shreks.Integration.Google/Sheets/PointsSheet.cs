@@ -44,7 +44,7 @@ public class PointsSheet : ISheet<CoursePointsDto>
     private CoursePointsDto SortPoints(CoursePointsDto points)
     {
         List<AssignmentDto> sortedAssignments = points.Assignments
-            .OrderBy(a => a.ShortName)
+            .OrderBy(a => a.Order)
             .ToList();
 
         List<StudentPointsDto> sortedStudentPoints = points.StudentsPoints

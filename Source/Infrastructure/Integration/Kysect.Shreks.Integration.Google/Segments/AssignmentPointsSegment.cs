@@ -26,7 +26,7 @@ public class AssignmentPointsSegment
 
         return VStack
         (
-            Label(data.ShortName),
+            Label(data.Order),
             HStack
             (
                 Label("Балл"),
