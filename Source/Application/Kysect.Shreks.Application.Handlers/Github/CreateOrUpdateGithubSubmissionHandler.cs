@@ -37,11 +37,11 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var (sender
-            _
-            organization
-            repository
-            _
+        var (sender,
+            _,
+            organization,
+            repository,
+            _,
             prNumber) = request.PullRequestDescriptor;
         
         Guid userId = request.UserId;
