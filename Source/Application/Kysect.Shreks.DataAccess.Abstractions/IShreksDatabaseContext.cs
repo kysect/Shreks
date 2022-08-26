@@ -29,6 +29,8 @@ public interface IShreksDatabaseContext
     DbSet<SubjectCourseAssociation> SubjectCourseAssociations { get; }
     
     DbSet<SubmissionQueue> SubmissionQueues { get; }
+    
+    DbSet<PositionedSubmission> PositionedSubmissions { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

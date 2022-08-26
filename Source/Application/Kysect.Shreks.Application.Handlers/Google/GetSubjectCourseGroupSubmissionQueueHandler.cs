@@ -17,7 +17,10 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
     private readonly IMapper _mapper;
     private readonly IQueryExecutor _queryExecutor;
 
-    public GetSubjectCourseGroupSubmissionQueueHandler(IShreksDatabaseContext context, IMapper mapper, IQueryExecutor queryExecutor)
+    public GetSubjectCourseGroupSubmissionQueueHandler(
+        IShreksDatabaseContext context,
+        IMapper mapper,
+        IQueryExecutor queryExecutor)
     {
         _context = context;
         _mapper = mapper;
@@ -35,7 +38,11 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
         if (queue is null)
             throw new EntityNotFoundException("Queue for specified subject course group was not found");
 
+        _context.PositionedSubmissions.RemoveRange(queue.Submissions);
         await queue.UpdateSubmissions(_context.Submissions, _queryExecutor, cancellationToken);
+
+        _context.SubmissionQueues.Update(queue);
+        await _context.SaveChangesAsync(cancellationToken);
 
         var submissions = queue.Submissions
             .OrderBy(x => x.Position)

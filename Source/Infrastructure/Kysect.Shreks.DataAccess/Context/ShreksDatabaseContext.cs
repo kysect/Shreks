@@ -33,6 +33,7 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     public DbSet<UserAssociation> UserAssociations { get; protected init; } = null!;
     public DbSet<SubjectCourseAssociation> SubjectCourseAssociations { get; protected init; } = null!;
     public DbSet<SubmissionQueue> SubmissionQueues { get; protected init; } = null!;
+    public DbSet<PositionedSubmission> PositionedSubmissions { get; protected init; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
