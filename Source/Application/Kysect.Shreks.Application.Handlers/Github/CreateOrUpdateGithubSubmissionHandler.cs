@@ -36,12 +36,19 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
+        var (sender
+            _
+            organization
+            repository
+            _
+            prNumber) = request.PullRequestDescriptor;
+        
         Guid userId = request.UserId;
 
         var submissionSpec = new FindLatestGithubSubmission(
-            request.PullRequestDescriptor.Organization,
-            request.PullRequestDescriptor.Repository,
-            request.PullRequestDescriptor.PrNumber);
+            organization,
+            repository,
+            prNumber);
 
         var submission = await _context.SubmissionAssociations
             .WithSpecification(submissionSpec)
