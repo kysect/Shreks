@@ -1,4 +1,8 @@
 using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Queue;
+using Kysect.Shreks.Core.Queue.Evaluators;
+using Kysect.Shreks.Core.Queue.Filters;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;
@@ -30,12 +34,30 @@ public partial class SubjectCourse : IEntity<Guid>
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
     public virtual IReadOnlyCollection<Mentor> Mentors => _mentors;
 
-    public void AddGroup(SubjectCourseGroup group)
+    public SubjectCourseGroup AddGroup(StudentGroup group)
     {
         ArgumentNullException.ThrowIfNull(group);
 
-        if (!_groups.Add(group))
+        if (_groups.Any(x => x.StudentGroup.Equals(group)))
             throw new DomainInvalidOperationException($"Group {group} is already assigned to this course");
+
+        var filters = new SubmissionQueueFilter[]
+        {
+            new GroupQueueFilter(new[] { group }),
+            new SubmissionStateFilter(SubmissionState.Active),
+        };
+
+        var evaluators = new SubmissionEvaluator[]
+        {
+            new AssignmentDeadlineStateEvaluator(0, SortingOrder.Descending),
+            new SubmissionDateTimeEvaluator(1, SortingOrder.Ascending),
+        };
+
+        var queue = new SubmissionQueue(filters, evaluators);
+        var subjectCourseGroup = new SubjectCourseGroup(this, group, queue);
+        
+        _groups.Add(subjectCourseGroup);
+        return subjectCourseGroup;
     }
 
     public void RemoveGroup(SubjectCourseGroup group)

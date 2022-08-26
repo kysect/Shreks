@@ -30,11 +30,10 @@ public partial class SubmissionQueue : IEntity<Guid>
     public virtual IReadOnlyCollection<SubmissionQueueFilter> Filters => _filters;
     public virtual IReadOnlyCollection<SubmissionEvaluator> Evaluators => _evaluators;
 
-    public async Task UpdateSubmissions<TComparable>(
+    public async Task UpdateSubmissions(
         IQueryable<Submission> submissionsQuery,
         IQueryExecutor queryExecutor,
         CancellationToken cancellationToken)
-        where TComparable : IComparable<TComparable>
     {
         ArgumentNullException.ThrowIfNull(queryExecutor);
 
