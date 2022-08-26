@@ -46,13 +46,8 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
 
         var submissions = queue.Submissions
             .OrderBy(x => x.Position)
-            .Select(x => x.Submission);
-
-        var queueSubmissionsDto = submissions
-            .Select(s => (
-                Submission: _mapper.Map<SubmissionDto>(s),
-                Student: _mapper.Map<StudentDto>(s.Student)))
-            .Select(t => new QueueSubmissionDto(t.Student, t.Submission))
+            .Select(x => x.Submission)
+            .Select(_mapper.Map<QueueSubmissionDto>)
             .ToArray();
 
         var groupName = await _context.StudentGroups
@@ -60,7 +55,7 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
             .Select(x => x.Name)
             .FirstAsync(cancellationToken);
 
-        var submissionsQueue = new SubmissionsQueueDto(groupName, queueSubmissionsDto);
+        var submissionsQueue = new SubmissionsQueueDto(groupName, submissions);
         return new Response(submissionsQueue);
     }
 }
