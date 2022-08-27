@@ -1,6 +1,6 @@
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.Extensions;
+using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -35,18 +35,7 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
         _tableUpdateQueue.EnqueueCoursePointsUpdate(submission.GetCourseId());
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
-        DateOnly deadline = submission.GroupAssignment.Deadline;
-
-        var dto = new SubmissionRateDto
-        (
-            Code: submission.Code,
-            SubmissionDate: submission.SubmissionDate,
-            Rating: submission.Rating?.Value,
-            RawPoints: submission.Points?.Value,
-            ExtraPoints: submission.ExtraPoints?.Value,
-            PenaltyPoints: submission.CalculatePenaltySubmissionPoints(deadline)?.Value,
-            TotalPoints: submission.CalculateTotalSubmissionPoints(deadline)?.Value
-        );
+        SubmissionRateDto dto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 
         return new Response(dto);
     }
