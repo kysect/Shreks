@@ -25,7 +25,7 @@ public static class FindSubmissionPointsSpecification
         return points;
     }
 
-    public static Points? GetPenaltySubmissionPoints(this Submission submission, DateOnly deadline)
+    public static Points? CalculatePenaltySubmissionPoints(this Submission submission, DateOnly deadline)
     {
         ArgumentNullException.ThrowIfNull(submission);
 

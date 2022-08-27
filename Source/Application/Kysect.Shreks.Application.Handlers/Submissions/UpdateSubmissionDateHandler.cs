@@ -38,7 +38,7 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
             Rating: submission.Rating?.Value,
             RawPoints: submission.Points?.Value,
             ExtraPoints: submission.ExtraPoints?.Value,
-            PenaltyPoints: submission.GetPenaltySubmissionPoints(deadline)?.Value,
+            PenaltyPoints: submission.CalculatePenaltySubmissionPoints(deadline)?.Value,
             TotalPoints: submission.GetTotalSubmissionPoints(deadline)?.Value
         );
 
