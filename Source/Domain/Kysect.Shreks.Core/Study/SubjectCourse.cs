@@ -15,6 +15,9 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<Assignment> _assignments;
     private readonly HashSet<SubjectCourseAssociation> _associations;
     private readonly HashSet<Mentor> _mentors;
+    
+    // TODO: Remove when .NET 7 is released
+    protected virtual IReadOnlyCollection<SubmissionQueueFilter> Filters { get; init; }
 
     public SubjectCourse(Subject subject, string name) : this(Guid.NewGuid())
     {
@@ -45,6 +48,7 @@ public partial class SubjectCourse : IEntity<Guid>
         {
             new GroupQueueFilter(new[] { group }),
             new SubmissionStateFilter(SubmissionState.Active),
+            new SubjectCourseFilter(new[] { this })
         };
 
         var evaluators = new SubmissionEvaluator[]
