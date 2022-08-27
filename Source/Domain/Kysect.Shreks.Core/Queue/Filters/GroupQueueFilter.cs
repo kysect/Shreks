@@ -5,7 +5,7 @@ namespace Kysect.Shreks.Core.Queue.Filters;
 
 public partial class GroupQueueFilter : SubmissionQueueFilter
 {
-    protected GroupQueueFilter(IReadOnlyCollection<StudentGroup> groups)
+    public GroupQueueFilter(IReadOnlyCollection<StudentGroup> groups)
     {
         Groups = groups;
     }
