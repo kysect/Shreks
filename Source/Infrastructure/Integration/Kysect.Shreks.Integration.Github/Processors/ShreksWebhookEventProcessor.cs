@@ -17,26 +17,19 @@ using Octokit.Webhooks.Events;
 using Octokit.Webhooks.Events.IssueComment;
 using Octokit.Webhooks.Events.PullRequest;
 using Octokit.Webhooks.Events.PullRequestReview;
-using Octokit.Webhooks.Models;
 using PullRequestReviewEvent = Octokit.Webhooks.Events.PullRequestReviewEvent;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
 
-public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
+public class ShreksWebhookEventProcessor
 {
     private readonly IActionNotifier _actionNotifier;
-    private readonly ILogger<ShreksWebhookEventProcessor> _logger;
+    private readonly ILogger<ShreksWebhookEventProcessorProxy> _logger;
     private readonly IShreksCommandParser _commandParser;
     private readonly IMediator _mediator;
     private readonly IOrganizationGithubClientProvider _clientProvider;
 
-
-    public ShreksWebhookEventProcessor(
-        IActionNotifier actionNotifier,
-        ILogger<ShreksWebhookEventProcessor> logger,
-        IShreksCommandParser commandParser,
-        IMediator mediator,
-        IOrganizationGithubClientProvider clientProvider)
+    public ShreksWebhookEventProcessor(IActionNotifier actionNotifier, ILogger<ShreksWebhookEventProcessorProxy> logger, IShreksCommandParser commandParser, IMediator mediator, IOrganizationGithubClientProvider clientProvider)
     {
         _actionNotifier = actionNotifier;
         _logger = logger;
@@ -45,22 +38,15 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
         _clientProvider = clientProvider;
     }
 
-    protected override async Task ProcessPullRequestWebhookAsync(
+    public async Task ProcessPullRequestWebhookAsync(
         WebhookHeaders headers,
         PullRequestEvent pullRequestEvent,
         PullRequestAction action)
     {
-        _logger.LogDebug($"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name}");
-
-        if (IsSenderBotOrNull(pullRequestEvent))
-        {
-            _logger.LogTrace($"{nameof(ProcessPullRequestWebhookAsync)} skipped because sender is bot or null");
-            return;
-        }
-
         switch (action)
         {
             case PullRequestActionValue.Synchronize:
+            case PullRequestActionValue.Reopened:
             case PullRequestActionValue.Opened:
 
                 CancellationToken cancellationToken = CancellationToken.None;
@@ -83,7 +69,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 var subjectCourseId = await GetSubjectCourseByOrganization(organization, cancellationToken);
                 var userId = await GetUserByGithubLogin(login, cancellationToken);
                 var assignmentId =
-                    await GetAssignemntByBranchAndSubjectCourse(branch, subjectCourseId, cancellationToken);
+                    await GetAssignemntByBranchAndSubjectCourse(branch, subjectCourseId);
 
                 var command = new CreateOrUpdateGithubSubmission.Command(userId, assignmentId, pullRequestDescriptor);
 
@@ -104,8 +90,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                 }
 
                 break;
-            case PullRequestActionValue.Reopened:
-                break;
+
             case PullRequestActionValue.Closed when pullRequestEvent.PullRequest.Merged is true:
                 var user = await GetUserByGithubLogin(pullRequestEvent.Sender!.Login, CancellationToken.None);
                 var submission = await GetGithubSubmissionAsync(
@@ -118,29 +103,25 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
 
                 await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
                 break;
+
+            default:
+                _logger.LogWarning($"Received unsupported pull request webhook type: {action}");
+                break;
         }
     }
 
-    protected override async Task ProcessPullRequestReviewWebhookAsync(
+    public async Task ProcessPullRequestReviewWebhookAsync(
         WebhookHeaders headers,
         PullRequestReviewEvent pullRequestReviewEvent,
         PullRequestReviewAction action)
     {
-        _logger.LogDebug($"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name}");
-
-        if (IsSenderBotOrNull(pullRequestReviewEvent))
-        {
-            _logger.LogTrace($"{nameof(ProcessPullRequestReviewWebhookAsync)} skipped because sender is bot or null");
-            return;
-        }
-
         switch (action)
         {
             case PullRequestReviewActionValue.Submitted:
-                break;
             case PullRequestReviewActionValue.Edited:
-                break;
             case PullRequestReviewActionValue.Dismissed:
+
+                _logger.LogWarning($"Pull request review action {action} is not supported.");
                 break;
         }
 
@@ -150,74 +131,46 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
             nameof(ProcessPullRequestWebhookAsync));
     }
 
-    protected override async Task ProcessIssueCommentWebhookAsync(
+    public async Task ProcessIssueCommentWebhookAsync(
         WebhookHeaders headers,
         IssueCommentEvent issueCommentEvent,
         IssueCommentAction action)
     {
-        _logger.LogDebug($"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name}");
-
-        if (IsSenderBotOrNull(issueCommentEvent))
-        {
-            _logger.LogTrace($"{nameof(ProcessIssueCommentWebhookAsync)} skipped because sender is bot or null");
-            return;
-        }
-
-        if (!IsPullRequestCommand(issueCommentEvent))
-        {
-            _logger.LogTrace($"Skip commit in {issueCommentEvent.Issue.Id}. Issue comments is not supported.");
-            return;
-        }
-
         GithubPullRequestDescriptor pullRequestDescriptor = await GetPullRequestDescriptor(issueCommentEvent);
 
         switch (action)
         {
-            case IssueCommentActionValue.Edited:
-                break;
             case IssueCommentActionValue.Created:
-                try
+                var comment = issueCommentEvent.Comment.Body;
+                if (comment.FirstOrDefault() == '/')
                 {
-                    var comment = issueCommentEvent.Comment.Body;
-                    if (comment.FirstOrDefault() == '/')
+                    IShreksCommand command = _commandParser.Parse(comment);
+                    var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, _logger);
+                    var processor = new GithubCommandProcessor(contextCreator, CancellationToken.None);
+
+                    var result = await command.AcceptAsync(processor);
+
+                    if (!string.IsNullOrEmpty(result.Message))
                     {
-                        IShreksCommand command = _commandParser.Parse(comment);
-                        var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, _logger);
-                        var processor = new GithubCommandProcessor(contextCreator, CancellationToken.None);
-
-                        var result = await command.AcceptAsync(processor);
-
-                        if (!string.IsNullOrEmpty(result.Message))
-                        {
-                            await _actionNotifier.SendComment(
-                                issueCommentEvent,
-                                issueCommentEvent.Issue.Number,
-                                result.Message);
-                        }
-
-                        await _actionNotifier.ReactInComments(
+                        await _actionNotifier.SendComment(
                             issueCommentEvent,
-                            issueCommentEvent.Comment.Id,
-                            result.IsSuccess);
+                            issueCommentEvent.Issue.Number,
+                            result.Message);
                     }
-                }
-                catch (Exception e)
-                {
-                    await _actionNotifier.SendComment(
+
+                    await _actionNotifier.ReactInComments(
                         issueCommentEvent,
-                        issueCommentEvent.Issue.Number,
-                        e.Message);
+                        issueCommentEvent.Comment.Id,
+                        result.IsSuccess);
                 }
 
                 break;
+
             case IssueCommentActionValue.Deleted:
+            case IssueCommentActionValue.Edited:
+                _logger.LogTrace($"Will ignore pull request comment {action} event.");
                 break;
         }
-    }
-
-    private bool IsPullRequestCommand(IssueCommentEvent issueCommentEvent)
-    {
-        return issueCommentEvent.Issue.PullRequest.Url is not null;
     }
 
     private async Task<GithubPullRequestDescriptor> GetPullRequestDescriptor(IssueCommentEvent issueCommentEvent)
@@ -251,10 +204,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
         return response.UserId;
     }
 
-    private async Task<Guid> GetAssignemntByBranchAndSubjectCourse(
-        string branch,
-        Guid subjectCourseId,
-        CancellationToken cancellationToken)
+    private async Task<Guid> GetAssignemntByBranchAndSubjectCourse(string branch, Guid subjectCourseId)
     {
         var response = await _mediator.Send(
             new GetAssignmentByBranchAndSubjectCourse.Query(branch,
@@ -268,7 +218,4 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
         var response = await _mediator.Send(query);
         return response.Submission;
     }
-
-    private bool IsSenderBotOrNull(WebhookEvent webhookEvent)
-        => webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
 }
