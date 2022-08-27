@@ -8,7 +8,7 @@ public static class SubmissionPointsSpecification
     public static Points? GetTotalSubmissionPoints(this Submission submission, DateOnly deadline)
     {
         if (submission.Points is null)
-            return submission.Points;
+            return null;
 
         var points = submission.Points.Value;
 
