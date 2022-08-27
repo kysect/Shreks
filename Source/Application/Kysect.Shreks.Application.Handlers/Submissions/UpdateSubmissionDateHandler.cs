@@ -33,7 +33,8 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
 
         DateOnly deadline = submission.GroupAssignment.Deadline;
 
-        var dto = new SubmissionRateDto(
+        var dto = new SubmissionRateDto
+        (
             Code: submission.Code,
             SubmissionDate: submission.SubmissionDate,
             Rating: submission.Rating?.Value,
