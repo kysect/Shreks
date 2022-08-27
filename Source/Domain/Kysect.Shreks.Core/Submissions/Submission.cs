@@ -22,7 +22,7 @@ public abstract partial class Submission : IEntity<Guid>
         : this(Guid.NewGuid())
     {
         Code = code;
-        SubmissionDate = submissionDate;
+        SubmissionDateTime = submissionDate.ToDateTime(TimeOnly.MinValue);
         Student = student;
         GroupAssignment = groupAssignment;
         Payload = payload;
@@ -36,7 +36,9 @@ public abstract partial class Submission : IEntity<Guid>
 
     public int Code { get; protected init; }
 
-    public DateOnly SubmissionDate { get; set; }
+    // TODO: WI-226
+    public DateTime SubmissionDateTime { get; set; }
+    public DateOnly SubmissionDate => new DateOnly(SubmissionDateTime.Year, SubmissionDateTime.Month, SubmissionDateTime.Day);
 
     public virtual Student Student { get; protected init; }
 

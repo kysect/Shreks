@@ -12,7 +12,7 @@ public partial class GroupAssignment : IEntity
 
         Group = group;
         Assignment = assignment;
-        Deadline = deadline;
+        DeadlineDateTime = deadline.ToDateTime(TimeOnly.MinValue);
     }
 
     [KeyProperty]
@@ -21,7 +21,9 @@ public partial class GroupAssignment : IEntity
     [KeyProperty]
     public virtual Assignment Assignment { get; protected init; }
 
-    public DateOnly Deadline { get; set; }
+    // TODO: WI-226
+    public DateTime DeadlineDateTime { get; set; }
+    public DateOnly Deadline => new DateOnly(DeadlineDateTime.Year, DeadlineDateTime.Month, DeadlineDateTime.Day);
 
     public override String ToString()
     {
