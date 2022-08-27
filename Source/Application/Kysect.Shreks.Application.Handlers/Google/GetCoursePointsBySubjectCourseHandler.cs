@@ -96,18 +96,4 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         return points;
     }
-
-    private DeadlinePolicy? GetActiveDeadlinePolicy(Submission submission, DateOnly deadline)
-    {
-        if (submission.SubmissionDate <= deadline)
-            return null;
-
-        var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDate.DayNumber - deadline.DayNumber);
-        return submission
-            .GroupAssignment
-            .Assignment
-            .DeadlinePolicies
-            .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)
-            .MaxBy(dp => dp.SpanBeforeActivation);
-    }
 }
