@@ -13,4 +13,6 @@ public partial class Student : IEntity<Guid>
 
     public virtual User User { get; protected init; }
     public virtual StudentGroup Group { get; protected init; }
+
+    public override string ToString() => $"{User.FirstName} {User.LastName} from {Group.Name} ({Id})";
 }

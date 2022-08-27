@@ -60,6 +60,8 @@ public abstract partial class Submission : IEntity<Guid>
 
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
 
+    public override string ToString() => $"{Code} ({Id})";
+
     public void Rate(Fraction? rating, Points? extraPoints)
     {
         if (State is not SubmissionState.Active or SubmissionState.Completed)
