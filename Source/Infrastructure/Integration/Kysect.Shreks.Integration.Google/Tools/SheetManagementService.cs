@@ -47,7 +47,6 @@ public class SheetManagementService : ISheetManagementService
         if (sheetId is null)
         {
             sheetId = await CreateSheetAsync(spreadsheetId, sheetTitle, token);
-            await AddRowsAsync(spreadsheetId, sheetId.Value, token);
             await SortSheetsAsync(spreadsheetId, token);
         }
         else
