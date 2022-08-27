@@ -42,7 +42,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
     public async Task<SubmissionDto> ExecuteAsync(PullRequestContext context, CancellationToken cancellationToken)
     {
         string message = $"Handle /update command from {context.IssuerId} with arguments:" +
-                         $" {{ SubmissionId: {SubmissionId}," +
+                         $" {{ SubmissionCode : {SubmissionCode}," +
                          $" RatingPercent: {RatingPercent}" +
                          $" ExtraPoints: {ExtraPoints}" +
                          $" DateStr: {DateStr}" +
@@ -55,7 +55,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
 
         if (RatingPercent is not null || ExtraPoints is not null)
         {
-            Log.Information($"Invoke update command for submission {SubmissionId} with arguments:" +
+            Log.Information($"Invoke update command for submission {submissionResponse.Submission.Id} with arguments:" +
                             $"{{ Rating: {RatingPercent}," +
                             $" ExtraPoints: {ExtraPoints}}}");
 
