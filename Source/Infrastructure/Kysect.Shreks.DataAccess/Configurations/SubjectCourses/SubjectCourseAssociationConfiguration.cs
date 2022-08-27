@@ -11,5 +11,7 @@ public class SubjectCourseAssociationConfiguration : IEntityTypeConfiguration<Su
         builder.HasDiscriminator<string>("Discriminator")
             .HasValue<GithubSubjectCourseAssociation>(nameof(GithubSubjectCourseAssociation))
             .HasValue<GoogleTableSubjectCourseAssociation>(nameof(GoogleTableSubjectCourseAssociation));
+
+        builder.HasIndex("SubjectCourseId", "Discriminator").IsUnique();
     }
 }
