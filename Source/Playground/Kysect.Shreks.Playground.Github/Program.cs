@@ -1,4 +1,5 @@
 using Kysect.Shreks.Application.Commands.Extensions;
+using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
@@ -19,6 +20,7 @@ ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfigu
 TestEnvConfiguration testEnvConfiguration = configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
 
 builder.Services
+    .AddApplicationConfiguration()
     .AddMappingConfiguration()
     .AddHandlers()
     .AddApplicationCommands()

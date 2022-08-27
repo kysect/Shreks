@@ -35,10 +35,13 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
 
         var subjectCourse = _faker.PickRandom<SubjectCourse>(_subjectCourseGenerator.GeneratedEntities);
 
+        var assignmentOrder = index + 1;
+
         var assignment = new Assignment
         (
             _faker.Commerce.Product(),
-            (index + 1).ToString(),
+            $"lab-{assignmentOrder}",
+            assignmentOrder,
             _faker.Random.Points(0, 5),
             _faker.Random.Points(5, 10),
             subjectCourse
