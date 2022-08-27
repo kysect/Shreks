@@ -1,4 +1,5 @@
 using CommandLine;
+using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Application.Commands.Commands;
 
 namespace Kysect.Shreks.Application.Commands.Parsers;
@@ -19,7 +20,7 @@ public class ShreksCommandParser : IShreksCommandParser
         var result = Parser.Default.ParseArguments(commandStr.Split(), _commandTypes);
         if (result.Tag == ParserResultType.NotParsed)
         {
-            throw new ArgumentException("Failed to parse command"); //TODO: handle different errors
+            throw new InvalidUserInputException("Failed to parse user command. Ensure that all arguments is correct or call /help.");
         }
 
         return (IShreksCommand) result.Value;
