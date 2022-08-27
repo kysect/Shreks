@@ -22,4 +22,9 @@ public partial class GroupAssignment : IEntity
     public virtual Assignment Assignment { get; protected init; }
 
     public DateOnly Deadline { get; set; }
+
+    public override String ToString()
+    {
+        return $"Assignment: {Assignment.ShortName} ({AssignmentId}), Group: {Group.Name} ({GroupId})";
+    }
 }
