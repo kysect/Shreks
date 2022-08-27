@@ -22,8 +22,11 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog(
-    (ctx, lc) => lc.MinimumLevel.Verbose().WriteTo.Console());
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
 TestEnvConfiguration testEnvConfiguration = builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
