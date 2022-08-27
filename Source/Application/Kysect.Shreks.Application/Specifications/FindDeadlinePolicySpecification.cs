@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Submissions;
 
-namespace Kysect.Shreks.Application
+namespace Kysect.Shreks.Application.Specifications
 {
     public static class FindDeadlinePolicySpecification
     {

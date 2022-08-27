@@ -2,6 +2,7 @@ using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Application.Specifications;
 using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;

@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.ValueObject;
 
-namespace Kysect.Shreks.Application;
+namespace Kysect.Shreks.Application.Specifications;
 
 public static class SubmissionPointsSpecification
 {
