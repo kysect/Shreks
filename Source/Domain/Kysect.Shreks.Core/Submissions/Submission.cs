@@ -60,6 +60,38 @@ public abstract partial class Submission : IEntity<Guid>
 
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
 
+    public void Rate(Fraction? rating, Points? extraPoints)
+    {
+        if (State != SubmissionState.Active
+            && State != SubmissionState.Completed)
+        {
+            string message = $"Cannot update submission points. Submission state: {State}.";
+            throw new DomainInvalidOperationException(message);
+        }
+
+        if (State != SubmissionState.Completed && rating is null)
+        {
+            const string message = $"Cannot update submission points. Rating was not set.";
+            throw new DomainInvalidOperationException(message);
+        }
+
+        if (rating is null && extraPoints is null)
+        {
+            const string ratingName = nameof(rating);
+            const string extraPointsName = nameof(extraPoints);
+            const string message = $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
+            throw new DomainInvalidOperationException(message);
+        }
+
+        if (rating is not null)
+            Rating = rating;
+
+        if (extraPoints is not null)
+            ExtraPoints = extraPoints;
+
+        State = SubmissionState.Completed;
+    }
+
     protected void AddAssociation(SubmissionAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
