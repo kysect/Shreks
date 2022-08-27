@@ -1,5 +1,4 @@
-﻿using Kysect.Shreks.Core.Queue;
-using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.Users;
@@ -36,16 +35,3 @@ var submission = new GithubSubmission
     "",
     0
 );
-
-var positionedSubmission = new PositionedSubmission
-(
-    1,
-    submission
-);
-
-context.Add(positionedSubmission);
-
-await context.SaveChangesAsync();
-
-context.Remove(positionedSubmission);
-await context.SaveChangesAsync();

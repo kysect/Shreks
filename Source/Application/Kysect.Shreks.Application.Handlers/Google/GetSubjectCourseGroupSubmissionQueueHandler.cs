@@ -4,6 +4,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.Queue;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -38,15 +39,10 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
         if (queue is null)
             throw new EntityNotFoundException("Queue for specified subject course group was not found");
 
-        _context.PositionedSubmissions.RemoveRange(queue.Submissions);
-        await queue.UpdateSubmissions(_context.Submissions, _queryExecutor, cancellationToken);
+        IEnumerable<Submission> submissions = await queue.UpdateSubmissions(
+            _context.Submissions, _queryExecutor, cancellationToken);
 
-        _context.SubmissionQueues.Update(queue);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        var submissions = queue.Submissions
-            .OrderBy(x => x.Position)
-            .Select(x => x.Submission)
+        QueueSubmissionDto[] submissionsDto = submissions
             .Select(_mapper.Map<QueueSubmissionDto>)
             .ToArray();
 
@@ -55,7 +51,7 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
             .Select(x => x.Name)
             .FirstAsync(cancellationToken);
 
-        var submissionsQueue = new SubmissionsQueueDto(groupName, submissions);
+        var submissionsQueue = new SubmissionsQueueDto(groupName, submissionsDto);
         return new Response(submissionsQueue);
     }
 }
