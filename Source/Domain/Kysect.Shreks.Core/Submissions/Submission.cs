@@ -82,7 +82,7 @@ public abstract partial class Submission : IEntity<Guid>
         if (extraPoints is not null)
             ExtraPoints = extraPoints;
 
-        State = SubmissionState.Completed;
+        _state = SubmissionState.Completed;
     }
 
     protected void AddAssociation(SubmissionAssociation association)
@@ -95,7 +95,7 @@ public abstract partial class Submission : IEntity<Guid>
 
     private void SetState(SubmissionState state)
     {
-        if (_state is SubmissionState.Completed)
+        if (_state is SubmissionState.Completed && state != SubmissionState.Completed)
             throw new DomainInvalidOperationException($"Submission {this} is already completed");
 
         if (_state is SubmissionState.Deleted)
