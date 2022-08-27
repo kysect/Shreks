@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
@@ -78,23 +78,5 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             return null;
 
         return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDate, points.Value.Value);
-    }
-
-    private Points? GetSubmissionPoints(Submission submission, DateOnly deadline)
-    {
-        if (submission.Points is null)
-            return submission.Points;
-
-        var points = submission.Points.Value;
-
-        var deadlinePolicy = submission.GetActiveDeadlinePolicy(deadline);
-
-        if (deadlinePolicy is not null)
-            points = deadlinePolicy.Apply(points);
-
-        if (submission.ExtraPoints is not null)
-            points += submission.ExtraPoints.Value;
-
-        return points;
     }
 }
