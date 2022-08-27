@@ -150,7 +150,7 @@ public class ShreksWebhookEventProcessor
                 {
                     IShreksCommand command = _commandParser.Parse(comment);
                     var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, _logger);
-                    var processor = new GithubCommandProcessor(contextCreator, CancellationToken.None);
+                    var processor = new GithubCommandProcessor(contextCreator, _logger, CancellationToken.None);
 
                     var result = await command.AcceptAsync(processor);
 
