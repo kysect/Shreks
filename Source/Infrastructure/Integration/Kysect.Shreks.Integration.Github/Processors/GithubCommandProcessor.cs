@@ -81,6 +81,20 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
     }
 
+    public async Task<BaseShreksCommandResult> VisitAsync(CreateSubmissionCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreatePullRequestAndAssignmentContext(_cancellationToken);
+            await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, "Submission created successfully");
+        }
+        catch (Exception e)
+        {
+            return new BaseShreksCommandResult(false, $"Received error while process create submission command: {e}");
+        }
+    }
+
     public async Task<BaseShreksCommandResult> VisitAsync(DeleteCommand command)
     {
         try
