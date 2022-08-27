@@ -4,6 +4,7 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
@@ -34,7 +35,7 @@ public class RateCommand : IShreksCommand<SubmissionContext, SubmissionDto>
         string message = $"Handle /rate command from {context.IssuerId} with arguments:" +
                          $" {{ RatingPercent: {RatingPercent}," +
                          $" ExtraPoints: {ExtraPoints}}}";
-        Log.Information(message);
+        context.Log.LogInformation(message);
 
         var submissionId = context.Submission.Id;
         var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent, ExtraPoints);

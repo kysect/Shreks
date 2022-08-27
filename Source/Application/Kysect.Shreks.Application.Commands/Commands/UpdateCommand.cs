@@ -6,6 +6,7 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
@@ -47,7 +48,8 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
                          $" ExtraPoints: {ExtraPoints}" +
                          $" DateStr: {DateStr}" +
                          $" }}";
-        Log.Information(message);
+
+        context.Log.LogInformation(message);
         SubmissionDto submissionDto = null!;
 
         var query = new GetSubmissionByPrAndSubmissionCode.Query(context.PullRequestDescriptor, SubmissionCode);
@@ -55,9 +57,9 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
 
         if (RatingPercent is not null || ExtraPoints is not null)
         {
-            Log.Information($"Invoke update command for submission {submissionResponse.Submission.Id} with arguments:" +
-                            $"{{ Rating: {RatingPercent}," +
-                            $" ExtraPoints: {ExtraPoints}}}");
+            context.Log.LogInformation($"Invoke update command for submission {submissionResponse.Submission.Id} with arguments:" +
+                                       $"{{ Rating: {RatingPercent}," +
+                                       $" ExtraPoints: {ExtraPoints}}}");
 
             var command = new UpdateSubmissionPoints.Command(submissionResponse.Submission.Id, RatingPercent, ExtraPoints);
             var response = await context.Mediator.Send(command, cancellationToken);

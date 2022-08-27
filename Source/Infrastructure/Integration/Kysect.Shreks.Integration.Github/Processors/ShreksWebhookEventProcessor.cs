@@ -160,7 +160,7 @@ public sealed class ShreksWebhookEventProcessor : WebhookEventProcessor
                     if (comment.FirstOrDefault() == '/')
                     {
                         IShreksCommand command = _commandParser.Parse(comment);
-                        var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor);
+                        var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, _logger);
                         var processor = new GithubCommandProcessor(contextCreator, CancellationToken.None);
 
                         var result = await command.AcceptAsync(processor);
