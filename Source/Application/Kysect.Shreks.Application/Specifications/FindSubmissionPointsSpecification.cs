@@ -1,4 +1,4 @@
-using Kysect.Shreks.Core.Submissions;
+﻿using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Application.Specifications;
@@ -29,9 +29,16 @@ public static class FindSubmissionPointsSpecification
     {
         ArgumentNullException.ThrowIfNull(submission);
 
-        Points? deadlineAppliedPoints = submission.GetTotalSubmissionPoints(deadline);
-        double? penaltyPoints = (submission.Points - deadlineAppliedPoints)?.Value;
+        Points? deadlineAppliedPoints = submission.CalculateTotalSubmissionPoints(deadline);
 
-        return new Points(penaltyPoints!.Value);
+        if (submission.Points is null)
+            return null;
+
+        if (deadlineAppliedPoints is null)
+            return null;
+        
+        Points? penaltyPoints = submission.Points - deadlineAppliedPoints;
+
+        return penaltyPoints;
     }
 }
