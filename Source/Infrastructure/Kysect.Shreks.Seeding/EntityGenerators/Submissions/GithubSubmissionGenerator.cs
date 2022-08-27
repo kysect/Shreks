@@ -55,7 +55,8 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
             ? _faker.Random.Points(0, MaxExtraPoints)
             : Points.None;
 
-        submission.Rate(rating, extraPoints);
+        if (rating.HasValue)
+            submission.Rate(rating, extraPoints);
 
         return submission;
     }
