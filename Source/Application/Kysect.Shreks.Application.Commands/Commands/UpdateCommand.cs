@@ -8,7 +8,7 @@ using Kysect.Shreks.Application.Dto.Study;
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/update")]
-public class UpdateCommand : IShreksCommand<BaseContext, SubmissionDto>
+public class UpdateCommand : IShreksCommand<BaseContext, SubmissionRateDto>
 {
     public UpdateCommand(string submissionId, double? ratingPercent, double? extraPoints, string? dateStr)
     {
@@ -36,16 +36,17 @@ public class UpdateCommand : IShreksCommand<BaseContext, SubmissionDto>
         return visitor.VisitAsync(this);
     }
 
-    public async Task<SubmissionDto> ExecuteAsync(BaseContext context, CancellationToken cancellationToken)
+    public async Task<SubmissionRateDto> ExecuteAsync(BaseContext context, CancellationToken cancellationToken)
     {
         Guid submissionId = Guid.Parse(SubmissionId);
 
-        SubmissionDto submissionDto = null!;
+        SubmissionRateDto submissionRateDto = null!;
+
         if (RatingPercent is not null || ExtraPoints is not null)
         {
             var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent, ExtraPoints);
             var response = await context.Mediator.Send(command, cancellationToken);
-            submissionDto = response.Submission;
+            submissionRateDto = response.SubmissionRate;
         }
 
         if (DateStr != null)
@@ -53,9 +54,9 @@ public class UpdateCommand : IShreksCommand<BaseContext, SubmissionDto>
             var date = DateOnly.Parse(DateStr);
             var command = new UpdateSubmissionDate.Command(submissionId, date);
             var response = await context.Mediator.Send(command, cancellationToken);
-            submissionDto = response.Submission;
+            submissionRateDto = response.SubmissionRate;
         }
 
-        return submissionDto;
+        return submissionRateDto;
     }
 }

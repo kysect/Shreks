@@ -2,6 +2,7 @@ using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -50,7 +51,22 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
 
         _tableUpdateQueue.EnqueueCoursePointsUpdate(submission.GetCourseId());
 
-        var dto = _mapper.Map<SubmissionDto>(submission);
+        DeadlinePolicy? deadlinePolicy = submission.GetActiveDeadlinePolicy(submission.GroupAssignment.Deadline);
+
+        if (deadlinePolicy is null)
+            throw new DomainInvalidOperationException($"Failed to find deadline policy for group assignment {submission.GroupAssignment}");
+
+        Points deadlineAppliedPoints = deadlinePolicy.Apply(submission.Points!.Value);
+
+        var dto = new SubmissionRateDto(
+            Code: submission.Code,
+            SubmissionDate: submission.SubmissionDate,
+            Rating: submission.Rating?.Value,
+            RawPoints: submission.Points?.Value,
+            ExtraPoints: submission.ExtraPoints?.Value,
+            PenaltyPoints: (submission.Points - deadlineAppliedPoints)?.Value,
+            TotalPoints: (deadlineAppliedPoints + submission.ExtraPoints)?.Value
+        );
 
         return new Response(dto);
     }

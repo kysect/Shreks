@@ -23,7 +23,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         try
         {
             SubmissionContext context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            SubmissionDto submission = await rateCommand.ExecuteAsync(context, _cancellationToken);
+            SubmissionRateDto submission = await rateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission rated - {submission.ToPullRequestString()}");
         }
         catch (Exception e)
@@ -37,7 +37,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         try
         {
             BaseContext context = await _contextFactory.CreateBaseContext(_cancellationToken);
-            SubmissionDto submission = await updateCommand.ExecuteAsync(context, _cancellationToken);
+            SubmissionRateDto submission = await updateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission updated - {submission.ToPullRequestString()}");
         }
         catch (Exception e)
