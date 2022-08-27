@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Application.Specifications;
-using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
