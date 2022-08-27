@@ -29,7 +29,7 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
                 && a.Repository == request.PullRequestDescriptor.Repository
                 && a.PrNumber == request.PullRequestDescriptor.PrNumber
                 && a.Submission.Rating == null)
-            .OrderByDescending(a => a.Submission.SubmissionDate)
+            .OrderByDescending(a => a.Submission.SubmissionDateTime)
             .Select(a => a.Submission)
             .FirstOrDefaultAsync(cancellationToken);
 

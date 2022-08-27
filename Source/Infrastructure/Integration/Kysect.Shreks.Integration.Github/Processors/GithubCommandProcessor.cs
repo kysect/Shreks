@@ -3,19 +3,23 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
 
 //TODO: catch different exceptions and write better messages
+//TODO: WI-225
 public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
     private readonly ICommandContextFactory _contextFactory;
     private readonly CancellationToken _cancellationToken;
+    private readonly ILogger _logger;
 
-    public GithubCommandProcessor(ICommandContextFactory contextFactory, CancellationToken cancellationToken)
+    public GithubCommandProcessor(ICommandContextFactory contextFactory, ILogger logger, CancellationToken cancellationToken)
     {
         _contextFactory = contextFactory;
         _cancellationToken = cancellationToken;
+        _logger = logger;
     }
 
     public async Task<BaseShreksCommandResult> VisitAsync(RateCommand rateCommand)
@@ -28,7 +32,9 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process rate command: {e}");
+            string message = $"Received error while process rate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
@@ -42,7 +48,9 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process update command: {e}");
+            string message = $"Received error while process update command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
@@ -63,7 +71,9 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process activate command: {e}");
+            string message = $"Received error while process activate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
@@ -77,7 +87,9 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process deactivate command: {e}");
+            string message = $"Received error while process deactivate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
@@ -91,7 +103,9 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process delete command: {e}");
+            string message = $"Received error while process delete command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 }

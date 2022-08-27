@@ -8,7 +8,7 @@ public static class ConfigurationManagerExtensions
     public static ShreksConfiguration GetShreksConfiguration(this ConfigurationManager configuration)
     {
         var shreksConfiguration = configuration.GetSection(nameof(ShreksConfiguration)).Get<ShreksConfiguration>();
-        shreksConfiguration.AppendSecret(configuration["GithubAppSecret"]).Verify();
+        //shreksConfiguration.AppendSecret(configuration["GithubAppSecret"]).Verify();
         return shreksConfiguration;
     }
 }
