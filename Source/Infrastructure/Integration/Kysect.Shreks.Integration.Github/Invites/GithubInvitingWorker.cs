@@ -4,6 +4,7 @@ using Kysect.Shreks.Application.Abstractions.Github.Queries;
 using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Dto.SubjectCourseAssociations;
 using Kysect.Shreks.Integration.Github.Client;
+using Kysect.Shreks.Integration.Github.Exceptions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -114,6 +115,28 @@ public class GithubInvitingWorker : BackgroundService
             var count = inviteResult.Failed.Count;
             var error = inviteResult.Exception;
             _logger.LogInformation("Success invites: {FailedCount}. Error: {Error}", count, error);
+        }
+
+        foreach (var addedUser in inviteResult.AlreadyAdded)
+        {
+            var client = await _clientProvider.GetClient(organizationName);
+            var repositories = await client.Repository.GetAllForOrg(organizationName);
+            var templateRepository = repositories.FirstOrDefault(repo => repo.IsTemplate)
+                                     ?? throw new InfrastructureInvalidOperationException(
+                                         $"No template repository found for organization {organizationName}");
+            
+            _ = repositories.FirstOrDefault(repository => repository.Name == addedUser)
+                ?? await client.Repository.Generate(
+                    organizationName,
+                    templateRepository.Name,
+                    new NewRepositoryFromTemplate(addedUser)
+                    {
+                        Owner = organizationName,
+                        Description = null,
+                        Private = true
+                    });
+            
+            _logger.LogInformation("Added user {User} to organization {OrganizationName}", addedUser, organizationName);
         }
     }
 
