@@ -1,6 +1,6 @@
 using AutoMapper;
-using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Handlers.Validators;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
@@ -25,12 +25,7 @@ public class UpdateSubmissionStateHandler : IRequestHandler<Command, Response>
     {
         var submission = await Context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
-        if (!submission.Student.User.Id.Equals(request.UserId) &&
-            !submission.GroupAssignment.Assignment.SubjectCourse.Mentors.Any(x => x.Id.Equals(request.UserId)))
-        {
-            const string message = "User is not authorized to activate this submission";
-            throw new UnauthorizedException(message);
-        }
+        PermissionValidator.EnsureHasAccessToRepository(request.UserId, submission);
 
         submission.State = _mapper.Map<SubmissionState>(request.State);
         await Context.SaveChangesAsync(cancellationToken);

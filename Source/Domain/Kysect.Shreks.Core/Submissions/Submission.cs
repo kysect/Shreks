@@ -73,6 +73,9 @@ public abstract partial class Submission : IEntity<Guid>
         if (_state is SubmissionState.Completed)
             throw new DomainInvalidOperationException($"Submission {this} is already completed");
 
+        if (_state is SubmissionState.Deleted)
+            throw new DomainInvalidOperationException($"Submission {this} is already deleted");
+
         _state = state;
     }
 }
