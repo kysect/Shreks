@@ -8,7 +8,7 @@ namespace Kysect.Shreks.Tests.Application;
 
 public class GetGithubUsernamesForSubjectCourseHandlerTest : ApplicationTestBase
 {
-    [Fact]
+    [Fact(Skip = "WI-227")]
     public async Task Handle_Should_NotThrowException()
     {
         var handler = new Shreks.Application.Handlers.Students.GetGithubUsernamesForSubjectCourseHandler(Context);
