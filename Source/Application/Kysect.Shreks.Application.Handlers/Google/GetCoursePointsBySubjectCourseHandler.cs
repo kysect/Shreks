@@ -86,7 +86,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var points = submission.Points.Value;
 
-        var deadlinePolicy = GetActiveDeadlinePolicy(submission, deadline);
+        var deadlinePolicy = submission.GetActiveDeadlinePolicy(deadline);
 
         if (deadlinePolicy is not null)
             points = deadlinePolicy.Apply(points);
