@@ -25,6 +25,6 @@ public partial class GroupAssignment : IEntity
 
     public override String ToString()
     {
-        return $"Assignment: {Assignment.ShortName} ({AssignmentId}), Group: {Group.Name} ({GroupId})";
+        return $"Assignment: {Assignment}, Group: {Group}";
     }
 }

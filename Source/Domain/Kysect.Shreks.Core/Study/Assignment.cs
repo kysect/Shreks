@@ -94,4 +94,9 @@ public partial class Assignment : IEntity<Guid>
         if (!_deadlinePolicies.Remove(policy))
             throw new DomainInvalidOperationException($"Deadline span {policy} cannot be removed");
     }
+
+    public override String ToString()
+    {
+        return $"Id: {Id}, Name: {ShortName}";
+    }
 }
