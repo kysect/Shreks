@@ -49,6 +49,7 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
         await _context.SaveChangesAsync(cancellationToken);
 
         _tableUpdateQueue.EnqueueCoursePointsUpdate(submission.GetCourseId());
+        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
         DateOnly deadline = submission.GroupAssignment.Deadline;
 

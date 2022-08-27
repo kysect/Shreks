@@ -14,7 +14,7 @@ public partial class Assignment : IEntity<Guid>
     // TODO: Remove when .NET 7 is released
     protected virtual IReadOnlyCollection<SubmissionQueueFilter> Filters { get; init; }
 
-    public Assignment(string title, string shortName, Points minPoints, Points maxPoints, SubjectCourse subjectCourse)
+    public Assignment(string title, string shortName, int order, Points minPoints, Points maxPoints, SubjectCourse subjectCourse)
         : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(title);
@@ -24,6 +24,7 @@ public partial class Assignment : IEntity<Guid>
 
         Title = title;
         ShortName = shortName;
+        Order = order;
         MinPoints = minPoints;
         MaxPoints = maxPoints;
         SubjectCourse = subjectCourse;
@@ -33,6 +34,7 @@ public partial class Assignment : IEntity<Guid>
     
     public string Title { get; set; }
     public string ShortName { get; set; }
+    public int Order { get; set; }
     public Points MinPoints { get; protected set; }
     public Points MaxPoints { get; protected set; }
     public virtual SubjectCourse SubjectCourse { get; protected init; }

@@ -11,7 +11,7 @@ namespace Kysect.Shreks.Integration.Google.Sheets;
 
 public class PointsSheet : ISheet<CoursePointsDto>
 {
-    private const string Title = "Баллы";
+    public const string Title = "Баллы";
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ISheetManagementService _sheetEditor;
@@ -44,7 +44,7 @@ public class PointsSheet : ISheet<CoursePointsDto>
     private CoursePointsDto SortPoints(CoursePointsDto points)
     {
         List<AssignmentDto> sortedAssignments = points.Assignments
-            .OrderBy(a => a.ShortName)
+            .OrderBy(a => a.Order)
             .ToList();
 
         List<StudentPointsDto> sortedStudentPoints = points.StudentsPoints
