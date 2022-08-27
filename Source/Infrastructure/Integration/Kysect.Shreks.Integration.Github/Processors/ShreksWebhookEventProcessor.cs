@@ -43,7 +43,9 @@ public class ShreksWebhookEventProcessor
         PullRequestEvent pullRequestEvent,
         PullRequestAction action)
     {
-        switch (action)
+        string pullRequestAction = action;
+
+        switch (pullRequestAction)
         {
             case PullRequestActionValue.Synchronize:
             case PullRequestActionValue.Reopened:
@@ -105,7 +107,7 @@ public class ShreksWebhookEventProcessor
                 break;
 
             default:
-                _logger.LogWarning($"Received unsupported pull request webhook type: {action}");
+                _logger.LogWarning($"Received unsupported pull request webhook type: {pullRequestAction}");
                 break;
         }
     }
@@ -115,13 +117,14 @@ public class ShreksWebhookEventProcessor
         PullRequestReviewEvent pullRequestReviewEvent,
         PullRequestReviewAction action)
     {
-        switch (action)
+        string pullRequestReviewAction = action;
+        switch (pullRequestReviewAction)
         {
             case PullRequestReviewActionValue.Submitted:
             case PullRequestReviewActionValue.Edited:
             case PullRequestReviewActionValue.Dismissed:
 
-                _logger.LogWarning($"Pull request review action {action} is not supported.");
+                _logger.LogWarning($"Pull request review action {pullRequestReviewAction} is not supported.");
                 break;
         }
 
@@ -138,7 +141,8 @@ public class ShreksWebhookEventProcessor
     {
         GithubPullRequestDescriptor pullRequestDescriptor = await GetPullRequestDescriptor(issueCommentEvent);
 
-        switch (action)
+        string issueCommentAction = action;
+        switch (issueCommentAction)
         {
             case IssueCommentActionValue.Created:
                 var comment = issueCommentEvent.Comment.Body;
@@ -168,7 +172,7 @@ public class ShreksWebhookEventProcessor
 
             case IssueCommentActionValue.Deleted:
             case IssueCommentActionValue.Edited:
-                _logger.LogTrace($"Will ignore pull request comment {action} event.");
+                _logger.LogTrace($"Will ignore pull request comment {issueCommentAction} event.");
                 break;
         }
     }

@@ -48,7 +48,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
             return;
         }
 
-        _logger.LogInformation($"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name} with type {action}");
+        string pullRequestAction = action;
+        _logger.LogInformation($"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name} with type {pullRequestAction}");
 
         try
         {
@@ -56,8 +57,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         }
         catch (Exception e)
         {
-            string message = $"{nameof(ProcessPullRequestWebhookAsync)}: Failed to handle {action}";
-            _logger.LogError(e, message);
+            string message = $"Failed to handle {pullRequestAction}: {e.Message}";
+            _logger.LogError(e, $"{nameof(ProcessPullRequestWebhookAsync)}: {message}");
             await SendExceptionMessageSafe(pullRequestEvent, (int)pullRequestEvent.PullRequest.Number, message);
         }
     }
@@ -73,7 +74,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
             return;
         }
 
-        _logger.LogInformation($"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name}");
+        string pullRequestReviewAction = action;
+        _logger.LogInformation($"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name} with type {pullRequestReviewAction}");
 
         try
         {
@@ -81,8 +83,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         }
         catch (Exception e)
         {
-            string message = $"{nameof(ProcessPullRequestReviewWebhookAsync)}: Failed to handle {action}";
-            _logger.LogError(e, message);
+            string message = $"Failed to handle {pullRequestReviewAction}: {e.Message}";
+            _logger.LogError(e, $"{nameof(ProcessPullRequestReviewWebhookAsync)}:{message}");
             await SendExceptionMessageSafe(pullRequestReviewEvent, (int)pullRequestReviewEvent.PullRequest.Number, message);
         }
     }
@@ -104,7 +106,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
             return;
         }
 
-        _logger.LogInformation($"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name} with type {action}");
+        string issueCommentAction = action;
+        _logger.LogInformation($"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name} with type {issueCommentAction}");
 
         try
         {
@@ -112,8 +115,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         }
         catch (Exception e)
         {
-            string message = $"{nameof(ProcessIssueCommentWebhookAsync)}: Failed to handle {action}";
-            _logger.LogError(e, message);
+            string message = $"Failed to handle {issueCommentAction}: {e.Message}";
+            _logger.LogError(e, $"{nameof(ProcessIssueCommentWebhookAsync)}: {message}");
             await SendExceptionMessageSafe(issueCommentEvent, (int)issueCommentEvent.Issue.Number, message);
         }
     }
