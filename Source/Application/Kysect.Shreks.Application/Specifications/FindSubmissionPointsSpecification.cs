@@ -14,7 +14,7 @@ public static class FindSubmissionPointsSpecification
 
         var points = submission.Points.Value;
 
-        var deadlinePolicy = submission.GetActiveDeadlinePolicy(deadline);
+        var deadlinePolicy = submission.FindActiveDeadlinePolicy(deadline);
 
         if (deadlinePolicy is not null)
             points = deadlinePolicy.Apply(points);
