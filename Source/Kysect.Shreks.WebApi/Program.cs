@@ -77,6 +77,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
                 o.ConfigureFaker(o => o.Locale = "ru");
                 o.ConfigureEntityGenerator<User>(o => o.Count = testEnvConfiguration.Users.Count);
                 o.ConfigureEntityGenerator<Student>(o => o.Count = testEnvConfiguration.Users.Count);
+                o.ConfigureEntityGenerator<Mentor>(o => o.Count = testEnvConfiguration.Users.Count);
                 o.ConfigureEntityGenerator<GithubUserAssociation>(o => o.Count = 0);
                 o.ConfigureEntityGenerator<IsuUserAssociation>(o => o.Count = 0);
                 o.ConfigureEntityGenerator<Submission>(o => o.Count = 0);
