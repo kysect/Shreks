@@ -45,7 +45,7 @@ public class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
             RawPoints: submission.Points?.Value,
             ExtraPoints: submission.ExtraPoints?.Value,
             PenaltyPoints: submission.CalculatePenaltySubmissionPoints(deadline)?.Value,
-            TotalPoints: submission.GetTotalSubmissionPoints(deadline)?.Value
+            TotalPoints: submission.CalculateTotalSubmissionPoints(deadline)?.Value
         );
 
         return new Response(dto);

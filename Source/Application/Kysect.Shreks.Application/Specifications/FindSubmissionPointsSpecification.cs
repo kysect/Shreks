@@ -1,11 +1,11 @@
-﻿using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Application.Specifications;
 
 public static class FindSubmissionPointsSpecification
 {
-    public static Points? GetTotalSubmissionPoints(this Submission submission, DateOnly deadline)
+    public static Points? CalculateTotalSubmissionPoints(this Submission submission, DateOnly deadline)
     {
         ArgumentNullException.ThrowIfNull(submission);
 

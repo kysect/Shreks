@@ -72,7 +72,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         var deadline = groupAssignment.Deadline;
 
         (var submission, Points? points) = submissions
-            .Select(s => (submission: s, points: s.GetTotalSubmissionPoints(deadline)))
+            .Select(s => (submission: s, points: s.CalculateTotalSubmissionPoints(deadline)))
             .OrderByDescending(x => x.points)
             .FirstOrDefault();
 
