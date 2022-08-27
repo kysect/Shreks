@@ -3,6 +3,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.DeadlinePolicies;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
@@ -33,7 +34,9 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var assignments = subjectCourse.Assignments;
 
+        // TODO: It is not evident query. We can fetch submissions from subject course.
         var submission = _context.Submissions
+            .Where(s => s.State == SubmissionState.Completed)
             .Where(s => assignments.Any(a => a.Equals(s.GroupAssignment.Assignment)));
 
         var studentPoints = subjectCourse.Groups
@@ -79,6 +82,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDate, points.Value.Value);
     }
 
+    // TODO: move submission rating logic to domain
     private Points? GetSubmissionPoints(Submission submission, DateOnly deadline)
     {
         if (submission.Points is null)

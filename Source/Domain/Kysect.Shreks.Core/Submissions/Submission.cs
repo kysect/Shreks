@@ -50,6 +50,7 @@ public abstract partial class Submission : IEntity<Guid>
 
     public string Payload { get; set; }
 
+    // TODO: private set
     public Fraction? Rating { get; set; }
 
     public Points? ExtraPoints { get; set; }

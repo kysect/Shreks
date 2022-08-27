@@ -2,6 +2,7 @@
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -27,8 +28,9 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
         var groupName = _context.StudentGroups.First(g => g.Id == groupId).Name;
         
         var submissions = await _context.Submissions
-            .Where(s => s.Student.Group.Id == groupId
-                        && s.GroupAssignment.Assignment.SubjectCourse.Id == courseId)
+            .Where(s => s.State == SubmissionState.Active)
+            .Where(s => s.Student.Group.Id == groupId)
+            .Where(s => s.GroupAssignment.Assignment.SubjectCourse.Id == courseId)
             .ToArrayAsync(cancellationToken);
         
         //TODO: add queue logic
