@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Tools;
 using Kysect.Shreks.Core.Queue;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,6 +8,6 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationConfiguration(this IServiceCollection collection)
     {
-        return collection.AddSingleton<IQueryExecutor, IQueryExecutor>();
+        return collection.AddSingleton<IQueryExecutor, QueryExecutor>();
     }
 }
