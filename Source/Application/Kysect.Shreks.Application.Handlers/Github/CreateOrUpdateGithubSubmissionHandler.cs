@@ -3,6 +3,7 @@ using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Extensions;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Specifications.Submissions;
@@ -45,6 +46,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
         var submission = await _context.SubmissionAssociations
             .WithSpecification(submissionSpec)
+            .Where(x => x.State != SubmissionState.Completed)
             .FirstOrDefaultAsync(cancellationToken);
 
         bool isCreated = false;
