@@ -22,4 +22,6 @@ public partial class GroupAssignment : IEntity
     public virtual Assignment Assignment { get; protected init; }
 
     public DateOnly Deadline { get; set; }
+
+    public override string ToString() => $"(GroupId: {GroupId}, assignmentId: {AssignmentId})";
 }
