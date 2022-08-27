@@ -3,10 +3,12 @@ using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Application.Specifications;
 
-public static class SubmissionPointsSpecification
+public static class FindSubmissionPointsSpecification
 {
     public static Points? GetTotalSubmissionPoints(this Submission submission, DateOnly deadline)
     {
+        ArgumentNullException.ThrowIfNull(submission);
+
         if (submission.Points is null)
             return null;
 
@@ -25,6 +27,8 @@ public static class SubmissionPointsSpecification
 
     public static Points? GetPenaltySubmissionPoints(this Submission submission, DateOnly deadline)
     {
+        ArgumentNullException.ThrowIfNull(submission);
+
         Points? deadlineAppliedPoints = submission.GetTotalSubmissionPoints(deadline);
         double? penaltyPoints = (submission.Points - deadlineAppliedPoints)?.Value;
 

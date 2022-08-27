@@ -7,6 +7,8 @@ namespace Kysect.Shreks.Application.Specifications
     {
         public static DeadlinePolicy? GetActiveDeadlinePolicy(this Submission submission, DateOnly deadline)
         {
+            ArgumentNullException.ThrowIfNull(submission);
+
             if (submission.SubmissionDate <= deadline)
                 return null;
 
