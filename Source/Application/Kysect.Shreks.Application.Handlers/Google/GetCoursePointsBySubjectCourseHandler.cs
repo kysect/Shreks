@@ -33,7 +33,9 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var assignments = subjectCourse.Assignments;
 
+        // TODO: It is not evident query. We can fetch submissions from subject course.
         var submission = _context.Submissions
+            .Where(s => s.State == SubmissionState.Completed)
             .Where(s => assignments.Any(a => a.Equals(s.GroupAssignment.Assignment)));
 
         var studentPoints = subjectCourse.Groups

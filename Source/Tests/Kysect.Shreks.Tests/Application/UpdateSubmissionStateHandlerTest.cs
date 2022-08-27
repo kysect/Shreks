@@ -16,7 +16,9 @@ public class UpdateSubmissionStateHandlerTest : ApplicationTestBase
         // Arrange
         const SubmissionStateDto stateDto = SubmissionStateDto.Active;
         const SubmissionState state = SubmissionState.Active;
-        var submission = await Context.Submissions.FirstAsync();
+        var submission = await Context.Submissions
+            .Where(s => s.State != SubmissionState.Completed)
+            .FirstAsync();
 
         var command = new UpdateSubmissionState.Command(submission.Student.User.Id, submission.Id, stateDto);
 

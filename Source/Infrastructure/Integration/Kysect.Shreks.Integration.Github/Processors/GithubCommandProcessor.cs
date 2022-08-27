@@ -80,4 +80,18 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             return new BaseShreksCommandResult(false, $"Received error while process deactivate command: {e}");
         }
     }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(DeleteCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
+            await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, "Submission deleted successfully");
+        }
+        catch (Exception e)
+        {
+            return new BaseShreksCommandResult(false, $"Received error while process delete command: {e}");
+        }
+    }
 }
