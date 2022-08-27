@@ -50,8 +50,7 @@ public abstract partial class Submission : IEntity<Guid>
 
     public string Payload { get; set; }
 
-    // TODO: private set
-    public Fraction? Rating { get; set; }
+    public Fraction? Rating { get; private set; }
 
     public Points? ExtraPoints { get; set; }
 
@@ -66,12 +65,6 @@ public abstract partial class Submission : IEntity<Guid>
         if (State is not SubmissionState.Active or SubmissionState.Completed)
         {
             string message = $"Cannot update submission points. Submission state: {State}.";
-            throw new DomainInvalidOperationException(message);
-        }
-
-        if (State != SubmissionState.Completed && rating is null)
-        {
-            const string message = $"Cannot update submission points. Rating was not set.";
             throw new DomainInvalidOperationException(message);
         }
 
