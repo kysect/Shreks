@@ -2,7 +2,7 @@ using Kysect.Shreks.Core.Study;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Kysect.Shreks.DataAccess.Configurations;
+namespace Kysect.Shreks.DataAccess.Configurations.SubjectCourses;
 
 public class SubjectCourseConfiguration : IEntityTypeConfiguration<SubjectCourse>
 {

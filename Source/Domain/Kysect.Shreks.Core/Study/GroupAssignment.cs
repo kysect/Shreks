@@ -23,5 +23,8 @@ public partial class GroupAssignment : IEntity
 
     public DateOnly Deadline { get; set; }
 
-    public override string ToString() => $"(GroupId: {GroupId}, assignmentId: {AssignmentId})";
+    public override String ToString()
+    {
+        return $"Assignment: {Assignment}, Group: {Group}";
+    }
 }

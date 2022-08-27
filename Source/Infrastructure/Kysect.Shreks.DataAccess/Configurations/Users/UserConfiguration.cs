@@ -2,7 +2,7 @@ using Kysect.Shreks.Core.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Kysect.Shreks.DataAccess.Configurations;
+namespace Kysect.Shreks.DataAccess.Configurations.Users;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

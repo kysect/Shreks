@@ -1,6 +1,6 @@
-using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
@@ -12,13 +12,11 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _tableUpdateQueue;
-    private readonly IMapper _mapper;
 
-    public UpdateSubmissionDateHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue, IMapper mapper)
+    public UpdateSubmissionDateHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue)
     {
         _context = context;
         _tableUpdateQueue = tableUpdateQueue;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -31,7 +29,7 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
 
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
-        var dto = _mapper.Map<SubmissionDto>(submission);
+        SubmissionRateDto dto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 
         return new Response(dto);
     }

@@ -12,7 +12,7 @@ using Serilog;
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/update")]
-public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
+public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDto>
 {
     public UpdateCommand(int submissionCode, double? ratingPercent, double? extraPoints, string? dateStr)
     {
@@ -40,7 +40,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
         return visitor.VisitAsync(this);
     }
 
-    public async Task<SubmissionDto> ExecuteAsync(PullRequestContext context, CancellationToken cancellationToken)
+    public async Task<SubmissionRateDto> ExecuteAsync(PullRequestContext context, CancellationToken cancellationToken)
     {
         string message = $"Handle /update command from {context.IssuerId} with arguments:" +
                          $" {{ SubmissionCode : {SubmissionCode}," +
@@ -48,9 +48,9 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
                          $" ExtraPoints: {ExtraPoints}" +
                          $" DateStr: {DateStr}" +
                          $" }}";
-
         context.Log.LogInformation(message);
-        SubmissionDto submissionDto = null!;
+
+        SubmissionRateDto submissionRateDto = null!;
 
         var query = new GetSubmissionByPrAndSubmissionCode.Query(context.PullRequestDescriptor, SubmissionCode);
         var submissionResponse = await context.Mediator.Send(query, cancellationToken);
@@ -63,7 +63,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
 
             var command = new UpdateSubmissionPoints.Command(submissionResponse.Submission.Id, RatingPercent, ExtraPoints);
             var response = await context.Mediator.Send(command, cancellationToken);
-            submissionDto = response.Submission;
+            submissionRateDto = response.SubmissionRate;
         }
 
         if (DateStr is not null)
@@ -73,9 +73,9 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
             
             var command = new UpdateSubmissionDate.Command(submissionResponse.Submission.Id, date);
             var response = await context.Mediator.Send(command, cancellationToken);
-            submissionDto = response.Submission;
+            submissionRateDto = response.SubmissionRate;
         }
 
-        return submissionDto;
+        return submissionRateDto;
     }
 }

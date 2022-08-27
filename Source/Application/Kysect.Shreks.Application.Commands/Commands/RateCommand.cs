@@ -10,7 +10,7 @@ using Serilog;
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/rate", aliases: new []{"/assess"})]
-public class RateCommand : IShreksCommand<SubmissionContext, SubmissionDto>
+public class RateCommand : IShreksCommand<SubmissionContext, SubmissionRateDto>
 {
     public RateCommand(double ratingPercent, double? extraPoints)
     {
@@ -30,7 +30,7 @@ public class RateCommand : IShreksCommand<SubmissionContext, SubmissionDto>
         return visitor.VisitAsync(this);
     }
 
-    public async Task<SubmissionDto> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
+    public async Task<SubmissionRateDto> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
     {
         string message = $"Handle /rate command from {context.IssuerId} with arguments:" +
                          $" {{ RatingPercent: {RatingPercent}," +
@@ -40,6 +40,6 @@ public class RateCommand : IShreksCommand<SubmissionContext, SubmissionDto>
         var submissionId = context.Submission.Id;
         var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent, ExtraPoints);
         var response = await context.Mediator.Send(command, cancellationToken);
-        return response.Submission;
+        return response.SubmissionRate;
     }
 }
