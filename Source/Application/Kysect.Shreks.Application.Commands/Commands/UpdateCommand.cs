@@ -47,8 +47,8 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDt
                          $" ExtraPoints: {ExtraPoints}" +
                          $" DateStr: {DateStr}" +
                          $" }}";
+
         Log.Information(message);
-        SubmissionDto submissionDto = null!;
 
         SubmissionRateDto submissionRateDto = null!;
 
