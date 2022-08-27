@@ -31,8 +31,8 @@ public class MappingTest : DataAccessTestBase
 
     [Theory]
     [InlineData(SubmissionStateDto.Active, SubmissionState.Active)]
-    [InlineData(SubmissionStateDto.Delete, SubmissionState.Deleted)]
-    [InlineData(SubmissionStateDto.Invalid, SubmissionState.Deleted)]
+    [InlineData(SubmissionStateDto.Deleted, SubmissionState.Deleted)]
+    [InlineData(SubmissionStateDto.Inactive, SubmissionState.Inactive)]
     [InlineData(SubmissionStateDto.Completed, SubmissionState.Completed)]
     public void Map_Should_MapSubmissionStateDtoToSubmissionState(SubmissionStateDto stateDto, SubmissionState state)
     {

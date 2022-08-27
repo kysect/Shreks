@@ -13,7 +13,7 @@ public class DeleteCommand : IShreksCommand<SubmissionContext, SubmissionDto>
     public async Task<SubmissionDto> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
     {
         var command = new UpdateSubmissionState.Command(
-            context.IssuerId, context.Submission.Id, SubmissionStateDto.Delete);
+            context.IssuerId, context.Submission.Id, SubmissionStateDto.Deleted);
 
         var response = await context.Mediator.Send(command, cancellationToken);
 
