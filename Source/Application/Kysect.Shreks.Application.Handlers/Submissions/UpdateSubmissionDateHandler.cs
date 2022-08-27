@@ -2,9 +2,6 @@ using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Extensions;
-using Kysect.Shreks.Core.DeadlinePolicies;
-using Kysect.Shreks.Core.Exceptions;
-using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -34,12 +31,7 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
 
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
-        DeadlinePolicy? deadlinePolicy = submission.GetActiveDeadlinePolicy(submission.GroupAssignment.Deadline);
-
-        if (deadlinePolicy is null)
-            throw new DomainInvalidOperationException($"Failed to find deadline policy for group assignment {submission.GroupAssignment}");
-
-        Points deadlineAppliedPoints = deadlinePolicy.Apply(submission.Points!.Value);
+        DateOnly deadline = submission.GroupAssignment.Deadline;
 
         var dto = new SubmissionRateDto(
             Code: submission.Code,
@@ -47,8 +39,8 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
             Rating: submission.Rating?.Value,
             RawPoints: submission.Points?.Value,
             ExtraPoints: submission.ExtraPoints?.Value,
-            PenaltyPoints: (submission.Points - deadlineAppliedPoints)?.Value,
-            TotalPoints: (deadlineAppliedPoints + submission.ExtraPoints)?.Value
+            PenaltyPoints: submission.GetPenaltySubmissionPoints(deadline)?.Value,
+            TotalPoints: submission.GetTotalSubmissionPoints(deadline)?.Value
         );
 
         return new Response(dto);
