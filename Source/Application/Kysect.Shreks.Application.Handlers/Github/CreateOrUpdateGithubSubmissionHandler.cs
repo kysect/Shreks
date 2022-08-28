@@ -5,16 +5,15 @@ using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
-using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Specifications.Submissions;
 using Kysect.Shreks.Core.Submissions;
-using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Kysect.Shreks.Application.Handlers.Validators;
 using static Kysect.Shreks.Application.Abstractions.Github.Commands.CreateOrUpdateGithubSubmission;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
@@ -47,8 +46,8 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             prNumber) = request.PullRequestDescriptor;
 
         Guid userId = request.UserId;
-        bool triggeredByMentor = await TriggeredByMentor(userId, organization);
-        bool triggeredByAnotherUser = !string.Equals(repository, sender, StringComparison.CurrentCultureIgnoreCase);
+        bool triggeredByMentor = await PermissionValidator.IsOrganizationMentor(_context, userId, organization);
+        bool triggeredByAnotherUser = !PermissionValidator.IsRepositoryOwner(sender, repository);
 
         var submissionSpec = new FindLatestGithubSubmission(
             organization,
@@ -129,14 +128,5 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         await _context.SaveChangesAsync(cancellationToken);
 
         return submission;
-    }
-
-    private async Task<Boolean> TriggeredByMentor(Guid userId, string organizationName)
-    {
-        Mentor? mentor = await _context.SubjectCourseAssociations
-            .WithSpecification(new FindMentorByUsernameAndOrganization(userId, organizationName))
-            .FirstOrDefaultAsync();
-
-        return mentor is not null;
     }
 }
