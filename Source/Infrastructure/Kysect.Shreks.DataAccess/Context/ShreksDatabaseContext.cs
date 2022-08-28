@@ -44,8 +44,6 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
         foreach (var fk in cascadeFKs)
             fk.DeleteBehavior = DeleteBehavior.Restrict;
 
-        base.OnModelCreating(modelBuilder);
-
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAssemblyMarker).Assembly);
     }
 
@@ -53,5 +51,6 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     {
         configurationBuilder.Properties<Points>().HaveConversion<PointsValueConverter>();
         configurationBuilder.Properties<Fraction>().HaveConversion<FractionValueConverter>();
+        configurationBuilder.Properties<TimeSpan>().HaveConversion<TimeSpanConverter>();
     }
 }
