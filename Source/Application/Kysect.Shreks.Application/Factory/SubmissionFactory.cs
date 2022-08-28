@@ -26,14 +26,14 @@ public class SubmissionFactory : ISubmissionFactory
         CancellationToken cancellationToken)
     {
         var student = await _context.Students.GetByIdAsync(userId, cancellationToken);
-        var groupAssignmentSpec = new GetStudentGroupAssignment(student.Id, assignmentId);
+        var groupAssignmentSpec = new GetStudentGroupAssignment(student.UserId, assignmentId);
 
         var groupAssignment = await _context.GroupAssignments
             .WithSpecification(groupAssignmentSpec)
             .SingleAsync(cancellationToken);
 
         var studentAssignmentSubmissionsSpec = new GetStudentAssignmentSubmissions(
-            student.Id, assignmentId);
+            student.UserId, assignmentId);
 
         var count = await _context.Submissions
             .WithSpecification(studentAssignmentSubmissionsSpec)

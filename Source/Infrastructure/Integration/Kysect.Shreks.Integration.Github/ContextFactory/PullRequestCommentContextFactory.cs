@@ -52,7 +52,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
 
         var subjectCourseId = await GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
         var assignmentId = await GetAssignemntByBranchAndSubjectCourse(_pullRequestDescriptor.BranchName, subjectCourseId, cancellationToken);
-        return new PullRequestAndAssignmentContext(_mediator, userId, _pullRequestDescriptor, assignmentId);
+        return new PullRequestAndAssignmentContext(_mediator, userId, _pullRequestDescriptor, assignmentId, _log);
     }
 
     private async Task<Guid> GetSubjectCourseByOrganization(string organization, CancellationToken cancellationToken)

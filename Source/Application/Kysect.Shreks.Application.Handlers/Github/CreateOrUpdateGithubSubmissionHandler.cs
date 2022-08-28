@@ -6,12 +6,9 @@ using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
-using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Specifications.Submissions;
-using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Kysect.Shreks.Application.Handlers.Validators;
@@ -79,7 +76,6 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
                 request.PullRequestDescriptor,
                 cancellationToken);
             isCreated = true;
-            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         }
         else if (!triggeredByMentor)
         {
@@ -87,7 +83,6 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync(cancellationToken);
-            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
             if (triggeredByAnotherUser)
             {
@@ -101,48 +96,5 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         var dto = _mapper.Map<SubmissionDto>(submission);
 
         return new Response(isCreated, dto);
-    }
-
-    private async Task<GithubSubmission> CreateSubmission(Command request, CancellationToken cancellationToken)
-    {
-        var student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
-        var groupAssignmentSpec = new GetStudentGroupAssignment(student.Id, request.AssignmentId);
-
-        var groupAssignment = await _context.GroupAssignments
-            .WithSpecification(groupAssignmentSpec)
-            .SingleAsync(cancellationToken);
-
-        var studentAssignmentSubmissionsSpec = new GetStudentAssignmentSubmissions(
-            student.Id, request.AssignmentId);
-
-        var count = await _context.Submissions
-            .WithSpecification(studentAssignmentSubmissionsSpec)
-            .CountAsync(cancellationToken);
-
-        var submission = new GithubSubmission
-        (
-            count + 1,
-            student,
-            groupAssignment,
-            Calendar.CurrentDate,
-            request.PullRequestDescriptor.Payload,
-            request.PullRequestDescriptor.Organization,
-            request.PullRequestDescriptor.Repository,
-            request.PullRequestDescriptor.PrNumber
-        );
-
-        await _context.Submissions.AddAsync(submission, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return submission;
-    }
-
-    private async Task<Boolean> TriggeredByMentor(Guid userId, string organizationName)
-    {
-        Mentor? mentor = await _context.SubjectCourseAssociations
-            .WithSpecification(new FindMentorByUsernameAndOrganization(userId, organizationName))
-            .FirstOrDefaultAsync();
-
-        return mentor is not null;
     }
 }
