@@ -103,7 +103,9 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process create submission command: {e}");
+            string message = $"An error occurred while processing deactivate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
