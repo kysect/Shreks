@@ -15,9 +15,9 @@ namespace Kysect.Shreks.Integration.Github.Processors;
 
 public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 {
-    private readonly IActionNotifier _actionNotifier;
     private readonly ILogger<ShreksWebhookEventProcessorProxy> _logger;
     private readonly ShreksWebhookEventProcessor _processor;
+    private readonly ShreksWebhookCommentSender _commentSender;
 
     public ShreksWebhookEventProcessorProxy(
         IActionNotifier actionNotifier,
@@ -26,15 +26,11 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         IMediator mediator,
         IOrganizationGithubClientProvider clientProvider)
     {
-        _actionNotifier = actionNotifier;
         _logger = logger;
 
-        _processor = new ShreksWebhookEventProcessor(
-            actionNotifier,
-            logger,
-            commandParser,
-            mediator,
-            clientProvider);
+        _commentSender = new ShreksWebhookCommentSender(actionNotifier, _logger);
+
+        _processor = new ShreksWebhookEventProcessor(_commentSender, commandParser, mediator, clientProvider, logger);
     }
 
     protected override async Task ProcessPullRequestWebhookAsync(
@@ -59,7 +55,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         {
             string message = $"Failed to handle {pullRequestAction}: {e.Message}";
             _logger.LogError(e, $"{nameof(ProcessPullRequestWebhookAsync)}: {message}");
-            await SendExceptionMessageSafe(pullRequestEvent, (int)pullRequestEvent.PullRequest.Number, message);
+            int issueNumber = (int)pullRequestEvent.PullRequest.Number;
+            await _commentSender.SendExceptionMessageSafe(pullRequestEvent, issueNumber, message);
         }
     }
 
@@ -85,7 +82,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         {
             string message = $"Failed to handle {pullRequestReviewAction}: {e.Message}";
             _logger.LogError(e, $"{nameof(ProcessPullRequestReviewWebhookAsync)}:{message}");
-            await SendExceptionMessageSafe(pullRequestReviewEvent, (int)pullRequestReviewEvent.PullRequest.Number, message);
+            int issueNumber = (int)pullRequestReviewEvent.PullRequest.Number;
+            await _commentSender.SendExceptionMessageSafe(pullRequestReviewEvent, issueNumber, message);
         }
     }
 
@@ -117,7 +115,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         {
             string message = $"Failed to handle {issueCommentAction}: {e.Message}";
             _logger.LogError(e, $"{nameof(ProcessIssueCommentWebhookAsync)}: {message}");
-            await SendExceptionMessageSafe(issueCommentEvent, (int)issueCommentEvent.Issue.Number, message);
+            int issueNumber = (int)issueCommentEvent.Issue.Number;
+            await _commentSender.SendExceptionMessageSafe(issueCommentEvent, issueNumber, message);
         }
     }
 
@@ -129,17 +128,5 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
     private bool IsSenderBotOrNull(WebhookEvent webhookEvent)
     {
         return webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
-    }
-
-    private async Task SendExceptionMessageSafe(WebhookEvent webhookEvent, int issueNumber, string message)
-    {
-        try
-        {
-            await _actionNotifier.SendComment(webhookEvent, issueNumber, message);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Failed to send exception message to user pull request.");
-        }
     }
 }

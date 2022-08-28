@@ -4,11 +4,11 @@ using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Abstractions.Submissions.Queries;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
+using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.ContextFactory;
-using Kysect.Shreks.Integration.Github.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Octokit;
@@ -23,19 +23,19 @@ namespace Kysect.Shreks.Integration.Github.Processors;
 
 public class ShreksWebhookEventProcessor
 {
-    private readonly IActionNotifier _actionNotifier;
     private readonly ILogger<ShreksWebhookEventProcessorProxy> _logger;
     private readonly IShreksCommandParser _commandParser;
     private readonly IMediator _mediator;
     private readonly IOrganizationGithubClientProvider _clientProvider;
+    private readonly ShreksWebhookCommentSender _commentSender;
 
-    public ShreksWebhookEventProcessor(IActionNotifier actionNotifier, ILogger<ShreksWebhookEventProcessorProxy> logger, IShreksCommandParser commandParser, IMediator mediator, IOrganizationGithubClientProvider clientProvider)
+    public ShreksWebhookEventProcessor(ShreksWebhookCommentSender commentSender, IShreksCommandParser commandParser, IMediator mediator, IOrganizationGithubClientProvider clientProvider, ILogger<ShreksWebhookEventProcessorProxy> logger)
     {
-        _actionNotifier = actionNotifier;
         _logger = logger;
         _commandParser = commandParser;
         _mediator = mediator;
         _clientProvider = clientProvider;
+        _commentSender = commentSender;
     }
 
     public async Task ProcessPullRequestWebhookAsync(
@@ -75,21 +75,11 @@ public class ShreksWebhookEventProcessor
 
                 var command = new CreateOrUpdateGithubSubmission.Command(userId, assignmentId, pullRequestDescriptor);
 
-                var response = await _mediator.Send(command, cancellationToken);
-                if (response.IsCreated)
-                {
-                    await _actionNotifier.SendComment(
-                        pullRequestEvent,
-                        prNum,
-                        $"Created submission with id {response.Submission.Id}");
-                }
+                (bool isCreated, SubmissionDto? submissionDto) = await _mediator.Send(command, cancellationToken);
+                if (isCreated)
+                    await _commentSender.NotifySubmissionCreated(pullRequestEvent, submissionDto);
                 else
-                {
-                    await _actionNotifier.SendCommitComment(
-                        pullRequestEvent,
-                        pullRequestEvent.PullRequest.Head.Sha,
-                        $"Updated submission with id {response.Submission.Id}");
-                }
+                    await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submissionDto);
 
                 break;
 
@@ -128,10 +118,7 @@ public class ShreksWebhookEventProcessor
                 break;
         }
 
-        await _actionNotifier.ApplyInComments(
-            pullRequestReviewEvent,
-            pullRequestReviewEvent.PullRequest.Number,
-            nameof(ProcessPullRequestWebhookAsync));
+        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, action);
     }
 
     public async Task ProcessIssueCommentWebhookAsync(
@@ -152,20 +139,9 @@ public class ShreksWebhookEventProcessor
                     var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, _logger);
                     var processor = new GithubCommandProcessor(contextCreator, _logger, CancellationToken.None);
 
-                    var result = await command.AcceptAsync(processor);
+                    BaseShreksCommandResult result = await command.AcceptAsync(processor);
 
-                    if (!string.IsNullOrEmpty(result.Message))
-                    {
-                        await _actionNotifier.SendComment(
-                            issueCommentEvent,
-                            issueCommentEvent.Issue.Number,
-                            result.Message);
-                    }
-
-                    await _actionNotifier.ReactInComments(
-                        issueCommentEvent,
-                        issueCommentEvent.Comment.Id,
-                        result.IsSuccess);
+                    await _commentSender.NotifyAboutCommandProcessingResult(issueCommentEvent, result);
                 }
 
                 break;

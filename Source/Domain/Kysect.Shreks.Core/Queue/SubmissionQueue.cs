@@ -34,6 +34,7 @@ public partial class SubmissionQueue : IEntity<Guid>
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryExecutor);
+        ArgumentNullException.ThrowIfNull(_filters);
 
         foreach (var filter in _filters)
         {
