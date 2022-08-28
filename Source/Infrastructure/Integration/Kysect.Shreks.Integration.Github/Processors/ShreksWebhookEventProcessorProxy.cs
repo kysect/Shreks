@@ -44,7 +44,7 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
     {
         if (IsSenderBotOrNull(pullRequestEvent))
         {
-            _logger.LogTrace($"{nameof(ProcessPullRequestWebhookAsync)} skipped because sender is bot or null");
+            _logger.LogTrace($"{nameof(ProcessPullRequestWebhookAsync)} was skipped because sender is bot or null");
             return;
         }
 
@@ -70,7 +70,7 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
     {
         if (IsSenderBotOrNull(pullRequestReviewEvent))
         {
-            _logger.LogTrace($"{nameof(ProcessPullRequestReviewWebhookAsync)} skipped because sender is bot or null");
+            _logger.LogTrace($"{nameof(ProcessPullRequestReviewWebhookAsync)} was skipped because sender is bot or null");
             return;
         }
 
@@ -96,13 +96,13 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
     {
         if (IsSenderBotOrNull(issueCommentEvent))
         {
-            _logger.LogTrace($"{nameof(ProcessIssueCommentWebhookAsync)} skipped because sender is bot or null");
+            _logger.LogTrace($"{nameof(ProcessIssueCommentWebhookAsync)} was skipped because sender is bot or null");
             return;
         }
 
         if (!IsPullRequestCommand(issueCommentEvent))
         {
-            _logger.LogTrace($"Skip commit in {issueCommentEvent.Issue.Id}. Issue comments is not supported.");
+            _logger.LogTrace($"Skipping commit in {issueCommentEvent.Issue.Id}. Issue comments is not supported.");
             return;
         }
 

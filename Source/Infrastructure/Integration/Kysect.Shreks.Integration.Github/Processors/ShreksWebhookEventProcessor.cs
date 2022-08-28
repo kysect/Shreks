@@ -107,7 +107,7 @@ public class ShreksWebhookEventProcessor
                 break;
 
             default:
-                _logger.LogWarning($"Received unsupported pull request webhook type: {pullRequestAction}");
+                _logger.LogWarning($"Unsupported pull request webhook type was received: {pullRequestAction}");
                 break;
         }
     }
@@ -172,7 +172,7 @@ public class ShreksWebhookEventProcessor
 
             case IssueCommentActionValue.Deleted:
             case IssueCommentActionValue.Edited:
-                _logger.LogTrace($"Will ignore pull request comment {issueCommentAction} event.");
+                _logger.LogTrace($"Pull request comment {issueCommentAction} event will be ignored.");
                 break;
         }
     }

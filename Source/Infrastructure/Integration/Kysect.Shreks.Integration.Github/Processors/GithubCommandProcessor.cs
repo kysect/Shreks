@@ -32,7 +32,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            string message = $"Received error while process rate command: {e.Message}";
+            string message = $"An error occurred while processing rate command: {e.Message}";
             _logger.LogError(e, message);
             return new BaseShreksCommandResult(false, message);
         }
@@ -48,7 +48,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            string message = $"Received error while process update command: {e.Message}";
+            string message = $"An error occurred while processing update command: {e.Message}";
             _logger.LogError(e, message);
             return new BaseShreksCommandResult(false, message);
         }
@@ -71,7 +71,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            string message = $"Received error while process activate command: {e.Message}";
+            string message = $"An error occurred while processing activate command: {e.Message}";
             _logger.LogError(e, message);
             return new BaseShreksCommandResult(false, message);
         }
@@ -87,7 +87,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            string message = $"Received error while process deactivate command: {e.Message}";
+            string message = $"An error occurred while processing deactivate command: {e.Message}";
             _logger.LogError(e, message);
             return new BaseShreksCommandResult(false, message);
         }
@@ -103,7 +103,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
         catch (Exception e)
         {
-            string message = $"Received error while process delete command: {e.Message}";
+            string message = $"An error occurred while processing delete command: {e.Message}";
             _logger.LogError(e, message);
             return new BaseShreksCommandResult(false, message);
         }
