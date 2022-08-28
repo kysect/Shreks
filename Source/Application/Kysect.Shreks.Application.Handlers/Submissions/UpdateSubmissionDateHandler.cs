@@ -28,6 +28,7 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
         await _context.SaveChangesAsync(cancellationToken);
 
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
+        _tableUpdateQueue.EnqueueCoursePointsUpdate(submission.GetCourseId());
 
         SubmissionRateDto dto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 
