@@ -7,5 +7,5 @@ public static class UpdateSubmissionPoints
 {
     public record Command(Guid SubmissionId, double? NewRating, double? ExtraPoints) : IRequest<Response>;
 
-    public record Response(SubmissionDto Submission);
+    public record Response(SubmissionRateDto SubmissionRate);
 }

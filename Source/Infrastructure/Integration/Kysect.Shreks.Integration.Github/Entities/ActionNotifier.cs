@@ -18,19 +18,6 @@ public class ActionNotifier : IActionNotifier
         _logger = logger;
     }
 
-    public async Task ApplyInComments(WebhookEvent webhookEvent, long issueNumber, string hook)
-    {
-        ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
-
-        var installationClient = _installationClientFactory.GetClient(installation.Id);
-
-        await installationClient.Issue.Comment.Create(
-            repository.Owner.Login, 
-            repository.Name, 
-            (int) issueNumber, 
-            $"**Hook**: `{hook}` {Environment.NewLine} **Action**: `{webhookEvent.Action}`");
-    }
-
     public async Task SendComment(WebhookEvent webhookEvent, long issueNumber, string message)
     {
         ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);

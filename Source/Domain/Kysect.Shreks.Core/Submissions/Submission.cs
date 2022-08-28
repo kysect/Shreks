@@ -35,7 +35,7 @@ public abstract partial class Submission : IEntity<Guid>
     }
 
     public int Code { get; protected init; }
-
+    
     public DateOnly SubmissionDate { get; set; }
 
     public virtual Student Student { get; protected init; }
@@ -59,6 +59,8 @@ public abstract partial class Submission : IEntity<Guid>
     public bool IsRated => Rating is not null;
 
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
+
+    public override string ToString() => $"{Code} ({Id})";
 
     public void Rate(Fraction? rating, Points? extraPoints)
     {

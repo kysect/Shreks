@@ -2,6 +2,7 @@
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
@@ -11,7 +12,7 @@ public class HelpCommand : IShreksCommand<BaseContext, string>
 {
     public Task<string> ExecuteAsync(BaseContext context, CancellationToken cancellationToken)
     {
-        Log.Debug($"Handle /help command from {context.IssuerId}");
+        context.Log.LogDebug($"Handle /help command from {context.IssuerId}");
         string helpString = @"
 Команды:
 

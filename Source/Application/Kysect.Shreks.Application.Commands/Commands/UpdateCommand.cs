@@ -6,12 +6,13 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/update")]
-public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
+public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDto>
 {
     public UpdateCommand(int submissionCode, double? ratingPercent, double? extraPoints, string? dateStr)
     {
@@ -39,7 +40,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
         return visitor.VisitAsync(this);
     }
 
-    public async Task<SubmissionDto> ExecuteAsync(PullRequestContext context, CancellationToken cancellationToken)
+    public async Task<SubmissionRateDto> ExecuteAsync(PullRequestContext context, CancellationToken cancellationToken)
     {
         string message = $"Handle /update command from {context.IssuerId} with arguments:" +
                          $" {{ SubmissionCode : {SubmissionCode}," +
@@ -47,21 +48,22 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
                          $" ExtraPoints: {ExtraPoints}" +
                          $" DateStr: {DateStr}" +
                          $" }}";
-        Log.Information(message);
-        SubmissionDto submissionDto = null!;
+        context.Log.LogInformation(message);
+
+        SubmissionRateDto submissionRateDto = null!;
 
         var query = new GetSubmissionByPrAndSubmissionCode.Query(context.PullRequestDescriptor, SubmissionCode);
         var submissionResponse = await context.Mediator.Send(query, cancellationToken);
 
         if (RatingPercent is not null || ExtraPoints is not null)
         {
-            Log.Information($"Invoke update command for submission {submissionResponse.Submission.Id} with arguments:" +
-                            $"{{ Rating: {RatingPercent}," +
-                            $" ExtraPoints: {ExtraPoints}}}");
+            context.Log.LogInformation($"Invoke update command for submission {submissionResponse.Submission.Id} with arguments:" +
+                                       $"{{ Rating: {RatingPercent}," +
+                                       $" ExtraPoints: {ExtraPoints}}}");
 
             var command = new UpdateSubmissionPoints.Command(submissionResponse.Submission.Id, RatingPercent, ExtraPoints);
             var response = await context.Mediator.Send(command, cancellationToken);
-            submissionDto = response.Submission;
+            submissionRateDto = response.SubmissionRate;
         }
 
         if (DateStr is not null)
@@ -71,9 +73,9 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionDto>
             
             var command = new UpdateSubmissionDate.Command(submissionResponse.Submission.Id, date);
             var response = await context.Mediator.Send(command, cancellationToken);
-            submissionDto = response.Submission;
+            submissionRateDto = response.SubmissionRate;
         }
 
-        return submissionDto;
+        return submissionRateDto;
     }
 }

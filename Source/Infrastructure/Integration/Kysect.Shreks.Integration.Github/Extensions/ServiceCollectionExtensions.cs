@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
         services.AddClientFactory(shreksConfiguration);
         services.AddGithubAuth(shreksConfiguration);
         services.AddScoped<IActionNotifier, ActionNotifier>();
-        services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessor>();
+        services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessorProxy>();
         services.AddGithubInviteBackgroundService();
         services.AddSingleton<IOrganizationDetailsProvider, OrganizationDetailsProvider>();
 

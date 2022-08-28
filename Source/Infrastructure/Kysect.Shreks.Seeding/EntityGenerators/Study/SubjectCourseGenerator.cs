@@ -8,17 +8,17 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 {
     private readonly Faker _faker;
-    private readonly IEntityGenerator<Mentor> _mentorGenerator;
+    private readonly IEntityGenerator<User> _userGenerator;
     private readonly IEntityGenerator<Subject> _subjectGenerator;
 
     public SubjectCourseGenerator(
         EntityGeneratorOptions<SubjectCourse> options,
-        IEntityGenerator<Mentor> mentorGenerator,
+        IEntityGenerator<User> userGenerator,
         IEntityGenerator<Subject> subjectGenerator,
         Faker faker) 
         : base(options)
     {
-        _mentorGenerator = mentorGenerator;
+        _userGenerator = userGenerator;
         _subjectGenerator = subjectGenerator;
         _faker = faker;
     }
@@ -32,17 +32,17 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 
         var subject = _subjectGenerator.GeneratedEntities[index];
 
-        string subjectCourseName = _faker.Commerce.ProductName();
+        var subjectCourseName = _faker.Commerce.ProductName();
 
         var subjectCourse = new SubjectCourse(subject, subjectCourseName);
 
-        var mentors = _faker.Random
-            .ListItems(_mentorGenerator.GeneratedEntities.ToList())
-            .DistinctBy(m => m.User);
+        IEnumerable<User> users = _faker.Random
+            .ListItems(_userGenerator.GeneratedEntities.ToList())
+            .Distinct();
 
-        foreach (var mentor in mentors)
+        foreach (var user in users)
         {
-            subjectCourse.AddMentor(mentor.User);
+            subjectCourse.AddMentor(user);
         }
 
         subject.AddCourse(subjectCourse);
