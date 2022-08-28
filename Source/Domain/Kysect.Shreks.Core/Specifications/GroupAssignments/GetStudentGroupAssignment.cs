@@ -4,19 +4,19 @@ namespace Kysect.Shreks.Core.Specifications.GroupAssignments;
 
 public class GetStudentGroupAssignment : ISpecification<GroupAssignment, GroupAssignment>
 {
-    private readonly Guid _studentId;
+    private readonly Guid _userId;
     private readonly Guid _assignmentId;
 
-    public GetStudentGroupAssignment(Guid studentId, Guid assignmentId)
+    public GetStudentGroupAssignment(Guid userId, Guid assignmentId)
     {
-        _studentId = studentId;
+        _userId = userId;
         _assignmentId = assignmentId;
     }
 
     public IQueryable<GroupAssignment> Apply(IQueryable<GroupAssignment> query)
     {
         return query
-            .Where(x => x.Group.Students.Any(xx => xx.Id.Equals(_studentId)))
+            .Where(x => x.Group.Students.Any(xx => xx.UserId.Equals(_userId)))
             .Where(x => x.AssignmentId.Equals(_assignmentId));
     }
 }

@@ -15,12 +15,13 @@ public class SubmissionProfile : Profile
                 opt => opt.MapFrom(src => src.GroupAssignment.AssignmentId))
             .ForCtorParam(
                 nameof(SubmissionDto.AssignmentShortName),
-                opt => opt.MapFrom(src => src.GroupAssignment.Assignment.ShortName));
+                opt => opt.MapFrom(src => src.GroupAssignment.Assignment.ShortName))
+            .ForCtorParam(nameof(SubmissionDto.StudentId), opt => opt.MapFrom(src => src.Student.UserId));
 
         CreateMap<Submission, QueueSubmissionDto>()
-            .ForCtorParam(nameof(QueueSubmissionDto.Submission), 
+            .ForCtorParam(nameof(QueueSubmissionDto.Submission),
                 opt => opt.MapFrom(x => x))
-            .ForCtorParam(nameof(QueueSubmissionDto.Student), 
+            .ForCtorParam(nameof(QueueSubmissionDto.Student),
                 opt => opt.MapFrom(x => x.Student));
     }
 }

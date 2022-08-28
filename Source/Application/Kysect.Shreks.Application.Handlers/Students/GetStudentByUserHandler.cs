@@ -20,7 +20,7 @@ public class GetStudentByUserHandler : IRequestHandler<Query, Response>
     {
         var studentId = await _context.Students
             .Where(s => s.User.Id == request.UserId)
-            .Select(s => s.Id)
+            .Select(s => s.UserId)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (studentId == default)

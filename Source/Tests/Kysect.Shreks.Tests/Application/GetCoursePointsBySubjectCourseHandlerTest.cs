@@ -8,7 +8,7 @@ namespace Kysect.Shreks.Tests.Application;
 
 public class GetCoursePointsBySubjectCourseHandlerTest : ApplicationTestBase
 {
-    [Fact(Skip = "WI-227")]
+    [Fact]
     public async Task Handle_Should_NotThrowException()
     {
         var handler = new GetCoursePointsBySubjectCourseHandler(Context, Mapper);
