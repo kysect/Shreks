@@ -10,7 +10,5 @@ public class SubmissionQueueConfiguration : IEntityTypeConfiguration<SubmissionQ
     {
         builder.Navigation(x => x.Evaluators).HasField("_evaluators");
         builder.Navigation(x => x.Filters).HasField("_filters");
-
-        builder.HasMany(x => x.Submissions);
     }
 }

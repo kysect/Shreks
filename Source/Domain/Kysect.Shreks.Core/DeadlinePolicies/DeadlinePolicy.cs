@@ -23,4 +23,9 @@ public abstract class DeadlinePolicy : IEquatable<DeadlinePolicy>
 
     public override int GetHashCode()
         => SpanBeforeActivation.GetHashCode();
+
+    public override string ToString()
+    {
+        return $"{GetType()} with span {SpanBeforeActivation}";
+    }
 }

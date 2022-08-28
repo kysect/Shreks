@@ -1,5 +1,6 @@
 using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Commands.Extensions;
+using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
@@ -21,8 +22,11 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog(
-    (ctx, lc) => lc.MinimumLevel.Verbose().WriteTo.Console());
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
 TestEnvConfiguration testEnvConfiguration = builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
@@ -37,6 +41,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     webApplicationBuilder.Services.AddControllers();
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
     webApplicationBuilder.Services.AddSwaggerGen();
+    webApplicationBuilder.Services.AddApplicationConfiguration();
 
     webApplicationBuilder.Services
         .AddHandlers()
@@ -72,6 +77,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
                 o.ConfigureFaker(o => o.Locale = "ru");
                 o.ConfigureEntityGenerator<User>(o => o.Count = testEnvConfiguration.Users.Count);
                 o.ConfigureEntityGenerator<Student>(o => o.Count = testEnvConfiguration.Users.Count);
+                o.ConfigureEntityGenerator<Mentor>(o => o.Count = testEnvConfiguration.Users.Count);
                 o.ConfigureEntityGenerator<GithubUserAssociation>(o => o.Count = 0);
                 o.ConfigureEntityGenerator<IsuUserAssociation>(o => o.Count = 0);
                 o.ConfigureEntityGenerator<Submission>(o => o.Count = 0);

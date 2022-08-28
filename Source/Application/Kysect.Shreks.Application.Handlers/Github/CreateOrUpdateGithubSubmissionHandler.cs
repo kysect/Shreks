@@ -4,6 +4,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Extensions;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Specifications.Submissions;
@@ -56,6 +57,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
         var submission = await _context.SubmissionAssociations
             .WithSpecification(submissionSpec)
+            .Where(x => x.State != SubmissionState.Completed)
             .FirstOrDefaultAsync(cancellationToken);
 
         bool isCreated = false;
@@ -98,14 +100,14 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
     private async Task<GithubSubmission> CreateSubmission(Command request, CancellationToken cancellationToken)
     {
         var student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
-        var groupAssignmentSpec = new GetStudentGroupAssignment(student.Id, request.AssignmentId);
+        var groupAssignmentSpec = new GetStudentGroupAssignment(student.UserId, request.AssignmentId);
 
         var groupAssignment = await _context.GroupAssignments
             .WithSpecification(groupAssignmentSpec)
             .SingleAsync(cancellationToken);
 
         var studentAssignmentSubmissionsSpec = new GetStudentAssignmentSubmissions(
-            student.Id, request.AssignmentId);
+            student.UserId, request.AssignmentId);
 
         var count = await _context.Submissions
             .WithSpecification(studentAssignmentSubmissionsSpec)

@@ -1,5 +1,4 @@
-﻿using Kysect.Shreks.Core.Queue;
-using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.Users;
@@ -23,7 +22,7 @@ var context = new ShreksDatabaseContext(builder.Options);
 await context.Database.EnsureCreatedAsync();
 
 
-var assignment = new Assignment("adw", "", new Points(1), new Points(2), new SubjectCourse(new Subject(""), ""));
+var assignment = new Assignment("adw", "", 1, new Points(1), new Points(2), new SubjectCourse(new Subject(""), ""));
 var submission = new GithubSubmission
 (
     0,
@@ -36,16 +35,3 @@ var submission = new GithubSubmission
     "",
     0
 );
-
-var positionedSubmission = new PositionedSubmission
-(
-    1,
-    submission
-);
-
-context.Add(positionedSubmission);
-
-await context.SaveChangesAsync();
-
-context.Remove(positionedSubmission);
-await context.SaveChangesAsync();

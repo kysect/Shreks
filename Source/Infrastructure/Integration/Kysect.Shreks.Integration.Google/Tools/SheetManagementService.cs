@@ -1,9 +1,12 @@
 ﻿using FluentSpreadsheets.GoogleSheets.Models;
 using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
+using Google.Apis.Logging;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Integration.Google.Providers;
+using Kysect.Shreks.Integration.Google.Sheets;
+using Microsoft.Extensions.Logging;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
@@ -15,6 +18,10 @@ public class SheetManagementService : ISheetManagementService
     private const string SpreadsheetType = "application/vnd.google-apps.spreadsheet";
     private const int NumberOfAdditionalRows = 1000;
 
+    private const int DefaultSheetId = 0;
+    private const string DefaultSheetTitle = PointsSheet.Title;
+    private const string UpdateTitle = "title";
+
     private static readonly Permission AnyoneViewerPermission = new()
     {
         Type = "anyone",
@@ -24,15 +31,18 @@ public class SheetManagementService : ISheetManagementService
     private readonly SheetsService _sheetsService;
     private readonly DriveService _driveService;
     private readonly ITablesParentsProvider _tablesParentsProvider;
+    private readonly ILogger<SheetManagementService> _logger;
 
     public SheetManagementService(
         SheetsService sheetsService,
         DriveService driveService,
-        ITablesParentsProvider tablesParentsProvider)
+        ITablesParentsProvider tablesParentsProvider,
+        ILogger<SheetManagementService> logger)
     {
         _sheetsService = sheetsService;
         _driveService = driveService;
         _tablesParentsProvider = tablesParentsProvider;
+        _logger = logger;
     }
 
     public async Task<int> CreateOrClearSheetAsync(string spreadsheetId, string sheetTitle, CancellationToken token)
@@ -42,7 +52,7 @@ public class SheetManagementService : ISheetManagementService
         if (sheetId is null)
         {
             sheetId = await CreateSheetAsync(spreadsheetId, sheetTitle, token);
-            await AddRowsAsync(spreadsheetId, sheetId.Value, token);
+            await SortSheetsAsync(spreadsheetId, token);
         }
         else
         {
@@ -61,11 +71,17 @@ public class SheetManagementService : ISheetManagementService
             Name = title
         };
 
+        _logger.LogDebug($"Create file {title} on Google drive.");
+
         var spreadsheet = await _driveService.Files
             .Create(spreadsheetToCreate)
             .ExecuteAsync(token);
 
         string spreadsheetId = spreadsheet.Id;
+
+        await ConfigureDefaultSheetAsync(spreadsheetId, token);
+
+        _logger.LogDebug($"Update file permission {title}.");
 
         await _driveService.Permissions
             .Create(AnyoneViewerPermission, spreadsheetId)
@@ -74,13 +90,34 @@ public class SheetManagementService : ISheetManagementService
         return spreadsheetId;
     }
 
+    private async Task ConfigureDefaultSheetAsync(string spreadsheetId, CancellationToken token)
+    {
+        var defaultSheetProperties = new SheetProperties
+        {
+            SheetId = DefaultSheetId,
+            Title = DefaultSheetTitle
+        };
+
+        var updatePropertiesRequest = new Request
+        {
+            UpdateSheetProperties = new UpdateSheetPropertiesRequest
+            {
+                Properties = defaultSheetProperties,
+                Fields = UpdateTitle
+            }
+        };
+
+        _logger.LogDebug($"Configure default sheet for {spreadsheetId}.");
+
+        await ExecuteBatchUpdateAsync(spreadsheetId, updatePropertiesRequest, token);
+        await AddRowsAsync(spreadsheetId, DefaultSheetId, token);
+    }
+
     private async Task<int?> GetSheetIdAsync(string spreadsheetId, string title, CancellationToken token)
     {
-        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
-            .Get(spreadsheetId)
-            .ExecuteAsync(token);
+        IList<Sheet> sheets = await GetSheetsAsync(spreadsheetId, token);
 
-        Sheet? sheet = spreadsheet.Sheets.FirstOrDefault(s => s.Properties.Title == title);
+        Sheet? sheet = sheets.FirstOrDefault(s => s.Properties.Title == title);
 
         return sheet?.Properties.SheetId;
     }
@@ -97,6 +134,8 @@ public class SheetManagementService : ISheetManagementService
                 }
             }
         };
+
+        _logger.LogDebug($"Create sheet with title {sheetTitle}.");
 
         var batchUpdateResponse = await ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
         var addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
@@ -122,7 +161,41 @@ public class SheetManagementService : ISheetManagementService
             }
         };
 
+        _logger.LogDebug($"Add {NumberOfAdditionalRows} rows to spreadsheet with id {spreadsheetId}.");
+
         await ExecuteBatchUpdateAsync(spreadsheetId, addRowsRequest, token);
+    }
+
+    private async Task SortSheetsAsync(string spreadsheetId, CancellationToken token)
+    {
+        IList<Sheet> sheets = await GetSheetsAsync(spreadsheetId, token);
+
+        Request[] updateSheetIndexRequests = sheets
+            .Where(s => s.Properties.SheetId is not DefaultSheetId)
+            .OrderBy(s => s.Properties.Title)
+            .Select((s, i) => (Sheet: s, NewIndex: i + 1))
+            .Select(t =>
+            {
+                var newProperties = t.Sheet.Properties;
+                newProperties.Index = t.NewIndex;
+                
+                return new Request
+                {
+                    UpdateSheetProperties = new UpdateSheetPropertiesRequest
+                    {
+                        Properties = newProperties,
+                        Fields = AllFields
+                    }
+                };
+            })
+            .ToArray();
+
+        if (updateSheetIndexRequests.Length is not 0)
+        {
+            _logger.LogDebug($"Reorder sheets in spreadsheet {spreadsheetId}.");
+
+            await ExecuteBatchUpdateAsync(spreadsheetId, updateSheetIndexRequests, token);
+        }
     }
 
     private async Task ClearSheetAsync(string spreadsheetId, int sheetId, CancellationToken token)
@@ -157,7 +230,19 @@ public class SheetManagementService : ISheetManagementService
             unmergeCellsRequest
         };
 
+        _logger.LogDebug($"Clear sheet with id {sheetId}.");
         await ExecuteBatchUpdateAsync(spreadsheetId, requests, token);
+    }
+
+    private async Task<IList<Sheet>> GetSheetsAsync(string spreadsheetId, CancellationToken token)
+    {
+        _logger.LogDebug($"Request spread sheet with id {spreadsheetId}.");
+
+        Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
+            .Get(spreadsheetId)
+            .ExecuteAsync(token);
+
+        return spreadsheet.Sheets;
     }
 
     private async Task<BatchUpdateSpreadsheetResponse> ExecuteBatchUpdateAsync(
@@ -174,6 +259,8 @@ public class SheetManagementService : ISheetManagementService
         IList<Request> requests,
         CancellationToken token)
     {
+        _logger.LogDebug($"Execute batch request for spread sheet with id {spreadsheetId}.");
+
         var batchUpdateRequest = new BatchUpdateSpreadsheetRequest
         {
             Requests = requests

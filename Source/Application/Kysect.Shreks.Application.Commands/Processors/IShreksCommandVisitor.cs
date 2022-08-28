@@ -11,4 +11,5 @@ public interface IShreksCommandVisitor<TResult> where TResult : IShreksCommandRe
 
     Task<TResult> VisitAsync(ActivateCommand command);
     Task<TResult> VisitAsync(DeactivateCommand command);
+    Task<TResult> VisitAsync(DeleteCommand command);
 }

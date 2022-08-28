@@ -14,7 +14,7 @@ public partial class SubmissionQueue : IEntity<Guid>
 
     public SubmissionQueue(
         IReadOnlyCollection<SubmissionQueueFilter> filters,
-        IReadOnlyList<SubmissionEvaluator> evaluators)
+        IReadOnlyCollection<SubmissionEvaluator> evaluators)
         : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(filters);
@@ -22,21 +22,26 @@ public partial class SubmissionQueue : IEntity<Guid>
 
         _filters = filters;
         _evaluators = evaluators;
-        Submissions = Array.Empty<PositionedSubmission>();
         _orderedEvaluators = new Lazy<IReadOnlyList<SubmissionEvaluator>>(OrderedEvaluators);
     }
 
-    public virtual IReadOnlyCollection<PositionedSubmission> Submissions { get; protected set; }
+#pragma warning disable CS8618
+    protected SubmissionQueue()
+#pragma warning restore CS8618
+    {
+        _orderedEvaluators = new Lazy<IReadOnlyList<SubmissionEvaluator>>(OrderedEvaluators);
+    }
+
     public virtual IReadOnlyCollection<SubmissionQueueFilter> Filters => _filters;
     public virtual IReadOnlyCollection<SubmissionEvaluator> Evaluators => _evaluators;
 
-    public async Task UpdateSubmissions<TComparable>(
+    public async Task<IEnumerable<Submission>> UpdateSubmissions(
         IQueryable<Submission> submissionsQuery,
         IQueryExecutor queryExecutor,
         CancellationToken cancellationToken)
-        where TComparable : IComparable<TComparable>
     {
         ArgumentNullException.ThrowIfNull(queryExecutor);
+        ArgumentNullException.ThrowIfNull(_filters);
 
         foreach (var filter in _filters)
         {
@@ -45,7 +50,7 @@ public partial class SubmissionQueue : IEntity<Guid>
 
         var submissions = await queryExecutor.ExecuteAsync(submissionsQuery, cancellationToken);
 
-        Submissions = SortedBy(submissions, _orderedEvaluators.Value);
+        return SortedBy(submissions, _orderedEvaluators.Value);
     }
 
     private IReadOnlyList<SubmissionEvaluator> OrderedEvaluators()
@@ -55,20 +60,12 @@ public partial class SubmissionQueue : IEntity<Guid>
             .ToArray();
     }
 
-    private static IReadOnlyCollection<PositionedSubmission> SortedBy(
+    private static IEnumerable<Submission> SortedBy(
         IEnumerable<Submission> submissions,
         IReadOnlyList<ISubmissionEvaluator> evaluators)
     {
         var stepperEvaluators = new ForwardIterator<ISubmissionEvaluator>(evaluators, 0);
-
-        IEnumerable<Submission> sortedSubmissions = SortedBy(
-            submissions,
-            stepperEvaluators);
-
-        IEnumerable<PositionedSubmission> positionedSubmissions = sortedSubmissions
-            .Select((x, i) => new PositionedSubmission(i, x));
-
-        return positionedSubmissions.ToList();
+        return SortedBy(submissions, stepperEvaluators);
     }
 
     private static IEnumerable<Submission> SortedBy(

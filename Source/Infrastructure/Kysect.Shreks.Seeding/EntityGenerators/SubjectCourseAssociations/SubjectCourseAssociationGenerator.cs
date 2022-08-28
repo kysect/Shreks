@@ -9,11 +9,11 @@ public class SubjectCourseAssociationGenerator : EntityGeneratorBase<SubjectCour
 {
     private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
     private readonly Faker _faker;
-    
+
     public SubjectCourseAssociationGenerator(
         EntityGeneratorOptions<SubjectCourseAssociation> options,
         IEntityGenerator<SubjectCourse> subjectCourseGenerator,
-        Faker faker) 
+        Faker faker)
         : base(options)
     {
         _subjectCourseGenerator = subjectCourseGenerator;
@@ -23,13 +23,13 @@ public class SubjectCourseAssociationGenerator : EntityGeneratorBase<SubjectCour
     protected override SubjectCourseAssociation Generate(int index)
     {
         var count = _subjectCourseGenerator.GeneratedEntities.Count;
-        
+
         if (index >= count)
             throw new IndexOutOfRangeException("Subject course index more than count of subject courses.");
-        
+
         var subjectCourse = _subjectCourseGenerator.GeneratedEntities[index];
 
-        var association = new GithubSubjectCourseAssociation(subjectCourse, _faker.Commerce.Product());
+        var association = new GithubSubjectCourseAssociation(subjectCourse, _faker.Internet.UserName());
         subjectCourse.AddAssociation(association);
 
         return association;

@@ -36,6 +36,14 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // TODO: WI-228
+        var cascadeFKs = modelBuilder.Model.GetEntityTypes()
+            .SelectMany(t => t.GetForeignKeys())
+            .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
+
+        foreach (var fk in cascadeFKs)
+            fk.DeleteBehavior = DeleteBehavior.Restrict;
+
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAssemblyMarker).Assembly);
     }
 
@@ -43,5 +51,7 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     {
         configurationBuilder.Properties<Points>().HaveConversion<PointsValueConverter>();
         configurationBuilder.Properties<Fraction>().HaveConversion<FractionValueConverter>();
+        configurationBuilder.Properties<TimeSpan>().HaveConversion<TimeSpanConverter>();
+        configurationBuilder.Properties<DateOnly>().HaveConversion<DateOnlyConverter>();
     }
 }

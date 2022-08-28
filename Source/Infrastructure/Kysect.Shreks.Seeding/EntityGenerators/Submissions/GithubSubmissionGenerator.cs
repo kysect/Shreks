@@ -45,15 +45,18 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
             _faker.Company.CompanyName(),
             _faker.Commerce.ProductName(),
             _faker.Random.Long(0, 100)
-        )
-        {
-            Rating = _faker.Random.Bool(PointsPresenceProbability)
-                ? _faker.Random.Fraction()
-                : null,
-            ExtraPoints = _faker.Random.Bool(ExtraPointsPresenceProbability)
-                ? _faker.Random.Points(0, MaxExtraPoints)
-                : Points.None,
-        };
+        );
+
+        Fraction? rating = _faker.Random.Bool(PointsPresenceProbability)
+            ? _faker.Random.Fraction()
+            : null;
+
+        Points? extraPoints = _faker.Random.Bool(ExtraPointsPresenceProbability)
+            ? _faker.Random.Points(0, MaxExtraPoints)
+            : Points.None;
+
+        if (rating.HasValue)
+            submission.Rate(rating, extraPoints);
 
         return submission;
     }

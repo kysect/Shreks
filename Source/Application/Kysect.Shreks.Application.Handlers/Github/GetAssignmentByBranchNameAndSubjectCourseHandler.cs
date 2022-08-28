@@ -1,3 +1,4 @@
+using Kysect.CommonLib;
 using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
@@ -23,9 +24,13 @@ public class GetAssignmentByBranchAndSubjectCourseHandler : IRequestHandler<Quer
         if (assignment is null)
         {
             var branchName = request.BranchName;
-            var subjectCourseId = request.SubjectCourseId;
-            var message =
-                $"Assignment with branch name {branchName} for subject course {subjectCourseId} not found";
+            string assignments = subjectCourse
+                .Assignments
+                .OrderBy(a => a.Order)
+                .ToSingleString(a => a.ShortName);
+
+            var message = $"Assignment with branch name '{branchName}' for subject course '{subjectCourse.Name}' was not found." +
+                          $"\nEnsure that branch name is correct. Available assignments: {assignments}";
             throw new EntityNotFoundException(message);
         }
 
