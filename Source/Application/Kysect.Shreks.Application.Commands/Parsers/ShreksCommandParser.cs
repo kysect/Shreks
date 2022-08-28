@@ -6,6 +6,8 @@ namespace Kysect.Shreks.Application.Commands.Parsers;
 
 public class ShreksCommandParser : IShreksCommandParser
 {
+    private static readonly char[] ArgumentsSeparators = { ' ' };
+
     private readonly Type[] _commandTypes;
 
     public ShreksCommandParser()
@@ -15,14 +17,21 @@ public class ShreksCommandParser : IShreksCommandParser
             .ToArray();
     }
 
-    public IShreksCommand Parse(string commandStr)
+    public IShreksCommand Parse(string command)
     {
-        var result = Parser.Default.ParseArguments(commandStr.Split(), _commandTypes);
-        if (result.Tag == ParserResultType.NotParsed)
+        var result = Parser.Default.ParseArguments(GetCommandArguments(command), _commandTypes);
+        if (result.Tag is ParserResultType.NotParsed)
         {
-            throw new InvalidUserInputException("Failed to parse user command. Ensure that all arguments is correct or call /help.");
+            const string errorMessage = "Failed to parse user command. Ensure that all arguments is correct or call /help.";
+            throw new InvalidUserInputException(errorMessage);
         }
 
-        return (IShreksCommand) result.Value;
+        return (IShreksCommand)result.Value;
+    }
+
+    private static IEnumerable<string> GetCommandArguments(string command)
+    {
+        const StringSplitOptions splitOptions = StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries;
+        return command.Split(ArgumentsSeparators, splitOptions);
     }
 }
