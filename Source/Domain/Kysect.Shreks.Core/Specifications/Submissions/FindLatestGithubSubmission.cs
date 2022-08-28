@@ -24,7 +24,7 @@ public class FindLatestGithubSubmission : ISpecification<SubmissionAssociation, 
                 a.Organization == _organization
                 && a.Repository == _repository
                 && a.PrNumber == _prNumber)
-            .OrderByDescending(a => a.Submission.SubmissionDateTime)
+            .OrderByDescending(a => a.Submission.SubmissionDate)
             .Select(a => a.Submission)
             .OfType<GithubSubmission>();
     }
