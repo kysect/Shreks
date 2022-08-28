@@ -75,14 +75,14 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
     private async Task<GithubSubmission> CreateSubmission(Command request, CancellationToken cancellationToken)
     {
         var student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
-        var groupAssignmentSpec = new GetStudentGroupAssignment(student.Id, request.AssignmentId);
+        var groupAssignmentSpec = new GetStudentGroupAssignment(student.UserId, request.AssignmentId);
 
         var groupAssignment = await _context.GroupAssignments
             .WithSpecification(groupAssignmentSpec)
             .SingleAsync(cancellationToken);
 
         var studentAssignmentSubmissionsSpec = new GetStudentAssignmentSubmissions(
-            student.Id, request.AssignmentId);
+            student.UserId, request.AssignmentId);
 
         var count = await _context.Submissions
             .WithSpecification(studentAssignmentSubmissionsSpec)

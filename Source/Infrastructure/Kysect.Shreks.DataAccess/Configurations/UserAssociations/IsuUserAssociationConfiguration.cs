@@ -2,7 +2,7 @@ using Kysect.Shreks.Core.UserAssociations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Kysect.Shreks.DataAccess.Configurations.Users;
+namespace Kysect.Shreks.DataAccess.Configurations.UserAssociations;
 
 public class IsuUserAssociationConfiguration : IEntityTypeConfiguration<IsuUserAssociation>
 {
