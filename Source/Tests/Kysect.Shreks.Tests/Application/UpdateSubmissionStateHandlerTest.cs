@@ -10,7 +10,7 @@ namespace Kysect.Shreks.Tests.Application;
 
 public class UpdateSubmissionStateHandlerTest : ApplicationTestBase
 {
-    [Fact(Skip = "WI-227")]
+    [Fact]
     public async Task Handle_Should_UpdateSubmissionState()
     {
         // Arrange
