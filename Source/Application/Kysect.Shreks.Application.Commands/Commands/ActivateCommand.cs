@@ -5,7 +5,6 @@ using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
