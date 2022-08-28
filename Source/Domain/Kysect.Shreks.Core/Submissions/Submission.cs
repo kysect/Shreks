@@ -35,7 +35,7 @@ public abstract partial class Submission : IEntity<Guid>
     }
 
     public int Code { get; protected init; }
-
+    
     public DateOnly SubmissionDate { get; set; }
 
     public virtual Student Student { get; protected init; }

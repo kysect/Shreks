@@ -26,6 +26,6 @@ public static class PermissionValidator
             .GroupAssignment
             .Assignment
             .SubjectCourse
-            .Mentors.Any(x => x.Id.Equals(userId));
+            .Mentors.Any(x => x.UserId.Equals(userId));
     }
 }

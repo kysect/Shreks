@@ -116,8 +116,8 @@ public partial class SubjectCourse : IEntity<Guid>
         
         if (_mentors.Any(x => x.User.Equals(user)))
             throw new DomainInvalidOperationException($"User {user} is already a mentor of this subject course");
-        
-        var mentor = new Mentor(user);
+
+        var mentor = new Mentor(user, this);
         _mentors.Add(mentor);
 
         return mentor;

@@ -20,7 +20,6 @@ public partial class GroupAssignment : IEntity
 
     [KeyProperty]
     public virtual Assignment Assignment { get; protected init; }
-
     public DateOnly Deadline { get; set; }
 
     public override String ToString()

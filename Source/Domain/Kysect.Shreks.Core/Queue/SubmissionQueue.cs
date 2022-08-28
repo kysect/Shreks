@@ -14,7 +14,7 @@ public partial class SubmissionQueue : IEntity<Guid>
 
     public SubmissionQueue(
         IReadOnlyCollection<SubmissionQueueFilter> filters,
-        IReadOnlyList<SubmissionEvaluator> evaluators)
+        IReadOnlyCollection<SubmissionEvaluator> evaluators)
         : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(filters);
@@ -22,6 +22,13 @@ public partial class SubmissionQueue : IEntity<Guid>
 
         _filters = filters;
         _evaluators = evaluators;
+        _orderedEvaluators = new Lazy<IReadOnlyList<SubmissionEvaluator>>(OrderedEvaluators);
+    }
+
+#pragma warning disable CS8618
+    protected SubmissionQueue()
+#pragma warning restore CS8618
+    {
         _orderedEvaluators = new Lazy<IReadOnlyList<SubmissionEvaluator>>(OrderedEvaluators);
     }
 
@@ -34,6 +41,7 @@ public partial class SubmissionQueue : IEntity<Guid>
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryExecutor);
+        ArgumentNullException.ThrowIfNull(_filters);
 
         foreach (var filter in _filters)
         {
