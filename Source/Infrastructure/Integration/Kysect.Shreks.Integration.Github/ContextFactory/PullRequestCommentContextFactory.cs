@@ -46,6 +46,29 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         return new PullRequestContext(_mediator, _log, userId, _pullRequestDescriptor);
     }
 
+    public async Task<PullRequestAndAssignmentContext> CreatePullRequestAndAssignmentContext(CancellationToken cancellationToken)
+    {
+        var userId = await GetUserId(cancellationToken);
+
+        var subjectCourseId = await GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
+        var assignmentId = await GetAssignemntByBranchAndSubjectCourse(_pullRequestDescriptor.BranchName, subjectCourseId, cancellationToken);
+        return new PullRequestAndAssignmentContext(_mediator, userId, _pullRequestDescriptor, assignmentId, _log);
+    }
+
+    private async Task<Guid> GetSubjectCourseByOrganization(string organization, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(new GetSubjectCourseByOrganization.Query(organization));
+        return response.SubjectCourseId;
+    }
+
+    private async Task<Guid> GetAssignemntByBranchAndSubjectCourse(string branch, Guid subjectCourseId, CancellationToken cancellationToken)
+    {
+        var response = await _mediator.Send(
+            new GetAssignmentByBranchAndSubjectCourse.Query(branch,
+                subjectCourseId));
+        return response.AssignmentId;
+    }
+
     private async Task<Guid> GetUserId(CancellationToken cancellationToken)
     {
         var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Sender);

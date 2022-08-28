@@ -93,6 +93,22 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         }
     }
 
+    public async Task<BaseShreksCommandResult> VisitAsync(CreateSubmissionCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreatePullRequestAndAssignmentContext(_cancellationToken);
+            await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, "Submission created successfully");
+        }
+        catch (Exception e)
+        {
+            string message = $"An error occurred while processing deactivate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
+        }
+    }
+
     public async Task<BaseShreksCommandResult> VisitAsync(DeleteCommand command)
     {
         try

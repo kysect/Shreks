@@ -1,16 +1,14 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Factory;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
-using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Specifications.Submissions;
-using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Kysect.Shreks.Application.Handlers.Validators;
@@ -22,16 +20,18 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 {
     private readonly ITableUpdateQueue _tableUpdateQueue;
     private readonly IShreksDatabaseContext _context;
+    private readonly ISubmissionFactory _submissionFactory;
     private readonly IMapper _mapper;
 
     public CreateOrUpdateGithubSubmissionHandler(
         ITableUpdateQueue tableUpdateQueue,
         IShreksDatabaseContext context,
-        IMapper mapper)
+        IMapper mapper, ISubmissionFactory submissionFactory)
     {
         _tableUpdateQueue = tableUpdateQueue;
         _context = context;
         _mapper = mapper;
+        _submissionFactory = submissionFactory;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -70,9 +70,12 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
                 throw new DomainInvalidOperationException(message);
             }
 
-            submission = await CreateSubmission(request, cancellationToken);
+            submission = await _submissionFactory.CreateGithubSubmissionAsync(
+                request.UserId,
+                request.AssignmentId,
+                request.PullRequestDescriptor,
+                cancellationToken);
             isCreated = true;
-            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
         }
         else if (!triggeredByMentor)
         {
@@ -80,7 +83,6 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
 
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync(cancellationToken);
-            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
             if (triggeredByAnotherUser)
             {
@@ -94,39 +96,5 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         var dto = _mapper.Map<SubmissionDto>(submission);
 
         return new Response(isCreated, dto);
-    }
-
-    private async Task<GithubSubmission> CreateSubmission(Command request, CancellationToken cancellationToken)
-    {
-        var student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
-        var groupAssignmentSpec = new GetStudentGroupAssignment(student.UserId, request.AssignmentId);
-
-        var groupAssignment = await _context.GroupAssignments
-            .WithSpecification(groupAssignmentSpec)
-            .SingleAsync(cancellationToken);
-
-        var studentAssignmentSubmissionsSpec = new GetStudentAssignmentSubmissions(
-            student.UserId, request.AssignmentId);
-
-        var count = await _context.Submissions
-            .WithSpecification(studentAssignmentSubmissionsSpec)
-            .CountAsync(cancellationToken);
-
-        var submission = new GithubSubmission
-        (
-            count + 1,
-            student,
-            groupAssignment,
-            Calendar.CurrentDate,
-            request.PullRequestDescriptor.Payload,
-            request.PullRequestDescriptor.Organization,
-            request.PullRequestDescriptor.Repository,
-            request.PullRequestDescriptor.PrNumber
-        );
-
-        await _context.Submissions.AddAsync(submission, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return submission;
     }
 }
