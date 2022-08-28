@@ -1,10 +1,12 @@
 ﻿using FluentSpreadsheets.GoogleSheets.Models;
 using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
+using Google.Apis.Logging;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
+using Microsoft.Extensions.Logging;
 using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
@@ -29,15 +31,18 @@ public class SheetManagementService : ISheetManagementService
     private readonly SheetsService _sheetsService;
     private readonly DriveService _driveService;
     private readonly ITablesParentsProvider _tablesParentsProvider;
+    private readonly ILogger<SheetManagementService> _logger;
 
     public SheetManagementService(
         SheetsService sheetsService,
         DriveService driveService,
-        ITablesParentsProvider tablesParentsProvider)
+        ITablesParentsProvider tablesParentsProvider,
+        ILogger<SheetManagementService> logger)
     {
         _sheetsService = sheetsService;
         _driveService = driveService;
         _tablesParentsProvider = tablesParentsProvider;
+        _logger = logger;
     }
 
     public async Task<int> CreateOrClearSheetAsync(string spreadsheetId, string sheetTitle, CancellationToken token)
@@ -66,6 +71,8 @@ public class SheetManagementService : ISheetManagementService
             Name = title
         };
 
+        _logger.LogDebug($"Create file {title} on Google drive.");
+
         var spreadsheet = await _driveService.Files
             .Create(spreadsheetToCreate)
             .ExecuteAsync(token);
@@ -73,6 +80,8 @@ public class SheetManagementService : ISheetManagementService
         string spreadsheetId = spreadsheet.Id;
 
         await ConfigureDefaultSheetAsync(spreadsheetId, token);
+
+        _logger.LogDebug($"Update file permission {title}.");
 
         await _driveService.Permissions
             .Create(AnyoneViewerPermission, spreadsheetId)
@@ -97,6 +106,8 @@ public class SheetManagementService : ISheetManagementService
                 Fields = UpdateTitle
             }
         };
+
+        _logger.LogDebug($"Configure default sheet for {spreadsheetId}.");
 
         await ExecuteBatchUpdateAsync(spreadsheetId, updatePropertiesRequest, token);
         await AddRowsAsync(spreadsheetId, DefaultSheetId, token);
@@ -124,6 +135,8 @@ public class SheetManagementService : ISheetManagementService
             }
         };
 
+        _logger.LogDebug($"Create sheet with title {sheetTitle}.");
+
         var batchUpdateResponse = await ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
         var addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
 
@@ -147,6 +160,8 @@ public class SheetManagementService : ISheetManagementService
                 Range = addRowsRange
             }
         };
+
+        _logger.LogDebug($"Add {NumberOfAdditionalRows} rows to spreadsheet with id {spreadsheetId}.");
 
         await ExecuteBatchUpdateAsync(spreadsheetId, addRowsRequest, token);
     }
@@ -176,7 +191,11 @@ public class SheetManagementService : ISheetManagementService
             .ToArray();
 
         if (updateSheetIndexRequests.Length is not 0)
+        {
+            _logger.LogDebug($"Reorder sheets in spreadsheet {spreadsheetId}.");
+
             await ExecuteBatchUpdateAsync(spreadsheetId, updateSheetIndexRequests, token);
+        }
     }
 
     private async Task ClearSheetAsync(string spreadsheetId, int sheetId, CancellationToken token)
@@ -211,11 +230,14 @@ public class SheetManagementService : ISheetManagementService
             unmergeCellsRequest
         };
 
+        _logger.LogDebug($"Clear sheet with id {sheetId}.");
         await ExecuteBatchUpdateAsync(spreadsheetId, requests, token);
     }
 
     private async Task<IList<Sheet>> GetSheetsAsync(string spreadsheetId, CancellationToken token)
     {
+        _logger.LogDebug($"Request spread sheet with id {spreadsheetId}.");
+
         Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
             .Get(spreadsheetId)
             .ExecuteAsync(token);
@@ -237,6 +259,8 @@ public class SheetManagementService : ISheetManagementService
         IList<Request> requests,
         CancellationToken token)
     {
+        _logger.LogDebug($"Execute batch request for spread sheet with id {spreadsheetId}.");
+
         var batchUpdateRequest = new BatchUpdateSpreadsheetRequest
         {
             Requests = requests
