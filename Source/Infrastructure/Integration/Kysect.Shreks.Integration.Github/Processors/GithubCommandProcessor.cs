@@ -8,8 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
 
-//TODO: catch different exceptions and write better messages
-//TODO: WI-225
 public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
     private readonly ICommandContextFactory _contextFactory;
