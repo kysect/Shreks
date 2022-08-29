@@ -49,7 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Playground.Go
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.DataAccess.Abstractions", "Application\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj", "{9DE92604-D8E3-4E54-B2A8-E0341BB8A63A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Application", "Application\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj", "{203932D0-A07F-4F58-9F2D-92D0E98F3BCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application", "Application\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj", "{203932D0-A07F-4F58-9F2D-92D0E98F3BCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Common", "Domain\Kysect.Shreks.Common\Kysect.Shreks.Common.csproj", "{0100ABDF-B8BD-4A78-BF5E-CDE692890B3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +127,10 @@ Global
 		{203932D0-A07F-4F58-9F2D-92D0E98F3BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{203932D0-A07F-4F58-9F2D-92D0E98F3BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{203932D0-A07F-4F58-9F2D-92D0E98F3BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0100ABDF-B8BD-4A78-BF5E-CDE692890B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0100ABDF-B8BD-4A78-BF5E-CDE692890B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0100ABDF-B8BD-4A78-BF5E-CDE692890B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0100ABDF-B8BD-4A78-BF5E-CDE692890B3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -148,6 +154,7 @@ Global
 		{CE106075-41CA-42EA-BAE0-4CE490913555} = {DC866D57-D41E-455D-BD7D-85F1DD575823}
 		{9DE92604-D8E3-4E54-B2A8-E0341BB8A63A} = {C578EF62-E40C-42E7-AB9D-E7BA215F342C}
 		{203932D0-A07F-4F58-9F2D-92D0E98F3BCC} = {AE556858-2A9D-481F-9235-3C74F0CDC5A5}
+		{0100ABDF-B8BD-4A78-BF5E-CDE692890B3B} = {6BC0B5E6-94B2-4984-B201-7ACD167E783A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD5C67DB-70F8-4C47-A3F4-7C94BECE1657}
