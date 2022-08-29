@@ -1,6 +1,6 @@
-namespace Kysect.Shreks.Application.Abstractions.Exceptions;
+namespace Kysect.Shreks.Common.Exceptions;
 
-public abstract class NotFoundException : ShreksApplicationException
+public abstract class NotFoundException : ShreksDomainException
 {
     protected NotFoundException() { }
     protected NotFoundException(string? message) : base(message) { }

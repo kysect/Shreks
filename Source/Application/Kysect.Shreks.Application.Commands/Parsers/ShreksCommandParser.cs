@@ -1,6 +1,6 @@
 using CommandLine;
-using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Application.Commands.Commands;
+using Kysect.Shreks.Common.Exceptions;
 
 namespace Kysect.Shreks.Application.Commands.Parsers;
 

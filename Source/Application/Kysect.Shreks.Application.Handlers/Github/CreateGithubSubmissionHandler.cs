@@ -1,7 +1,7 @@
 using AutoMapper;
-using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factory;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Specifications.Submissions;

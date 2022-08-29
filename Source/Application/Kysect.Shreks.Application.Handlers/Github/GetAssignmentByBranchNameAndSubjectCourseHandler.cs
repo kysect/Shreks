@@ -1,5 +1,5 @@
 using Kysect.CommonLib;
-using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;

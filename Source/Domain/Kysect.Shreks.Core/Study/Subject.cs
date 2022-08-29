@@ -1,4 +1,4 @@
-using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Common.Exceptions;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Study;
