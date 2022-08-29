@@ -138,8 +138,18 @@ public class ShreksWebhookEventProcessor
                     IShreksCommand command = _commandParser.Parse(comment);
                     var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, _logger);
                     var processor = new GithubCommandProcessor(contextCreator, _logger, CancellationToken.None);
+                    BaseShreksCommandResult result;
 
-                    BaseShreksCommandResult result = await command.AcceptAsync(processor);
+                    try
+                    {
+                        result = await command.AcceptAsync(processor);
+                    }
+                    catch (Exception e)
+                    {
+                        string message = $"An error internal error occurred while processing command. Contact support for details.";
+                        _logger.LogError(e, message);
+                        result = new BaseShreksCommandResult(false, message);
+                    }
 
                     await _commentSender.NotifyAboutCommandProcessingResult(issueCommentEvent, result);
                 }

@@ -53,10 +53,11 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         }
         catch (Exception e)
         {
-            string message = $"Failed to handle {pullRequestAction}: {e.Message}";
+
+            string message = $"Failed to handle {pullRequestAction}";
             _logger.LogError(e, $"{nameof(ProcessPullRequestWebhookAsync)}: {message}");
             int issueNumber = (int)pullRequestEvent.PullRequest.Number;
-            await _commentSender.SendExceptionMessageSafe(pullRequestEvent, issueNumber, message);
+            await _commentSender.SendExceptionMessageSafe(pullRequestEvent, issueNumber, e);
         }
     }
 
@@ -80,10 +81,10 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         }
         catch (Exception e)
         {
-            string message = $"Failed to handle {pullRequestReviewAction}: {e.Message}";
+            string message = $"Failed to handle {pullRequestReviewAction}";
             _logger.LogError(e, $"{nameof(ProcessPullRequestReviewWebhookAsync)}:{message}");
             int issueNumber = (int)pullRequestReviewEvent.PullRequest.Number;
-            await _commentSender.SendExceptionMessageSafe(pullRequestReviewEvent, issueNumber, message);
+            await _commentSender.SendExceptionMessageSafe(pullRequestReviewEvent, issueNumber, e);
         }
     }
 
@@ -113,10 +114,10 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         }
         catch (Exception e)
         {
-            string message = $"Failed to handle {issueCommentAction}: {e.Message}";
+            string message = $"Failed to handle {issueCommentAction}";
             _logger.LogError(e, $"{nameof(ProcessIssueCommentWebhookAsync)}: {message}");
             int issueNumber = (int)issueCommentEvent.Issue.Number;
-            await _commentSender.SendExceptionMessageSafe(issueCommentEvent, issueNumber, message);
+            await _commentSender.SendExceptionMessageSafe(issueCommentEvent, issueNumber, e);
         }
     }
 

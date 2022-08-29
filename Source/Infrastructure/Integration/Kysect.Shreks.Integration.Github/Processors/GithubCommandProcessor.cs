@@ -3,6 +3,7 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
@@ -30,7 +31,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             SubmissionRateDto submission = await rateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission rated - {submission.ToPullRequestString()}");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
             string message = $"An error occurred while processing rate command: {e.Message}";
             _logger.LogError(e, message);
@@ -46,7 +47,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             SubmissionRateDto submission = await updateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission updated - {submission.ToPullRequestString()}");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
             string message = $"An error occurred while processing update command: {e.Message}";
             _logger.LogError(e, message);
@@ -69,7 +70,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             await command.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission activated successfully");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
             string message = $"An error occurred while processing activate command: {e.Message}";
             _logger.LogError(e, message);
@@ -85,7 +86,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             await command.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission deactivated successfully");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
             string message = $"An error occurred while processing deactivate command: {e.Message}";
             _logger.LogError(e, message);
@@ -101,7 +102,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             await command.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission created successfully");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
             string message = $"An error occurred while processing deactivate command: {e.Message}";
             _logger.LogError(e, message);
@@ -117,7 +118,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             await command.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission deleted successfully");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
             string message = $"An error occurred while processing delete command: {e.Message}";
             _logger.LogError(e, message);
