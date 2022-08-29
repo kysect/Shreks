@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.Core.Exceptions;
+namespace Kysect.Shreks.Common.Exceptions;
 
 public abstract class ShreksDomainException : Exception
 {

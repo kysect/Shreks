@@ -1,4 +1,4 @@
-using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Queue.Evaluators;

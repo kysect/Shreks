@@ -1,4 +1,4 @@
-using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Queue.Filters;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;

@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factory;
 using Kysect.Shreks.Application.Handlers.Extensions;
-using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Specifications.Submissions;
@@ -12,6 +11,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Kysect.Shreks.Application.Handlers.Validators;
+using Kysect.Shreks.Common.Exceptions;
 using static Kysect.Shreks.Application.Abstractions.Github.Commands.CreateOrUpdateGithubSubmission;
 
 namespace Kysect.Shreks.Application.Handlers.Github;

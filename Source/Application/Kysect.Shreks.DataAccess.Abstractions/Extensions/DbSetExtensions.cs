@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using RichEntity.Annotations;
 

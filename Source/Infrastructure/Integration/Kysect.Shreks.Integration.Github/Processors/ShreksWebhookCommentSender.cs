@@ -1,5 +1,6 @@
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Integration.Github.Entities;
 using Microsoft.Extensions.Logging;
 using Octokit.Webhooks;
@@ -67,11 +68,17 @@ public class ShreksWebhookCommentSender
             message);
     }
 
-    public async Task SendExceptionMessageSafe(WebhookEvent webhookEvent, int issueNumber, string message)
+    public async Task SendExceptionMessageSafe(WebhookEvent webhookEvent, int issueNumber, Exception exception)
     {
         try
         {
-            await _actionNotifier.SendComment(webhookEvent, issueNumber, message);
+            if (exception is ShreksDomainException domainException)
+                await _actionNotifier.SendComment(webhookEvent, issueNumber, domainException.Message);
+            else
+            {
+                const string newMessage = $"An error internal error occurred while processing command. Contact support for details.";
+                await _actionNotifier.SendComment(webhookEvent, issueNumber, newMessage);
+            }
         }
         catch (Exception e)
         {
