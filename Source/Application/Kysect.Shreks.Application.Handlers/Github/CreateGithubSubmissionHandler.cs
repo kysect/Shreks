@@ -18,7 +18,7 @@ public class CreateGithubSubmissionHandler : IRequestHandler<Command, Response>
     private readonly IMapper _mapper;
     private readonly ISubmissionFactory _submissionFactory;
 
-    public CreateGithubSubmissionHandler(IShreksDatabaseContext context, SubmissionFactory submissionFactory,
+    public CreateGithubSubmissionHandler(IShreksDatabaseContext context, ISubmissionFactory submissionFactory,
         IMapper mapper)
     {
         _context = context;

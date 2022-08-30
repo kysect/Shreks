@@ -32,7 +32,12 @@ public class GithubForkSyncer
         return string.Equals(response.TemplateRepositoryName, pullRequestDescriptor.Repository);
     }
 
-    public async Task SyncRepos(GithubPullRequestDescriptor pullRequestDescriptor)
+    public class Body
+    {
+        public string branch { get; init; }
+    }
+
+    public async Task SyncRepos(GithubPullRequestDescriptor pullRequestDescriptor, string baseBranchName)
     {
         _logger.LogInformation($"Sync repos in org {pullRequestDescriptor.Organization} with changes in template repo.");
 
@@ -43,7 +48,16 @@ public class GithubForkSyncer
 
         foreach (Repository repository in repositories)
         {
-            HttpStatusCode httpStatusCode = await gitHubClient.Connection.Post(new Uri($"/repos/{repository.Owner.Login}/{repository.Name}/merge-upstream"));
+            if (repository.Name != "Template-2")
+                continue;
+            string uriString = $"repos/{repository.Owner.Login}/{repository.Name}/merge-upstream";
+            HttpStatusCode httpStatusCode = await gitHubClient.Connection.Post(
+                new Uri(uriString, UriKind.Relative),
+                new Body
+                {
+                    branch = baseBranchName
+                },
+                "application/vnd.github+json");
             if (httpStatusCode == HttpStatusCode.OK)
             {
                 _logger.LogInformation($"Repository {repository.FullName} was updated with template repo.");

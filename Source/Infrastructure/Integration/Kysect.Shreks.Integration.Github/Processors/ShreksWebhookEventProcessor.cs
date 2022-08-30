@@ -88,7 +88,7 @@ public class ShreksWebhookEventProcessor
 
                 if (await githubForkSyncer.IsTemplateRepo(pullRequestDescriptor))
                 {
-                    await githubForkSyncer.SyncRepos(pullRequestDescriptor);
+                    await githubForkSyncer.SyncRepos(pullRequestDescriptor, pullRequestEvent.PullRequest.Base.Ref);
                 }
 
 
