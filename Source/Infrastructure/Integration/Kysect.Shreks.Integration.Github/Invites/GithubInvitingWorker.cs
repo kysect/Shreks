@@ -123,26 +123,40 @@ public class GithubInvitingWorker : BackgroundService
     {
         GitHubClient client = await _clientProvider.GetClient(organizationName);
         IReadOnlyList<Repository>? repositories = await client.Repository.GetAllForOrg(organizationName);
-        
-        Repository templateRepository = repositories.FirstOrDefault(repo => repo.IsTemplate)
-                                        ?? throw new InfrastructureInvalidOperationException(
-                                            $"No template repository found for organization {organizationName}");
-        
+        Repository? templateRepository = repositories.FirstOrDefault(r => r.IsTemplate);
+        const string missingRepoException = "No template repository found for organization {0}";
+
+        if (templateRepository is null)
+        {
+            throw new InfrastructureInvalidOperationException(string.Format(missingRepoException, organizationName));
+        }
+
         foreach (var addedUser in inviteResult.AlreadyAdded)
         {
-            var userRepository = repositories.FirstOrDefault(repository => repository.Name == addedUser);
+            var userRepository = repositories.FirstOrDefault(r => r.Name
+                .Equals(addedUser, StringComparison.OrdinalIgnoreCase));
+
+            if (userRepository is not null)
+            {
+                continue;
+            }
             
-            if (userRepository is not null) continue;
+            var userRepositoryFromTemplate = new NewRepositoryFromTemplate(addedUser)
+            {
+                Owner = organizationName,
+                Description = null,
+                Private = true,
+            };
             
             await client.Repository.Generate(
                 organizationName,
                 templateRepository.Name,
-                new NewRepositoryFromTemplate(addedUser)
-                {
-                    Owner = organizationName,
-                    Description = null,
-                    Private = true
-                });
+                userRepositoryFromTemplate);
+
+            await client.Repository.Collaborator.Add(organizationName,
+                userRepositoryFromTemplate.Name,
+                addedUser,
+                new CollaboratorRequest(Permission.Admin));
             
             _logger.LogInformation("Successfully created repository for user {User}", addedUser);
         }
