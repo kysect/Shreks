@@ -145,7 +145,7 @@ async Task InitTestEnvironment(
     var subjectCourseGenerator = serviceProvider.GetRequiredService<IEntityGenerator<SubjectCourse>>();
     var subjectCourse = subjectCourseGenerator.GeneratedEntities[0];
     dbContext.SubjectCourses.Attach(subjectCourse);
-    dbContext.SubjectCourseAssociations.Add(new GithubSubjectCourseAssociation(subjectCourse, config.Organization));
+    dbContext.SubjectCourseAssociations.Add(new GithubSubjectCourseAssociation(subjectCourse, config.Organization, config.TemplateRepository));
 
     await dbContext.SaveChangesAsync(cancellationToken);
 }
