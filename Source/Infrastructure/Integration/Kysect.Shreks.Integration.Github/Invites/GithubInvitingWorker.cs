@@ -93,6 +93,7 @@ public class GithubInvitingWorker : BackgroundService
         {
             var count = inviteResult.AlreadyAdded.Count;
             var users = inviteResult.AlreadyAdded.ToSingleString();
+            await GenerateRepositoryForAdded(inviteResult, organizationName);
             _logger.LogInformation("Success invites: {AlreadyAddedCount}. Users: {Users}", count, users);
         }
 
@@ -116,27 +117,34 @@ public class GithubInvitingWorker : BackgroundService
             var error = inviteResult.Exception;
             _logger.LogInformation("Success invites: {FailedCount}. Error: {Error}", count, error);
         }
+    }
 
+    private async Task GenerateRepositoryForAdded(InviteResult inviteResult, string organizationName)
+    {
+        GitHubClient client = await _clientProvider.GetClient(organizationName);
+        IReadOnlyList<Repository>? repositories = await client.Repository.GetAllForOrg(organizationName);
+        
+        Repository templateRepository = repositories.FirstOrDefault(repo => repo.IsTemplate)
+                                        ?? throw new InfrastructureInvalidOperationException(
+                                            $"No template repository found for organization {organizationName}");
+        
         foreach (var addedUser in inviteResult.AlreadyAdded)
         {
-            var client = await _clientProvider.GetClient(organizationName);
-            var repositories = await client.Repository.GetAllForOrg(organizationName);
-            var templateRepository = repositories.FirstOrDefault(repo => repo.IsTemplate)
-                                     ?? throw new InfrastructureInvalidOperationException(
-                                         $"No template repository found for organization {organizationName}");
+            var userRepository = repositories.FirstOrDefault(repository => repository.Name == addedUser);
             
-            _ = repositories.FirstOrDefault(repository => repository.Name == addedUser)
-                ?? await client.Repository.Generate(
-                    organizationName,
-                    templateRepository.Name,
-                    new NewRepositoryFromTemplate(addedUser)
-                    {
-                        Owner = organizationName,
-                        Description = null,
-                        Private = true
-                    });
+            if (userRepository is not null) continue;
             
-            _logger.LogInformation("Added user {User} to organization {OrganizationName}", addedUser, organizationName);
+            await client.Repository.Generate(
+                organizationName,
+                templateRepository.Name,
+                new NewRepositoryFromTemplate(addedUser)
+                {
+                    Owner = organizationName,
+                    Description = null,
+                    Private = true
+                });
+            
+            _logger.LogInformation("Successfully created repository for user {User}", addedUser);
         }
     }
 
