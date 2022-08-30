@@ -45,6 +45,21 @@ public class ShreksWebhookEventProcessor
     {
         string pullRequestAction = action;
 
+        string senderLogin = pullRequestEvent.Sender!.Login;
+        string payload = pullRequestEvent.PullRequest.DiffUrl;
+        string organization = pullRequestEvent.Organization!.Login;
+        string repository = pullRequestEvent.Repository!.Name;
+        string branch = pullRequestEvent.PullRequest.Head.Ref;
+        long prNum = pullRequestEvent.PullRequest.Number;
+
+        var pullRequestDescriptor = new GithubPullRequestDescriptor(
+            senderLogin,
+            payload,
+            organization,
+            repository,
+            branch,
+            prNum);
+
         switch (pullRequestAction)
         {
             case PullRequestActionValue.Synchronize:
@@ -53,23 +68,8 @@ public class ShreksWebhookEventProcessor
 
                 CancellationToken cancellationToken = CancellationToken.None;
 
-                string login = pullRequestEvent.Sender!.Login;
-                string payload = pullRequestEvent.PullRequest.DiffUrl;
-                string organization = pullRequestEvent.Organization!.Login;
-                string repository = pullRequestEvent.Repository!.Name;
-                string branch = pullRequestEvent.PullRequest.Head.Ref;
-                long prNum = pullRequestEvent.PullRequest.Number;
-
-                var pullRequestDescriptor = new GithubPullRequestDescriptor(
-                    login,
-                    payload,
-                    organization,
-                    repository,
-                    branch,
-                    prNum);
-
                 var subjectCourseId = await GetSubjectCourseByOrganization(organization, cancellationToken);
-                var userId = await GetUserByGithubLogin(login, cancellationToken);
+                var userId = await GetUserByGithubLogin(senderLogin, cancellationToken);
                 var assignmentId =
                     await GetAssignemntByBranchAndSubjectCourse(branch, subjectCourseId);
 
@@ -84,6 +84,14 @@ public class ShreksWebhookEventProcessor
                 break;
 
             case PullRequestActionValue.Closed when pullRequestEvent.PullRequest.Merged is true:
+                var githubForkSyncer = new GithubForkSyncer(_mediator, _clientProvider);
+
+                if (await githubForkSyncer.IsTemplateRepo(pullRequestDescriptor))
+                {
+                    await githubForkSyncer.SyncRepos(pullRequestDescriptor);
+                }
+
+
                 var user = await GetUserByGithubLogin(pullRequestEvent.Sender!.Login, CancellationToken.None);
                 var submission = await GetGithubSubmissionAsync(
                     pullRequestEvent.Organization!.Login,
