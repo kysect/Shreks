@@ -56,9 +56,9 @@ public class CreateGithubSubmissionHandler : IRequestHandler<Command, Response>
 
         await _context.Submissions.AddAsync(submission, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+        _updateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
-        var dto = _mapper.Map<SubmissionDto>(submission);
-
+        var dto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
         return new Response(dto);
     }
 }

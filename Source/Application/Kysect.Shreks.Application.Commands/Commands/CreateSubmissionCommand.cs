@@ -9,9 +9,9 @@ using Serilog;
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("create-submission")]
-public class CreateSubmissionCommand : IShreksCommand<PullRequestAndAssignmentContext, SubmissionDto>
+public class CreateSubmissionCommand : IShreksCommand<PullRequestAndAssignmentContext, SubmissionRateDto>
 {
-    public async Task<SubmissionDto> ExecuteAsync(PullRequestAndAssignmentContext context, CancellationToken cancellationToken)
+    public async Task<SubmissionRateDto> ExecuteAsync(PullRequestAndAssignmentContext context, CancellationToken cancellationToken)
     {
         Log.Information($"Handle /create-submission command for pr {context.PullRequestDescriptor.Payload}");
 

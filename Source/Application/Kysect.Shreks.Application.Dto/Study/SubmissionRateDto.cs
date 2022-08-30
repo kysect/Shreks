@@ -13,6 +13,7 @@ public record SubmissionRateDto(
 {
     public string ToPullRequestString()
     {
+        // TODO: fix
         return new StringBuilder()
             .AppendLine($"Submission code: {Code}")
             .AppendLine($"Rating: {Rating}")
