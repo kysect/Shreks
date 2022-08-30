@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Kysect.Shreks.DataAccess.Configurations.Queue.Filters;
 
-public class SubjectCourseFilterConfiguration : IEntityTypeConfiguration<SubjectCourseFilter>
+public class SubjectCourseFilterConfiguration : IEntityTypeConfiguration<SubjectCoursesFilter>
 {
-    public void Configure(EntityTypeBuilder<SubjectCourseFilter> builder)
+    public void Configure(EntityTypeBuilder<SubjectCoursesFilter> builder)
     {
-        builder.HasMany(x => x.Courses).WithMany("Filters");
+        //builder.HasMany(x => x.Courses).WithMany("Filters");
     }
 }
