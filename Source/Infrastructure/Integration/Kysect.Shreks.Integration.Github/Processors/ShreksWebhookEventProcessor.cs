@@ -84,7 +84,7 @@ public class ShreksWebhookEventProcessor
                 break;
 
             case PullRequestActionValue.Closed when pullRequestEvent.PullRequest.Merged is true:
-                var githubForkSyncer = new GithubForkSyncer(_mediator, _clientProvider);
+                var githubForkSyncer = new GithubForkSyncer(_mediator, _clientProvider, _logger);
 
                 if (await githubForkSyncer.IsTemplateRepo(pullRequestDescriptor))
                 {
