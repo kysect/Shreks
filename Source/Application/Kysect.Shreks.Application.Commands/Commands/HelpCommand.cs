@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
@@ -20,6 +19,9 @@ public class HelpCommand : IShreksCommand<BaseContext, string>
 - `/to-draft` - перевод сабмишена в неактивное состояние, чтобы обозначить, что он не готов к сдаче
 - `/to-active` - перевод сабмишена обратно в активное состояние
 - `/create-submission` - команда на случай, если был создан PR, но сабмишен не был автоматически создан
+- `/deactivate` - перевод сабмишена в неактивное состояние, чтобы выписаться из очереди
+- `/activate` - перевод сабмишена в активное состояние
+- `/delete` - удаление сабмишена
 
 Команды только для преподавателя:
 
