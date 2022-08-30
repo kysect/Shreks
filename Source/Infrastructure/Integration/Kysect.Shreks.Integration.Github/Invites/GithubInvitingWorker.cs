@@ -124,24 +124,24 @@ public class GithubInvitingWorker : BackgroundService
         GitHubClient client = await _clientProvider.GetClient(organizationName);
         IReadOnlyList<Repository>? repositories = await client.Repository.GetAllForOrg(organizationName);
         Repository? templateRepository = repositories.FirstOrDefault(r => r.IsTemplate);
-        const string missingRepoException = "No template repository found for organization {0}";
 
         if (templateRepository is null)
         {
-            throw new InfrastructureInvalidOperationException(string.Format(missingRepoException, organizationName));
+            string message = $"No template repository found for organization {organizationName}";
+            throw new InfrastructureInvalidOperationException(message);
         }
 
-        foreach (var addedUser in inviteResult.AlreadyAdded)
+        foreach (var username in inviteResult.AlreadyAdded)
         {
             var userRepository = repositories.FirstOrDefault(r => r.Name
-                .Equals(addedUser, StringComparison.OrdinalIgnoreCase));
+                .Equals(username, StringComparison.OrdinalIgnoreCase));
 
             if (userRepository is not null)
             {
                 continue;
             }
             
-            var userRepositoryFromTemplate = new NewRepositoryFromTemplate(addedUser)
+            var userRepositoryFromTemplate = new NewRepositoryFromTemplate(username)
             {
                 Owner = organizationName,
                 Description = null,
@@ -155,10 +155,10 @@ public class GithubInvitingWorker : BackgroundService
 
             await client.Repository.Collaborator.Add(organizationName,
                 userRepositoryFromTemplate.Name,
-                addedUser,
+                username,
                 new CollaboratorRequest(Permission.Admin));
             
-            _logger.LogInformation("Successfully created repository for user {User}", addedUser);
+            _logger.LogInformation("Successfully created repository for user {User}", username);
         }
     }
 
