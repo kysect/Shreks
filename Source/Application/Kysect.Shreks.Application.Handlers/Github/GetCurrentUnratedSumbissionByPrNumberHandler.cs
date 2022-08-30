@@ -35,10 +35,7 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
 
         if (submission is null)
         {
-            var organization = request.PullRequestDescriptor.Organization;
-            var repository = request.PullRequestDescriptor.Repository;
-            var number = request.PullRequestDescriptor.PrNumber;
-            var message = $"No unrated submission in pr {organization}/{repository}/{number}";
+            var message = $"No unrated submission in pr {request.PullRequestDescriptor.Payload}";
             throw new EntityNotFoundException(message);
         }
         
