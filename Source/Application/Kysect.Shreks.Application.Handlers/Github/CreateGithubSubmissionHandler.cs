@@ -1,6 +1,8 @@
 using AutoMapper;
-using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Application.Factory;
+using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
@@ -19,17 +21,20 @@ public class CreateGithubSubmissionHandler : IRequestHandler<Command, Response>
     private readonly IMapper _mapper;
     private readonly ISubmissionFactory _submissionFactory;
     private readonly ILogger<CreateGithubSubmissionHandler> _logger;
+    private readonly ITableUpdateQueue _updateQueue;
 
     public CreateGithubSubmissionHandler(
         IShreksDatabaseContext context,
         ISubmissionFactory submissionFactory,
         IMapper mapper,
-        ILogger<CreateGithubSubmissionHandler> logger)
+        ILogger<CreateGithubSubmissionHandler> logger,
+        ITableUpdateQueue updateQueue)
     {
         _context = context;
         _submissionFactory = submissionFactory;
         _mapper = mapper;
         _logger = logger;
+        _updateQueue = updateQueue;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
