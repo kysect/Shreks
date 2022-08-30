@@ -34,13 +34,15 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var assignments = subjectCourse.Assignments;
 
-        // TODO: It is not evident query. We can fetch submissions from subject course.
-        var submission = _context.Submissions
+        List<Submission> submission = assignments
+            .SelectMany(a => a.GroupAssignments)
+            .SelectMany(ga => ga.Submissions)
             .Where(s => s.State == SubmissionState.Completed)
-            .Where(s => assignments.Any(a => a.Equals(s.GroupAssignment.Assignment)));
+            .ToList();
 
         var studentPoints = subjectCourse.Groups
-            .SelectMany(g => g.StudentGroup.Students.Select(s => GetStudentPoints(s, submission)))
+            .SelectMany(g => g.StudentGroup.Students)
+            .Select(s => GetStudentPoints(s, submission))
             .ToArray();
 
         var assignmentsDto = subjectCourse.Assignments
@@ -51,11 +53,10 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new Response(points);
     }
 
-    private StudentPointsDto GetStudentPoints(Student student, IQueryable<Submission> submissions)
+    private StudentPointsDto GetStudentPoints(Student student, IReadOnlyCollection<Submission> submissions)
     {
         var assignmentPoints = submissions
             .Where(s => s.Student.Equals(student))
-            .AsEnumerable()
             .GroupBy(s => s.GroupAssignment)
             .Select(g => FindAssignmentPoints(g.Key, g))
             .Where(a => a is not null)

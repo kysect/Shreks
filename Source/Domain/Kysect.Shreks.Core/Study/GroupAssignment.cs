@@ -1,3 +1,4 @@
+using Kysect.Shreks.Core.Submissions;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Study;
@@ -21,6 +22,7 @@ public partial class GroupAssignment : IEntity
     [KeyProperty]
     public virtual Assignment Assignment { get; protected init; }
     public DateOnly Deadline { get; set; }
+    public virtual IReadOnlyCollection<Submission> Submissions { get; protected init; }
 
     public override String ToString()
     {

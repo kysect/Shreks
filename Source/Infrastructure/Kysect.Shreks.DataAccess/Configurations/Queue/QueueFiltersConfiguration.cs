@@ -11,7 +11,7 @@ public class QueueFiltersConfiguration : IEntityTypeConfiguration<SubmissionQueu
         builder.HasDiscriminator<string>("Discriminator")
             .HasValue<GroupQueueFilter>(nameof(GroupQueueFilter))
             .HasValue<AssignmentGroupFilter>(nameof(AssignmentGroupFilter))
-            .HasValue<SubjectCourseFilter>(nameof(SubjectCourseFilter))
+            .HasValue<SubjectCoursesFilter>(nameof(SubjectCoursesFilter))
             .HasValue<SubmissionStateFilter>(nameof(SubmissionStateFilter));
     }
 }

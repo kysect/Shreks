@@ -76,6 +76,9 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
                 request.PullRequestDescriptor,
                 cancellationToken);
             isCreated = true;
+
+            _context.Submissions.Add(submission);
+            await _context.SaveChangesAsync(cancellationToken);
         }
         else if (!triggeredByMentor)
         {

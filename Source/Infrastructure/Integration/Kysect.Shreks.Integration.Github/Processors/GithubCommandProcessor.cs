@@ -97,8 +97,9 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         try
         {
             var context = await _contextFactory.CreatePullRequestAndAssignmentContext(_cancellationToken);
-            await command.ExecuteAsync(context, _cancellationToken);
-            return new BaseShreksCommandResult(true, "Submission created successfully");
+            SubmissionRateDto submission = await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, $"Submission created - {submission.ToPullRequestString()}");
+
         }
         catch (ShreksDomainException e)
         {

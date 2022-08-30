@@ -25,12 +25,13 @@ public class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response
     {
         User user = await _context.Users.GetByIdAsync(request.UserId, cancellationToken);
 
+        // TODO: validate that github username was not used
         var association = new GithubUserAssociation(user, request.GithubUsername);
+        user.AddAssociation(association);
 
         await _context.UserAssociations.AddAsync(association, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        user.AddAssociation(association);
 
         var dto = _mapper.Map<UserDto>(user);
 

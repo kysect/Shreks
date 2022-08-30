@@ -41,9 +41,9 @@ public partial class SubmissionQueue : IEntity<Guid>
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryExecutor);
-        ArgumentNullException.ThrowIfNull(_filters);
+        ArgumentNullException.ThrowIfNull(Filters);
 
-        foreach (var filter in _filters)
+        foreach (var filter in Filters)
         {
             submissionsQuery = filter.Filter(submissionsQuery);
         }
@@ -55,7 +55,7 @@ public partial class SubmissionQueue : IEntity<Guid>
 
     private IReadOnlyList<SubmissionEvaluator> OrderedEvaluators()
     {
-        return _evaluators
+        return Evaluators
             .OrderBy(x => x.Position)
             .ToArray();
     }

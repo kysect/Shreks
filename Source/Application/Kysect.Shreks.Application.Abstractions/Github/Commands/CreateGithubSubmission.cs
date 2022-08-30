@@ -11,5 +11,5 @@ public static class CreateGithubSubmission
         Guid AssignmentId,
         GithubPullRequestDescriptor PullRequestDescriptor) : IRequest<Response>;
 
-    public record Response(SubmissionDto Submission);
+    public record Response(SubmissionRateDto Submission);
 }

@@ -50,7 +50,7 @@ public partial class SubjectCourse : IEntity<Guid>
         {
             new GroupQueueFilter(new[] { group }),
             new SubmissionStateFilter(SubmissionState.Active),
-            new SubjectCourseFilter(new[] { this })
+            new SubjectCoursesFilter(Id)
         };
 
         var evaluators = new SubmissionEvaluator[]

@@ -18,27 +18,26 @@ public class GoogleTableUpdateWorker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken token)
     {
+        // TODO: return to queue on fail
         using var timer = new PeriodicTimer(DelayBetweenSheetUpdates);
         while (!token.IsCancellationRequested && await timer.WaitForNextTickAsync(token))
         {
             using IServiceScope serviceScope = _serviceProvider.CreateScope();
             using var googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<GoogleTableAccessor>();
-            
-            var pointsUpdateTasks = _tableUpdateQueue
+
+            IReadOnlyCollection<Guid> points = _tableUpdateQueue
                 .PointsUpdateSubjectCourseIds
-                .GetAndClearValues()
-                .Select(c => googleTableAccessor.UpdatePointsAsync(c, token));
+                .GetAndClearValues();
 
-            var queueUpdateTasks = _tableUpdateQueue
+            foreach (Guid point in points)
+                await googleTableAccessor.UpdatePointsAsync(point, token);
+
+            IReadOnlyCollection<(Guid, Guid)> queues = _tableUpdateQueue
                 .QueueUpdateSubjectCourseGroupIds
-                .GetAndClearValues()
-                .Select(t =>
-                {
-                    var (courseId, groupId) = t;
-                    return googleTableAccessor.UpdateQueueAsync(courseId, groupId, token);
-                });
+                .GetAndClearValues();
 
-            await Task.WhenAll(pointsUpdateTasks.Concat(queueUpdateTasks));
+            foreach ((Guid courseId, Guid groupId) in queues)
+                await googleTableAccessor.UpdateQueueAsync(courseId, groupId, token);
         }
     }
 }

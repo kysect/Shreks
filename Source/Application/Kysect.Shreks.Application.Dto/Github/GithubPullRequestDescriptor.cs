@@ -6,4 +6,10 @@ public record GithubPullRequestDescriptor(
     string Organization,
     string Repository,
     string BranchName,
-    long PrNumber);
+    long PrNumber)
+{
+    public override string ToString()
+    {
+        return $"{Payload} with branch {BranchName} from {Sender}";
+    }
+}
