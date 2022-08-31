@@ -105,6 +105,7 @@ public class ShreksWebhookEventProcessor
         var competeSubmissionCommand = new UpdateSubmissionState.Command(user, submission.Id, state);
 
         await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
+        await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submission);
     }
 
     public async Task ProcessPullRequestReviewWebhookAsync(
