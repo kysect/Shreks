@@ -86,7 +86,12 @@ public class ShreksWebhookEventProcessor
             case PullRequestActionValue.Closed:
                 var merged = pullRequestEvent.PullRequest.Merged ?? false;
                 var state = merged ? SubmissionStateDto.Completed : SubmissionStateDto.Inactive;
-                await ChangeSubmissionState(pullRequestEvent, state);
+                var submission = await ChangeSubmissionState(pullRequestEvent, state);
+
+                if (merged && submission.Points is null)
+                {
+                    await _commentSender.WarnPullRequestMergedWithoutPoints(pullRequestEvent, submission);
+                }
                 break;
             default:
                 _logger.LogWarning($"Unsupported pull request webhook type was received: {pullRequestAction}");
@@ -94,7 +99,7 @@ public class ShreksWebhookEventProcessor
         }
     }
 
-    private async Task ChangeSubmissionState(PullRequestEvent pullRequestEvent, SubmissionStateDto state)
+    private async Task<SubmissionDto> ChangeSubmissionState(PullRequestEvent pullRequestEvent, SubmissionStateDto state)
     {
         var user = await GetUserByGithubLogin(pullRequestEvent.Sender!.Login, CancellationToken.None);
         var submission = await GetGithubSubmissionAsync(
@@ -104,8 +109,10 @@ public class ShreksWebhookEventProcessor
 
         var competeSubmissionCommand = new UpdateSubmissionState.Command(user, submission.Id, state);
 
-        await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
-        await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submission);
+        var response = await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
+        await _commentSender.NotifySubmissionUpdate(pullRequestEvent, response.Submission);
+
+        return response.Submission;
     }
 
     public async Task ProcessPullRequestReviewWebhookAsync(
