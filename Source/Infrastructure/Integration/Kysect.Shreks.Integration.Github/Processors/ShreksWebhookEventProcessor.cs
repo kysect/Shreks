@@ -107,10 +107,61 @@ public class ShreksWebhookEventProcessor
         PullRequestReviewEvent pullRequestReviewEvent,
         PullRequestReviewAction action)
     {
+        GithubPullRequestDescriptor pullRequestDescriptor = new GithubPullRequestDescriptor(
+            pullRequestReviewEvent.Sender.Login,
+            Payload: pullRequestReviewEvent.Review.PullRequestUrl,
+            pullRequestReviewEvent.Organization.Login,
+            pullRequestReviewEvent.Repository.Name,
+            BranchName: pullRequestReviewEvent.PullRequest.Head.Ref,
+            pullRequestReviewEvent.PullRequest.Number);
+
+        IShreksCommand command = null;
+        string comment;
         string pullRequestReviewAction = action;
         switch (pullRequestReviewAction)
         {
-            case PullRequestReviewActionValue.Submitted:
+            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "APPROVED":
+                comment = pullRequestReviewEvent.Review.Body;
+                if (comment.FirstOrDefault() == '/')
+                {
+                    command = _commandParser.Parse(comment);
+                }
+                else
+                {
+                    command = new RateCommand(100, 0);
+                }
+
+                await ProceedCommandAsync(command, pullRequestDescriptor);
+                break;
+            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "CHANGES_REQUESTED":
+                comment = pullRequestReviewEvent.Review.Body;
+                if (comment.FirstOrDefault() == '/')
+                {
+                    command = _commandParser.Parse(comment);
+                }
+                else
+                {
+                    command = new RateCommand(0, 0);
+                }
+
+                await ProceedCommandAsync(command, pullRequestDescriptor);
+                break;
+            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "COMMENT":
+                comment = pullRequestReviewEvent.Review.Body;
+                if (comment.FirstOrDefault() == '/')
+                {
+                    command = _commandParser.Parse(comment);
+                    await ProceedCommandAsync(command, pullRequestDescriptor);
+                }
+
+                if (command is not RateCommand)
+                {
+                    await _commentSender.NotifyPullRequestReviewProcessed(
+                        pullRequestReviewEvent,
+                        $"Review proceeded, but submission is not yet rated and still will be presented in queue");
+                }
+
+                break;
             case PullRequestReviewActionValue.Edited:
             case PullRequestReviewActionValue.Dismissed:
 
@@ -118,7 +169,7 @@ public class ShreksWebhookEventProcessor
                 break;
         }
 
-        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, action);
+        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, $"Pull request review action {pullRequestReviewAction} proceeded.");
     }
 
     public async Task ProcessIssueCommentWebhookAsync(
@@ -133,34 +184,39 @@ public class ShreksWebhookEventProcessor
         {
             case IssueCommentActionValue.Created:
                 var comment = issueCommentEvent.Comment.Body;
-                if (comment.FirstOrDefault() == '/')
-                {
-                    IShreksCommand command = _commandParser.Parse(comment);
-                    var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, _logger);
-                    var processor = new GithubCommandProcessor(contextCreator, _logger, CancellationToken.None);
-                    BaseShreksCommandResult result;
+                if (comment.FirstOrDefault() != '/')
+                    break;
 
-                    try
-                    {
-                        result = await command.AcceptAsync(processor);
-                    }
-                    catch (Exception e)
-                    {
-                        string message = $"An error internal error occurred while processing command. Contact support for details.";
-                        _logger.LogError(e, message);
-                        result = new BaseShreksCommandResult(false, message);
-                    }
-
-                    await _commentSender.NotifyAboutCommandProcessingResult(issueCommentEvent, result);
-                }
+                IShreksCommand command = _commandParser.Parse(comment);
+                var result = await ProceedCommandAsync(command, pullRequestDescriptor);
+                await _commentSender.NotifyAboutCommandProcessingResult(issueCommentEvent, result);
 
                 break;
-
             case IssueCommentActionValue.Deleted:
             case IssueCommentActionValue.Edited:
                 _logger.LogTrace($"Pull request comment {issueCommentAction} event will be ignored.");
                 break;
         }
+    }
+
+    private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor)
+    {
+        var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, _logger);
+        var processor = new GithubCommandProcessor(contextCreator, _logger, CancellationToken.None);
+        BaseShreksCommandResult result;
+
+        try
+        {
+            result = await command.AcceptAsync(processor);
+        }
+        catch (Exception e)
+        {
+            string message = $"An error internal error occurred while processing command. Contact support for details.";
+            _logger.LogError(e, message);
+            result = new BaseShreksCommandResult(false, message);
+        }
+
+        return result;
     }
 
     private async Task<GithubPullRequestDescriptor> GetPullRequestDescriptor(IssueCommentEvent issueCommentEvent)

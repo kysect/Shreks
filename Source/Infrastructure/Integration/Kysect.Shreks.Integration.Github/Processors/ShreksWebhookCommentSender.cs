@@ -57,11 +57,10 @@ public class ShreksWebhookCommentSender
             result.IsSuccess);
     }
 
-    public async Task NotifyPullRequestReviewProcessed(PullRequestReviewEvent pullRequestReviewEvent, string action)
+    public async Task NotifyPullRequestReviewProcessed(
+        PullRequestReviewEvent pullRequestReviewEvent,
+        string message = $"Pull request review action handled.")
     {
-        // TODO: rework response
-        string message = $"Pull request review action {action} handled.";
-
         await _actionNotifier.SendComment(
             pullRequestReviewEvent,
             pullRequestReviewEvent.PullRequest.Number,
