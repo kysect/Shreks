@@ -1,4 +1,5 @@
 using Google.Apis.Auth.OAuth2;
+using Kysect.Shreks.Application.Abstractions.Identity.Commands;
 using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
@@ -17,6 +18,7 @@ using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -29,7 +31,8 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
-TestEnvConfiguration testEnvConfiguration = builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
+TestEnvConfiguration testEnvConfiguration =
+    builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
 GoogleCredential? googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
 string googleDriveId = builder.Configuration["GoogleDriveId"];
 
@@ -98,6 +101,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
         {
             scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
         }
+
         await app.Services.UseDatabaseSeeders();
         app.UseSwagger();
         app.UseSwaggerUI();
@@ -116,7 +120,12 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     app.UseSerilogRequestLogging();
 
     app.UseGithubIntegration(shreksConfiguration);
-    await InitTestEnvironment(app.Services, testEnvConfiguration);
+
+    using (var scope = app.Services.CreateScope())
+    {
+        await InitTestEnvironment(scope.ServiceProvider, testEnvConfiguration);
+        await SeedAdmins(scope.ServiceProvider, app.Configuration);
+    }
 
     app.Run();
 }
@@ -126,9 +135,7 @@ async Task InitTestEnvironment(
     TestEnvConfiguration config,
     CancellationToken cancellationToken = default)
 {
-    using var scope = serviceProvider.CreateScope();
-
-    var dbContext = scope.ServiceProvider.GetRequiredService<IShreksDatabaseContext>();
+    var dbContext = serviceProvider.GetRequiredService<IShreksDatabaseContext>();
 
     var userGenerator = serviceProvider.GetRequiredService<IEntityGenerator<User>>();
     var users = userGenerator.GeneratedEntities;
@@ -145,7 +152,24 @@ async Task InitTestEnvironment(
     var subjectCourseGenerator = serviceProvider.GetRequiredService<IEntityGenerator<SubjectCourse>>();
     var subjectCourse = subjectCourseGenerator.GeneratedEntities[0];
     dbContext.SubjectCourses.Attach(subjectCourse);
-    dbContext.SubjectCourseAssociations.Add(new GithubSubjectCourseAssociation(subjectCourse, config.Organization, config.TemplateRepository));
+    dbContext.SubjectCourseAssociations.Add(
+        new GithubSubjectCourseAssociation(subjectCourse, config.Organization, config.TemplateRepository));
 
     await dbContext.SaveChangesAsync(cancellationToken);
+}
+
+async Task SeedAdmins(IServiceProvider provider, IConfiguration configuration)
+{
+    var mediatr = provider.GetRequiredService<IMediator>();
+    var adminsSection = configuration.GetSection("DefaultAdmins");
+    (string Username, string Password)[] admins = adminsSection.Get<(string, string)[]>();
+
+    foreach (var (username, password) in admins)
+    {
+        var registerCommand = new Register.Command(username, password);
+        await mediatr.Send(registerCommand);
+
+        var promoteCommand = new PromoteToAdmin.Command(username);
+        await mediatr.Send(promoteCommand);
+    }
 }
