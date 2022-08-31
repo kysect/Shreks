@@ -48,9 +48,7 @@ public class ShreksWebhookEventProcessor
         switch (pullRequestAction)
         {
             case PullRequestActionValue.Synchronize:
-            case PullRequestActionValue.Reopened:
             case PullRequestActionValue.Opened:
-
                 CancellationToken cancellationToken = CancellationToken.None;
 
                 string login = pullRequestEvent.Sender!.Login;
@@ -82,24 +80,31 @@ public class ShreksWebhookEventProcessor
                     await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submissionDto);
 
                 break;
-
-            case PullRequestActionValue.Closed when pullRequestEvent.PullRequest.Merged is true:
-                var user = await GetUserByGithubLogin(pullRequestEvent.Sender!.Login, CancellationToken.None);
-                var submission = await GetGithubSubmissionAsync(
-                    pullRequestEvent.Organization!.Login,
-                    pullRequestEvent.Repository!.Name,
-                    pullRequestEvent.PullRequest.Number);
-
-                var competeSubmissionCommand = new UpdateSubmissionState.Command(
-                    user, submission.Id, SubmissionStateDto.Completed);
-
-                await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
+            case PullRequestActionValue.Reopened when pullRequestEvent.PullRequest.Merged is false:
+                await ChangeSubmissionState(pullRequestEvent, SubmissionStateDto.Active);
                 break;
-
+            case PullRequestActionValue.Closed:
+                var merged = pullRequestEvent.PullRequest.Merged ?? false;
+                var state = merged ? SubmissionStateDto.Completed : SubmissionStateDto.Inactive;
+                await ChangeSubmissionState(pullRequestEvent, state);
+                break;
             default:
                 _logger.LogWarning($"Unsupported pull request webhook type was received: {pullRequestAction}");
                 break;
         }
+    }
+
+    private async Task ChangeSubmissionState(PullRequestEvent pullRequestEvent, SubmissionStateDto state)
+    {
+        var user = await GetUserByGithubLogin(pullRequestEvent.Sender!.Login, CancellationToken.None);
+        var submission = await GetGithubSubmissionAsync(
+            pullRequestEvent.Organization!.Login,
+            pullRequestEvent.Repository!.Name,
+            pullRequestEvent.PullRequest.Number);
+
+        var competeSubmissionCommand = new UpdateSubmissionState.Command(user, submission.Id, state);
+
+        await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
     }
 
     public async Task ProcessPullRequestReviewWebhookAsync(
