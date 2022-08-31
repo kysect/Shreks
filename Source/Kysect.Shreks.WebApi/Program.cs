@@ -3,6 +3,7 @@ using Kysect.Shreks.Application.Abstractions.Identity.Commands;
 using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Submissions;
@@ -11,6 +12,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.Identity.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Google.Extensions;
@@ -18,8 +20,11 @@ using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi;
+using Kysect.Shreks.WebApi.Filters;
+using Kysect.Shreks.WebApi.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,9 +46,39 @@ await InitWebApplication(builder);
 
 void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 {
-    webApplicationBuilder.Services.AddControllers();
+    webApplicationBuilder.Services.AddControllers(x => x.Filters.Add<AuthenticationFilter>());
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
-    webApplicationBuilder.Services.AddSwaggerGen();
+    webApplicationBuilder.Services.AddSwaggerGen(c =>
+    {
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer",
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+                },
+                new List<string>()
+            }
+        });
+    });
     webApplicationBuilder.Services.AddApplicationConfiguration();
 
     webApplicationBuilder.Services
@@ -55,6 +90,9 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
         .AddDatabaseContext(o => o
             .UseSqlite("Filename=shreks.db")
             .UseLazyLoadingProxies());
+
+    webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity"),
+        x => x.UseSqlite("Filename=shreks-identity.db"));
 
     if (testEnvConfiguration.UseDummyGithubImplementation)
     {
@@ -161,15 +199,23 @@ async Task InitTestEnvironment(
 async Task SeedAdmins(IServiceProvider provider, IConfiguration configuration)
 {
     var mediatr = provider.GetRequiredService<IMediator>();
+    var logger = provider.GetRequiredService<ILogger<Program>>();
     var adminsSection = configuration.GetSection("DefaultAdmins");
-    (string Username, string Password)[] admins = adminsSection.Get<(string, string)[]>();
+    AdminModel[] admins = adminsSection.Get<AdminModel[]>();
 
-    foreach (var (username, password) in admins)
+    foreach (var admin in admins)
     {
-        var registerCommand = new Register.Command(username, password);
-        await mediatr.Send(registerCommand);
+        try
+        {
+            var registerCommand = new Register.Command(admin.Username, admin.Password);
+            await mediatr.Send(registerCommand);
 
-        var promoteCommand = new PromoteToAdmin.Command(username);
-        await mediatr.Send(promoteCommand);
+            var promoteCommand = new PromoteToAdmin.Command(admin.Username);
+            await mediatr.Send(promoteCommand);
+        }
+        catch (RegistrationFailedException e)
+        {
+            logger.LogWarning(e, "Failed registration of {AdminUsername}", admin.Username);
+        }
     }
 }

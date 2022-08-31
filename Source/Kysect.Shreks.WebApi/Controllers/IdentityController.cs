@@ -38,4 +38,14 @@ public class IdentityController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost("register")]
+    [Authorize(Roles = ShreksIdentityRole.AdminRoleName)]
+    public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserRequest request)
+    {
+        var command = new Register.Command(request.Username, request.Password);
+        await _mediator.Send(command);
+
+        return Ok();
+    }
 }
