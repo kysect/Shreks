@@ -117,6 +117,7 @@ public class ShreksWebhookEventProcessor
 
         IShreksCommand command = null;
         string comment;
+        BaseShreksCommandResult result;
         string pullRequestReviewAction = action;
         switch (pullRequestReviewAction)
         {
@@ -131,7 +132,8 @@ public class ShreksWebhookEventProcessor
                     command = new RateCommand(100, 0);
                 }
 
-                await ProceedCommandAsync(command, pullRequestDescriptor);
+                result = await ProceedCommandAsync(command, pullRequestDescriptor);
+                await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result);
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "CHANGES_REQUESTED":
                 comment = pullRequestReviewEvent.Review.Body;
@@ -144,14 +146,16 @@ public class ShreksWebhookEventProcessor
                     command = new RateCommand(0, 0);
                 }
 
-                await ProceedCommandAsync(command, pullRequestDescriptor);
+                result = await ProceedCommandAsync(command, pullRequestDescriptor);
+                await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result);
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "COMMENT":
                 comment = pullRequestReviewEvent.Review.Body;
                 if (comment.FirstOrDefault() == '/')
                 {
                     command = _commandParser.Parse(comment);
-                    await ProceedCommandAsync(command, pullRequestDescriptor);
+                    result = await ProceedCommandAsync(command, pullRequestDescriptor);
+                    await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result);
                 }
 
                 if (command is not RateCommand)
