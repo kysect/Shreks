@@ -1,6 +1,8 @@
 using AutoMapper;
-using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Application.Handlers.Validators;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
@@ -13,27 +15,26 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 public class UpdateSubmissionStateHandler : IRequestHandler<Command, Response>
 {
     private readonly IMapper _mapper;
-    protected readonly IShreksDatabaseContext Context;
+    private readonly IShreksDatabaseContext _context;
+    private readonly ITableUpdateQueue _tableUpdateQueue;
 
-    public UpdateSubmissionStateHandler(IShreksDatabaseContext context, IMapper mapper)
+    public UpdateSubmissionStateHandler(IShreksDatabaseContext context, IMapper mapper, ITableUpdateQueue tableUpdateQueue)
     {
-        Context = context;
+        _context = context;
         _mapper = mapper;
+        _tableUpdateQueue = tableUpdateQueue;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var submission = await Context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
+        var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
-        if (!submission.Student.User.Id.Equals(request.UserId) &&
-            !submission.GroupAssignment.Assignment.SubjectCourse.Mentors.Any(x => x.Id.Equals(request.UserId)))
-        {
-            const string message = "User is not authorized to activate this submission";
-            throw new UnauthorizedException(message);
-        }
+        PermissionValidator.EnsureHasAccessToRepository(request.UserId, submission);
 
         submission.State = _mapper.Map<SubmissionState>(request.State);
-        await Context.SaveChangesAsync(cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
         var submissionDto = _mapper.Map<SubmissionDto>(submission);
         return new Response(submissionDto);

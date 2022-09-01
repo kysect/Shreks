@@ -4,6 +4,6 @@ public enum SubmissionStateDto
 {
     Active,
     Inactive,
-    Invalid,
+    Deleted,
     Completed,
 }

@@ -3,19 +3,22 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Common.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
 
-//TODO: catch different exceptions and write better messages
 public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandResult>
 {
     private readonly ICommandContextFactory _contextFactory;
     private readonly CancellationToken _cancellationToken;
+    private readonly ILogger _logger;
 
-    public GithubCommandProcessor(ICommandContextFactory contextFactory, CancellationToken cancellationToken)
+    public GithubCommandProcessor(ICommandContextFactory contextFactory, ILogger logger, CancellationToken cancellationToken)
     {
         _contextFactory = contextFactory;
         _cancellationToken = cancellationToken;
+        _logger = logger;
     }
 
     public async Task<BaseShreksCommandResult> VisitAsync(RateCommand rateCommand)
@@ -23,12 +26,14 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         try
         {
             SubmissionContext context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            SubmissionDto submission = await rateCommand.ExecuteAsync(context, _cancellationToken);
+            SubmissionRateDto submission = await rateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission rated - {submission.ToPullRequestString()}");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process rate command: {e}");
+            string message = $"An error occurred while processing rate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
@@ -37,12 +42,14 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
         try
         {
             PullRequestContext context = await _contextFactory.CreatePullRequestContext(_cancellationToken);
-            SubmissionDto submission = await updateCommand.ExecuteAsync(context, _cancellationToken);
+            SubmissionRateDto submission = await updateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission updated - {submission.ToPullRequestString()}");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process update command: {e}");
+            string message = $"An error occurred while processing update command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
@@ -61,9 +68,11 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             await command.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission activated successfully");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process activate command: {e}");
+            string message = $"An error occurred while processing activate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
@@ -75,9 +84,44 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
             await command.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission deactivated successfully");
         }
-        catch (Exception e)
+        catch (ShreksDomainException e)
         {
-            return new BaseShreksCommandResult(false, $"Received error while process deactivate command: {e}");
+            string message = $"An error occurred while processing deactivate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
+        }
+    }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(CreateSubmissionCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreatePullRequestAndAssignmentContext(_cancellationToken);
+            SubmissionRateDto submission = await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, $"Submission created - {submission.ToPullRequestString()}");
+
+        }
+        catch (ShreksDomainException e)
+        {
+            string message = $"An error occurred while processing deactivate command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
+        }
+    }
+
+    public async Task<BaseShreksCommandResult> VisitAsync(DeleteCommand command)
+    {
+        try
+        {
+            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
+            await command.ExecuteAsync(context, _cancellationToken);
+            return new BaseShreksCommandResult(true, "Submission deleted successfully");
+        }
+        catch (ShreksDomainException e)
+        {
+            string message = $"An error occurred while processing delete command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 }

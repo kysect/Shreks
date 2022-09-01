@@ -7,5 +7,5 @@ public static class UpdateSubmissionDate
 {
     public record Command(Guid SubmissionId, DateOnly NewDate) : IRequest<Response>;
 
-    public record Response(SubmissionDto Submission);
+    public record Response(SubmissionRateDto SubmissionRate);
 }

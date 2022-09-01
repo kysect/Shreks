@@ -38,6 +38,8 @@ public class GoogleTableAccessor : IDisposable
     {
         try
         {
+            _logger.LogInformation("Start updating for points sheet of course {SubjectCourseId}.", subjectCourseId);
+
             var query = new GetCoursePointsBySubjectCourse.Query(subjectCourseId);
             var response = await _mediator.Send(query, token);
 
@@ -57,6 +59,8 @@ public class GoogleTableAccessor : IDisposable
     {
         try
         {
+            _logger.LogInformation("Start updating for queue sheet of group: {GroupId}, course: {CourseId}.", studentGroupId, subjectCourseId);
+
             var query = new GetSubjectCourseGroupSubmissionQueue.Query(subjectCourseId, studentGroupId);
             var response = await _mediator.Send(query, token);
 
@@ -95,6 +99,8 @@ public class GoogleTableAccessor : IDisposable
             _spreadsheetCreationSemaphore.Release();
             return spreadsheetId;
         }
+
+        _logger.LogInformation("Spread sheet for {SubjectCourseId} was not found and will be created.", subjectCourseId);
 
         try
         {

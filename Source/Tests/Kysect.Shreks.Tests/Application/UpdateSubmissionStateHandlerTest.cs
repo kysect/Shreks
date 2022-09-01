@@ -3,6 +3,7 @@ using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Submissions;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Integration.Google;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -16,11 +17,13 @@ public class UpdateSubmissionStateHandlerTest : ApplicationTestBase
         // Arrange
         const SubmissionStateDto stateDto = SubmissionStateDto.Active;
         const SubmissionState state = SubmissionState.Active;
-        var submission = await Context.Submissions.FirstAsync();
+        var submission = await Context.Submissions
+            .Where(s => s.State != SubmissionState.Completed)
+            .FirstAsync();
 
         var command = new UpdateSubmissionState.Command(submission.Student.User.Id, submission.Id, stateDto);
 
-        var handler = new UpdateSubmissionStateHandler(Context, Mapper);
+        var handler = new UpdateSubmissionStateHandler(Context, Mapper, new TableUpdateQueue());
 
         // Act
         var response = await handler.Handle(command, CancellationToken.None);

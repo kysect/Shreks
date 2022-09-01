@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using RichEntity.Annotations;
 
@@ -10,7 +10,7 @@ public static class DbSetExtensions
         this DbSet<T> dbSet,
         TKey id,
         CancellationToken cancellationToken = default)
-        where T : class, IEntity<TKey>
+        where T : class
         where TKey : IEquatable<TKey>
     {
         var entity = await dbSet.FindAsync(new object[] { id }, cancellationToken);

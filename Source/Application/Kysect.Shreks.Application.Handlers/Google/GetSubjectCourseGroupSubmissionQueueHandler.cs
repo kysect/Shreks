@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using Kysect.Shreks.Application.Abstractions.Exceptions;
 using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -33,7 +34,7 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
             .Where(x => x.StudentGroupId.Equals(request.StudentGroupId))
             .Select(x => x.Queue)
             .FirstOrDefaultAsync(cancellationToken);
-
+        
         if (queue is null)
             throw new EntityNotFoundException("Queue for specified subject course group was not found");
 

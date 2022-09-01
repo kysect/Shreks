@@ -10,5 +10,7 @@ public class SubmissionAssociationConfiguration : IEntityTypeConfiguration<Submi
     {
         builder.HasDiscriminator<string>("Discriminator")
             .HasValue<GithubSubmissionAssociation>(nameof(GithubSubmissionAssociation));
+
+        builder.HasIndex("SubmissionId", "Discriminator").IsUnique();
     }
 }

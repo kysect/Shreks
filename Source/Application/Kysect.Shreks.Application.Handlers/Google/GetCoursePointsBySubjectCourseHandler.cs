@@ -2,7 +2,8 @@
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.Core.DeadlinePolicies;
+using Kysect.Shreks.Application.Extensions;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
@@ -33,11 +34,15 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 
         var assignments = subjectCourse.Assignments;
 
-        var submission = _context.Submissions
-            .Where(s => assignments.Any(a => a.Equals(s.GroupAssignment.Assignment)));
+        List<Submission> submission = assignments
+            .SelectMany(a => a.GroupAssignments)
+            .SelectMany(ga => ga.Submissions)
+            .Where(s => s.State == SubmissionState.Completed)
+            .ToList();
 
         var studentPoints = subjectCourse.Groups
-            .SelectMany(g => g.StudentGroup.Students.Select(s => GetStudentPoints(s, submission)))
+            .SelectMany(g => g.StudentGroup.Students)
+            .Select(s => GetStudentPoints(s, submission))
             .ToArray();
 
         var assignmentsDto = subjectCourse.Assignments
@@ -48,11 +53,10 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new Response(points);
     }
 
-    private StudentPointsDto GetStudentPoints(Student student, IQueryable<Submission> submissions)
+    private StudentPointsDto GetStudentPoints(Student student, IReadOnlyCollection<Submission> submissions)
     {
         var assignmentPoints = submissions
             .Where(s => s.Student.Equals(student))
-            .AsEnumerable()
             .GroupBy(s => s.GroupAssignment)
             .Select(g => FindAssignmentPoints(g.Key, g))
             .Where(a => a is not null)
@@ -69,7 +73,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         var deadline = groupAssignment.Deadline;
 
         (var submission, Points? points) = submissions
-            .Select(s => (submission: s, points: GetSubmissionPoints(s, deadline)))
+            .Select(s => (submission: s, points: s.CalculateTotalSubmissionPoints(deadline)))
             .OrderByDescending(x => x.points)
             .FirstOrDefault();
 
@@ -77,37 +81,5 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             return null;
 
         return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDate, points.Value.Value);
-    }
-
-    private Points? GetSubmissionPoints(Submission submission, DateOnly deadline)
-    {
-        if (submission.Points is null)
-            return submission.Points;
-
-        var points = submission.Points.Value;
-
-        var deadlinePolicy = GetActiveDeadlinePolicy(submission, deadline);
-
-        if (deadlinePolicy is not null)
-            points = deadlinePolicy.Apply(points);
-
-        if (submission.ExtraPoints is not null)
-            points += submission.ExtraPoints.Value;
-
-        return points;
-    }
-
-    private DeadlinePolicy? GetActiveDeadlinePolicy(Submission submission, DateOnly deadline)
-    {
-        if (submission.SubmissionDate <= deadline)
-            return null;
-
-        var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDate.DayNumber - deadline.DayNumber);
-        return submission
-            .GroupAssignment
-            .Assignment
-            .DeadlinePolicies
-            .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)
-            .MaxBy(dp => dp.SpanBeforeActivation);
     }
 }

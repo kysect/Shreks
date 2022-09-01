@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Abstractions.Exceptions;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;

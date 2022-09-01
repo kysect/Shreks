@@ -1,7 +1,9 @@
 using Google.Apis.Auth.OAuth2;
+using Kysect.Shreks.Application.Abstractions.Identity.Commands;
 using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Submissions;
@@ -10,6 +12,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.Identity.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Google.Extensions;
@@ -17,16 +20,24 @@ using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi;
+using Kysect.Shreks.WebApi.Filters;
+using Kysect.Shreks.WebApi.Models;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseSerilog(
-    (ctx, lc) => lc.MinimumLevel.Verbose().WriteTo.Console());
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
 
 ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
-TestEnvConfiguration testEnvConfiguration = builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
+TestEnvConfiguration testEnvConfiguration =
+    builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
 GoogleCredential? googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
 string googleDriveId = builder.Configuration["GoogleDriveId"];
 
@@ -35,9 +46,39 @@ await InitWebApplication(builder);
 
 void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 {
-    webApplicationBuilder.Services.AddControllers();
+    webApplicationBuilder.Services.AddControllers(x => x.Filters.Add<AuthenticationFilter>());
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
-    webApplicationBuilder.Services.AddSwaggerGen();
+    webApplicationBuilder.Services.AddSwaggerGen(c =>
+    {
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer",
+                    },
+                    Scheme = "oauth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header,
+                },
+                new List<string>()
+            }
+        });
+    });
     webApplicationBuilder.Services.AddApplicationConfiguration();
 
     webApplicationBuilder.Services
@@ -49,6 +90,9 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
         .AddDatabaseContext(o => o
             .UseSqlite("Filename=shreks.db")
             .UseLazyLoadingProxies());
+
+    webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity"),
+        x => x.UseSqlite("Filename=shreks-identity.db"));
 
     if (testEnvConfiguration.UseDummyGithubImplementation)
     {
@@ -74,6 +118,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
                 o.ConfigureFaker(o => o.Locale = "ru");
                 o.ConfigureEntityGenerator<User>(o => o.Count = testEnvConfiguration.Users.Count);
                 o.ConfigureEntityGenerator<Student>(o => o.Count = testEnvConfiguration.Users.Count);
+                o.ConfigureEntityGenerator<Mentor>(o => o.Count = testEnvConfiguration.Users.Count);
                 o.ConfigureEntityGenerator<GithubUserAssociation>(o => o.Count = 0);
                 o.ConfigureEntityGenerator<IsuUserAssociation>(o => o.Count = 0);
                 o.ConfigureEntityGenerator<Submission>(o => o.Count = 0);
@@ -94,6 +139,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
         {
             scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
         }
+
         await app.Services.UseDatabaseSeeders();
         app.UseSwagger();
         app.UseSwaggerUI();
@@ -112,7 +158,12 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     app.UseSerilogRequestLogging();
 
     app.UseGithubIntegration(shreksConfiguration);
-    await InitTestEnvironment(app.Services, testEnvConfiguration);
+
+    using (var scope = app.Services.CreateScope())
+    {
+        await InitTestEnvironment(scope.ServiceProvider, testEnvConfiguration);
+        await SeedAdmins(scope.ServiceProvider, app.Configuration);
+    }
 
     app.Run();
 }
@@ -122,9 +173,7 @@ async Task InitTestEnvironment(
     TestEnvConfiguration config,
     CancellationToken cancellationToken = default)
 {
-    using var scope = serviceProvider.CreateScope();
-
-    var dbContext = scope.ServiceProvider.GetRequiredService<IShreksDatabaseContext>();
+    var dbContext = serviceProvider.GetRequiredService<IShreksDatabaseContext>();
 
     var userGenerator = serviceProvider.GetRequiredService<IEntityGenerator<User>>();
     var users = userGenerator.GeneratedEntities;
@@ -141,7 +190,32 @@ async Task InitTestEnvironment(
     var subjectCourseGenerator = serviceProvider.GetRequiredService<IEntityGenerator<SubjectCourse>>();
     var subjectCourse = subjectCourseGenerator.GeneratedEntities[0];
     dbContext.SubjectCourses.Attach(subjectCourse);
-    dbContext.SubjectCourseAssociations.Add(new GithubSubjectCourseAssociation(subjectCourse, config.Organization));
+    dbContext.SubjectCourseAssociations.Add(
+        new GithubSubjectCourseAssociation(subjectCourse, config.Organization, config.TemplateRepository));
 
     await dbContext.SaveChangesAsync(cancellationToken);
+}
+
+async Task SeedAdmins(IServiceProvider provider, IConfiguration configuration)
+{
+    var mediatr = provider.GetRequiredService<IMediator>();
+    var logger = provider.GetRequiredService<ILogger<Program>>();
+    var adminsSection = configuration.GetSection("DefaultAdmins");
+    AdminModel[] admins = adminsSection.Get<AdminModel[]>();
+
+    foreach (var admin in admins)
+    {
+        try
+        {
+            var registerCommand = new Register.Command(admin.Username, admin.Password);
+            await mediatr.Send(registerCommand);
+
+            var promoteCommand = new PromoteToAdmin.Command(admin.Username);
+            await mediatr.Send(promoteCommand);
+        }
+        catch (RegistrationFailedException e)
+        {
+            logger.LogWarning(e, "Failed registration of {AdminUsername}", admin.Username);
+        }
+    }
 }

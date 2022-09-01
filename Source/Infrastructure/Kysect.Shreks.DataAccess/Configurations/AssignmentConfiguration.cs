@@ -11,8 +11,10 @@ public class AssignmentConfiguration : IEntityTypeConfiguration<Assignment>
     {
         builder.Property(x => x.MinPoints).HasConversion<PointsValueConverter>();
         builder.Property(x => x.MaxPoints).HasConversion<PointsValueConverter>();
-        
+
         builder.Navigation(x => x.GroupAssignments).HasField("_groupAssignments");
         builder.Navigation(x => x.DeadlinePolicies).HasField("_deadlinePolicies");
+
+        builder.HasIndex("ShortName", "SubjectCourseId").IsUnique();
     }
 }

@@ -1,4 +1,4 @@
-using Kysect.Shreks.Core.Exceptions;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Queue.Evaluators;
@@ -37,6 +37,8 @@ public partial class SubjectCourse : IEntity<Guid>
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
     public virtual IReadOnlyCollection<Mentor> Mentors => _mentors;
 
+    public override string ToString() => Name;
+
     public SubjectCourseGroup AddGroup(StudentGroup group)
     {
         ArgumentNullException.ThrowIfNull(group);
@@ -48,7 +50,7 @@ public partial class SubjectCourse : IEntity<Guid>
         {
             new GroupQueueFilter(new[] { group }),
             new SubmissionStateFilter(SubmissionState.Active),
-            new SubjectCourseFilter(new[] { this })
+            new SubjectCoursesFilter(Id)
         };
 
         var evaluators = new SubmissionEvaluator[]
@@ -114,8 +116,8 @@ public partial class SubjectCourse : IEntity<Guid>
         
         if (_mentors.Any(x => x.User.Equals(user)))
             throw new DomainInvalidOperationException($"User {user} is already a mentor of this subject course");
-        
-        var mentor = new Mentor(user);
+
+        var mentor = new Mentor(user, this);
         _mentors.Add(mentor);
 
         return mentor;

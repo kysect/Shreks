@@ -1,5 +1,5 @@
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.DeadlinePolicies;
-using Kysect.Shreks.Core.Exceptions;
 using Kysect.Shreks.Core.Queue.Filters;
 using Kysect.Shreks.Core.ValueObject;
 using RichEntity.Annotations;
@@ -93,5 +93,10 @@ public partial class Assignment : IEntity<Guid>
 
         if (!_deadlinePolicies.Remove(policy))
             throw new DomainInvalidOperationException($"Deadline span {policy} cannot be removed");
+    }
+
+    public override String ToString()
+    {
+        return $"Id: {Id}, Name: {ShortName}";
     }
 }
