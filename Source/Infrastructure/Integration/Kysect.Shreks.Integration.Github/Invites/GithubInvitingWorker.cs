@@ -4,7 +4,6 @@ using Kysect.Shreks.Application.Abstractions.Github.Queries;
 using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Dto.SubjectCourseAssociations;
 using Kysect.Shreks.Integration.Github.Client;
-using Kysect.Shreks.Integration.Github.Exceptions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -69,7 +68,7 @@ public class GithubInvitingWorker : BackgroundService
     {
         const string template = "Start inviting to organization {OrganizationName} for course {CourseName}";
 
-        var (subjectCourseId, courseName, organizationName) = association;
+        var (subjectCourseId, courseName, organizationName, templateRepositoryName) = association;
 
         _logger.LogInformation(template, organizationName, courseName);
 
@@ -93,7 +92,7 @@ public class GithubInvitingWorker : BackgroundService
         {
             var count = inviteResult.AlreadyAdded.Count;
             var users = inviteResult.AlreadyAdded.ToSingleString();
-            await GenerateRepositoryForAdded(inviteResult, organizationName);
+            await GenerateRepositoryForAdded(inviteResult, organizationName, templateRepositoryName);
             _logger.LogInformation("Success invites: {AlreadyAddedCount}. Users: {Users}", count, users);
         }
 
@@ -119,16 +118,17 @@ public class GithubInvitingWorker : BackgroundService
         }
     }
 
-    private async Task GenerateRepositoryForAdded(InviteResult inviteResult, string organizationName)
+    private async Task GenerateRepositoryForAdded(InviteResult inviteResult, string organizationName, string templateName)
     {
         GitHubClient client = await _clientProvider.GetClient(organizationName);
         IReadOnlyList<Repository>? repositories = await client.Repository.GetAllForOrg(organizationName);
-        Repository? templateRepository = repositories.FirstOrDefault(r => r.IsTemplate);
+        Repository? templateRepository = repositories.FirstOrDefault(r => string.Equals(r.Name, templateName));
 
         if (templateRepository is null)
         {
             string message = $"No template repository found for organization {organizationName}";
-            throw new InfrastructureInvalidOperationException(message);
+            _logger.LogWarning(message);
+            return;
         }
 
         foreach (var username in inviteResult.AlreadyAdded)
