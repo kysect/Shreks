@@ -85,4 +85,13 @@ public class ShreksWebhookCommentSender
             _logger.LogError(e, "Failed to send exception message to user pull request.");
         }
     }
+
+    public async Task WarnPullRequestMergedWithoutPoints(PullRequestEvent pullRequestEvent, SubmissionDto submissionDto)
+    {
+        await _actionNotifier.SendComment(
+            pullRequestEvent,
+            pullRequestEvent.PullRequest.Number,
+            $"Warning: pull request was merged, but submission {submissionDto.Code} is not yet rated."
+        );
+    }
 }
