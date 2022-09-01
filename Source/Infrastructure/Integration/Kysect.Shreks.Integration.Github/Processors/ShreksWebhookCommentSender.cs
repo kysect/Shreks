@@ -57,11 +57,26 @@ public class ShreksWebhookCommentSender
             result.IsSuccess);
     }
 
-    public async Task NotifyPullRequestReviewProcessed(PullRequestReviewEvent pullRequestReviewEvent, string action)
+    public async Task NotifyAboutReviewCommandProcessingResult(PullRequestReviewEvent prCommentEvent, BaseShreksCommandResult result)
     {
-        // TODO: rework response
-        string message = $"Pull request review action {action} handled.";
+        if (!string.IsNullOrEmpty(result.Message))
+        {
+            await _actionNotifier.SendComment(
+                prCommentEvent,
+                prCommentEvent.PullRequest.Number,
+                result.Message);
+        }
 
+        await _actionNotifier.ReactInComments(
+            prCommentEvent,
+            prCommentEvent.Review.Id,
+            result.IsSuccess);
+    }
+
+    public async Task NotifyPullRequestReviewProcessed(
+        PullRequestReviewEvent pullRequestReviewEvent,
+        string message = $"Pull request review action handled.")
+    {
         await _actionNotifier.SendComment(
             pullRequestReviewEvent,
             pullRequestReviewEvent.PullRequest.Number,
