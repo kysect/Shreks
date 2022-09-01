@@ -1,4 +1,5 @@
-﻿using Kysect.Shreks.Core.SubjectCourseAssociations;
+﻿using AutoMapper;
+using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
