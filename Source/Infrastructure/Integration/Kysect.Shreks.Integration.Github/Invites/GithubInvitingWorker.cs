@@ -68,7 +68,7 @@ public class GithubInvitingWorker : BackgroundService
     {
         const string template = "Start inviting to organization {OrganizationName} for course {CourseName}";
 
-        var (subjectCourseId, courseName, organizationName) = association;
+        var (subjectCourseId, courseName, organizationName, templateRepositoryName) = association;
 
         _logger.LogInformation(template, organizationName, courseName);
 
@@ -92,6 +92,7 @@ public class GithubInvitingWorker : BackgroundService
         {
             var count = inviteResult.AlreadyAdded.Count;
             var users = inviteResult.AlreadyAdded.ToSingleString();
+            await GenerateRepositoryForAdded(inviteResult, organizationName, templateRepositoryName);
             _logger.LogInformation("Success invites: {AlreadyAddedCount}. Users: {Users}", count, users);
         }
 
@@ -114,6 +115,50 @@ public class GithubInvitingWorker : BackgroundService
             var count = inviteResult.Failed.Count;
             var error = inviteResult.Exception;
             _logger.LogInformation("Success invites: {FailedCount}. Error: {Error}", count, error);
+        }
+    }
+
+    private async Task GenerateRepositoryForAdded(InviteResult inviteResult, string organizationName, string templateName)
+    {
+        GitHubClient client = await _clientProvider.GetClient(organizationName);
+        IReadOnlyList<Repository>? repositories = await client.Repository.GetAllForOrg(organizationName);
+        Repository? templateRepository = repositories.FirstOrDefault(r => string.Equals(r.Name, templateName));
+
+        if (templateRepository is null)
+        {
+            string message = $"No template repository found for organization {organizationName}";
+            _logger.LogWarning(message);
+            return;
+        }
+
+        foreach (var username in inviteResult.AlreadyAdded)
+        {
+            var userRepository = repositories.FirstOrDefault(r => r.Name
+                .Equals(username, StringComparison.OrdinalIgnoreCase));
+
+            if (userRepository is not null)
+            {
+                continue;
+            }
+            
+            var userRepositoryFromTemplate = new NewRepositoryFromTemplate(username)
+            {
+                Owner = organizationName,
+                Description = null,
+                Private = true,
+            };
+            
+            await client.Repository.Generate(
+                organizationName,
+                templateRepository.Name,
+                userRepositoryFromTemplate);
+
+            await client.Repository.Collaborator.Add(organizationName,
+                userRepositoryFromTemplate.Name,
+                username,
+                new CollaboratorRequest(Permission.Admin));
+            
+            _logger.LogInformation("Successfully created repository for user {User}", username);
         }
     }
 
