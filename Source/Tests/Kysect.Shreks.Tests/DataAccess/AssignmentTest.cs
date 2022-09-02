@@ -46,6 +46,5 @@ public class AssignmentTest : DataAccessTestBase
         var fetchedAssignment = await fetchFunction.Should().NotThrowAsync();
 
         fetchedAssignment.Subject.Should().NotBeNull();
-        fetchedAssignment.Subject!.DeadlinePolicies.Should().HaveCount(assignment.DeadlinePolicies.Count);
     }
 }

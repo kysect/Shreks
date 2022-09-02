@@ -9,7 +9,6 @@ namespace Kysect.Shreks.Core.Study;
 public partial class Assignment : IEntity<Guid>
 {
     private readonly HashSet<GroupAssignment> _groupAssignments;
-    private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
 
     // TODO: Remove when .NET 7 is released
     protected virtual IReadOnlyCollection<SubmissionQueueFilter> Filters { get; init; }
@@ -29,7 +28,6 @@ public partial class Assignment : IEntity<Guid>
         MaxPoints = maxPoints;
         SubjectCourse = subjectCourse;
         _groupAssignments = new HashSet<GroupAssignment>();
-        _deadlinePolicies = new HashSet<DeadlinePolicy>();
     }
     
     public string Title { get; set; }
@@ -39,7 +37,6 @@ public partial class Assignment : IEntity<Guid>
     public Points MaxPoints { get; protected set; }
     public virtual SubjectCourse SubjectCourse { get; protected init; }
     public virtual IReadOnlyCollection<GroupAssignment> GroupAssignments => _groupAssignments;
-    public virtual IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
     public void UpdateMinPoints(Points value)
     {
@@ -77,22 +74,6 @@ public partial class Assignment : IEntity<Guid>
 
         if (!_groupAssignments.Remove(assignment))
             throw new DomainInvalidOperationException($"Assignment {assignment} cannot be removed");
-    }
-
-    public void AddDeadlinePolicy(DeadlinePolicy policy)
-    {
-        ArgumentNullException.ThrowIfNull(policy);
-
-        if (!_deadlinePolicies.Add(policy))
-            throw new DomainInvalidOperationException($"Deadline span {policy} already exists");
-    }
-
-    public void RemoveDeadlinePolicy(DeadlinePolicy policy)
-    {
-        ArgumentNullException.ThrowIfNull(policy);
-
-        if (!_deadlinePolicies.Remove(policy))
-            throw new DomainInvalidOperationException($"Deadline span {policy} cannot be removed");
     }
 
     public override String ToString()

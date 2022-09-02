@@ -16,6 +16,7 @@ namespace Kysect.Shreks.Application.Extensions
             return submission
                 .GroupAssignment
                 .Assignment
+                .SubjectCourse
                 .DeadlinePolicies
                 .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)
                 .MaxBy(dp => dp.SpanBeforeActivation);

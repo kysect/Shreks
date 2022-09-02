@@ -43,6 +43,5 @@ public class GroupAssignmentTest : DataAccessTestBase
         var fetchedAssignment = await fetchFunction.Should().NotThrowAsync();
 
         fetchedAssignment.Subject.Should().NotBeNull();
-        fetchedAssignment.Subject!.DeadlinePolicies.Should().HaveCount(assignment.Assignment.DeadlinePolicies.Count);
     }
 }
