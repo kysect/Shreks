@@ -49,7 +49,7 @@ public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdmin
 
         foreach (string owner in notMentorOwner)
         {
-            _logger.LogInformation($"Github user {owner} is owner and will be added as mentor to {courseGithub.SubjectCourse.Name}");
+            _logger.LogInformation($"Github user {owner} is owner and will be added as mentor to {courseGithub.SubjectCourse.Title}");
             await CreateMentorFromAdmin(courseGithub.SubjectCourse, owner, cancellationToken);
         }
 
