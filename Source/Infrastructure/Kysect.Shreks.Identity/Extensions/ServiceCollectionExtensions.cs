@@ -17,7 +17,9 @@ public static class ServiceCollectionExtensions
         IConfigurationSection identityConfigurationSection,
         Action<DbContextOptionsBuilder> dbContextAction)
     {
-        var identityConfiguration = identityConfigurationSection.Get<IdentityConfiguration>();
+        var identityConfiguration = identityConfigurationSection
+            .GetSection("IdentityConfiguration")
+            .Get<IdentityConfiguration>();
 
         collection.AddSingleton(identityConfiguration);
         collection.AddDbContext<ShreksIdentityContext>(dbContextAction);
