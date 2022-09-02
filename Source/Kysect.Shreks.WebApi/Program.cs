@@ -11,7 +11,6 @@ using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Configuration;
-using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Identity.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
@@ -92,11 +91,11 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 
     webApplicationBuilder.Services
         .AddDatabaseContext(o => o
-            .UseNpgsql(postgresConfiguration.ToConnectionString())
+            .UseNpgsql(postgresConfiguration.ToConnectionString("shreks"))
             .UseLazyLoadingProxies());
 
     webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity"),
-        x => x.UseSqlite("Filename=shreks-identity.db"));
+        x => x.UseNpgsql(postgresConfiguration.ToConnectionString("shreks-identity")));
 
     if (!googleIntegrationConfiguration.EnableGoogleIntegration)
     {
@@ -140,7 +139,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     {
         using (IServiceScope scope = app.Services.CreateScope())
         {
-            scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
+            //scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
         }
 
         await app.Services.UseDatabaseSeeders();
