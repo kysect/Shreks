@@ -17,7 +17,7 @@ public abstract partial class Submission : IEntity<Guid>
         int code,
         Student student,
         GroupAssignment groupAssignment,
-        DateOnly submissionDate,
+        DateTime submissionDate,
         string payload)
         : this(Guid.NewGuid())
     {
@@ -36,7 +36,8 @@ public abstract partial class Submission : IEntity<Guid>
 
     public int Code { get; protected init; }
     
-    public DateOnly SubmissionDate { get; set; }
+    public DateTime SubmissionDate { get; set; }
+    public DateOnly SubmissionDateOnly => new DateOnly(SubmissionDate.Year, SubmissionDate.Month, SubmissionDate.Day);
 
     public virtual Student Student { get; protected init; }
 

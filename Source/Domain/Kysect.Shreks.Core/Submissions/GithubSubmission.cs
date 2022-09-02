@@ -10,7 +10,7 @@ public partial class GithubSubmission : Submission
         int code,
         Student student,
         GroupAssignment groupAssignment,
-        DateOnly submissionDate,
+        DateTime submissionDate,
         string payload,
         string organization,
         string repository,

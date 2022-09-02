@@ -40,7 +40,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
             index,
             student,
             assignment,
-            DateOnly.FromDateTime(_faker.Date.Future()),
+            _faker.Date.Future(),
             _faker.Internet.Url(),
             _faker.Company.CompanyName(),
             _faker.Commerce.ProductName(),

@@ -9,10 +9,10 @@ namespace Kysect.Shreks.Application.Extensions
         {
             ArgumentNullException.ThrowIfNull(submission);
 
-            if (submission.SubmissionDate <= deadline)
+            if (submission.SubmissionDateOnly <= deadline)
                 return null;
 
-            var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDate.DayNumber - deadline.DayNumber);
+            var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDateOnly.DayNumber - deadline.DayNumber);
             return submission
                 .GroupAssignment
                 .Assignment
