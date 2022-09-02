@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
@@ -21,12 +22,11 @@ public class GetAssignmentsBySubjectCourseHandler : IRequestHandler<Query, Respo
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        var assignments = _context
+        var assignments = await _context
             .Assignments
             .Where(a => a.SubjectCourse.Id == request.SubjectCourseId)
-            .AsEnumerable()
-            .Select(_mapper.Map<AssignmentDto>)
-            .ToList();
+            .ProjectTo<AssignmentDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
         return new Response(assignments);
     }
