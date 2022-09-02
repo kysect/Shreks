@@ -1,13 +1,8 @@
-﻿using Kysect.CommonLib;
-using Kysect.GithubUtils;
-using Kysect.Shreks.Application.Abstractions.Github.Queries;
-using Kysect.Shreks.Application.Dto.SubjectCourseAssociations;
-using Kysect.Shreks.Integration.Github.Client;
+﻿using Kysect.Shreks.Application.Abstractions.Github.Queries;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Octokit;
 
 namespace Kysect.Shreks.Integration.Github.Invites;
 
@@ -20,16 +15,11 @@ public class GithubInvitingWorker : BackgroundService
     private readonly TimeSpan _delayBetweenInviteIteration = TimeSpan.FromHours(24).Add(TimeSpan.FromMinutes(1));
 
     private readonly ILogger<GithubInvitingWorker> _logger;
-    private readonly IOrganizationGithubClientProvider _clientProvider;
-
     private readonly IServiceScopeFactory _serviceProvider;
 
-    public GithubInvitingWorker(
-        IOrganizationGithubClientProvider clientProvider,
-        IServiceScopeFactory serviceProvider,
+    public GithubInvitingWorker(IServiceScopeFactory serviceProvider,
         ILogger<GithubInvitingWorker> logger)
     {
-        _clientProvider = clientProvider;
         _logger = logger;
         _serviceProvider = serviceProvider;
     }
@@ -46,12 +36,20 @@ public class GithubInvitingWorker : BackgroundService
                 using (IServiceScope scope = _serviceProvider.CreateScope())
                 {
                     var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                    var inviteSender = scope.ServiceProvider.GetRequiredService<SubjectCourseGithubOrganizationInviteSender>();
+                    var repositoryManager = scope.ServiceProvider.GetRequiredService<ISubjectCourseGithubOrganizationRepositoryManager>();
 
                     var response = await mediator.Send(query, stoppingToken);
 
                     foreach (var association in response.Associations)
                     {
-                        await ProcessSubject(mediator, association, stoppingToken);
+                        var (subjectCourseId, courseName, organizationName, templateRepositoryName) = association;
+
+                        var usernamesQuery = new GetGithubUsernamesForSubjectCourse.Query(subjectCourseId);
+                        var usernames = await mediator.Send(usernamesQuery, stoppingToken);
+
+                        await inviteSender.Invite(organizationName, usernames.StudentGithubUsernames);
+                        await GenerateRepositories(repositoryManager, usernames.StudentGithubUsernames, organizationName, templateRepositoryName);
                     }
                 }
             }
@@ -63,108 +61,32 @@ public class GithubInvitingWorker : BackgroundService
         }
     }
 
-    private async Task ProcessSubject(IMediator mediator, GithubSubjectCourseAssociationDto association, CancellationToken stoppingToken)
+    private async Task GenerateRepositories(
+        ISubjectCourseGithubOrganizationRepositoryManager repositoryManager,
+        IReadOnlyCollection<string> usernames,
+        string organizationName,
+        string templateName)
     {
-        const string template = "Start inviting to organization {OrganizationName} for course {CourseName}";
+        IReadOnlyCollection<string> repositories = await repositoryManager.GetRepositories(organizationName);
 
-        var (subjectCourseId, courseName, organizationName, templateRepositoryName) = association;
-
-        _logger.LogInformation(template, organizationName, courseName);
-
-        var usernamesQuery = new GetGithubUsernamesForSubjectCourse.Query(subjectCourseId);
-        var response = await mediator.Send(usernamesQuery, stoppingToken);
-
-        IReadOnlyCollection<string> organizationUsers = response.StudentGithubUsernames;
-        var inviteSender = await CreateOrganizationInviteSender(organizationName);
-        var inviteResult = await inviteSender.Invite(organizationName, organizationUsers);
-
-        _logger.LogInformation("Finish invite cycle for organization {OrganizationName}", organizationName);
-
-        if (inviteResult.Success.Any())
-        {
-            var count = inviteResult.Success.Count;
-            var users = inviteResult.Success.ToSingleString();
-            _logger.LogInformation("Success invites: {InviteCount}. Users: {Users}", count, users);
-        }
-
-        if (inviteResult.AlreadyAdded.Any())
-        {
-            var count = inviteResult.AlreadyAdded.Count;
-            var users = inviteResult.AlreadyAdded.ToSingleString();
-            await GenerateRepositoryForAdded(inviteResult, organizationName, templateRepositoryName);
-            _logger.LogInformation("Success invites: {AlreadyAddedCount}. Users: {Users}", count, users);
-        }
-
-        if (inviteResult.AlreadyInvited.Any())
-        {
-            var count = inviteResult.AlreadyInvited.Count;
-            var users = inviteResult.AlreadyInvited.ToSingleString();
-            _logger.LogInformation("Success invites: {AlreadyInvitedCount}. Users: {Users}", count, users);
-        }
-
-        if (inviteResult.WithExpiredInvites.Any())
-        {
-            var count = inviteResult.WithExpiredInvites.Count;
-            var users = inviteResult.WithExpiredInvites.ToSingleString();
-            _logger.LogInformation("Success invites: {Count}. Users: {Users}", count, users);
-        }
-
-        if (inviteResult.Failed.Any())
-        {
-            var count = inviteResult.Failed.Count;
-            var error = inviteResult.Exception;
-            _logger.LogInformation("Success invites: {FailedCount}. Error: {Error}", count, error);
-        }
-    }
-
-    private async Task GenerateRepositoryForAdded(InviteResult inviteResult, string organizationName, string templateName)
-    {
-        GitHubClient client = await _clientProvider.GetClient(organizationName);
-        IReadOnlyList<Repository>? repositories = await client.Repository.GetAllForOrg(organizationName);
-        Repository? templateRepository = repositories.FirstOrDefault(r => string.Equals(r.Name, templateName));
-
-        if (templateRepository is null)
+        if (!repositories.Contains(templateName))
         {
             string message = $"No template repository found for organization {organizationName}";
             _logger.LogWarning(message);
             return;
         }
 
-        foreach (var username in inviteResult.AlreadyAdded)
+        foreach (string username in usernames)
         {
-            var userRepository = repositories.FirstOrDefault(r => r.Name
-                .Equals(username, StringComparison.OrdinalIgnoreCase));
+            string newRepositoryName = username;
 
-            if (userRepository is not null)
-            {
+            if (repositories.Any(r => r.Equals(newRepositoryName, StringComparison.OrdinalIgnoreCase)))
                 continue;
-            }
             
-            var userRepositoryFromTemplate = new NewRepositoryFromTemplate(username)
-            {
-                Owner = organizationName,
-                Description = null,
-                Private = true,
-            };
-            
-            await client.Repository.Generate(
-                organizationName,
-                templateRepository.Name,
-                userRepositoryFromTemplate);
+            await repositoryManager.CreateRepositoryFromTemplate(organizationName, newRepositoryName, templateName);
+            await repositoryManager.AddAdminPermission(organizationName, newRepositoryName, username);
 
-            await client.Repository.Collaborator.Add(organizationName,
-                userRepositoryFromTemplate.Name,
-                username,
-                new CollaboratorRequest(Permission.Admin));
-            
             _logger.LogInformation("Successfully created repository for user {User}", username);
         }
-    }
-
-    private async Task<OrganizationInviteSender> CreateOrganizationInviteSender(string githubOrganization)
-    {
-        GitHubClient client = await _clientProvider.GetClient(githubOrganization);
-
-        return new OrganizationInviteSender(client);
     }
 }
