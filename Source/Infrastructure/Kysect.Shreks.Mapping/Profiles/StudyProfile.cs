@@ -11,5 +11,6 @@ public class StudyProfile : Profile
     {
         CreateMap<Submission, SubmissionDto>();
         CreateMap<Assignment, AssignmentDto>();
+        CreateMap<SubjectCourseGroup, SubjectCourseGroupDto>();
     }
 }
