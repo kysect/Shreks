@@ -1,9 +1,11 @@
 using AutoMapper;
 using FluentAssertions;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Tests.DataAccess;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +42,17 @@ public class MappingTest : DataAccessTestBase
         var receivedState = _mapper.Map<SubmissionState>(stateDto);
 
         receivedState.Should().Be(state);
+    }
+
+    [Fact]
+    public void Map_Should_MapStudentWithoutIsuToStudentDto()
+    {
+        var student = Provider.GetRequiredService<IEntityGenerator<Student>>().Generate();
+
+        var dto = _mapper.Map<StudentDto>(student);
+
+        dto.Should().NotBeNull();
+        dto.UniversityId.Should().BeNull();
     }
 
     [Fact]

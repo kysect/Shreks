@@ -1,9 +1,4 @@
-﻿using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.Submissions;
-using Kysect.Shreks.Core.Tools;
-using Kysect.Shreks.Core.Users;
-using Kysect.Shreks.Core.ValueObject;
-using Kysect.Shreks.DataAccess.Context;
+﻿using Kysect.Shreks.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -20,19 +15,3 @@ var builder = new DbContextOptionsBuilder<ShreksDatabaseContext>()
 
 var context = new ShreksDatabaseContext(builder.Options);
 await context.Database.EnsureCreatedAsync();
-
-
-var assignment = new Assignment("adw", "", 1, new Points(1), new Points(2), new SubjectCourse(new Subject(""), ""));
-var submission = new GithubSubmission
-(
-    0,
-    new Student(new User("John", "Doe", "adw"),
-        new StudentGroup(""),
-        0),
-    new GroupAssignment(new StudentGroup(""), assignment, Calendar.CurrentDate),
-    Calendar.CurrentDate,
-    "",
-    "",
-    "",
-    0
-);

@@ -2,13 +2,16 @@
 using Kysect.Shreks.Application.Abstractions.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Identity.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kysect.Shreks.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = ShreksIdentityRole.AdminRoleName)]
     public class GroupAssignmentController : ControllerBase
     {
         private readonly IMediator _mediator;

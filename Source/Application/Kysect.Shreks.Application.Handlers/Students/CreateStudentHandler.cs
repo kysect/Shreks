@@ -25,7 +25,7 @@ public class CreateStudentHandler : IRequestHandler<Command, Response>
         StudentGroup group = await _context.StudentGroups.GetByIdAsync(request.GroupId, cancellationToken);
 
         var user = new User(request.FirstName, request.MiddleName, request.LastName);
-        var student = new Student(user, group, request.UniversityId);
+        var student = new Student(user, group);
 
         _context.Students.Add(student);
         await _context.SaveChangesAsync(cancellationToken);
