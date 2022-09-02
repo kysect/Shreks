@@ -1,7 +1,6 @@
 ﻿using Kysect.CommonLib;
 using Kysect.GithubUtils;
 using Kysect.Shreks.Application.Abstractions.Github.Queries;
-using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Dto.SubjectCourseAssociations;
 using Kysect.Shreks.Integration.Github.Client;
 using MediatR;

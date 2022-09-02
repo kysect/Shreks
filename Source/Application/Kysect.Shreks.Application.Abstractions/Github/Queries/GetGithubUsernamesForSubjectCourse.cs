@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Kysect.Shreks.Application.Abstractions.Students;
+namespace Kysect.Shreks.Application.Abstractions.Github.Queries;
 
 public static class GetGithubUsernamesForSubjectCourse
 {
