@@ -14,5 +14,6 @@ public class SubjectCourseConfiguration : IEntityTypeConfiguration<SubjectCourse
         builder.Navigation(x => x.Assignments).HasField("_assignments");
         builder.Navigation(x => x.Associations).HasField("_associations");
         builder.Navigation(x => x.Mentors).HasField("_mentors");
+        builder.Navigation(x => x.DeadlinePolicies).HasField("_deadlinePolicies");
     }
 }

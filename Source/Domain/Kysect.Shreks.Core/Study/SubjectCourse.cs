@@ -1,4 +1,5 @@
 using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Queue.Evaluators;
@@ -15,6 +16,7 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<Assignment> _assignments;
     private readonly HashSet<SubjectCourseAssociation> _associations;
     private readonly HashSet<Mentor> _mentors;
+    private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
     
     // TODO: Remove when .NET 7 is released
     protected virtual IReadOnlyCollection<SubmissionQueueFilter> Filters { get; init; }
@@ -28,6 +30,7 @@ public partial class SubjectCourse : IEntity<Guid>
         _assignments = new HashSet<Assignment>();
         _associations = new HashSet<SubjectCourseAssociation>();
         _mentors = new HashSet<Mentor>();
+        _deadlinePolicies = new HashSet<DeadlinePolicy>();
     }
 
     public virtual Subject Subject { get; protected init; }
@@ -36,6 +39,7 @@ public partial class SubjectCourse : IEntity<Guid>
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
     public virtual IReadOnlyCollection<Mentor> Mentors => _mentors;
+    public virtual IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
     public override string ToString() => Title;
 
@@ -129,5 +133,21 @@ public partial class SubjectCourse : IEntity<Guid>
         
         if (!_mentors.Remove(mentor))
             throw new DomainInvalidOperationException($"Mentor {mentor} is not a mentor of this subject course");
+    }
+
+    public void AddDeadlinePolicy(DeadlinePolicy policy)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+
+        if (!_deadlinePolicies.Add(policy))
+            throw new DomainInvalidOperationException($"Deadline span {policy} already exists");
+    }
+
+    public void RemoveDeadlinePolicy(DeadlinePolicy policy)
+    {
+        ArgumentNullException.ThrowIfNull(policy);
+
+        if (!_deadlinePolicies.Remove(policy))
+            throw new DomainInvalidOperationException($"Deadline span {policy} cannot be removed");
     }
 }
