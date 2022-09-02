@@ -52,7 +52,7 @@ public class ShreksWebhookEventProcessor
                 CancellationToken cancellationToken = CancellationToken.None;
 
                 string login = pullRequestEvent.Sender!.Login;
-                string payload = pullRequestEvent.PullRequest.DiffUrl;
+                string payload = pullRequestEvent.PullRequest.HtmlUrl;
                 string organization = pullRequestEvent.Organization!.Login;
                 string repository = pullRequestEvent.Repository!.Name;
                 string branch = pullRequestEvent.PullRequest.Head.Ref;
@@ -122,7 +122,7 @@ public class ShreksWebhookEventProcessor
     {
         GithubPullRequestDescriptor pullRequestDescriptor = new GithubPullRequestDescriptor(
             pullRequestReviewEvent.Sender.Login,
-            Payload: pullRequestReviewEvent.Review.PullRequestUrl,
+            Payload: pullRequestReviewEvent.Review.HtmlUrl,
             pullRequestReviewEvent.Organization.Login,
             pullRequestReviewEvent.Repository.Name,
             BranchName: pullRequestReviewEvent.PullRequest.Head.Ref,
@@ -248,7 +248,7 @@ public class ShreksWebhookEventProcessor
 
         return new GithubPullRequestDescriptor(
             issueCommentEvent.Sender.Login,
-            Payload: pullRequest.Url,
+            Payload: pullRequest.HtmlUrl,
             issueCommentEvent.Organization.Login,
             issueCommentEvent.Repository.Name,
             BranchName: pullRequest.Head.Ref,
