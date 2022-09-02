@@ -1,4 +1,5 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Github.Commands;
+using Kysect.Shreks.Application.Handlers.Github;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -23,6 +24,16 @@ namespace Kysect.Shreks.WebApi.Controllers
         {
             var updateOrganizationCommand = new UpdateSubjectCourseOrganizations.Command();
             await _mediator.Send(updateOrganizationCommand);
+            return Ok();
+        }
+
+        [HttpPost("force-mentor-sync")]
+        public async Task<ActionResult> ForceMentorsSync(string organisationName)
+        {
+            var command = new SyncGithubAdminWithMentors.Command(organisationName);
+
+            await _mediator.Send(command);
+
             return Ok();
         }
     }
