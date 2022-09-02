@@ -130,6 +130,7 @@ public static class ServiceCollectionExtensions
     {
         return services
             .AddScoped<ISubjectCourseGithubOrganizationInviteSender, SubjectCourseGithubOrganizationInviteSender>()
+            .AddScoped<ISubjectCourseGithubOrganizationRepositoryManager, SubjectCourseGithubOrganizationRepositoryManager>()
             .AddHostedService<GithubInvitingWorker>();
     }
 }
