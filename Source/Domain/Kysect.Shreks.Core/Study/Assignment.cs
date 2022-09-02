@@ -97,6 +97,6 @@ public partial class Assignment : IEntity<Guid>
 
     public override String ToString()
     {
-        return $"Id: {Id}, Name: {ShortName}";
+        return $"Id: {Id}, Title: {ShortName}";
     }
 }

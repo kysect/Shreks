@@ -29,7 +29,7 @@ public class GetAssignmentByBranchAndSubjectCourseHandler : IRequestHandler<Quer
                 .OrderBy(a => a.Order)
                 .ToSingleString(a => a.ShortName);
 
-            var message = $"Assignment with branch name '{branchName}' for subject course '{subjectCourse.Name}' was not found." +
+            var message = $"Assignment with branch name '{branchName}' for subject course '{subjectCourse.Title}' was not found." +
                           $"\nEnsure that branch name is correct. Available assignments: {assignments}";
             throw new EntityNotFoundException(message);
         }

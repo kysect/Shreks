@@ -19,10 +19,10 @@ public partial class SubjectCourse : IEntity<Guid>
     // TODO: Remove when .NET 7 is released
     protected virtual IReadOnlyCollection<SubmissionQueueFilter> Filters { get; init; }
 
-    public SubjectCourse(Subject subject, string name) : this(Guid.NewGuid())
+    public SubjectCourse(Subject subject, string title) : this(Guid.NewGuid())
     {
         Subject = subject;
-        Name = name;
+        Title = title;
 
         _groups = new HashSet<SubjectCourseGroup>();
         _assignments = new HashSet<Assignment>();
@@ -31,13 +31,13 @@ public partial class SubjectCourse : IEntity<Guid>
     }
 
     public virtual Subject Subject { get; protected init; }
-    public string Name { get; protected init; }
+    public string Title { get; set; }
     public virtual IReadOnlyCollection<SubjectCourseGroup> Groups => _groups;
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
     public virtual IReadOnlyCollection<Mentor> Mentors => _mentors;
 
-    public override string ToString() => Name;
+    public override string ToString() => Title;
 
     public SubjectCourseGroup AddGroup(StudentGroup group)
     {

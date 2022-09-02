@@ -24,6 +24,6 @@ public class GetSubjectCourseTableInfoByIdHandler : IRequestHandler<Query, Respo
             .OfType<GoogleTableSubjectCourseAssociation>()
             .FirstOrDefault();
 
-        return new Response(course.Name, tableAssociation?.SpreadsheetId);
+        return new Response(course.Title, tableAssociation?.SpreadsheetId);
     }
 }
