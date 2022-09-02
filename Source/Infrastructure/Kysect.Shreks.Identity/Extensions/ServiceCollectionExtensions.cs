@@ -1,5 +1,7 @@
 using System.Text;
+using Kysect.Shreks.Application.Abstractions.Identity;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.Identity.Services;
 using Kysect.Shreks.Identity.Tools;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +20,8 @@ public static class ServiceCollectionExtensions
         Action<DbContextOptionsBuilder> dbContextAction)
     {
         var identityConfiguration = identityConfigurationSection.Get<IdentityConfiguration>();
+
+        collection.AddScoped<IAuthorizationService, AuthorizationService>();
 
         collection.AddSingleton(identityConfiguration);
         collection.AddDbContext<ShreksIdentityContext>(dbContextAction);
