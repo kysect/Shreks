@@ -2,6 +2,7 @@ using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Application.Handlers.Validators;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -22,6 +23,8 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
         var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
+
+        PermissionValidator.IsRepositoryMentor(request.IssuerId, submission);
 
         submission.SubmissionDate = request.NewDate;
         _context.Submissions.Update(submission);
