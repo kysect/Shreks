@@ -4,6 +4,7 @@ public class CacheConfiguration : IShreksConfiguration
 {
     public int SizeLimit { get; init; }
     public TimeSpan Expiration { get; init; }
+    public CacheEntryConfiguration CacheEntryConfiguration { get; init; }
 
     public void Verify()
     {
@@ -12,5 +13,7 @@ public class CacheConfiguration : IShreksConfiguration
 
         if (SizeLimit <= 0)
             throw new ArgumentException($"SizeLimit in {nameof(CacheConfiguration)} must be greater than 0");
+
+        CacheEntryConfiguration.Verify();
     }
 }

@@ -16,10 +16,11 @@ using Kysect.Shreks.Identity.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Google.Extensions;
+using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Mapping.Extensions;
+using Kysect.Shreks.Playground.Github.TestEnv;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
-using Kysect.Shreks.WebApi;
 using Kysect.Shreks.WebApi.Filters;
 using Kysect.Shreks.WebApi.Models;
 using MediatR;
@@ -35,11 +36,12 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
-TestEnvConfiguration testEnvConfiguration =
-    builder.Configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
+var googleIntegrationConfiguration = builder.Configuration.GetSection(nameof(GoogleIntegrationConfiguration)).Get<GoogleIntegrationConfiguration>();
+var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
+var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration)).Get<GithubIntegrationConfiguration>();
+var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration)).Get<TestEnvironmentConfiguration>();
+
 GoogleCredential? googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
-string googleDriveId = builder.Configuration["GoogleDriveId"];
 
 InitServiceCollection(builder);
 await InitWebApplication(builder);
@@ -88,13 +90,14 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 
     webApplicationBuilder.Services
         .AddDatabaseContext(o => o
-            .UseSqlite("Filename=shreks.db")
+            .UseSqlite("Filename=Application.db")
+            //.UseSqlServer("Data Source=SHLELTY;Initial Catalog=Shreks;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")
             .UseLazyLoadingProxies());
 
     webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity"),
         x => x.UseSqlite("Filename=shreks-identity.db"));
 
-    if (testEnvConfiguration.UseDummyGithubImplementation)
+    if (!googleIntegrationConfiguration.EnableGoogleIntegration)
     {
         webApplicationBuilder.Services
             .AddDummyGoogleIntegration();
@@ -104,11 +107,10 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
         webApplicationBuilder.Services
             .AddGoogleIntegration(o => o
                 .ConfigureGoogleCredentials(googleCredentials)
-                .ConfigureDriveId(googleDriveId));
+                .ConfigureDriveId(googleIntegrationConfiguration.GoogleDriveId));
     }
 
-    webApplicationBuilder.Services
-        .AddGithubServices(shreksConfiguration);
+    webApplicationBuilder.Services.AddGithubServices(cacheConfiguration, githubIntegrationConfiguration);
 
     if (webApplicationBuilder.Environment.IsDevelopment())
     {
@@ -116,9 +118,9 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .AddEntityGenerators(o =>
             {
                 o.ConfigureFaker(o => o.Locale = "ru");
-                o.ConfigureEntityGenerator<User>(o => o.Count = testEnvConfiguration.Users.Count);
-                o.ConfigureEntityGenerator<Student>(o => o.Count = testEnvConfiguration.Users.Count);
-                o.ConfigureEntityGenerator<Mentor>(o => o.Count = testEnvConfiguration.Users.Count);
+                o.ConfigureEntityGenerator<User>(o => o.Count = testEnvironmentConfiguration.Users.Count);
+                o.ConfigureEntityGenerator<Student>(o => o.Count = testEnvironmentConfiguration.Users.Count);
+                o.ConfigureEntityGenerator<Mentor>(o => o.Count = testEnvironmentConfiguration.Users.Count);
                 o.ConfigureEntityGenerator<GithubUserAssociation>(o => o.Count = 0);
                 o.ConfigureEntityGenerator<IsuUserAssociation>(o => o.Count = 0);
                 o.ConfigureEntityGenerator<Submission>(o => o.Count = 0);
@@ -157,11 +159,13 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     app.MapControllers();
     app.UseSerilogRequestLogging();
 
-    app.UseGithubIntegration(shreksConfiguration);
+    app.UseGithubIntegration(githubIntegrationConfiguration);
 
     using (var scope = app.Services.CreateScope())
     {
-        await InitTestEnvironment(scope.ServiceProvider, testEnvConfiguration);
+        if (app.Environment.IsDevelopment())
+            await InitTestEnvironment(scope.ServiceProvider, testEnvironmentConfiguration);
+
         await SeedAdmins(scope.ServiceProvider, app.Configuration);
     }
 
@@ -170,7 +174,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
 
 async Task InitTestEnvironment(
     IServiceProvider serviceProvider,
-    TestEnvConfiguration config,
+    TestEnvironmentConfiguration config,
     CancellationToken cancellationToken = default)
 {
     var dbContext = serviceProvider.GetRequiredService<IShreksDatabaseContext>();
@@ -200,7 +204,7 @@ async Task SeedAdmins(IServiceProvider provider, IConfiguration configuration)
 {
     var mediatr = provider.GetRequiredService<IMediator>();
     var logger = provider.GetRequiredService<ILogger<Program>>();
-    var adminsSection = configuration.GetSection("DefaultAdmins");
+    var adminsSection = configuration.GetSection("Identity:DefaultAdmins");
     AdminModel[] admins = adminsSection.Get<AdminModel[]>();
 
     foreach (var admin in admins)

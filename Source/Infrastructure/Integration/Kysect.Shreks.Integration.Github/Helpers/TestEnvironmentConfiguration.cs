@@ -1,6 +1,6 @@
 namespace Kysect.Shreks.Playground.Github.TestEnv;
 
-public class TestEnvConfiguration
+public class TestEnvironmentConfiguration
 {
     public string Organization { get; init; }
     public string TemplateRepository { get; init; }
