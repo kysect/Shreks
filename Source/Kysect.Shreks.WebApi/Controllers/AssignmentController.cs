@@ -1,5 +1,7 @@
 using Kysect.Shreks.Application.Abstractions.Study.Commands;
+using Kysect.Shreks.Application.Abstractions.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Handlers.Study.Assignments;
 using Kysect.Shreks.WebApi.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -40,5 +42,25 @@ public class AssignmentsController : ControllerBase
         var response = await _mediator.Send(command);
 
         return Ok(response.Assignment);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<AssignmentDto>> GetAssignmentById(Guid id)
+    {
+        var query = new GetAssignmentById.Query(id);
+
+        var response = await _mediator.Send(query);
+
+        return Ok(response.Assignment);
+    }
+
+    [HttpGet("by-subject-course")]
+    public async Task<ActionResult<AssignmentDto>> GetAssignmentBySubjectCourseId(Guid id)
+    {
+        var query = new GetAssignmentsBySubjectCourse.Query(id);
+
+        var response = await _mediator.Send(query);
+
+        return Ok(response.Assignments);
     }
 }
