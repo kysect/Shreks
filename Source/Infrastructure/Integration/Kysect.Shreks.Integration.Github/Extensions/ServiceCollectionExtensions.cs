@@ -128,6 +128,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddGithubInviteBackgroundService(this IServiceCollection services)
     {
-        return services.AddHostedService<GithubInvitingWorker>();
+        return services
+            .AddScoped<ISubjectCourseGithubOrganizationInviteSender, SubjectCourseGithubOrganizationInviteSender>()
+            .AddHostedService<GithubInvitingWorker>();
     }
 }
