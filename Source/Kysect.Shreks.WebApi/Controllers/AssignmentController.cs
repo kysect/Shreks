@@ -31,4 +31,14 @@ public class AssignmentsController : ControllerBase
         var result = await _mediator.Send(command);
         return Ok(result.Assignment);
     }
+
+    [HttpPatch("{id:guid}")]
+    public async Task<ActionResult<AssignmentDto>> UpdateAssignmentPoints(Guid id, double minPoints, double maxPoints)
+    {
+        var command = new UpdateAssignmentPoints.Command(id, minPoints, maxPoints);
+
+        var response = await _mediator.Send(command);
+
+        return Ok(response.Assignment);
+    }
 }
