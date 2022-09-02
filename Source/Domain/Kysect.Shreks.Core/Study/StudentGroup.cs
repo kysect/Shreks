@@ -21,7 +21,7 @@ public partial class StudentGroup : IEntity<Guid>
         _students = new HashSet<Student>();
     }
 
-    public string Name { get; protected init; }
+    public string Name { get; set; }
     public virtual IReadOnlyCollection<Student> Students => _students;
 
     public override string ToString()

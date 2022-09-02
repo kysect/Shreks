@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Application.Dto.Study;
 using MediatR;
 
-namespace Kysect.Shreks.Application.Abstractions.Study;
+namespace Kysect.Shreks.Application.Abstractions.Study.Commands;
 
 public static class CreateStudyGroup
 {
