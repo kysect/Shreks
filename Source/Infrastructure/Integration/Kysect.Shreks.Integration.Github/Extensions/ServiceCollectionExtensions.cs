@@ -41,11 +41,11 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<GitHubJwtFactory>(
             new GitHubJwtFactory(
-                new FilePrivateKeySource(githubIntegrationConfiguration.GithubAuthConfiguration.PrivateKeySource),
+                new FilePrivateKeySource(githubIntegrationConfiguration.GithubAppConfiguration.PrivateKeySource),
                 new GitHubJwtFactoryOptions
                 {
-                    AppIntegrationId = githubIntegrationConfiguration.GithubAuthConfiguration.AppIntegrationId, // The GitHub App Id
-                    ExpirationSeconds = githubIntegrationConfiguration.GithubAuthConfiguration.JwtExpirationSeconds // 10 minutes is the maximum time allowed
+                    AppIntegrationId = githubIntegrationConfiguration.GithubAppConfiguration.AppIntegrationId, // The GitHub App Id
+                    ExpirationSeconds = githubIntegrationConfiguration.GithubAppConfiguration.JwtExpirationSeconds // 10 minutes is the maximum time allowed
                 }));
 
         services.AddSingleton<IShreksMemoryCache, ShreksMemoryCache>(_ => new ShreksMemoryCache(
@@ -55,9 +55,9 @@ public static class ServiceCollectionExtensions
                 ExpirationScanFrequency = cacheConfiguration.Expiration,
             },
             new MemoryCacheEntryOptions()
-                .SetSize(cacheConfiguration.EntryConfiguration.EntrySize)
-                .SetAbsoluteExpiration(cacheConfiguration.EntryConfiguration.AbsoluteExpiration)
-                .SetSlidingExpiration(cacheConfiguration.EntryConfiguration.SlidingExpiration)
+                .SetSize(cacheConfiguration.CacheEntryConfiguration.EntrySize)
+                .SetAbsoluteExpiration(cacheConfiguration.CacheEntryConfiguration.AbsoluteExpiration)
+                .SetSlidingExpiration(cacheConfiguration.CacheEntryConfiguration.SlidingExpiration)
         ));
 
         services.AddSingleton<IGitHubClient>(serviceProvider =>

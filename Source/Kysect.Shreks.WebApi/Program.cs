@@ -204,7 +204,7 @@ async Task SeedAdmins(IServiceProvider provider, IConfiguration configuration)
 {
     var mediatr = provider.GetRequiredService<IMediator>();
     var logger = provider.GetRequiredService<ILogger<Program>>();
-    var adminsSection = configuration.GetSection("DefaultAdmins");
+    var adminsSection = configuration.GetSection("Identity:DefaultAdmins");
     AdminModel[] admins = adminsSection.Get<AdminModel[]>();
 
     foreach (var admin in admins)

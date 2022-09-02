@@ -8,9 +8,9 @@ public static class AppBuilderExtensions
 {
     public static IApplicationBuilder UseGithubIntegration(this IApplicationBuilder app, GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
-        ArgumentNullException.ThrowIfNull(githubIntegrationConfiguration.GithubAuthConfiguration.GithubAppSecret);
+        ArgumentNullException.ThrowIfNull(githubIntegrationConfiguration.GithubAppConfiguration.GithubAppSecret);
 
-        string appSecret = githubIntegrationConfiguration.GithubAuthConfiguration.GithubAppSecret;
+        string appSecret = githubIntegrationConfiguration.GithubAppConfiguration.GithubAppSecret;
 
         app.UseRouting()
             .UseEndpoints(endpoints =>
