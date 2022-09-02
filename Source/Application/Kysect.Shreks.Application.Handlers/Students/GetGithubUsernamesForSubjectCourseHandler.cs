@@ -1,4 +1,5 @@
-﻿using Kysect.Shreks.Core.UserAssociations;
+﻿using Kysect.Shreks.Core.Extensions;
+using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,11 +21,7 @@ public class GetGithubUsernamesForSubjectCourseHandler : IRequestHandler<Query, 
     {
         List<string> githubUsernames = await _context
             .SubjectCourseGroups
-            .Where(subjectCourseGroup => subjectCourseGroup.SubjectCourseId == request.SubjectCourseId)
-            .Select(group => group.StudentGroup)
-            .SelectMany(group => group.Students)
-            .SelectMany(student => student.User.Associations)
-            .OfType<GithubUserAssociation>()
+            .WithSpecification(new GetSubjectCourseGithubUsers(request.SubjectCourseId))
             .Select(association => association.GithubUsername)
             .ToListAsync(cancellationToken: cancellationToken);
 
