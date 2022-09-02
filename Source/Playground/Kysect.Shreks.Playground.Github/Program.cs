@@ -15,17 +15,17 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
-ConfigurationManager configuration = builder.Configuration;
-ShreksConfiguration shreksConfiguration = builder.Configuration.GetShreksConfiguration();
-TestEnvConfiguration testEnvConfiguration = configuration.GetSection(nameof(TestEnvConfiguration)).Get<TestEnvConfiguration>();
+var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
+var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration)).Get<GithubIntegrationConfiguration>();
+var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration)).Get<TestEnvironmentConfiguration>();
 
 builder.Services
     .AddApplicationConfiguration()
     .AddMappingConfiguration()
     .AddHandlers()
     .AddApplicationCommands()
-    .AddGithubServices(shreksConfiguration)
-    .AddGithubPlaygroundDatabase(testEnvConfiguration)
+    .AddGithubServices(cacheConfiguration, githubIntegrationConfiguration)
+    .AddGithubPlaygroundDatabase(testEnvironmentConfiguration)
     .AddDummyGoogleIntegration();
 
 builder.Services
@@ -33,7 +33,7 @@ builder.Services
 
 var app = builder.Build();
 
-app.UseGithubIntegration(shreksConfiguration);
-await app.Services.UseTestEnv(testEnvConfiguration);
+app.UseGithubIntegration(githubIntegrationConfiguration);
+await app.Services.UseTestEnv(testEnvironmentConfiguration);
 
 app.Run();

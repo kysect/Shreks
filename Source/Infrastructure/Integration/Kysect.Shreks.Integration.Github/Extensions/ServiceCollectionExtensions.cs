@@ -19,10 +19,13 @@ namespace Kysect.Shreks.Integration.Github.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddGithubServices(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
+    public static IServiceCollection AddGithubServices(
+        this IServiceCollection services,
+        CacheConfiguration cacheConfiguration,
+        GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
-        services.AddClientFactory(shreksConfiguration);
-        services.AddGithubAuth(shreksConfiguration);
+        services.AddClientFactory(cacheConfiguration, githubIntegrationConfiguration);
+        services.AddGithubAuth(githubIntegrationConfiguration.AuthConfiguration);
         services.AddScoped<IActionNotifier, ActionNotifier>();
         services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessorProxy>();
         services.AddGithubInviteBackgroundService();
@@ -31,38 +34,37 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddClientFactory(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
+    private static IServiceCollection AddClientFactory(
+        this IServiceCollection services,
+        CacheConfiguration cacheConfiguration,
+        GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
-        var gitHubConf = shreksConfiguration.GithubConfiguration;
-        var cacheConf = shreksConfiguration.CacheConfiguration;
-        var cacheEntryConf = shreksConfiguration.CacheEntryConfiguration;
-
         services.AddSingleton<GitHubJwtFactory>(
             new GitHubJwtFactory(
-                new FilePrivateKeySource(gitHubConf.PrivateKeySource),
+                new FilePrivateKeySource(githubIntegrationConfiguration.GithubAuthConfiguration.PrivateKeySource),
                 new GitHubJwtFactoryOptions
                 {
-                    AppIntegrationId = gitHubConf.AppIntegrationId, // The GitHub App Id
-                    ExpirationSeconds = gitHubConf.ExpirationSeconds // 10 minutes is the maximum time allowed
+                    AppIntegrationId = githubIntegrationConfiguration.GithubAuthConfiguration.AppIntegrationId, // The GitHub App Id
+                    ExpirationSeconds = githubIntegrationConfiguration.GithubAuthConfiguration.JwtExpirationSeconds // 10 minutes is the maximum time allowed
                 }));
 
         services.AddSingleton<IShreksMemoryCache, ShreksMemoryCache>(_ => new ShreksMemoryCache(
             new MemoryCacheOptions
             {
-                SizeLimit = cacheConf.SizeLimit,
-                ExpirationScanFrequency = cacheConf.Expiration,
+                SizeLimit = cacheConfiguration.SizeLimit,
+                ExpirationScanFrequency = cacheConfiguration.Expiration,
             },
             new MemoryCacheEntryOptions()
-                .SetSize(cacheEntryConf.EntrySize)
-                .SetAbsoluteExpiration(cacheEntryConf.AbsoluteExpiration)
-                .SetSlidingExpiration(cacheEntryConf.SlidingExpiration)
+                .SetSize(cacheConfiguration.EntryConfiguration.EntrySize)
+                .SetAbsoluteExpiration(cacheConfiguration.EntryConfiguration.AbsoluteExpiration)
+                .SetSlidingExpiration(cacheConfiguration.EntryConfiguration.SlidingExpiration)
         ));
 
         services.AddSingleton<IGitHubClient>(serviceProvider =>
         {
             var githubJwtFactory = serviceProvider.GetService<GitHubJwtFactory>()!;
 
-            var appClient = new GitHubClient(new ProductHeaderValue(gitHubConf.Organization),
+            var appClient = new GitHubClient(new ProductHeaderValue("Kysect.Shreks"),
                 new GithubAppCredentialStore(githubJwtFactory));
             return appClient;
         });
@@ -81,10 +83,8 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddGithubAuth(this IServiceCollection services, ShreksConfiguration shreksConfiguration)
+    private static IServiceCollection AddGithubAuth(this IServiceCollection services, GithubAuthConfiguration githubAuthConfiguration)
     {
-        var gitHubConfiguration = shreksConfiguration.GithubConfiguration;
-
         services.AddAuthentication(options =>
         {
             options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -95,8 +95,8 @@ public static class ServiceCollectionExtensions
         })
         .AddGitHub(options =>
         {
-            options.ClientId = gitHubConfiguration.OAuthClientId!;
-            options.ClientSecret = gitHubConfiguration.OAuthClientSecret!;
+            options.ClientId = githubAuthConfiguration.OAuthClientId!;
+            options.ClientSecret = githubAuthConfiguration.OAuthClientSecret!;
 
             options.CallbackPath = new PathString("/signin-github");
             options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";

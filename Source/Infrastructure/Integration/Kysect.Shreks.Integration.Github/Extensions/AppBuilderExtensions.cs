@@ -6,12 +6,17 @@ namespace Kysect.Shreks.Integration.Github.Extensions;
 
 public static class AppBuilderExtensions
 {
-    public static IApplicationBuilder UseGithubIntegration(this IApplicationBuilder app, ShreksConfiguration shreksConfiguration)
+    public static IApplicationBuilder UseGithubIntegration(this IApplicationBuilder app, GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
-        var gitHubConf = shreksConfiguration.GithubConfiguration;
+        ArgumentNullException.ThrowIfNull(githubIntegrationConfiguration.GithubAuthConfiguration.GithubAppSecret);
+
+        string appSecret = githubIntegrationConfiguration.GithubAuthConfiguration.GithubAppSecret;
 
         app.UseRouting()
-            .UseEndpoints(endpoints => endpoints.MapGitHubWebhooks(secret: gitHubConf.GithubAppSecret));
+            .UseEndpoints(endpoints =>
+            {
+                endpoints.MapGitHubWebhooks(secret: appSecret);
+            });
 
         return app;
     }

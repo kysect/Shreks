@@ -13,7 +13,7 @@ namespace Kysect.Shreks.Playground.Github.TestEnv;
 
 public static class TestEnv
 {
-    public static IServiceCollection AddGithubPlaygroundDatabase(this IServiceCollection serviceCollection, TestEnvConfiguration config)
+    public static IServiceCollection AddGithubPlaygroundDatabase(this IServiceCollection serviceCollection, TestEnvironmentConfiguration config)
     {
         serviceCollection
             .AddDatabaseContext(optionsBuilder => optionsBuilder
@@ -37,7 +37,7 @@ public static class TestEnv
 
     public static async Task UseTestEnv(
         this IServiceProvider serviceProvider, 
-        TestEnvConfiguration config,
+        TestEnvironmentConfiguration config,
         CancellationToken cancellationToken = default)
     {
         await serviceProvider.UseDatabaseSeeders(cancellationToken);
