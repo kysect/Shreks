@@ -10,7 +10,7 @@ using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Kysect.Shreks.DataAccess.Context;
+using Kysect.Shreks.DataAccess.Configuration;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Identity.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
@@ -40,6 +40,7 @@ var googleIntegrationConfiguration = builder.Configuration.GetSection(nameof(Goo
 var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
 var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration)).Get<GithubIntegrationConfiguration>();
 var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration)).Get<TestEnvironmentConfiguration>();
+var postgresConfiguration = builder.Configuration.GetSection(nameof(PostgresConfiguration)).Get<PostgresConfiguration>();
 
 GoogleCredential? googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
 
@@ -90,12 +91,11 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 
     webApplicationBuilder.Services
         .AddDatabaseContext(o => o
-            .UseSqlite("Filename=Application.db")
-            //.UseSqlServer("Data Source=SHLELTY;Initial Catalog=Shreks;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False")
+            .UseNpgsql(postgresConfiguration.ToConnectionString("shreks"))
             .UseLazyLoadingProxies());
 
     webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity"),
-        x => x.UseSqlite("Filename=shreks-identity.db"));
+        x => x.UseNpgsql(postgresConfiguration.ToConnectionString("shreks-identity")));
 
     if (!googleIntegrationConfiguration.EnableGoogleIntegration)
     {
@@ -139,7 +139,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     {
         using (IServiceScope scope = app.Services.CreateScope())
         {
-            scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
+            //scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
         }
 
         await app.Services.UseDatabaseSeeders();
