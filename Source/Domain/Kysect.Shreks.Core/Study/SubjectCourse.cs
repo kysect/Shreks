@@ -31,7 +31,7 @@ public partial class SubjectCourse : IEntity<Guid>
     }
 
     public virtual Subject Subject { get; protected init; }
-    public string Title { get; protected init; }
+    public string Title { get; set; }
     public virtual IReadOnlyCollection<SubjectCourseGroup> Groups => _groups;
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
