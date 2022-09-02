@@ -31,7 +31,7 @@ public class GetSubmissionByPrAndSubmissionCodeHandler : IRequestHandler<Query, 
             .Where(a => a.Submission.Code == request.SubmissionCode)
             .FirstAsync(cancellationToken);
 
-        var dto = _mapper.Map<SubmissionDto>(submission);
+        var dto = _mapper.Map<SubmissionDto>(submission.Submission);
 
         return new Response(dto);
     }
