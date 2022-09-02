@@ -1,13 +1,16 @@
 ﻿using System.Security.Claims;
 using Kysect.Shreks.Application.Abstractions.Users.Commands;
+using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kysect.Shreks.WebApi.Controllers;
 
 [ApiController]
 [Route("api/auth/github")]
+[Authorize(Roles = ShreksIdentityRole.AdminRoleName)]
 public class GithubAuthController : Controller
 {
     private readonly IMediator _mediator;
