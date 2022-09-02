@@ -62,4 +62,12 @@ public class SubjectCourseController : ControllerBase
         RemoveGithubSubjectCourseAssociation.Response response = await _mediator.Send(new RemoveGithubSubjectCourseAssociation.Command(subjectCourseId));
         return Ok(response.SubjectCourse);
     }
+
+    [HttpPost("deadline/fraction")]
+    public async Task<ActionResult> AddDeadline(Guid subjectCourseId, TimeSpan spanBeforeActivation, double fraction)
+    {
+        var command = new AddFractionDeadlinePolicy.Command(subjectCourseId, spanBeforeActivation, fraction);
+        AddFractionDeadlinePolicy.Response response = await _mediator.Send(command);
+        return Ok();
+    }
 }
