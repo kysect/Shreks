@@ -3,6 +3,7 @@ using FluentAssertions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.EntityGenerators;
@@ -52,5 +53,15 @@ public class MappingTest : DataAccessTestBase
 
         dto.Should().NotBeNull();
         dto.UniversityId.Should().BeNull();
+    }
+
+    [Fact]
+    public void Map_Should_MapGroupAssignmentDtoToGroupAssignment()
+    {
+        var groupAssignment = Provider.GetRequiredService<IEntityGenerator<GroupAssignment>>().Generate();
+
+        var groupAssignmentDto = _mapper.Map<GroupAssignmentDto>(groupAssignment);
+
+        Assert.NotNull(groupAssignmentDto);
     }
 }

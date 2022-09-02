@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
         GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
         services.AddClientFactory(cacheConfiguration, githubIntegrationConfiguration);
-        services.AddGithubAuth(githubIntegrationConfiguration.AuthConfiguration);
+        services.AddGithubAuth(githubIntegrationConfiguration.GithubAuthConfiguration);
         services.AddScoped<IActionNotifier, ActionNotifier>();
         services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessorProxy>();
         services.AddGithubInviteBackgroundService();
@@ -128,6 +128,9 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddGithubInviteBackgroundService(this IServiceCollection services)
     {
-        return services.AddHostedService<GithubInvitingWorker>();
+        return services
+            .AddScoped<ISubjectCourseGithubOrganizationInviteSender, SubjectCourseGithubOrganizationInviteSender>()
+            .AddScoped<ISubjectCourseGithubOrganizationRepositoryManager, SubjectCourseGithubOrganizationRepositoryManager>()
+            .AddHostedService<GithubInvitingWorker>();
     }
 }
