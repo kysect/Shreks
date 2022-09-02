@@ -27,7 +27,8 @@ var submission = new GithubSubmission
 (
     0,
     new Student(new User("John", "Doe", "adw"),
-        new StudentGroup("")),
+        new StudentGroup(""),
+        0),
     new GroupAssignment(new StudentGroup(""), assignment, Calendar.CurrentDate),
     Calendar.CurrentDate,
     "",

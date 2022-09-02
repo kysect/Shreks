@@ -34,7 +34,7 @@ public class StudentGenerator : EntityGeneratorBase<Student>
 
         var user = _userGenerator.GeneratedEntities[index];
 
-        var student = new Student(user, group);
+        var student = new Student(user, group, _faker.Random.Number(20_00_00, 40_00_00));
 
         group.AddStudent(student);
 
