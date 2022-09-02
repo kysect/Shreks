@@ -30,6 +30,12 @@ public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociatio
         
         var user = _userGenerator.GeneratedEntities[index];
 
+        foreach (UserAssociation userAssociation in user.Associations)
+        {
+            if (userAssociation is IsuUserAssociation isuUserAssociation)
+                return isuUserAssociation;
+        }
+        
         var id = _faker.Random.Int(MinIsuNumber, MaxIsuNumber);
         var association = new IsuUserAssociation(user, id);
 

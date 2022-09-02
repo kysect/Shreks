@@ -2,7 +2,7 @@
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Students.GetGithubUsernamesForSubjectCourse;
+using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetGithubUsernamesForSubjectCourse;
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 
