@@ -5,7 +5,6 @@ public class GithubConfiguration : IShreksConfiguration
     public string? PrivateKeySource { get; init; }
     public int AppIntegrationId { get; init; }
     public int ExpirationSeconds { get; init; }
-    public string? Organization { get; init; }
     public string? GithubAppSecret { get; set; }
     public string? OAuthClientId { get; set; }
     public string? OAuthClientSecret { get; set; }
@@ -18,7 +17,6 @@ public class GithubConfiguration : IShreksConfiguration
 
     public void Verify()
     {
-        ArgumentNullException.ThrowIfNull(Organization, nameof(Organization));
         ArgumentNullException.ThrowIfNull(GithubAppSecret, nameof(GithubAppSecret));
         ArgumentNullException.ThrowIfNull(PrivateKeySource, nameof(PrivateKeySource));
         ArgumentNullException.ThrowIfNull(OAuthClientId, nameof(OAuthClientId));
