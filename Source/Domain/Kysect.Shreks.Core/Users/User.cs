@@ -50,4 +50,10 @@ public partial class User : IEntity<Guid>
         if (!_associations.Remove(association))
             throw new DomainInvalidOperationException($"User {this} could not remove association {association}");
     }
+    
+    public bool HasAssociation<T>() where T : UserAssociation
+        => Associations.Any(a => a is T);
+
+    public T? FindAssociation<T>() where T : UserAssociation
+        => Associations.OfType<T>().SingleOrDefault();
 }
