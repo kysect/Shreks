@@ -2,6 +2,7 @@ using AutoMapper;
 using FluentAssertions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Tests.DataAccess;
@@ -39,5 +40,15 @@ public class MappingTest : DataAccessTestBase
         var receivedState = _mapper.Map<SubmissionState>(stateDto);
 
         receivedState.Should().Be(state);
+    }
+
+    [Fact]
+    public void Map_Should_MapGroupAssignmentDtoToGroupAssignment()
+    {
+        var groupAssignment = Provider.GetRequiredService<IEntityGenerator<GroupAssignment>>().Generate();
+
+        var groupAssignmentDto = _mapper.Map<GroupAssignmentDto>(groupAssignment);
+
+        Assert.NotNull(groupAssignmentDto);
     }
 }
