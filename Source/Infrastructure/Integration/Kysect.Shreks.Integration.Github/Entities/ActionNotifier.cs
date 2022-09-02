@@ -46,12 +46,12 @@ public class ActionNotifier : IActionNotifier
 
         var installationClient = _installationClientFactory.GetClient(installation.Id);
 
-        var reaction = await installationClient.Reaction.IssueComment.Create(
+        Reaction? reaction = await installationClient.Reaction.IssueComment.Create(
             repository.Id,
             (int) commentId,
             new NewReaction(isSuccessful ? ReactionType.Plus1 : ReactionType.Minus1));
         
-        _logger.LogDebug(reaction.ToString());
+        _logger.LogDebug($"Send reaction {reaction.Content.ToString()}");
     }
     
     private void ParseWebhookEvent(WebhookEvent webhookEvent, out Repository repository, out InstallationLite installation)

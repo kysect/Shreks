@@ -1,3 +1,4 @@
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue.Evaluators;
 using Kysect.Shreks.Core.Queue.Filters;
@@ -81,7 +82,7 @@ public partial class SubmissionQueue : IEntity<Guid>
         {
             SortingOrder.Ascending => groupings.OrderBy(x => x.Key),
             SortingOrder.Descending => groupings.OrderByDescending(x => x.Key),
-            _ => throw new ArgumentOutOfRangeException(nameof(evaluator.SortingOrder)),
+            _ => throw new UnsupportedOperationException(nameof(evaluator.SortingOrder)),
         };
 
         if (evaluators.IsAtEnd)

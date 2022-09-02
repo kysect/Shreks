@@ -13,15 +13,25 @@ public record SubmissionRateDto(
 {
     public string ToPullRequestString()
     {
-        // TODO: fix
-        return new StringBuilder()
-            .AppendLine($"Submission code: {Code}")
-            .AppendLine($"Rating: {Rating}")
-            .AppendLine($"Raw points: {RawPoints}")
-            .AppendLine($"Submitted: {SubmissionDate}")
-            .AppendLine($"Penalty points: {PenaltyPoints}")
-            .AppendLine($"Extra points: {ExtraPoints}")
-            .AppendLine($"Total points: {TotalPoints}")
-            .ToString();
+        var stringBuilder = new StringBuilder();
+        stringBuilder.AppendLine($"Submission code: {Code}");
+        stringBuilder.AppendLine($"Rating: {SubmissionDate}");
+
+        if (Rating is not null)
+            stringBuilder.AppendLine($"Rating: {Rating}");
+
+        if (RawPoints is not null)
+            stringBuilder.AppendLine($"Rating: {RawPoints}");
+
+        if (PenaltyPoints is not null)
+            stringBuilder.AppendLine($"Rating: {PenaltyPoints}");
+
+        if (ExtraPoints is not null)
+            stringBuilder.AppendLine($"Rating: {ExtraPoints}");
+
+        if (TotalPoints is not null)
+            stringBuilder.AppendLine($"Rating: {TotalPoints}");
+
+        return stringBuilder.ToString();
     }
 }
