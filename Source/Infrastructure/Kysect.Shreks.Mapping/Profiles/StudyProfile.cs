@@ -10,7 +10,9 @@ public class StudyProfile : Profile
     public StudyProfile()
     {
         CreateMap<Submission, SubmissionDto>();
-        CreateMap<Assignment, AssignmentDto>();
         CreateMap<SubjectCourseGroup, SubjectCourseGroupDto>();
+        CreateMap<Assignment, AssignmentDto>()
+            .ForCtorParam("SubjectCourseId", opt =>
+                    opt.MapFrom(src => src.SubjectCourse.Id));
     }
 }
