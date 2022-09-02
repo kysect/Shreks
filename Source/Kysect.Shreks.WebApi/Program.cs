@@ -97,7 +97,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity"),
         x => x.UseSqlite("Filename=shreks-identity.db"));
 
-    if (googleIntegrationConfiguration.EnableGoogleIntegration)
+    if (!googleIntegrationConfiguration.EnableGoogleIntegration)
     {
         webApplicationBuilder.Services
             .AddDummyGoogleIntegration();
