@@ -1,4 +1,5 @@
 ﻿using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 
@@ -25,7 +26,7 @@ public class SubjectCourseDtoFactory
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(subjectCourseAssociation));
+                    throw new UnsupportedOperationException(nameof(subjectCourseAssociation));
             }
         }
 
