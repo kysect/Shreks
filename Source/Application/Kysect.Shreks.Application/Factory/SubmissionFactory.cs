@@ -44,7 +44,7 @@ public class SubmissionFactory : ISubmissionFactory
             count + 1,
             student,
             groupAssignment,
-            Calendar.CurrentDate,
+            Calendar.CurrentDateTime,
             pullRequestDescriptor.Payload,
             pullRequestDescriptor.Organization,
             pullRequestDescriptor.Repository,

@@ -70,8 +70,8 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDt
         {
             if (!DateOnly.TryParse(DateStr, out DateOnly date))
                 throw new InvalidUserInputException($"Cannot parse input date ({DateStr} as date. Ensure that you use correct format.");
-            
-            var command = new UpdateSubmissionDate.Command(submissionResponse.Submission.Id, date);
+
+            var command = new UpdateSubmissionDate.Command(submissionResponse.Submission.Id, date.ToDateTime(TimeOnly.MinValue));
             var response = await context.Mediator.Send(command, cancellationToken);
             submissionRateDto = response.SubmissionRate;
         }

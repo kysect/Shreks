@@ -82,7 +82,7 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
         }
         else if (!triggeredByMentor)
         {
-            submission.SubmissionDate = Calendar.CurrentDate;
+            submission.SubmissionDate = Calendar.CurrentDateTime;
 
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync(cancellationToken);

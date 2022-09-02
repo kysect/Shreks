@@ -80,6 +80,6 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         if (points is null)
             return null;
 
-        return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDate, points.Value.Value);
+        return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDateOnly, points.Value.Value);
     }
 }

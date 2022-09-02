@@ -18,7 +18,7 @@ public partial class AssignmentDeadlineStateEvaluator : SubmissionEvaluator
 
         var groupAssignment = submission.GroupAssignment;
 
-        if (groupAssignment.Deadline < submission.SubmissionDate)
+        if (groupAssignment.Deadline < submission.SubmissionDateOnly)
             return ExpiredAssignmentPriority;
 
         var now = Calendar.CurrentDate;
