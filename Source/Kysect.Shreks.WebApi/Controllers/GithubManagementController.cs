@@ -25,5 +25,15 @@ namespace Kysect.Shreks.WebApi.Controllers
             await _mediator.Send(updateOrganizationCommand);
             return Ok();
         }
+
+        [HttpPost("force-mentor-sync")]
+        public async Task<ActionResult> ForceMentorsSync(string organizationName)
+        {
+            var command = new SyncGithubAdminWithMentors.Command(organizationName);
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
     }
 }
