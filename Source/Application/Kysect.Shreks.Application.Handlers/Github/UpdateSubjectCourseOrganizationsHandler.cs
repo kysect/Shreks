@@ -72,8 +72,29 @@ public class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command, 
             if (repositories.Any(r => r.Equals(newRepositoryName, StringComparison.OrdinalIgnoreCase)))
                 continue;
 
-            await repositoryManager.CreateRepositoryFromTemplate(organizationName, newRepositoryName, templateName);
-            await repositoryManager.AddAdminPermission(organizationName, newRepositoryName, username);
+            try
+            {
+                await repositoryManager.CreateRepositoryFromTemplate(organizationName, newRepositoryName, templateName);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Failed to create repo for {username}", username);
+            }
+
+            try
+            {
+                await repositoryManager.AddAdminPermission(organizationName, newRepositoryName, username);
+            }
+            catch (Exception e) when (e.Message == "Invalid Status Code returned. Expected a 204 or a 404")
+            {
+                _logger.LogWarning(e, $"Octokit return wrong error code for {username}.");
+                continue;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Failed to add user {username} as repo admin.");
+                continue;
+            }
 
             _logger.LogInformation("Successfully created repository for user {User}", username);
         }
