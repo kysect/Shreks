@@ -5,7 +5,7 @@ namespace Kysect.Shreks.Integration.Google;
 
 public class GoogleTableUpdateWorker : BackgroundService
 {
-    private static readonly TimeSpan DelayBetweenSheetUpdates = TimeSpan.FromMinutes(1);
+    private static readonly TimeSpan DelayBetweenSheetUpdates = TimeSpan.FromSeconds(10);
 
     private readonly TableUpdateQueue _tableUpdateQueue;
     private readonly IServiceScopeFactory _serviceProvider;

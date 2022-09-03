@@ -22,7 +22,7 @@ public class AssignmentDataSegment : SheetSegmentBase<Unit, QueueSubmissionDto, 
         return HStack
         (
             Label("Лабораторная работа").WithColumnWidth(150),
-            Label("Дата"),
+            Label("Дата").WithColumnWidth(150),
             Label("GitHub").WithColumnWidth(400)
         ).WithDefaultStyle();
     }
