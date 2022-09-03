@@ -122,7 +122,7 @@ public class ShreksWebhookEventProcessor
     {
         GithubPullRequestDescriptor pullRequestDescriptor = new GithubPullRequestDescriptor(
             pullRequestReviewEvent.Sender.Login,
-            Payload: pullRequestReviewEvent.Review.HtmlUrl,
+            Payload: pullRequestReviewEvent.PullRequest.HtmlUrl,
             pullRequestReviewEvent.Organization.Login,
             pullRequestReviewEvent.Repository.Name,
             BranchName: pullRequestReviewEvent.PullRequest.Head.Ref,
@@ -134,7 +134,7 @@ public class ShreksWebhookEventProcessor
         string pullRequestReviewAction = action;
         switch (pullRequestReviewAction)
         {
-            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "APPROVED":
+            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "approved":
                 comment = pullRequestReviewEvent.Review.Body;
                 if (comment.FirstOrDefault() == '/')
                 {
@@ -148,7 +148,7 @@ public class ShreksWebhookEventProcessor
                 result = await ProceedCommandAsync(command, pullRequestDescriptor);
                 await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result);
                 break;
-            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "CHANGES_REQUESTED":
+            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
                 comment = pullRequestReviewEvent.Review.Body;
                 if (comment.FirstOrDefault() == '/')
                 {
@@ -162,7 +162,7 @@ public class ShreksWebhookEventProcessor
                 result = await ProceedCommandAsync(command, pullRequestDescriptor);
                 await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result);
                 break;
-            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "COMMENT":
+            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "comment":
                 comment = pullRequestReviewEvent.Review.Body;
                 if (comment.FirstOrDefault() == '/')
                 {
