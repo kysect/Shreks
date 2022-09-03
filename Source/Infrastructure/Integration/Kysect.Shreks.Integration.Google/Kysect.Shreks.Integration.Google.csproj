@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="FluentSpreadsheets.GoogleSheets" Version="0.0.3-alpha" />
+	<PackageReference Include="FluentSpreadsheets.GoogleSheets" Version="1.0.0" />
 	<PackageReference Include="Google.Apis.Sheets.v4" Version="1.57.0.2727" />
 	<PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2746" />
 	<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
