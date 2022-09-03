@@ -63,7 +63,7 @@ public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdmin
             .SubjectCourses
             .Where(s => s.Id == subjectCourseId)
             .SelectMany(a => a.Mentors)
-            .Select(m => m.User.Associations)
+            .SelectMany(m => m.User.Associations)
             .OfType<GithubUserAssociation>()
             .Select(a => a.GithubUsername)
             .ToListAsync(cancellationToken);
