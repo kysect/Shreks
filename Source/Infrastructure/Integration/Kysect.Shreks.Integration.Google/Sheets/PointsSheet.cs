@@ -1,10 +1,10 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
+using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
-using Kysect.Shreks.Integration.Google.Factories;
 using Kysect.Shreks.Integration.Google.Tools;
 
 namespace Kysect.Shreks.Integration.Google.Sheets;
@@ -15,18 +15,18 @@ public class PointsSheet : ISheet<CoursePointsDto>
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ISheetManagementService _sheetEditor;
-    private readonly ISheetComponentFactory<CoursePointsDto> _sheetDataFactory;
+    private readonly ITable<CoursePointsDto> _pointsTable;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
     public PointsSheet(
         IUserFullNameFormatter userFullNameFormatter,
         ISheetManagementService sheetEditor,
-        ISheetComponentFactory<CoursePointsDto> sheetDataFactory,
+        ITable<CoursePointsDto> pointsTable,
         IComponentRenderer<GoogleSheetRenderCommand> renderer)
     {
         _userFullNameFormatter = userFullNameFormatter;
         _sheetEditor = sheetEditor;
-        _sheetDataFactory = sheetDataFactory;
+        _pointsTable = pointsTable;
         _renderer = renderer;
     }
 
@@ -36,7 +36,7 @@ public class PointsSheet : ISheet<CoursePointsDto>
 
         CoursePointsDto sortedPoints = SortPoints(points);
 
-        IComponent sheetData = _sheetDataFactory.Create(sortedPoints);
+        IComponent sheetData = _pointsTable.Render(sortedPoints);
         var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, sheetId, Title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
     }
