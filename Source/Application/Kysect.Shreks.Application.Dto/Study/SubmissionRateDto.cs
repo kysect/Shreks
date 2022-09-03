@@ -31,7 +31,7 @@ public record SubmissionRateDto(
         if (PenaltyPoints is not null && PenaltyPoints != 0)
             stringBuilder.AppendLine($"Penalty points: {PenaltyPoints}");
 
-        if (TotalPoints is not null && TotalPoints != RawPoints)
+        if (TotalPoints is not null)
             stringBuilder.AppendLine($"Total points: {TotalPoints}");
 
         return stringBuilder.ToString();
