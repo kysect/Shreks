@@ -53,5 +53,6 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
         configurationBuilder.Properties<Fraction>().HaveConversion<FractionValueConverter>();
         configurationBuilder.Properties<TimeSpan>().HaveConversion<TimeSpanConverter>();
         //configurationBuilder.Properties<DateOnly>().HaveConversion<DateOnlyConverter>();
+        configurationBuilder.Properties<DateTime>().HaveConversion<DateTimeValueConverter>();
     }
 }
