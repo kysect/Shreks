@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Abstractions.Users.Commands;
 using Kysect.Shreks.Application.Abstractions.Users.Queries;
 using Kysect.Shreks.Application.Dto.Users;
@@ -37,5 +38,12 @@ public class UserController : ControllerBase
         var command = new FindUserByUniversityId.Query(universityId);
         var user = await _mediator.Send(command);
         return Ok(user);
+    }
+
+    [HttpPost("{userId:guid}/change-name")]
+    public async Task<ActionResult> UpdateName(Guid userId, string firstName, string middleName, string lastName)
+    {
+        UpdateUserName.Response response = await _mediator.Send(new UpdateUserName.Command(userId, firstName, middleName, lastName));
+        return Ok();
     }
 }

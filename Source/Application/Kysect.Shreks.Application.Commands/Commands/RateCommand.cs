@@ -38,7 +38,7 @@ public class RateCommand : IShreksCommand<SubmissionContext, SubmissionRateDto>
         context.Log.LogInformation(message);
 
         var submissionId = context.Submission.Id;
-        var command = new UpdateSubmissionPoints.Command(submissionId, RatingPercent, ExtraPoints);
+        var command = new UpdateSubmissionPoints.Command(submissionId, context.IssuerId, RatingPercent, ExtraPoints);
         var response = await context.Mediator.Send(command, cancellationToken);
         return response.SubmissionRate;
     }

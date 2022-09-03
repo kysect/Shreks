@@ -61,7 +61,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDt
                                        $"{{ Rating: {RatingPercent}," +
                                        $" ExtraPoints: {ExtraPoints}}}");
 
-            var command = new UpdateSubmissionPoints.Command(submissionResponse.Submission.Id, RatingPercent, ExtraPoints);
+            var command = new UpdateSubmissionPoints.Command(submissionResponse.Submission.Id, context.IssuerId, RatingPercent, ExtraPoints);
             var response = await context.Mediator.Send(command, cancellationToken);
             submissionRateDto = response.SubmissionRate;
         }
@@ -71,7 +71,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDt
             if (!DateOnly.TryParse(DateStr, out DateOnly date))
                 throw new InvalidUserInputException($"Cannot parse input date ({DateStr} as date. Ensure that you use correct format.");
 
-            var command = new UpdateSubmissionDate.Command(submissionResponse.Submission.Id, date.ToDateTime(TimeOnly.MinValue));
+            var command = new UpdateSubmissionDate.Command(submissionResponse.Submission.Id, context.IssuerId, date.ToDateTime(TimeOnly.MinValue));
             var response = await context.Mediator.Send(command, cancellationToken);
             submissionRateDto = response.SubmissionRate;
         }
