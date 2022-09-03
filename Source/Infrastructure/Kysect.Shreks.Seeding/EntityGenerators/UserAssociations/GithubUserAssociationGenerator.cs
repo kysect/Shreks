@@ -29,8 +29,6 @@ public class GithubUserAssociationGenerator : EntityGeneratorBase<GithubUserAsso
 
         var association = new GithubUserAssociation(user, Guid.NewGuid().ToString());
 
-        user.AddAssociation(association);
-
         return association;
     }
 }
