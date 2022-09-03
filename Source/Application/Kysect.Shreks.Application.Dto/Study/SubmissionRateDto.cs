@@ -16,10 +16,9 @@ public record SubmissionRateDto(
     {
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine($"Submission code: {Code} ({SubmissionDate})");
-
-        // TODO: replace with Rating type?
+        
         if (Rating is not null)
-            stringBuilder.AppendLine($"Rating: {Rating * 100}");
+            stringBuilder.AppendLine($"Rating: {Rating}");
 
         if (RawPoints is not null)
         {
@@ -29,10 +28,10 @@ public record SubmissionRateDto(
                 stringBuilder.AppendLine($"Points: {RawPoints}/{MaxRawPoints}");
         }
 
-        if (PenaltyPoints is not null)
+        if (PenaltyPoints is not null && PenaltyPoints != 0)
             stringBuilder.AppendLine($"Penalty points: {PenaltyPoints}");
 
-        if (TotalPoints is not null)
+        if (TotalPoints is not null && TotalPoints != RawPoints)
             stringBuilder.AppendLine($"Total points: {TotalPoints}");
 
         return stringBuilder.ToString();
