@@ -7,6 +7,7 @@ public record SubmissionRateDto(
     DateTime SubmissionDate,
     double? Rating,
     double? RawPoints,
+    double? MaxRawPoints,
     double? ExtraPoints,
     double? PenaltyPoints,
     double? TotalPoints)
@@ -20,13 +21,12 @@ public record SubmissionRateDto(
         if (Rating is not null)
             stringBuilder.AppendLine($"Rating: {Rating * 100}");
 
-        // TODO: add info about max points: "Points: 3/4"
         if (RawPoints is not null)
         {
             if (ExtraPoints is not null && ExtraPoints != 0)
-                stringBuilder.AppendLine($"Points: {RawPoints} (+{ExtraPoints} extra points)");
+                stringBuilder.AppendLine($"Points: {RawPoints}/{MaxRawPoints} (+{ExtraPoints} extra points)");
             else
-                stringBuilder.AppendLine($"Points: {RawPoints}");
+                stringBuilder.AppendLine($"Points: {RawPoints}/{MaxRawPoints}");
         }
 
         if (PenaltyPoints is not null)
