@@ -37,7 +37,7 @@ public partial class User : IEntity<Guid>
 
         var associationType = association.GetType();
 
-        if (_associations.Any(a => a.GetType() == associationType))
+        if (Associations.Any(a => a.GetType() == associationType))
             throw new DomainInvalidOperationException($"User {this} already has {associationType} association");
 
         _associations.Add(association);

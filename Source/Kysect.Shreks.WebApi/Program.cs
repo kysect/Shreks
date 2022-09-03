@@ -49,7 +49,7 @@ await InitWebApplication(builder);
 
 void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 {
-    webApplicationBuilder.Services.AddControllers(x => x.Filters.Add<AuthenticationFilter>());
+    webApplicationBuilder.Services.AddControllers(x => x.Filters.Add<AuthenticationFilter>()).AddNewtonsoftJson();
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
     webApplicationBuilder.Services.AddSwaggerGen(c =>
     {
@@ -177,6 +177,7 @@ async Task InitTestEnvironment(
     TestEnvironmentConfiguration config,
     CancellationToken cancellationToken = default)
 {
+    return;
     var dbContext = serviceProvider.GetRequiredService<IShreksDatabaseContext>();
 
     var userGenerator = serviceProvider.GetRequiredService<IEntityGenerator<User>>();

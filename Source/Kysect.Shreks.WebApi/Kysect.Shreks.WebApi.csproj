@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
@@ -28,6 +29,12 @@
       <ProjectReference Include="..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
       <ProjectReference Include="..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj" />
       <ProjectReference Include="..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Application.db-shm" />
+      <None Remove="Application.db" />
+      <None Remove="shreks-identity.db-shm" />
     </ItemGroup>
 
 </Project>

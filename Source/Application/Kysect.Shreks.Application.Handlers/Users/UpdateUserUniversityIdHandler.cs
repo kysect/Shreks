@@ -36,7 +36,15 @@ public class UpdateUserUniversityIdHandler : IRequestHandler<Command>
             _context.UserAssociations.Update(association);
         }
 
-        await _context.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
         
         return Unit.Value;
     }

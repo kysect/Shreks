@@ -40,6 +40,8 @@ public static class TestEnv
         TestEnvironmentConfiguration config,
         CancellationToken cancellationToken = default)
     {
+        
+        return;
         await serviceProvider.UseDatabaseSeeders(cancellationToken);
 
         using var scope  = serviceProvider.CreateScope();

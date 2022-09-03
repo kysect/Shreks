@@ -21,9 +21,20 @@ public class StudentController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<StudentDto>> Create(string firstName, string middleName, string lastName, Guid groupId)
+    public async Task<ActionResult<StudentDto>> Create(
+        string? firstName,
+        string? middleName,
+        string? lastName,
+        Guid groupId)
     {
-        CreateStudent.Response response = await _mediator.Send(new CreateStudent.Command(firstName, middleName, lastName, groupId));
+        var command = new CreateStudent.Command
+        (
+            firstName ?? string.Empty,
+            middleName ?? string.Empty,
+            lastName ?? string.Empty, groupId
+        );
+
+        CreateStudent.Response response = await _mediator.Send(command);
         return Ok(response.Student);
     }
 
@@ -51,14 +62,16 @@ public class StudentController : ControllerBase
     [HttpPost("association/github")]
     public async Task<ActionResult> AddGithubAssociation(Guid userId, string githubUsername)
     {
-        AddGithubUserAssociation.Response response = await _mediator.Send(new AddGithubUserAssociation.Command(userId, githubUsername));
+        AddGithubUserAssociation.Response response =
+            await _mediator.Send(new AddGithubUserAssociation.Command(userId, githubUsername));
         return Ok();
     }
 
     [HttpDelete("association/github")]
     public async Task<ActionResult> RemoveGithubAssociation(Guid userId)
     {
-        RemoveGithubUserAssociation.Response response = await _mediator.Send(new RemoveGithubUserAssociation.Command(userId));
+        RemoveGithubUserAssociation.Response response =
+            await _mediator.Send(new RemoveGithubUserAssociation.Command(userId));
         return Ok();
     }
 }
