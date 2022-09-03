@@ -20,7 +20,6 @@ public static class ServiceCollectionExtensions
         Action<DbContextOptionsBuilder> dbContextAction)
     {
         var identityConfiguration = identityConfigurationSection
-            .GetSection("IdentityConfiguration")
             .Get<IdentityConfiguration>();
 
         collection.AddScoped<IAuthorizationService, AuthorizationService>();

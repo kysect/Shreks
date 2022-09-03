@@ -13,7 +13,11 @@ public class StudyProfile : Profile
         CreateMap<GroupAssignment, GroupAssignmentDto>();
         CreateMap<SubjectCourseGroup, SubjectCourseGroupDto>();
         CreateMap<Assignment, AssignmentDto>()
-            .ForCtorParam("SubjectCourseId", opt =>
+            .ForCtorParam(nameof(AssignmentDto.SubjectCourseId), opt =>
                     opt.MapFrom(src => src.SubjectCourse.Id));
+
+        CreateMap<StudentGroup, StudyGroupDto>();
+        CreateMap<Subject, SubjectDto>();
+        CreateMap<SubjectCourse, SubjectCourseDto>();
     }
 }

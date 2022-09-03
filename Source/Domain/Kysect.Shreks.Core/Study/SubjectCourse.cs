@@ -47,7 +47,7 @@ public partial class SubjectCourse : IEntity<Guid>
     {
         ArgumentNullException.ThrowIfNull(group);
 
-        if (_groups.Any(x => x.StudentGroup.Equals(group)))
+        if (Groups.Any(x => x.StudentGroup.Equals(group)))
             throw new DomainInvalidOperationException($"Group {group} is already assigned to this course");
 
         var filters = new SubmissionQueueFilter[]
@@ -100,7 +100,7 @@ public partial class SubjectCourse : IEntity<Guid>
 
         var associationType = association.GetType();
 
-        if (_associations.Any(a => a.GetType() == associationType))
+        if (Assignments.Any(a => a.GetType() == associationType))
             throw new DomainInvalidOperationException($"Course {this} already has {associationType} association");
 
         _associations.Add(association);
@@ -118,7 +118,7 @@ public partial class SubjectCourse : IEntity<Guid>
     {
         ArgumentNullException.ThrowIfNull(user);
         
-        if (_mentors.Any(x => x.User.Equals(user)))
+        if (Mentors.Any(x => x.User.Equals(user)))
             throw new DomainInvalidOperationException($"User {user} is already a mentor of this subject course");
 
         var mentor = new Mentor(user, this);

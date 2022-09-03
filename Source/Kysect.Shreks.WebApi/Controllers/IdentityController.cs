@@ -20,7 +20,7 @@ public class IdentityController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> LoginAsync([FromBody] LoginRequest request)
+    public async Task<ActionResult<LoginResponse>> LoginAsync([FromBody] LoginRequest request)
     {
         var query = new Login.Query(request.Username, request.Password);
         var response = await _mediator.Send(query, HttpContext.RequestAborted);

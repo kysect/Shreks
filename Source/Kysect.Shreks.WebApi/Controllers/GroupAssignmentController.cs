@@ -22,9 +22,9 @@ namespace Kysect.Shreks.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GroupAssignmentDto>> Create(Guid groupId, Guid assignmentId, DateOnly deadline)
+        public async Task<ActionResult<GroupAssignmentDto>> Create(Guid groupId, Guid assignmentId, DateTime deadline)
         {
-            CreateGroupAssignment.Response response = await _mediator.Send(new CreateGroupAssignment.Command(groupId, assignmentId, deadline));
+            CreateGroupAssignment.Response response = await _mediator.Send(new CreateGroupAssignment.Command(groupId, assignmentId, DateOnly.FromDateTime(deadline)));
             return Ok(response.GroupAssignment);
         }
 

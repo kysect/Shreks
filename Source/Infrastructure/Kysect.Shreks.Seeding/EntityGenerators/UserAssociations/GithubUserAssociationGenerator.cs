@@ -27,8 +27,7 @@ public class GithubUserAssociationGenerator : EntityGeneratorBase<GithubUserAsso
         
         var user = _userGenerator.GeneratedEntities[index];
 
-        var githubName = _faker.Internet.UserName(user.FirstName, user.LastName);
-        var association = new GithubUserAssociation(user, githubName);
+        var association = new GithubUserAssociation(user, Guid.NewGuid().ToString());
 
         user.AddAssociation(association);
 

@@ -1,5 +1,6 @@
 ﻿using NSwag;
 using NSwag.CodeGeneration.CSharp;
+using NSwag.CodeGeneration.OperationNameGenerators;
 
 string filePath = "ShreksApiClient.cs";
 
@@ -11,11 +12,16 @@ var document = await OpenApiDocument.FromJsonAsync(spec);
 
 var settings = new CSharpClientGeneratorSettings
 {
-    ClassName = "ShreksApiClient",
+    ClassName = "{controller}Client",
     CSharpGeneratorSettings =
     {
-        Namespace = "Shreks.ApiClient"
-    }
+        Namespace = "Shreks.ApiClient",
+        TimeSpanType = "System.TimeSpan",
+        DateType = "System.DateOnly",
+    },
+    GenerateClientInterfaces = true,
+    ClientClassAccessModifier = "public",
+    OperationNameGenerator = new MultipleClientsFromFirstTagAndPathSegmentsOperationNameGenerator(),
 };
 
 
