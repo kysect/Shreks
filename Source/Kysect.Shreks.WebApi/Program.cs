@@ -94,7 +94,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .UseNpgsql(postgresConfiguration.ToConnectionString("shreks"))
             .UseLazyLoadingProxies());
 
-    webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity"),
+    webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity").GetSection("IdentityConfiguration"),
         x => x.UseNpgsql(postgresConfiguration.ToConnectionString("shreks-identity")));
 
     if (!googleIntegrationConfiguration.EnableGoogleIntegration)
