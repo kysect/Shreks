@@ -26,6 +26,7 @@ public class AddGithubUserAssociationHandler : IRequestHandler<Command, Response
         _context.Users.Update(student.User);
 
         await _context.SaveChangesAsync(cancellationToken);
+        
         return new Response();
     }
 }

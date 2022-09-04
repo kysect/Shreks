@@ -22,7 +22,8 @@ public class RemoveGithubUserAssociationHandler : IRequestHandler<Command, Respo
 
         GithubUserAssociation githubUserAssociation = student.User.Associations.OfType<GithubUserAssociation>().Single();
         student.User.RemoveAssociation(githubUserAssociation);
-        _context.Users.Update(student.User);
+        _context.UserAssociations.Remove(githubUserAssociation);
+
         await _context.SaveChangesAsync(cancellationToken);
 
         return new Response();
