@@ -39,28 +39,28 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
         {
             var count = inviteResult.AlreadyAdded.Count;
             var users = inviteResult.AlreadyAdded.ToSingleString();
-            _logger.LogInformation("Success invites: {AlreadyAddedCount}. Users: {Users}", count, users);
+            _logger.LogInformation("Already added: {AlreadyAddedCount}. Users: {Users}", count, users);
         }
 
         if (inviteResult.AlreadyInvited.Any())
         {
             var count = inviteResult.AlreadyInvited.Count;
             var users = inviteResult.AlreadyInvited.ToSingleString();
-            _logger.LogInformation("Success invites: {AlreadyInvitedCount}. Users: {Users}", count, users);
+            _logger.LogInformation("Already invited: {AlreadyInvitedCount}. Users: {Users}", count, users);
         }
 
         if (inviteResult.WithExpiredInvites.Any())
         {
             var count = inviteResult.WithExpiredInvites.Count;
             var users = inviteResult.WithExpiredInvites.ToSingleString();
-            _logger.LogInformation("Success invites: {Count}. Users: {Users}", count, users);
+            _logger.LogInformation("Expired invites: {Count}. Users: {Users}", count, users);
         }
 
         if (inviteResult.Failed.Any())
         {
             var count = inviteResult.Failed.Count;
             var error = inviteResult.Exception;
-            _logger.LogInformation("Success invites: {FailedCount}. Error: {Error}", count, error);
+            _logger.LogInformation("Failed invites: {FailedCount}. Error: {Error}", count, error);
         }
     }
 
