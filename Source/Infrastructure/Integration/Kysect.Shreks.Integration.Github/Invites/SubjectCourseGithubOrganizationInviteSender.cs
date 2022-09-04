@@ -49,7 +49,7 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
 
             var count = invites.Count;
             var users = invites.ToSingleString();
-            _logger.LogInformation("Success invites: {AlreadyAddedCount}. Users: {Users}", count, users);
+            _logger.LogInformation("AlreadyAdded invites: {AlreadyAddedCount}. Users: {Users}", count, users);
         }
 
         if (inviteResult.Any(result => result.Result is UserInviteResultType.AlreadyInvited))
@@ -61,7 +61,7 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
 
             var count = invites.Count;
             var users = invites.ToSingleString();
-            _logger.LogInformation("Success invites: {AlreadyInvitedCount}. Users: {Users}", count, users);
+            _logger.LogInformation("AlreadyInvitedCount invites: {AlreadyInvitedCount}. Users: {Users}", count, users);
         }
 
         if (inviteResult.Any(result => result.Result is UserInviteResultType.InvitationExpired))
@@ -73,7 +73,7 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
 
             var count = invites.Count;
             var users = invites.ToSingleString();
-            _logger.LogInformation("Success invites: {Count}. Users: {Users}", count, users);
+            _logger.LogInformation("InvitationExpired invites: {Count}. Users: {Users}", count, users);
         }
 
         if (inviteResult.Any(result => result.Result is UserInviteResultType.Failed))
@@ -84,7 +84,7 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
 
             var count = invites.Count;
             var error = invites.First(invite => invite.Reason is not null).Reason;
-            _logger.LogInformation("Success invites: {FailedCount}. Error: {Error}", count, error);
+            _logger.LogInformation("Failed invites: {FailedCount}. Error: {Error}", count, error);
         }
     }
 
