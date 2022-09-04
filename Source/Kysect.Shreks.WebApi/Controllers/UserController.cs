@@ -45,7 +45,7 @@ public class UserController : ControllerBase
     [HttpPost("{userId:guid}/change-name")]
     public async Task<ActionResult> UpdateName(Guid userId, string firstName, string middleName, string lastName)
     {
-        UpdateUserName.Response response = await _mediator.Send(new UpdateUserName.Command(userId, firstName, middleName, lastName));
+        await _mediator.Send(new UpdateUserName.Command(userId, firstName, middleName, lastName));
         return Ok();
     }
 }
