@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using FluentSpreadsheets;
+using FluentSpreadsheets.Styles;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
 

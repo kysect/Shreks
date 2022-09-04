@@ -100,7 +100,7 @@ public class GoogleTableAccessor : IDisposable
             return spreadsheetId;
         }
 
-        _logger.LogInformation("Spread sheet for {SubjectCourseId} was not found and will be created.", subjectCourseId);
+        _logger.LogInformation("Spreadsheet of course {SubjectCourseId} was not found and will be created.", subjectCourseId);
 
         try
         {
@@ -108,12 +108,12 @@ public class GoogleTableAccessor : IDisposable
             var addTableCommand = new AddGoogleTableSubjectCourseAssociation.Command(subjectCourseId, spreadsheetId);
             await _mediator.Send(addTableCommand, token);
 
-            _logger.LogInformation("Successfully created table of course {SubjectCourseId}.", subjectCourseId);
+            _logger.LogInformation("Successfully created spreadsheet of course {SubjectCourseId}.", subjectCourseId);
             return spreadsheetId;
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Failed to create table of course {SubjectCourseId}.", subjectCourseId);
+            _logger.LogError(e, "Failed to create spreadsheet of course {SubjectCourseId}.", subjectCourseId);
             throw;
         }
         finally

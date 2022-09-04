@@ -1,13 +1,14 @@
-﻿using FluentSpreadsheets.GoogleSheets.Rendering;
+﻿using FluentSpreadsheets.GoogleSheets.Factories;
+using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
-using FluentSpreadsheets.SheetBuilders;
+using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Tables;
-using Kysect.Shreks.Integration.Google.Factories;
 using Kysect.Shreks.Integration.Google.Options;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
+using Kysect.Shreks.Integration.Google.Tables;
 using Kysect.Shreks.Integration.Google.Tools;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,13 +26,12 @@ public static class ServiceCollectionExtensions
         action.Invoke(options);
 
         return serviceCollection
-            .AddSingleton<IStudentComponentFactory, StudentComponentFactory>()
-            .AddSingleton<ISheetComponentFactory<CoursePointsDto>, PointsSheetComponentFactory>()
-            .AddSingleton<ISheetComponentFactory<SubmissionsQueueDto>, QueueSheetComponentFactory>()
             .AddSingleton<ISheet<CoursePointsDto>, PointsSheet>()
             .AddSingleton<ISheet<SubmissionsQueueDto>, QueueSheet>()
+            .AddSingleton<ITable<CoursePointsDto>, PointsTable>()
+            .AddSingleton<ITable<SubmissionsQueueDto>, QueueTable>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
-            .AddSingleton<ISheetBuilder, SheetBuilder>()
+            .AddSingleton<IRenderCommandFactory, RenderCommandFactory>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
             .AddGoogleTableUpdateWorker()
             .AddGoogleFormatter();
