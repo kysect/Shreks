@@ -2,6 +2,7 @@ using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubmissionAssociations;
+using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using RichEntity.Annotations;
@@ -17,7 +18,7 @@ public abstract partial class Submission : IEntity<Guid>
         int code,
         Student student,
         GroupAssignment groupAssignment,
-        DateTime submissionDate,
+        SpbDateTime submissionDate,
         string payload)
         : this(Guid.NewGuid())
     {
@@ -35,9 +36,9 @@ public abstract partial class Submission : IEntity<Guid>
     }
 
     public int Code { get; protected init; }
-    
-    public DateTime SubmissionDate { get; set; }
-    public DateOnly SubmissionDateOnly => new DateOnly(SubmissionDate.Year, SubmissionDate.Month, SubmissionDate.Day);
+
+    public SpbDateTime SubmissionDate { get; set; }
+    public DateOnly SubmissionDateOnly => new DateOnly(SubmissionDate.Value.Year, SubmissionDate.Value.Month, SubmissionDate.Value.Day);
 
     public virtual Student Student { get; protected init; }
 

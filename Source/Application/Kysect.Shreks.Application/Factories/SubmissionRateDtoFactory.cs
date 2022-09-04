@@ -15,14 +15,14 @@ public static class SubmissionRateDtoFactory
         var dto = new SubmissionRateDto
         (
             Code: submission.Code,
-            SubmissionDate: submission.SubmissionDate,
+            SubmissionDate: submission.SubmissionDate.Value,
             Rating: submission.Rating?.Value,
             RawPoints: submission.Points?.Value,
             ExtraPoints: submission.ExtraPoints?.Value,
             PenaltyPoints: submission.CalculatePenaltySubmissionPoints(deadline)?.Value,
             TotalPoints: submission.CalculateTotalSubmissionPoints(deadline)?.Value
         );
-        
+
         return dto;
     }
 }
