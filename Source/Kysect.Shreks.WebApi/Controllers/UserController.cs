@@ -33,11 +33,13 @@ public class UserController : ControllerBase
     }
     
     [HttpGet]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(204)]
     public async Task<ActionResult<UserDto?>> FindUserByUniversityId(int universityId)
     {
         var command = new FindUserByUniversityId.Query(universityId);
         var user = await _mediator.Send(command);
-        return Ok(user);
+        return Ok(user.User);
     }
 
     [HttpPost("{userId:guid}/change-name")]
