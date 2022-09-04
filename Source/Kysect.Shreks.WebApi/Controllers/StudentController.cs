@@ -52,13 +52,6 @@ public class StudentController : ControllerBase
         return Ok(response.Student);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(Guid id)
-    {
-        DeleteStudent.Response response = await _mediator.Send(new DeleteStudent.Command(id));
-        return Ok();
-    }
-
     [HttpPost("association/github")]
     public async Task<ActionResult> AddGithubAssociation(Guid userId, string githubUsername)
     {

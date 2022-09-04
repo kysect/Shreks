@@ -1,6 +1,7 @@
 using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Mapping.Profiles;
@@ -30,5 +31,10 @@ public class ValueObjectsProfile : Profile
             .ConstructUsing(x => x == null ? null : new Fraction(x.Value));
 
         CreateMap<SubmissionState, SubmissionStateDto>().ReverseMap();
+
+        CreateMap<SpbDateTime, DateTime>()
+            .ConstructUsing(x => x.Value)
+            .ReverseMap()
+            .ConstructUsing(x => new SpbDateTime(x));
     }
 }

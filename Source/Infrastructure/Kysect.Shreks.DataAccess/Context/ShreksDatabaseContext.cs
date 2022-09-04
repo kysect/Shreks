@@ -3,6 +3,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
@@ -53,6 +54,6 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
         configurationBuilder.Properties<Fraction>().HaveConversion<FractionValueConverter>();
         configurationBuilder.Properties<TimeSpan>().HaveConversion<TimeSpanConverter>();
         //configurationBuilder.Properties<DateOnly>().HaveConversion<DateOnlyConverter>();
-        configurationBuilder.Properties<DateTime>().HaveConversion<DateTimeValueConverter>();
+        configurationBuilder.Properties<SpbDateTime>().HaveConversion<SpbDateTimeValueConverter>();
     }
 }

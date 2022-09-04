@@ -3,6 +3,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Application.Handlers.Validators;
+using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -26,7 +27,7 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
 
         PermissionValidator.IsRepositoryMentor(request.IssuerId, submission);
 
-        submission.SubmissionDate = request.NewDate;
+        submission.SubmissionDate = new SpbDateTime(request.NewDate);
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 
