@@ -30,8 +30,9 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
 
         if (inviteResult.Any(result => result.Result is UserInviteResultType.Success))
         {
-            IReadOnlyCollection<UserInviteResult> invites = inviteResult
+            IReadOnlyCollection<string> invites = inviteResult
                 .Where(result => result.Result is UserInviteResultType.Success)
+                .Select(invite => invite.Username)
                 .ToList();
 
             var count = invites.Count;
@@ -41,8 +42,9 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
 
         if (inviteResult.Any(result => result.Result is UserInviteResultType.AlreadyAdded))
         {
-            IReadOnlyCollection<UserInviteResult> invites = inviteResult
+            IReadOnlyCollection<string> invites = inviteResult
                 .Where(result => result.Result is UserInviteResultType.AlreadyAdded)
+                .Select(invite => invite.Username)
                 .ToList();
 
             var count = invites.Count;
@@ -52,8 +54,9 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
 
         if (inviteResult.Any(result => result.Result is UserInviteResultType.AlreadyInvited))
         {
-            IReadOnlyCollection<UserInviteResult> invites = inviteResult
+            IReadOnlyCollection<string> invites = inviteResult
                 .Where(result => result.Result is UserInviteResultType.AlreadyInvited)
+                .Select(invite => invite.Username)
                 .ToList();
 
             var count = invites.Count;
@@ -63,8 +66,9 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
 
         if (inviteResult.Any(result => result.Result is UserInviteResultType.InvitationExpired))
         {
-            IReadOnlyCollection<UserInviteResult> invites = inviteResult
+            IReadOnlyCollection<string> invites = inviteResult
                 .Where(result => result.Result is UserInviteResultType.InvitationExpired)
+                .Select(invite => invite.Username)
                 .ToList();
 
             var count = invites.Count;
