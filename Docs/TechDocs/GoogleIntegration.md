@@ -31,6 +31,8 @@ ITableUpdateQueue, представляемый бэкграунд воркер�
 
 ## How to build
 
+> Если вы занимаетесь разработкой, то можете обратиться и получить доступ к уже сгенерированным проектам
+
 1. Создать проект в https://console.cloud.google.com/
 2. Включить Google Sheets API https://console.cloud.google.com/apis/library/sheets.googleapis.com
 3. Включить Google Drive API https://console.cloud.google.com/apis/library/drive.googleapis.com
