@@ -7,6 +7,7 @@ public record SubmissionRateDto(
     DateTime SubmissionDate,
     double? Rating,
     double? RawPoints,
+    double? MaxRawPoints,
     double? ExtraPoints,
     double? PenaltyPoints,
     double? TotalPoints)
@@ -14,23 +15,24 @@ public record SubmissionRateDto(
     public string ToPullRequestString()
     {
         var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine($"Submission code: {Code}");
-        stringBuilder.AppendLine($"Rating: {SubmissionDate}");
-
+        stringBuilder.AppendLine($"Submission code: {Code} ({SubmissionDate})");
+        
         if (Rating is not null)
             stringBuilder.AppendLine($"Rating: {Rating}");
 
         if (RawPoints is not null)
-            stringBuilder.AppendLine($"Rating: {RawPoints}");
+        {
+            if (ExtraPoints is not null && ExtraPoints != 0)
+                stringBuilder.AppendLine($"Points: {RawPoints}/{MaxRawPoints} (+{ExtraPoints} extra points)");
+            else
+                stringBuilder.AppendLine($"Points: {RawPoints}/{MaxRawPoints}");
+        }
 
-        if (PenaltyPoints is not null)
-            stringBuilder.AppendLine($"Rating: {PenaltyPoints}");
-
-        if (ExtraPoints is not null)
-            stringBuilder.AppendLine($"Rating: {ExtraPoints}");
+        if (PenaltyPoints is not null && PenaltyPoints != 0)
+            stringBuilder.AppendLine($"Penalty points: {PenaltyPoints}");
 
         if (TotalPoints is not null)
-            stringBuilder.AppendLine($"Rating: {TotalPoints}");
+            stringBuilder.AppendLine($"Total points: {TotalPoints}");
 
         return stringBuilder.ToString();
     }

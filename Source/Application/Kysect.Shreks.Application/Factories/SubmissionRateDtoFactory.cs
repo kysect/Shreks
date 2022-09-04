@@ -1,6 +1,7 @@
 ﻿using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.ValueObject;
 
 namespace Kysect.Shreks.Application.Factories;
 
@@ -11,13 +12,19 @@ public static class SubmissionRateDtoFactory
         ArgumentNullException.ThrowIfNull(submission);
 
         DateOnly deadline = submission.GroupAssignment.Deadline;
+        Points maxRowPoints = submission.GroupAssignment.Assignment.MaxPoints;
+
+        double? rating = null;
+        if (submission.Rating is not null)
+            rating = submission.Rating * 100;
 
         var dto = new SubmissionRateDto
         (
             Code: submission.Code,
             SubmissionDate: submission.SubmissionDate.Value,
-            Rating: submission.Rating?.Value,
+            Rating: rating,
             RawPoints: submission.Points?.Value,
+            MaxRawPoints: maxRowPoints.Value,
             ExtraPoints: submission.ExtraPoints?.Value,
             PenaltyPoints: submission.CalculatePenaltySubmissionPoints(deadline)?.Value,
             TotalPoints: submission.CalculateTotalSubmissionPoints(deadline)?.Value
