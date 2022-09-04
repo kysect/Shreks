@@ -102,14 +102,6 @@ public class ShreksWebhookEventProcessor
         GithubPullRequestDescriptor pullRequestDescriptor,
         ILogger repositoryLogger)
     {
-        GithubPullRequestDescriptor pullRequestDescriptor = new GithubPullRequestDescriptor(
-            pullRequestReviewEvent.Sender.Login,
-            Payload: pullRequestReviewEvent.PullRequest.HtmlUrl,
-            pullRequestReviewEvent.Organization.Login,
-            pullRequestReviewEvent.Repository.Name,
-            BranchName: pullRequestReviewEvent.PullRequest.Head.Ref,
-            pullRequestReviewEvent.PullRequest.Number);
-
         IShreksCommand command = null;
         string comment;
         BaseShreksCommandResult result;
