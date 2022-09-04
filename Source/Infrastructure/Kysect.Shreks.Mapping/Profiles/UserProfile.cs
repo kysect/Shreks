@@ -12,8 +12,8 @@ public class UserProfile : Profile
         CreateMap<User, UserDto>();
         CreateMap<Student, StudentDto>()
             .ForCtorParam(nameof(StudentDto.UniversityId),
-                opt => opt.MapFrom(x => x.User.FindAssociation<IsuUserAssociation>().UniversityId))
+                opt => opt.MapFrom(x => x.User.FindAssociation<IsuUserAssociation>()!.UniversityId))
             .ForCtorParam(nameof(StudentDto.GitHubUsername),
-                opt => opt.MapFrom(x => x.User.FindAssociation<GithubUserAssociation>().GithubUsername));
+                opt => opt.MapFrom(x => x.User.FindAssociation<GithubUserAssociation>()!.GithubUsername));
     }
 }
