@@ -2,7 +2,6 @@
 
 using Newtonsoft.Json;
 using Shreks.ApiClient;
-using DateOnly = Shreks.ApiClient.DateOnly;
 using TimeSpan = System.TimeSpan;
 
 Console.WriteLine();
@@ -30,7 +29,10 @@ client.DefaultRequestHeaders.Add("Authorization", $"Bearer {loginResponse.Token}
 
 var studyGroupClient = new StudyGroupClient(baseUrl, client);
 var studentClient = new StudentClient(baseUrl, client);
-var userClient = new UserClient(baseUrl, client);
+var userClient = new UserClient(baseUrl, client)
+{
+    ReadResponseAsString = true,
+};
 
 var createdGroups = await studyGroupClient.StudyGroupGetAsync();
 var createdGroupNames = createdGroups.Select(x => new GroupName(x.Name));
@@ -52,19 +54,20 @@ foreach (var group in createdGroups)
 
 foreach (var studentInfo in data)
 {
-    var user = await userClient.UserAsync(studentInfo.IsuNumber);
-
-    if (!user.Id.Equals(default))
+    try
     {
-        await userClient.UpdateAsync(user.Id, studentInfo.IsuNumber);
-        continue;
+        var user = await userClient.UserAsync(studentInfo.IsuNumber);
+        await studentClient.GithubDeleteAsync(user.Id);
+        await studentClient.GithubPostAsync(user.Id, studentInfo.GithubUsername);
     }
-
-    var (firstName, middleName, lastName) = StudentName.FromString(studentInfo.FullName);
-    var group = groups[GroupName.FromShortName(int.Parse(studentInfo.Group))];
-    var student = await studentClient.StudentPostAsync(firstName, middleName, lastName, group.Id);
-    await userClient.UpdateAsync(student.User.Id, studentInfo.IsuNumber);
-    await studentClient.GithubPostAsync(student.User.Id, studentInfo.GithubUsername);
+    catch (ApiException e) when (e.StatusCode is 204)
+    {
+        var (firstName, middleName, lastName) = StudentName.FromString(studentInfo.FullName);
+        var group = groups[GroupName.FromShortName(int.Parse(studentInfo.Group))];
+        var student = await studentClient.StudentPostAsync(firstName, middleName, lastName, group.Id);
+        await userClient.UpdateAsync(student.User.Id, studentInfo.IsuNumber);
+        await studentClient.GithubPostAsync(student.User.Id, studentInfo.GithubUsername);
+    }
 }
 
 var subjectClient = new SubjectClient(baseUrl, client);
@@ -117,7 +120,8 @@ var groupAssignments = groups.Values
     .Select(x =>
     {
         var lab = labs.Single(xx => xx.Index.Equals(x.assignment.Order));
-        return groupAssignmentClient.GroupAssignmentPostAsync(x.group.Id, x.assignment.Id, new DateTimeOffset(lab.Deadline));
+        return groupAssignmentClient.GroupAssignmentPostAsync(x.group.Id, x.assignment.Id,
+            new DateTimeOffset(lab.Deadline));
     });
 
 foreach (Task<GroupAssignmentDto> task in groupAssignments)
