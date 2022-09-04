@@ -24,42 +24,66 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
         _logger.LogInformation(template, organizationName);
 
         OrganizationInviteSender inviteSender = await CreateOrganizationInviteSender(organizationName);
-        InviteResult inviteResult = await inviteSender.Invite(organizationName, usernames);
+        IReadOnlyCollection<UserInviteResult> inviteResult = await inviteSender.Invite(organizationName, usernames);
 
         _logger.LogInformation("Finish invite cycle for organization {OrganizationName}", organizationName);
 
-        if (inviteResult.Success.Any())
+        if (inviteResult.Any(result => result.Result is UserInviteResultType.Success))
         {
-            var count = inviteResult.Success.Count;
-            var users = inviteResult.Success.ToSingleString();
+            IReadOnlyCollection<string> invites = inviteResult
+                .Where(result => result.Result is UserInviteResultType.Success)
+                .Select(invite => invite.Username)
+                .ToList();
+
+            var count = invites.Count;
+            var users = invites.ToSingleString();
             _logger.LogInformation("Success invites: {InviteCount}. Users: {Users}", count, users);
         }
 
-        if (inviteResult.AlreadyAdded.Any())
+        if (inviteResult.Any(result => result.Result is UserInviteResultType.AlreadyAdded))
         {
-            var count = inviteResult.AlreadyAdded.Count;
-            var users = inviteResult.AlreadyAdded.ToSingleString();
-            _logger.LogInformation("Already added: {AlreadyAddedCount}. Users: {Users}", count, users);
+            IReadOnlyCollection<string> invites = inviteResult
+                .Where(result => result.Result is UserInviteResultType.AlreadyAdded)
+                .Select(invite => invite.Username)
+                .ToList();
+
+            var count = invites.Count;
+            var users = invites.ToSingleString();
+            _logger.LogInformation("AlreadyAdded invites: {AlreadyAddedCount}. Users: {Users}", count, users);
         }
 
-        if (inviteResult.AlreadyInvited.Any())
+        if (inviteResult.Any(result => result.Result is UserInviteResultType.AlreadyInvited))
         {
-            var count = inviteResult.AlreadyInvited.Count;
-            var users = inviteResult.AlreadyInvited.ToSingleString();
-            _logger.LogInformation("Already invited: {AlreadyInvitedCount}. Users: {Users}", count, users);
+            IReadOnlyCollection<string> invites = inviteResult
+                .Where(result => result.Result is UserInviteResultType.AlreadyInvited)
+                .Select(invite => invite.Username)
+                .ToList();
+
+            var count = invites.Count;
+            var users = invites.ToSingleString();
+            _logger.LogInformation("AlreadyInvitedCount invites: {AlreadyInvitedCount}. Users: {Users}", count, users);
         }
 
-        if (inviteResult.WithExpiredInvites.Any())
+        if (inviteResult.Any(result => result.Result is UserInviteResultType.InvitationExpired))
         {
-            var count = inviteResult.WithExpiredInvites.Count;
-            var users = inviteResult.WithExpiredInvites.ToSingleString();
-            _logger.LogInformation("Expired invites: {Count}. Users: {Users}", count, users);
+            IReadOnlyCollection<string> invites = inviteResult
+                .Where(result => result.Result is UserInviteResultType.InvitationExpired)
+                .Select(invite => invite.Username)
+                .ToList();
+
+            var count = invites.Count;
+            var users = invites.ToSingleString();
+            _logger.LogInformation("InvitationExpired invites: {Count}. Users: {Users}", count, users);
         }
 
-        if (inviteResult.Failed.Any())
+        if (inviteResult.Any(result => result.Result is UserInviteResultType.Failed))
         {
-            var count = inviteResult.Failed.Count;
-            var error = inviteResult.Exception;
+            IReadOnlyCollection<UserInviteResult> invites = inviteResult
+                .Where(result => result.Result is UserInviteResultType.Failed)
+                .ToList();
+
+            var count = invites.Count;
+            var error = invites.First(invite => invite.Reason is not null).Reason;
             _logger.LogInformation("Failed invites: {FailedCount}. Error: {Error}", count, error);
         }
     }
