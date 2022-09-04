@@ -21,7 +21,6 @@ namespace Kysect.Shreks.Application.Extensions
                 .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)
                 .MaxBy(dp => dp.SpanBeforeActivation);
 
-
             return activeDeadlinePolicy;
         }
     }
