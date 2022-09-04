@@ -16,7 +16,6 @@ public class SheetManagementService : ISheetManagementService
 {
     private const string AllFields = "*";
     private const string SpreadsheetType = "application/vnd.google-apps.spreadsheet";
-    private const int NumberOfAdditionalRows = 1000;
 
     private const int DefaultSheetId = 0;
     private const string DefaultSheetTitle = LabsSheet.Title;
@@ -110,7 +109,6 @@ public class SheetManagementService : ISheetManagementService
         _logger.LogDebug($"Configure default sheet for {spreadsheetId}.");
 
         await ExecuteBatchUpdateAsync(spreadsheetId, updatePropertiesRequest, token);
-        await AddRowsAsync(spreadsheetId, DefaultSheetId, token);
     }
 
     private async Task<int?> GetSheetIdAsync(string spreadsheetId, string title, CancellationToken token)
@@ -141,29 +139,6 @@ public class SheetManagementService : ISheetManagementService
         var addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
 
         return addedSheetProperties.SheetId!.Value;
-    }
-
-    private async Task AddRowsAsync(string spreadsheetId, int sheetId, CancellationToken token)
-    {
-        var addRowsRange = new DimensionRange
-        {
-            StartIndex = 0,
-            EndIndex = NumberOfAdditionalRows,
-            Dimension = Dimension.Rows,
-            SheetId = sheetId
-        };
-
-        var addRowsRequest = new Request
-        {
-            InsertDimension = new InsertDimensionRequest
-            {
-                Range = addRowsRange
-            }
-        };
-
-        _logger.LogDebug($"Add {NumberOfAdditionalRows} rows to spreadsheet with id {spreadsheetId}.");
-
-        await ExecuteBatchUpdateAsync(spreadsheetId, addRowsRequest, token);
     }
 
     private async Task SortSheetsAsync(string spreadsheetId, CancellationToken token)
