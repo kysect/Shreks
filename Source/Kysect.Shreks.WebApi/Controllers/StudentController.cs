@@ -1,6 +1,7 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Application.Handlers.Students;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -39,9 +40,16 @@ public class StudentController : ControllerBase
     }
 
     [HttpGet("by-group")]
-    public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> Get(Guid groupId)
+    public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> GetByGroupId(Guid groupId)
     {
         GetStudentsByGroupId.Response response = await _mediator.Send(new GetStudentsByGroupId.Query(groupId));
+        return Ok(response.Students);
+    }
+
+    [HttpGet("by-course")]
+    public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> GetBySubjectCourseId(Guid subjectCourseId)
+    {
+        GetStudentsBySubjectCourseId.Response response = await _mediator.Send(new GetStudentsBySubjectCourseId.Query(subjectCourseId));
         return Ok(response.Students);
     }
 
