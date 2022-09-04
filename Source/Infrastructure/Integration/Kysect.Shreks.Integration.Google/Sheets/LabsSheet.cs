@@ -9,16 +9,16 @@ using Kysect.Shreks.Integration.Google.Tools;
 
 namespace Kysect.Shreks.Integration.Google.Sheets;
 
-public class PointsSheet : ISheet<CoursePointsDto>
+public class LabsSheet : ISheet<CoursePointsDto>
 {
-    public const string Title = "Баллы";
+    public const string Title = "Лабораторные";
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ISheetManagementService _sheetEditor;
     private readonly ITable<CoursePointsDto> _pointsTable;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
-    public PointsSheet(
+    public LabsSheet(
         IUserFullNameFormatter userFullNameFormatter,
         ISheetManagementService sheetEditor,
         ITable<CoursePointsDto> pointsTable,

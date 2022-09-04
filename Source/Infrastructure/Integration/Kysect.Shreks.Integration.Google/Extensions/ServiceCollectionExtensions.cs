@@ -26,9 +26,9 @@ public static class ServiceCollectionExtensions
         action.Invoke(options);
 
         return serviceCollection
-            .AddSingleton<ISheet<CoursePointsDto>, PointsSheet>()
+            .AddSingleton<ISheet<CoursePointsDto>, LabsSheet>()
             .AddSingleton<ISheet<SubmissionsQueueDto>, QueueSheet>()
-            .AddSingleton<ITable<CoursePointsDto>, PointsTable>()
+            .AddSingleton<ITable<CoursePointsDto>, LabsTable>()
             .AddSingleton<ITable<SubmissionsQueueDto>, QueueTable>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<IRenderCommandFactory, RenderCommandFactory>()

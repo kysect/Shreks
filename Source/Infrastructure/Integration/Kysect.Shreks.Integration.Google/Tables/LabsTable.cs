@@ -10,14 +10,14 @@ using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class PointsTable : RowTable<CoursePointsDto>, ITableCustomizer
+public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
 {
     private static readonly IComponent EmptyAssignmentPointsCell = HStack(Enumerable.Repeat(Empty(), 2));
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ICultureInfoProvider _cultureInfoProvider;
 
-    public PointsTable(IUserFullNameFormatter userFullNameFormatter, ICultureInfoProvider cultureInfoProvider)
+    public LabsTable(IUserFullNameFormatter userFullNameFormatter, ICultureInfoProvider cultureInfoProvider)
     {
         _userFullNameFormatter = userFullNameFormatter;
         _cultureInfoProvider = cultureInfoProvider;

@@ -19,7 +19,7 @@ public class SheetManagementService : ISheetManagementService
     private const int NumberOfAdditionalRows = 1000;
 
     private const int DefaultSheetId = 0;
-    private const string DefaultSheetTitle = PointsSheet.Title;
+    private const string DefaultSheetTitle = LabsSheet.Title;
     private const string UpdateTitle = "title";
 
     private static readonly Permission AnyoneViewerPermission = new()
