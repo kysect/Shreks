@@ -50,8 +50,6 @@ public class ActionNotifier : IActionNotifier
             repository.Id,
             (int) commentId,
             new NewReaction(isSuccessful ? ReactionType.Plus1 : ReactionType.Minus1));
-        
-        _logger.LogDebug($"Send reaction {reaction.Content.ToString()}");
     }
     
     private void ParseWebhookEvent(WebhookEvent webhookEvent, out Repository repository, out InstallationLite installation)

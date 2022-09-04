@@ -87,8 +87,7 @@ public class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command, 
             }
             catch (Exception e) when (e.Message == "Invalid Status Code returned. Expected a 204 or a 404")
             {
-                _logger.LogWarning(e, $"Octokit return wrong error code for {username}.");
-                continue;
+                _logger.LogWarning($"Octokit return wrong error code for {username}.");
             }
             catch (Exception e)
             {

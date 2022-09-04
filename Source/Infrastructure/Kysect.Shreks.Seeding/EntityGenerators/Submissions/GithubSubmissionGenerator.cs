@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.Seeding.Extensions;
@@ -40,7 +41,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
             index,
             student,
             assignment,
-            _faker.Date.Future(),
+            Calendar.FromLocal(_faker.Date.Future()),
             _faker.Internet.Url(),
             _faker.Company.CompanyName(),
             _faker.Commerce.ProductName(),

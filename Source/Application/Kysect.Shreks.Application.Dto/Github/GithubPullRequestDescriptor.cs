@@ -8,6 +8,8 @@ public record GithubPullRequestDescriptor(
     string BranchName,
     long PrNumber)
 {
+    public string GetFullRepositoryName() => $"{Organization}/{Repository}";
+
     public override string ToString()
     {
         return $"{Payload} with branch {BranchName} from {Sender}";

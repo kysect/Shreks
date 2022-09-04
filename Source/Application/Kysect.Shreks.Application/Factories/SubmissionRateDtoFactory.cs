@@ -21,7 +21,7 @@ public static class SubmissionRateDtoFactory
         var dto = new SubmissionRateDto
         (
             Code: submission.Code,
-            SubmissionDate: submission.SubmissionDate,
+            SubmissionDate: submission.SubmissionDate.Value,
             Rating: rating,
             RawPoints: submission.Points?.Value,
             MaxRawPoints: maxRowPoints.Value,
@@ -29,7 +29,7 @@ public static class SubmissionRateDtoFactory
             PenaltyPoints: submission.CalculatePenaltySubmissionPoints(deadline)?.Value,
             TotalPoints: submission.CalculateTotalSubmissionPoints(deadline)?.Value
         );
-        
+
         return dto;
     }
 }

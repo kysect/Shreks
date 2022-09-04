@@ -12,14 +12,16 @@ namespace Kysect.Shreks.Application.Extensions
             if (submission.SubmissionDateOnly <= deadline)
                 return null;
 
-            var submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDateOnly.DayNumber - deadline.DayNumber);
-            return submission
+            TimeSpan submissionDeadlineOffset = TimeSpan.FromDays(submission.SubmissionDateOnly.DayNumber - deadline.DayNumber);
+            DeadlinePolicy? activeDeadlinePolicy = submission
                 .GroupAssignment
                 .Assignment
                 .SubjectCourse
                 .DeadlinePolicies
                 .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)
                 .MaxBy(dp => dp.SpanBeforeActivation);
+
+            return activeDeadlinePolicy;
         }
     }
 }
