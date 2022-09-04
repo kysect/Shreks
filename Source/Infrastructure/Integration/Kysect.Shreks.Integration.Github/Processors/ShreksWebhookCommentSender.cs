@@ -66,11 +66,6 @@ public class ShreksWebhookCommentSender
                 prCommentEvent.PullRequest.Number,
                 result.Message);
         }
-
-        await _actionNotifier.ReactInComments(
-            prCommentEvent,
-            prCommentEvent.Review.Id,
-            result.IsSuccess);
     }
 
     public async Task NotifyPullRequestReviewProcessed(
