@@ -30,6 +30,8 @@ public class PointsTable : RowTable<CoursePointsDto>, ITableCustomizer
     {
         yield return Row
         (
+            Label("ISU").WithColumnWidth(60),
+            Label("GitHub").WithColumnWidth(150),
             Label("ФИО").WithColumnWidth(240),
             Label("Группа"),
             ForEach(points.Assignments, a => VStack
@@ -53,6 +55,8 @@ public class PointsTable : RowTable<CoursePointsDto>, ITableCustomizer
 
             yield return Row
             (
+                Label(student.UniversityId),
+                Label(student.GitHubUsername!),
                 Label(_userFullNameFormatter.GetFullName(student.User)), 
                 Label(student.GroupName),
                 ForEach(points.Assignments, a =>
