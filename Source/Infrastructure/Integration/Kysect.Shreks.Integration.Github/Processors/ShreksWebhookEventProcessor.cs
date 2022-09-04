@@ -185,8 +185,6 @@ public class ShreksWebhookEventProcessor
                 _logger.LogWarning($"Pull request review action {pullRequestReviewAction} is not supported.");
                 break;
         }
-
-        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, $"Pull request review action {pullRequestReviewAction} proceeded.");
     }
 
     public async Task ProcessIssueCommentWebhookAsync(
