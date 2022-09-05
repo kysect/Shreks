@@ -25,6 +25,7 @@ using Kysect.Shreks.WebApi.Filters;
 using Kysect.Shreks.WebApi.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -49,6 +50,7 @@ await InitWebApplication(builder);
 
 void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 {
+    webApplicationBuilder.Services.TryAddSingleton(testEnvironmentConfiguration);
     webApplicationBuilder.Services.AddControllers(x => x.Filters.Add<AuthenticationFilter>()).AddNewtonsoftJson();
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
     webApplicationBuilder.Services.AddSwaggerGen(c =>
@@ -163,42 +165,10 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
 
     using (var scope = app.Services.CreateScope())
     {
-        if (app.Environment.IsDevelopment())
-            await InitTestEnvironment(scope.ServiceProvider, testEnvironmentConfiguration);
-
-        await SeedAdmins(scope.ServiceProvider, app.Configuration);
+       await SeedAdmins(scope.ServiceProvider, app.Configuration);
     }
 
     app.Run();
-}
-
-async Task InitTestEnvironment(
-    IServiceProvider serviceProvider,
-    TestEnvironmentConfiguration config,
-    CancellationToken cancellationToken = default)
-{
-    return;
-    var dbContext = serviceProvider.GetRequiredService<IShreksDatabaseContext>();
-
-    var userGenerator = serviceProvider.GetRequiredService<IEntityGenerator<User>>();
-    var users = userGenerator.GeneratedEntities;
-    dbContext.Users.AttachRange(users);
-
-    for (var index = 0; index < config.Users.Count; index++)
-    {
-        var user = users[index];
-        var login = config.Users[index];
-        dbContext.UserAssociations.Add(new GithubUserAssociation(user, login));
-    }
-
-
-    var subjectCourseGenerator = serviceProvider.GetRequiredService<IEntityGenerator<SubjectCourse>>();
-    var subjectCourse = subjectCourseGenerator.GeneratedEntities[0];
-    dbContext.SubjectCourses.Attach(subjectCourse);
-    dbContext.SubjectCourseAssociations.Add(
-        new GithubSubjectCourseAssociation(subjectCourse, config.Organization, config.TemplateRepository));
-
-    await dbContext.SaveChangesAsync(cancellationToken);
 }
 
 async Task SeedAdmins(IServiceProvider provider, IConfiguration configuration)
