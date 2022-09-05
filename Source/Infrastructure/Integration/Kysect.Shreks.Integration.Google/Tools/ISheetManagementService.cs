@@ -15,4 +15,6 @@ public interface ISheetManagementService
     /// </summary>
     /// <returns>Spreadsheet id</returns>
     Task<string> CreateSpreadsheetAsync(string title, CancellationToken token);
+
+    Task<bool> CheckIfExists(string spreadsheetId, string sheetTitle, CancellationToken token);
 }

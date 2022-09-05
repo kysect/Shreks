@@ -1,5 +1,4 @@
-﻿using FluentSpreadsheets;
-using Google.Apis.Drive.v3;
+﻿using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
@@ -16,8 +15,8 @@ public class SheetManagementService : ISheetManagementService
     private const string AllFields = "*";
     private const string SpreadsheetType = "application/vnd.google-apps.spreadsheet";
 
-    private const int DefaultSheetId = PointsSheet.Id;
-    private const string DefaultSheetTitle = PointsSheet.Title;
+    private const int DefaultSheetId = LabsSheet.Id;
+    private const string DefaultSheetTitle = LabsSheet.Title;
     
     private const string UpdateTitle = "title";
 
@@ -30,7 +29,6 @@ public class SheetManagementService : ISheetManagementService
     private readonly SheetsService _sheetsService;
     private readonly DriveService _driveService;
     private readonly ITablesParentsProvider _tablesParentsProvider;
-    private readonly ISheet<Unit> _defaultSheet;
     private readonly ISheetTitleComparer _sheetTitleComparer;
     private readonly ILogger<SheetManagementService> _logger;
 
@@ -38,14 +36,12 @@ public class SheetManagementService : ISheetManagementService
         SheetsService sheetsService,
         DriveService driveService,
         ITablesParentsProvider tablesParentsProvider,
-        ISheet<Unit> defaultSheet,
         ISheetTitleComparer sheetTitleComparer,
         ILogger<SheetManagementService> logger)
     {
         _sheetsService = sheetsService;
         _driveService = driveService;
         _tablesParentsProvider = tablesParentsProvider;
-        _defaultSheet = defaultSheet;
         _sheetTitleComparer = sheetTitleComparer;
         _logger = logger;
     }
@@ -83,8 +79,7 @@ public class SheetManagementService : ISheetManagementService
             .ExecuteAsync(token);
 
         string spreadsheetId = spreadsheetFile.Id;
-
-        await CreateSheetAsync(spreadsheetId, LabsSheet.Title, token);
+        
         await ConfigureDefaultSheetAsync(spreadsheetId, token);
 
         _logger.LogDebug($"Update file permission {title}.");
@@ -94,6 +89,12 @@ public class SheetManagementService : ISheetManagementService
             .ExecuteAsync(token);
 
         return spreadsheetId;
+    }
+
+    public async Task<bool> CheckIfExists(string spreadsheetId, string sheetTitle, CancellationToken token)
+    {
+        int? sheetId = await GetSheetIdAsync(spreadsheetId, sheetTitle, token);
+        return sheetId is not null;
     }
 
     private async Task ConfigureDefaultSheetAsync(string spreadsheetId, CancellationToken token)
@@ -116,7 +117,6 @@ public class SheetManagementService : ISheetManagementService
         _logger.LogDebug($"Configure default sheet for {spreadsheetId}.");
         
         await ExecuteBatchUpdateAsync(spreadsheetId, updatePropertiesRequest, token);
-        await _defaultSheet.UpdateAsync(spreadsheetId, Unit.Value, token);
     }
 
     private async Task<int?> GetSheetIdAsync(string spreadsheetId, string title, CancellationToken token)

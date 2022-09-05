@@ -6,7 +6,7 @@ using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class PointsTable : RowTable<Unit>, ITableCustomizer
+public class PointsTable : RowTable<int>, ITableCustomizer
 {
     private const string ReferenceSheetTitle = LabsSheet.Title;
     private const string ReferenceHeaderRange = "1:3";
@@ -28,13 +28,13 @@ public class PointsTable : RowTable<Unit>, ITableCustomizer
     public IComponent Customize(IComponent component)
         => component.WithDefaultStyle();
 
-    protected override IEnumerable<IRowComponent> RenderRows(Unit _)
+    protected override IEnumerable<IRowComponent> RenderRows(int studentsCount)
     {
         yield return Header;
 
-        for (int i = 2; i < 1000; i++)
+        for (int i = 0; i < studentsCount; i++)
         {
-            yield return GetRowReference(i);
+            yield return GetRowReference(i + 2);
         }
     }
 

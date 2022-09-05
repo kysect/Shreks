@@ -2,27 +2,34 @@
 using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.Tables;
+using Kysect.Shreks.Integration.Google.Tools;
 
 namespace Kysect.Shreks.Integration.Google.Sheets;
 
-public class PointsSheet : ISheet<Unit>
+public class PointsSheet : ISheet<int>
 {
-    public const int Id = 0;
     public const string Title = "Баллы";
-    
-    private readonly ITable<Unit> _queueTable;
+
+    private readonly ISheetManagementService _sheetEditor;
+    private readonly ITable<int> _pointsTable;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
 
-    public PointsSheet(ITable<Unit> queueTable, IComponentRenderer<GoogleSheetRenderCommand> renderer)
+    public PointsSheet(
+        ISheetManagementService sheetEditor,
+        ITable<int> pointsTable,
+        IComponentRenderer<GoogleSheetRenderCommand> renderer)
     {
-        _queueTable = queueTable;
+        _sheetEditor = sheetEditor;
+        _pointsTable = pointsTable;
         _renderer = renderer;
     }
 
-    public async Task UpdateAsync(string spreadsheetId, Unit _, CancellationToken token)
+    public async Task UpdateAsync(string spreadsheetId, int studentsCount, CancellationToken token)
     {
-        IComponent sheetData = _queueTable.Render(Unit.Value);
-        var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, Id, Title, sheetData);
+        int sheetId = await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, Title, token);
+
+        IComponent sheetData = _pointsTable.Render(studentsCount);
+        var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, sheetId, Title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
     }
 }
