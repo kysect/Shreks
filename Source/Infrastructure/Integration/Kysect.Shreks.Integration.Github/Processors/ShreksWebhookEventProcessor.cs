@@ -47,7 +47,7 @@ public class ShreksWebhookEventProcessor
 
                 var subjectCourseId = await GetSubjectCourseByOrganization(pullRequestDescriptor.Organization, cancellationToken);
                 var userId = await GetUserByGithubLogin(pullRequestDescriptor.Sender, cancellationToken);
-                var assignmentId = await GetAssignemntByBranchAndSubjectCourse(pullRequestDescriptor.BranchName, subjectCourseId);
+                var assignmentId = await GetAssignmentByBranchAndSubjectCourse(pullRequestDescriptor.BranchName, subjectCourseId);
 
                 var command = new CreateOrUpdateGithubSubmission.Command(userId, assignmentId, pullRequestDescriptor);
 
@@ -55,7 +55,7 @@ public class ShreksWebhookEventProcessor
                 if (isCreated)
                     await _commentSender.NotifySubmissionCreated(pullRequestEvent, submissionDto, repositoryLogger);
                 else
-                    await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submissionDto, repositoryLogger);
+                    await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submissionDto, repositoryLogger, sendCommitComment: true);
 
                 break;
             case PullRequestActionValue.Reopened when pullRequestEvent.PullRequest.Merged is false:
@@ -65,8 +65,6 @@ public class ShreksWebhookEventProcessor
                 var merged = pullRequestEvent.PullRequest.Merged ?? false;
                 var state = merged ? SubmissionStateDto.Completed : SubmissionStateDto.Inactive;
                 var submission = await ChangeSubmissionState(pullRequestEvent, state, pullRequestDescriptor, repositoryLogger);
-
-                await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submission, repositoryLogger);
 
                 if (merged && submission.Points is null)
                     await _commentSender.WarnPullRequestMergedWithoutPoints(pullRequestEvent, submission, repositoryLogger);
@@ -93,7 +91,7 @@ public class ShreksWebhookEventProcessor
         var competeSubmissionCommand = new UpdateSubmissionState.Command(user, submission.Id, state);
 
         var response = await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
-        await _commentSender.NotifySubmissionUpdate(pullRequestEvent, response.Submission, repositoryLogger);
+        await _commentSender.NotifySubmissionUpdate(pullRequestEvent, response.Submission, repositoryLogger, sendComment: true);
 
         return response.Submission;
     }
@@ -248,7 +246,7 @@ public class ShreksWebhookEventProcessor
         return response.UserId;
     }
 
-    private async Task<Guid> GetAssignemntByBranchAndSubjectCourse(string branch, Guid subjectCourseId)
+    private async Task<Guid> GetAssignmentByBranchAndSubjectCourse(string branch, Guid subjectCourseId)
     {
         var response = await _mediator.Send(new GetAssignmentByBranchAndSubjectCourse.Query(branch, subjectCourseId));
         return response.AssignmentId;

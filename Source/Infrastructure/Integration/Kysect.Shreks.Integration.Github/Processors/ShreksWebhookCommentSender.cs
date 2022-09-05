@@ -30,18 +30,32 @@ public class ShreksWebhookCommentSender
         logger.LogInformation("Notify: " + message);
     }
 
-    public async Task NotifySubmissionUpdate(PullRequestEvent pullRequestEvent, SubmissionDto submission, ILogger logger)
+    public async Task NotifySubmissionUpdate(
+        PullRequestEvent pullRequestEvent,
+        SubmissionDto submission,
+        ILogger logger,
+        bool sendComment = false,
+        bool sendCommitComment = false)
     {
         string message = $"Submission {submission.Code} was updated." +
                          $"\nState: {submission.State}" +
                          $"\nDate: {submission.SubmissionDate}";
 
-        await _actionNotifier.SendCommitComment(
-            pullRequestEvent,
-            pullRequestEvent.PullRequest.Head.Sha,
-        message);
+        if (sendComment) {
+            logger.LogInformation("Notify comment posted into PR: " + message);
+            await _actionNotifier.SendComment(
+                pullRequestEvent,
+                pullRequestEvent.PullRequest.Number,
+                message);
+        }
 
-        logger.LogInformation("Notify: " + message);
+        if (sendCommitComment) {
+            logger.LogInformation("Notify posted as commit comment: " + message);
+            await _actionNotifier.SendCommitComment(
+                pullRequestEvent,
+                pullRequestEvent.PullRequest.Head.Sha,
+                message);
+        }
     }
 
     public async Task NotifyAboutCommandProcessingResult(IssueCommentEvent issueCommentEvent, BaseShreksCommandResult result, ILogger logger)
