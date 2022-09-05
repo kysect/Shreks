@@ -52,7 +52,7 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
             Name = title
         };
 
-        _logger.LogDebug($"Create file {title} on Google drive.");
+        _logger.LogDebug("Create file {title} on Google drive.", title);
 
         File spreadsheetFile = await _driveService.Files
             .Create(spreadsheetToCreate)
@@ -62,7 +62,7 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
 
         await ConfigureDefaultSheetAsync(spreadsheetId, token);
 
-        _logger.LogDebug($"Update file permission {title}.");
+        _logger.LogDebug("Update permission of file: {title}.", title);
 
         await _driveService.Permissions
             .Create(AnyoneViewerPermission, spreadsheetId)
@@ -88,7 +88,7 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
             }
         };
 
-        _logger.LogDebug($"Configure default sheet for {spreadsheetId}.");
+        _logger.LogDebug("Configure default sheet for {spreadsheetId}.", spreadsheetId);
 
         await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, updatePropertiesRequest, token);
     }

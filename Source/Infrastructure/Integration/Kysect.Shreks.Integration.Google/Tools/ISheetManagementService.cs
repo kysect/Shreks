@@ -1,6 +1,4 @@
-﻿using Google.Apis.Sheets.v4.Data;
-
-namespace Kysect.Shreks.Integration.Google.Tools;
+﻿namespace Kysect.Shreks.Integration.Google.Tools;
 
 public interface ISheetManagementService
 {

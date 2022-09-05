@@ -55,7 +55,7 @@ public class SheetManagementService : ISheetManagementService
             }
         };
 
-        _logger.LogDebug($"Create sheet with title {sheetTitle}.");
+        _logger.LogDebug("Create sheet with title {sheetTitle}.", sheetTitle);
 
         var batchUpdateResponse = await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
         var addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
@@ -103,7 +103,7 @@ public class SheetManagementService : ISheetManagementService
 
         if (updateSheetIndexRequests.Length is not 0)
         {
-            _logger.LogDebug($"Reorder sheets in spreadsheet {spreadsheetId}.");
+            _logger.LogDebug("Reorder sheets in spreadsheet {spreadsheetId}.", spreadsheetId);
 
             await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, updateSheetIndexRequests, token);
         }
@@ -141,13 +141,13 @@ public class SheetManagementService : ISheetManagementService
             unmergeCellsRequest
         };
 
-        _logger.LogDebug($"Clear sheet with id {sheetId}.");
+        _logger.LogDebug("Clear sheet with id {sheetId}.", sheetId);
         await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, requests, token);
     }
 
     private async Task<IList<Sheet>> GetSheetsAsync(string spreadsheetId, CancellationToken token)
     {
-        _logger.LogDebug($"Request spreadsheet with id {spreadsheetId}.");
+        _logger.LogDebug("Request spreadsheet with id {spreadsheetId}.", spreadsheetId);
 
         Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
             .Get(spreadsheetId)
