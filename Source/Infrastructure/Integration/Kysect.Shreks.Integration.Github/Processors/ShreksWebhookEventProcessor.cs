@@ -120,7 +120,7 @@ public class ShreksWebhookEventProcessor
                 }
 
                 result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
-                await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result, repositoryLogger);
+                await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
                 comment = pullRequestReviewEvent.Review.Body;
@@ -134,7 +134,7 @@ public class ShreksWebhookEventProcessor
                 }
 
                 result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
-                await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result, repositoryLogger);
+                await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "comment":
                 comment = pullRequestReviewEvent.Review.Body;
@@ -142,7 +142,7 @@ public class ShreksWebhookEventProcessor
                 {
                     command = _commandParser.Parse(comment);
                     result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
-                    await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result, repositoryLogger);
+                    await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
                 }
 
                 if (command is not RateCommand)
