@@ -44,7 +44,10 @@ public class SeedTestDataHandler : IRequestHandler<Query>
 
     private static void EnsureUserAcknowledgedEnvironment(Query request)
     {
-        if (!request.Environment.Equals(ExceptedEnvironment, StringComparison.OrdinalIgnoreCase)) throw new UserNotAcknowledgedEnvironmentException();
+        if (!request.Environment.Equals(ExceptedEnvironment, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new UserNotAcknowledgedEnvironmentException();
+        }
     }
 
     private void AddGithubUserAssociations()
