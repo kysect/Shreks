@@ -121,8 +121,31 @@ public class ShreksWebhookEventProcessor
                     command = new RateCommand(100, 0);
                 }
 
-                result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
-                await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
+                var getSubmissionCommand = new GetLastSubmissionByPr.Query(pullRequestDescriptor);
+
+                var response = await _mediator.Send(getSubmissionCommand, CancellationToken.None);
+
+                switch (response.Submission.Points)
+                {
+                    case null:
+                        result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
+                        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
+                        break;
+                    case 100:
+                    {
+                        var message = "Review successfully processed, but submission already has 100 points";
+                        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, message);
+                        break;
+                    }
+                    default:
+                    {
+                        var message = $"Submission is already rated with {response.Submission.Points} points. If you want to change it, please use /update command.";
+                        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, message);
+                        break;
+                    }
+                }
+
+
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
                 comment = pullRequestReviewEvent.Review.Body;
