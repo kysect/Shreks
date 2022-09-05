@@ -88,6 +88,9 @@ public class ShreksWebhookCommentSender
         ILogger logger,
         string message = "Pull request review action handled.")
     {
+        if (string.IsNullOrEmpty(message))
+            return;
+
         await _actionNotifier.SendComment(
             pullRequestReviewEvent,
             pullRequestReviewEvent.PullRequest.Number,
