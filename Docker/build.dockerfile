@@ -4,12 +4,6 @@ WORKDIR /source
 
 # copy csproj and restore as distinct layers
 COPY *.sln .
-COPY ./Playground/Kysect.Shreks.Playground.Github/Kysect.Shreks.Playground.Github.csproj ./Playground/Kysect.Shreks.Playground.Github/Kysect.Shreks.Playground.Github.csproj
-COPY ./Playground/Kysect.Shreks.DataImport/Kysect.Shreks.DataImport.csproj ./Playground/Kysect.Shreks.DataImport/Kysect.Shreks.DataImport.csproj
-COPY ./Playground/Kysect.Shreks.Playground/Kysect.Shreks.Playground.csproj ./Playground/Kysect.Shreks.Playground/Kysect.Shreks.Playground.csproj
-COPY ./Playground/Kysect.Shreks.ApiClientGeneration/Kysect.Shreks.ApiClientGeneration.csproj ./Playground/Kysect.Shreks.ApiClientGeneration/Kysect.Shreks.ApiClientGeneration.csproj
-COPY ./Playground/Kysect.Shreks.Playground.Google/Kysect.Shreks.Playground.Google.csproj ./Playground/Kysect.Shreks.Playground.Google/Kysect.Shreks.Playground.Google.csproj
-COPY ./Tests/Kysect.Shreks.Tests/Kysect.Shreks.Tests.csproj ./Tests/Kysect.Shreks.Tests/Kysect.Shreks.Tests.csproj
 COPY ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj
 COPY ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj
 COPY ./Application/Kysect.Shreks.Application.Commands/Kysect.Shreks.Application.Commands.csproj ./Application/Kysect.Shreks.Application.Commands/Kysect.Shreks.Application.Commands.csproj
@@ -26,11 +20,11 @@ COPY ./Infrastructure/Kysect.Shreks.DataAccess/Kysect.Shreks.DataAccess.csproj .
 COPY ./Domain/Kysect.Shreks.Core/Kysect.Shreks.Core.csproj ./Domain/Kysect.Shreks.Core/Kysect.Shreks.Core.csproj
 COPY ./Domain/Kysect.Shreks.Common/Kysect.Shreks.Common.csproj ./Domain/Kysect.Shreks.Common/Kysect.Shreks.Common.csproj
 
-RUN dotnet restore
+RUN dotnet restore Kysect.Shreks.WebApi
 
 # copy everything else and build app
 COPY ./ ./
-RUN dotnet publish -c release -o /app --no-restore
+RUN dotnet publish -c release -o /app --no-restore Kysect.Shreks.WebApi
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
