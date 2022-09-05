@@ -26,7 +26,7 @@ public class PointsSheet : ISheet<int>
 
     public async Task UpdateAsync(string spreadsheetId, int studentsCount, CancellationToken token)
     {
-        int sheetId = await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, Title, token);
+        int sheetId = await _sheetEditor.CreateSheetAsync(spreadsheetId, Title, token);
 
         IComponent sheetData = _pointsTable.Render(studentsCount);
         var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, sheetId, Title, sheetData);

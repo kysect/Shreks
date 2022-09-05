@@ -1,6 +1,6 @@
 ﻿using Kysect.Shreks.Integration.Google.Extensions;
 
-namespace Kysect.Shreks.Integration.Google.Tools;
+namespace Kysect.Shreks.Integration.Google.Tools.Comparers;
 
 public class SheetTitleComparer : ISheetTitleComparer
 {

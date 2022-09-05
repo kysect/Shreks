@@ -10,6 +10,7 @@ using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tables;
 using Kysect.Shreks.Integration.Google.Tools;
+using Kysect.Shreks.Integration.Google.Tools.Comparers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
