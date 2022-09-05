@@ -30,6 +30,6 @@ RUN dotnet publish -c release -o /app --no-restore Kysect.Shreks.WebApi
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build /app ./
-ENV ASPNETCORE_URLS=http://0.0.0.0:5069
-ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://0.0.0.0:5069 \
+    ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "Kysect.Shreks.WebApi.dll"]
