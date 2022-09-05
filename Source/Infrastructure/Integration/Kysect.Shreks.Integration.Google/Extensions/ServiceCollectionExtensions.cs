@@ -34,6 +34,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ITable<CoursePointsDto>, LabsTable>()
             .AddSingleton<ITable<SubmissionsQueueDto>, QueueTable>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
+            .AddSingleton<ISpreadsheetManagementService, SpreadsheetManagementService>()
             .AddSingleton<IRenderCommandFactory, RenderCommandFactory>()
             .AddSingleton<ISheetTitleComparer, SheetTitleComparer>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()

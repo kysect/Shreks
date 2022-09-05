@@ -2,5 +2,4 @@
 
 public interface ISheetTitleComparer : IComparer<string>
 {
-
 }
