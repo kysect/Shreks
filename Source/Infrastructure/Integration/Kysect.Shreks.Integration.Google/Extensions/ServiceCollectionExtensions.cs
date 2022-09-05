@@ -1,4 +1,5 @@
-﻿using FluentSpreadsheets.GoogleSheets.Factories;
+﻿using FluentSpreadsheets;
+using FluentSpreadsheets.GoogleSheets.Factories;
 using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.Tables;
@@ -26,12 +27,15 @@ public static class ServiceCollectionExtensions
         action.Invoke(options);
 
         return serviceCollection
+            .AddSingleton<ISheet<Unit>, PointsSheet>()
             .AddSingleton<ISheet<CoursePointsDto>, LabsSheet>()
             .AddSingleton<ISheet<SubmissionsQueueDto>, QueueSheet>()
+            .AddSingleton<ITable<Unit>, PointsTable>()
             .AddSingleton<ITable<CoursePointsDto>, LabsTable>()
             .AddSingleton<ITable<SubmissionsQueueDto>, QueueTable>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
             .AddSingleton<IRenderCommandFactory, RenderCommandFactory>()
+            .AddSingleton<ISheetTitleComparer, SheetTitleComparer>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
             .AddGoogleTableUpdateWorker()
             .AddGoogleFormatter();

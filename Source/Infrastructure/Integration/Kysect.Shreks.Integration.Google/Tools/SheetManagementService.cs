@@ -1,7 +1,6 @@
-﻿using FluentSpreadsheets.GoogleSheets.Models;
+﻿using FluentSpreadsheets;
 using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
-using Google.Apis.Logging;
 using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Kysect.Shreks.Integration.Google.Providers;
@@ -17,8 +16,9 @@ public class SheetManagementService : ISheetManagementService
     private const string AllFields = "*";
     private const string SpreadsheetType = "application/vnd.google-apps.spreadsheet";
 
-    private const int DefaultSheetId = 0;
-    private const string DefaultSheetTitle = LabsSheet.Title;
+    private const int DefaultSheetId = PointsSheet.Id;
+    private const string DefaultSheetTitle = PointsSheet.Title;
+    
     private const string UpdateTitle = "title";
 
     private static readonly Permission AnyoneViewerPermission = new()
@@ -30,17 +30,23 @@ public class SheetManagementService : ISheetManagementService
     private readonly SheetsService _sheetsService;
     private readonly DriveService _driveService;
     private readonly ITablesParentsProvider _tablesParentsProvider;
+    private readonly ISheet<Unit> _defaultSheet;
+    private readonly ISheetTitleComparer _sheetTitleComparer;
     private readonly ILogger<SheetManagementService> _logger;
 
     public SheetManagementService(
         SheetsService sheetsService,
         DriveService driveService,
         ITablesParentsProvider tablesParentsProvider,
+        ISheet<Unit> defaultSheet,
+        ISheetTitleComparer sheetTitleComparer,
         ILogger<SheetManagementService> logger)
     {
         _sheetsService = sheetsService;
         _driveService = driveService;
         _tablesParentsProvider = tablesParentsProvider;
+        _defaultSheet = defaultSheet;
+        _sheetTitleComparer = sheetTitleComparer;
         _logger = logger;
     }
 
@@ -72,12 +78,13 @@ public class SheetManagementService : ISheetManagementService
 
         _logger.LogDebug($"Create file {title} on Google drive.");
 
-        var spreadsheet = await _driveService.Files
+        File spreadsheetFile = await _driveService.Files
             .Create(spreadsheetToCreate)
             .ExecuteAsync(token);
 
-        string spreadsheetId = spreadsheet.Id;
+        string spreadsheetId = spreadsheetFile.Id;
 
+        await CreateSheetAsync(spreadsheetId, LabsSheet.Title, token);
         await ConfigureDefaultSheetAsync(spreadsheetId, token);
 
         _logger.LogDebug($"Update file permission {title}.");
@@ -107,8 +114,9 @@ public class SheetManagementService : ISheetManagementService
         };
 
         _logger.LogDebug($"Configure default sheet for {spreadsheetId}.");
-
+        
         await ExecuteBatchUpdateAsync(spreadsheetId, updatePropertiesRequest, token);
+        await _defaultSheet.UpdateAsync(spreadsheetId, Unit.Value, token);
     }
 
     private async Task<int?> GetSheetIdAsync(string spreadsheetId, string title, CancellationToken token)
@@ -146,8 +154,7 @@ public class SheetManagementService : ISheetManagementService
         IList<Sheet> sheets = await GetSheetsAsync(spreadsheetId, token);
 
         Request[] updateSheetIndexRequests = sheets
-            .Where(s => s.Properties.SheetId is not DefaultSheetId)
-            .OrderBy(s => s.Properties.Title)
+            .OrderBy(s => s.Properties.Title, _sheetTitleComparer)
             .Select((s, i) => (Sheet: s, NewIndex: i + 1))
             .Select(t =>
             {

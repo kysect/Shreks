@@ -32,7 +32,7 @@ public class LabsSheet : ISheet<CoursePointsDto>
 
     public async Task UpdateAsync(string spreadsheetId, CoursePointsDto points, CancellationToken token)
     {
-        var sheetId = await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, Title, token);
+        int sheetId = await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, Title, token);
 
         CoursePointsDto sortedPoints = SortPoints(points);
 
