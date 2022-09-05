@@ -160,7 +160,7 @@ public class ShreksWebhookEventProcessor
                 repositoryLogger.LogWarning($"Pull request review action {pullRequestReviewAction} is not supported.");
                 break;
             default:
-                _logger.LogWarning("Pull request review for pr {prLink} is not processed.", pullRequestDescriptor.Payload);
+                repositoryLogger.LogWarning("Pull request review for pr {prLink} is not processed.", pullRequestDescriptor.Payload);
                 break;
         }
     }
