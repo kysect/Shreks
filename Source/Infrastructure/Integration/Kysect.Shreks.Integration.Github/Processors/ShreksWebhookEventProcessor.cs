@@ -136,7 +136,7 @@ public class ShreksWebhookEventProcessor
                 result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
                 await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
                 break;
-            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "comment":
+            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
                 comment = pullRequestReviewEvent.Review.Body;
                 if (comment.FirstOrDefault() == '/')
                 {
@@ -158,6 +158,9 @@ public class ShreksWebhookEventProcessor
             case PullRequestReviewActionValue.Dismissed:
 
                 repositoryLogger.LogWarning($"Pull request review action {pullRequestReviewAction} is not supported.");
+                break;
+            default:
+                repositoryLogger.LogWarning("Pull request review for pr {prLink} is not processed.", pullRequestDescriptor.Payload);
                 break;
         }
     }
