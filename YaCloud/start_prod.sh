@@ -8,4 +8,4 @@ eval $(echo "$secrets_env");
 env_docker=`echo "$secrets" | jq -r '"-env " + .entries[].key + " "'`;
 env > .env;
 sudo DOCKER_BUILDKIT=1 docker build -f Docker/build.dockerfile -t shreks ./Source && \
-sudo docker run --env-file .env -p 5069:5069 -it shreks;
+sudo docker run --env-file .env -p 5069:5069 -itd shreks;
