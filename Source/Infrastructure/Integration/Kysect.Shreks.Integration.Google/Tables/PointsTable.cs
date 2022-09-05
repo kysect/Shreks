@@ -1,5 +1,4 @@
-﻿using System.Text;
-using FluentSpreadsheets;
+﻿using FluentSpreadsheets;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Sheets;
@@ -71,18 +70,21 @@ public class PointsTable : RowTable<Unit>, ITableCustomizer
     }
 
     private static string GetTotalFunction(int row)
-        => $"={GetCellNumber('E', row)}+{GetCellNumber('F', row)}+{GetCellNumber('G', row)}";
+    {
+        string total = $"{GetCellNumber('E', row)}+{GetCellNumber('F', row)}+{GetCellNumber('G', row)}";
+        return $"=SUBSTITUTE({total},\".\",\",\")";
+    }
 
     private static string GetCellNumber(char column, int row)
     {
         string index = $"{column}{row}";
-        return $"IFERROR(VALUE(SUBSTITUTE({index}, \",\", \".\")), VALUE(SUBSTITUTE({index}, \".\", \",\")))";
+        return $"IFERROR(VALUE(SUBSTITUTE({index},\",\",\".\")), VALUE(SUBSTITUTE({index},\".\",\",\")))";
     }
 
     private static string PointsFormula(int row)
     {
-        string index = $"H{row}";
-        return $"=if({index}>=60,if({index}>67,if({index}>74,if({index}>83,if({index}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({index}>= 40,\"FX-E\",\"FX\"))";
+        string n = GetCellNumber('H', row);
+        return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>= 40,\"FX-E\",\"FX\"))";
     }
 
     private static string GetCellsReference(string range)
