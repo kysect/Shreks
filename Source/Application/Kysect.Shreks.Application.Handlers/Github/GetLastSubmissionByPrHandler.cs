@@ -22,15 +22,14 @@ public class GetLastSubmissionByPrHandler : IRequestHandler<Query, Response>
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        var submission =  await _context.SubmissionAssociations
+        var submission = _context.SubmissionAssociations
             .OfType<GithubSubmissionAssociation>()
             .Where(a =>
                 a.Organization == request.PullRequestDescriptor.Organization
                 && a.Repository == request.PullRequestDescriptor.Repository
                 && a.PrNumber == request.PullRequestDescriptor.PrNumber)
-            .OrderByDescending(a => a.Submission.SubmissionDate)
-            .Select(a => a.Submission)
-            .FirstOrDefaultAsync(cancellationToken);
+            .Select(s => s.Submission)
+            .MaxBy(s => s.SubmissionDate);
 
         if (submission is null)
         {
