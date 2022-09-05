@@ -66,6 +66,8 @@ public class ShreksWebhookEventProcessor
                 var state = merged ? SubmissionStateDto.Completed : SubmissionStateDto.Inactive;
                 var submission = await ChangeSubmissionState(pullRequestEvent, state, pullRequestDescriptor, repositoryLogger);
 
+                await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submission, repositoryLogger);
+
                 if (merged && submission.Points is null)
                     await _commentSender.WarnPullRequestMergedWithoutPoints(pullRequestEvent, submission, repositoryLogger);
                 break;
