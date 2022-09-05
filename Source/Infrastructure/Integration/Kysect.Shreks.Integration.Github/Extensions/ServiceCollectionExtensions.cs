@@ -41,7 +41,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<GitHubJwtFactory>(
             new GitHubJwtFactory(
-                new FilePrivateKeySource(githubIntegrationConfiguration.GithubAppConfiguration.PrivateKeySource),
+                new StringPrivateKeySource(githubIntegrationConfiguration.GithubAppConfiguration.PrivateKey),
                 new GitHubJwtFactoryOptions
                 {
                     AppIntegrationId = githubIntegrationConfiguration.GithubAppConfiguration.AppIntegrationId, // The GitHub App Id

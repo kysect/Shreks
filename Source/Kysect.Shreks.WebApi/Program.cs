@@ -41,8 +41,7 @@ var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfigurat
 var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration)).Get<GithubIntegrationConfiguration>();
 var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration)).Get<TestEnvironmentConfiguration>();
 var postgresConfiguration = builder.Configuration.GetSection(nameof(PostgresConfiguration)).Get<PostgresConfiguration>();
-
-GoogleCredential? googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
+var dbNames = builder.Configuration.GetSection(nameof(DbNamesConfiguration)).Get<DbNamesConfiguration>();
 
 InitServiceCollection(builder);
 await InitWebApplication(builder);
@@ -91,11 +90,11 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 
     webApplicationBuilder.Services
         .AddDatabaseContext(o => o
-            .UseNpgsql(postgresConfiguration.ToConnectionString("shreks"))
+            .UseNpgsql(postgresConfiguration.ToConnectionString(dbNames.ApplicationDbName))
             .UseLazyLoadingProxies());
 
     webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity").GetSection("IdentityConfiguration"),
-        x => x.UseNpgsql(postgresConfiguration.ToConnectionString("shreks-identity")));
+        x => x.UseNpgsql(postgresConfiguration.ToConnectionString(dbNames.IdentityDbName)));
 
     if (!googleIntegrationConfiguration.EnableGoogleIntegration)
     {
@@ -106,7 +105,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     {
         webApplicationBuilder.Services
             .AddGoogleIntegration(o => o
-                .ConfigureGoogleCredentials(googleCredentials)
+                .ConfigureGoogleCredentials(GoogleCredential.FromJson(googleIntegrationConfiguration.ClientSecrets))
                 .ConfigureDriveId(googleIntegrationConfiguration.GoogleDriveId));
     }
 
@@ -142,11 +141,12 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
             //scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
         }
 
-        await app.Services.UseDatabaseSeeders();
-        app.UseSwagger();
-        app.UseSwaggerUI();
-        app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        //await app.Services.UseDatabaseSeeders();
     }
+    
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
     app.UseBlazorFrameworkFiles();
     app.UseStaticFiles();
@@ -206,7 +206,7 @@ async Task SeedAdmins(IServiceProvider provider, IConfiguration configuration)
     var mediatr = provider.GetRequiredService<IMediator>();
     var logger = provider.GetRequiredService<ILogger<Program>>();
     var adminsSection = configuration.GetSection("Identity:DefaultAdmins");
-    AdminModel[] admins = adminsSection.Get<AdminModel[]>();
+    AdminModel[] admins = adminsSection.Get<AdminModel[]>() ?? Array.Empty<AdminModel>();
 
     foreach (var admin in admins)
     {
