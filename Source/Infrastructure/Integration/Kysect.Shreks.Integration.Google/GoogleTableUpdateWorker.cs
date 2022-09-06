@@ -35,24 +35,41 @@ public class GoogleTableUpdateWorker : BackgroundService
 
             _stopwatch.Restart();
 
-            IReadOnlyCollection<Guid> points = _tableUpdateQueue
-                .PointsUpdateSubjectCourseIds
-                .GetAndClearValues();
-            _logger.LogInformation("Going to update {count} subject courses points", points.Count);
-
-            foreach (Guid point in points)
-                await googleTableAccessor.UpdatePointsAsync(point, token);
-
-            IReadOnlyCollection<(Guid, Guid)> queues = _tableUpdateQueue
-                .QueueUpdateSubjectCourseGroupIds
-                .GetAndClearValues();
-            _logger.LogInformation("Going to update {count} group queues", queues.Count);
-
-            foreach ((Guid courseId, Guid groupId) in queues)
-                await googleTableAccessor.UpdateQueueAsync(courseId, groupId, token);
+            var pointsTableUpdated = await UpdateTablePoints(googleTableAccessor, token);
+            var queueTableUpdated = await UpdateTableQueue(googleTableAccessor, token);
 
             _stopwatch.Stop();
-            _logger.LogInformation("Update tasks finished within {time} s", _stopwatch.Elapsed.TotalSeconds.ToString("F3"));
+
+            if (pointsTableUpdated || queueTableUpdated)
+                _logger.LogInformation("Update tasks finished within {time} ms", _stopwatch.Elapsed.TotalMilliseconds);
         }
+    }
+
+    private async Task<bool> UpdateTablePoints(GoogleTableAccessor googleTableAccessor, CancellationToken token) {
+        IReadOnlyCollection<Guid> points = _tableUpdateQueue
+            .PointsUpdateSubjectCourseIds
+            .GetAndClearValues();
+        if (points.Count > 0) {
+            _logger.LogInformation("Going to update {count} subject courses points", points.Count);
+        }
+
+        foreach (Guid point in points)
+            await googleTableAccessor.UpdatePointsAsync(point, token);
+
+        return points.Count > 0;
+    }
+
+    private async Task<bool> UpdateTableQueue(GoogleTableAccessor googleTableAccessor, CancellationToken token) {
+        IReadOnlyCollection<(Guid, Guid)> queues = _tableUpdateQueue
+            .QueueUpdateSubjectCourseGroupIds
+            .GetAndClearValues();
+        if (queues.Count > 0) {
+            _logger.LogInformation("Going to update {count} group queues", queues.Count);
+        }
+
+        foreach ((Guid courseId, Guid groupId) in queues)
+            await googleTableAccessor.UpdateQueueAsync(courseId, groupId, token);
+
+        return queues.Count > 0;
     }
 }
