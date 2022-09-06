@@ -1,14 +1,17 @@
 ﻿using FluentSpreadsheets;
+using FluentSpreadsheets.GoogleSheets.Extensions;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Sheets;
 using static FluentSpreadsheets.ComponentFactory;
+using Index = FluentSpreadsheets.Index;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
 public class PointsTable : RowTable<int>, ITableCustomizer
 {
-    private const string ReferenceSheetTitle = LabsSheet.Title;
+    private const string ReferenceSheetTitle = $"'{LabsSheet.Title}'";
+    private const int ReferenceRowShift = 2;
     private const string ReferenceHeaderRange = "1:3";
 
     private static readonly IRowComponent Header = Row
@@ -32,61 +35,63 @@ public class PointsTable : RowTable<int>, ITableCustomizer
     {
         yield return Header;
 
-        for (int i = 0; i < studentsCount; i++)
+        foreach (var row in Enumerable.Range(1, studentsCount).Select(GetRowReference))
         {
-            yield return GetRowReference(i + 2);
+            yield return row;
         }
     }
 
     private static IRowComponent GetRowReference(int row)
     {
-        int referenceRow = row + 2;
-
         return Row
         (
-            Label(AssignedReference('A', referenceRow)),
-            Label(AssignedReference('B', referenceRow)),
-            Label(AssignedReference('C', referenceRow)),
-            Label(AssignedReference('D', referenceRow)),
-            Label(LookUp("\"Итог\"", ReferenceHeaderRange, referenceRow)),
+            Label(AssignedReference),
+            Label(AssignedReference),
+            Label(AssignedReference),
+            Label(AssignedReference),
+            Label(i => LookUp("\"Итог\"", ReferenceHeaderRange, i.Row)),
             Empty(),
             Empty(),
-            Label(GetTotalFunction(row)),
-            Label(PointsFormula(row)),
+            Label(GetTotalFunction),
+            Label(PointsFormula),
             Empty()
         );
     }
 
-    private static string AssignedReference(char column, int row)
+    private static string AssignedReference(Index index)
     {
-        string index = $"{column}{row}";
-        return $"={GetCellsReference(index)}";
+        index = index.WithRowShift(ReferenceRowShift);
+        return $"={index.ToGoogleSheetsIndex(ReferenceSheetTitle)}";
     }
 
     private static string LookUp(string value, string fieldsRange, int row)
     {
+        row += ReferenceRowShift;
         string rowRange = $"{row}:{row}";
         return $"=LOOKUP({value},{GetCellsReference(fieldsRange)},{GetCellsReference(rowRange)})";
     }
 
-    private static string GetTotalFunction(int row)
+    private static string GetCellsReference(string range)
+        => $"{ReferenceSheetTitle}!{range}";
+
+    private static string GetTotalFunction(Index index)
     {
-        string total = $"{GetCellNumber('E', row)}+{GetCellNumber('F', row)}+{GetCellNumber('G', row)}";
+        string labsPoints = GetCellNumber(index.WithColumnShift(-3));
+        string karmaPoints = GetCellNumber(index.WithColumnShift(-2));
+        string examPoints = GetCellNumber(index.WithColumnShift(-1));
+        string total = $"{labsPoints}+{karmaPoints}+{examPoints}";
         return $"=SUBSTITUTE({total},\".\",\",\")";
     }
 
-    private static string GetCellNumber(char column, int row)
+    private static string GetCellNumber(Index index)
     {
-        string index = $"{column}{row}";
-        return $"IFERROR(VALUE(SUBSTITUTE({index},\",\",\".\")), VALUE(SUBSTITUTE({index},\".\",\",\")))";
+        string i = index.ToGoogleSheetsIndex();
+        return $"IFERROR(VALUE(SUBSTITUTE({i},\",\",\".\")), VALUE(SUBSTITUTE({i},\".\",\",\")))";
     }
 
-    private static string PointsFormula(int row)
+    private static string PointsFormula(Index index)
     {
-        string n = GetCellNumber('H', row);
+        string n = GetCellNumber(index.WithColumnShift(-1));
         return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>= 40,\"FX-E\",\"FX\"))";
     }
-
-    private static string GetCellsReference(string range)
-        => $"'{ReferenceSheetTitle}'!{range}";
 }
