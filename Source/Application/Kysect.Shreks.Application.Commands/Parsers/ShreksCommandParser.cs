@@ -22,7 +22,7 @@ public class ShreksCommandParser : IShreksCommandParser
         var result = Parser.Default.ParseArguments(GetCommandArguments(command), _commandTypes);
         if (result.Tag is ParserResultType.NotParsed)
         {
-            const string errorMessage = "Failed to parse user command. Ensure that all arguments is correct or call /help.";
+            const string errorMessage = "Failed to parse user command. Ensure that all arguments are correct or call /help.";
             throw new InvalidUserInputException(errorMessage);
         }
 
