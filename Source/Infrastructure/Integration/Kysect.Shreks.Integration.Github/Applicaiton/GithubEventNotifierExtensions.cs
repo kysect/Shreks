@@ -10,7 +10,9 @@ public static class GithubEventNotifierExtensions
         try
         {
             if (exception is ShreksDomainException domainException)
+            {
                 await pullRequetsEventNotifier.SendCommentToPullRequest(domainException.Message);
+            }
             else
             {
                 const string newMessage = "An internal error occurred while processing command. Contact support for details.";
