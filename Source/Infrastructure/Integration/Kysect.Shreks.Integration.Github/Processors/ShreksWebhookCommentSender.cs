@@ -121,7 +121,7 @@ public class ShreksWebhookCommentSender
                 await _actionNotifier.SendComment(webhookEvent, issueNumber, domainException.Message);
             else
             {
-                const string newMessage = "An error internal error occurred while processing command. Contact support for details.";
+                const string newMessage = "An internal error occurred while processing command. Contact support for details.";
                 await _actionNotifier.SendComment(webhookEvent, issueNumber, newMessage);
             }
         }

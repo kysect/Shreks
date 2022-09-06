@@ -226,7 +226,7 @@ public class ShreksWebhookEventProcessor
         }
         catch (Exception e)
         {
-            string message = $"An error internal error occurred while processing command. Contact support for details.";
+            const string message = $"An internal error occurred while processing command. Contact support for details.";
             repositoryLogger.LogError(e, message);
             result = new BaseShreksCommandResult(false, message);
         }
