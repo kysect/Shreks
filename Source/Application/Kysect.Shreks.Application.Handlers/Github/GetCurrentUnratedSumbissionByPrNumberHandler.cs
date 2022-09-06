@@ -30,7 +30,8 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
                 && a.PrNumber == request.PullRequestDescriptor.PrNumber
                 && a.Submission.Rating == null)
             .Select(a => a.Submission)
-            .MaxBy(s => s.SubmissionDate);
+            .OrderByDescending(s => s.SubmissionDate)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         if (submission is null)
         {

@@ -29,7 +29,8 @@ public class GetLastSubmissionByPrHandler : IRequestHandler<Query, Response>
                 && a.Repository == request.PullRequestDescriptor.Repository
                 && a.PrNumber == request.PullRequestDescriptor.PrNumber)
             .Select(s => s.Submission)
-            .MaxBy(s => s.SubmissionDate);
+            .OrderByDescending(s => s.SubmissionDate)
+            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
 
         if (submission is null)
         {
