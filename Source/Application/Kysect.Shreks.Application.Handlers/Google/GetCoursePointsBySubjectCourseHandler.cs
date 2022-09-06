@@ -33,7 +33,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        _logger.LogInformation("Started to collecting all course {courseId} points", request.SubjectCourseId.ToString("D"));
+        _logger.LogInformation("Started to collecting all course {courseId} points", request.SubjectCourseId);
 
         var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
@@ -54,7 +54,7 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
             .Select(_mapper.Map<AssignmentDto>)
             .ToArray();
 
-        _logger.LogInformation("Finished to collect all course {courseId} points", request.SubjectCourseId.ToString("D"));
+        _logger.LogInformation("Finished to collect all course {courseId} points", request.SubjectCourseId);
 
         var points = new CoursePointsDto(assignmentsDto, studentPoints);
         return new Response(points);
