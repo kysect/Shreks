@@ -26,8 +26,7 @@ public class HelpCommand : IShreksCommand<BaseContext, string>
 Команды только для преподавателя:
 
 - `/rate [RatingPercent] {ExtraPoints}`
-- `/update-rate [Submission number] {RatingPercent} {ExtraPoints}`
-- `/update-date [Submission number] {RatingPercent} {ExtraPoints}`
+- `/update [Submission number] {RatingPercent} {ExtraPoints} {Date}`
 
 Обрабатываемые ивенты:
 

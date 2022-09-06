@@ -23,17 +23,10 @@ public class AddGithubUserAssociationHandler : IRequestHandler<Command, Response
 
         var association = new GithubUserAssociation(student.User, request.GithubUsername);
         _context.UserAssociations.Add(association);
+        _context.Users.Update(student.User);
 
-        try
-        {
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine();
-            throw;
-        }
-
+        await _context.SaveChangesAsync(cancellationToken);
+        
         return new Response();
     }
 }

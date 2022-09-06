@@ -30,18 +30,32 @@ public class ShreksWebhookCommentSender
         logger.LogInformation("Notify: " + message);
     }
 
-    public async Task NotifySubmissionUpdate(PullRequestEvent pullRequestEvent, SubmissionDto submission, ILogger logger)
+    public async Task NotifySubmissionUpdate(
+        PullRequestEvent pullRequestEvent,
+        SubmissionDto submission,
+        ILogger logger,
+        bool sendComment = false,
+        bool sendCommitComment = false)
     {
         string message = $"Submission {submission.Code} was updated." +
                          $"\nState: {submission.State}" +
                          $"\nDate: {submission.SubmissionDate}";
 
-        await _actionNotifier.SendCommitComment(
-            pullRequestEvent,
-            pullRequestEvent.PullRequest.Head.Sha,
-        message);
+        if (sendComment) {
+            logger.LogInformation("Notify comment posted into PR: " + message);
+            await _actionNotifier.SendComment(
+                pullRequestEvent,
+                pullRequestEvent.PullRequest.Number,
+                message);
+        }
 
-        logger.LogInformation("Notify: " + message);
+        if (sendCommitComment) {
+            logger.LogInformation("Notify posted as commit comment: " + message);
+            await _actionNotifier.SendCommitComment(
+                pullRequestEvent,
+                pullRequestEvent.PullRequest.Head.Sha,
+                message);
+        }
     }
 
     public async Task NotifyAboutCommandProcessingResult(IssueCommentEvent issueCommentEvent, BaseShreksCommandResult result, ILogger logger)
@@ -88,6 +102,9 @@ public class ShreksWebhookCommentSender
         ILogger logger,
         string message = "Pull request review action handled.")
     {
+        if (string.IsNullOrEmpty(message))
+            return;
+
         await _actionNotifier.SendComment(
             pullRequestReviewEvent,
             pullRequestReviewEvent.PullRequest.Number,
@@ -104,7 +121,7 @@ public class ShreksWebhookCommentSender
                 await _actionNotifier.SendComment(webhookEvent, issueNumber, domainException.Message);
             else
             {
-                const string newMessage = "An error internal error occurred while processing command. Contact support for details.";
+                const string newMessage = "An internal error occurred while processing command. Contact support for details.";
                 await _actionNotifier.SendComment(webhookEvent, issueNumber, newMessage);
             }
         }

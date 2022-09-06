@@ -47,7 +47,7 @@ public class ShreksWebhookEventProcessor
 
                 var subjectCourseId = await GetSubjectCourseByOrganization(pullRequestDescriptor.Organization, cancellationToken);
                 var userId = await GetUserByGithubLogin(pullRequestDescriptor.Sender, cancellationToken);
-                var assignmentId = await GetAssignemntByBranchAndSubjectCourse(pullRequestDescriptor.BranchName, subjectCourseId);
+                var assignmentId = await GetAssignmentByBranchAndSubjectCourse(pullRequestDescriptor.BranchName, subjectCourseId);
 
                 var command = new CreateOrUpdateGithubSubmission.Command(userId, assignmentId, pullRequestDescriptor);
 
@@ -55,7 +55,7 @@ public class ShreksWebhookEventProcessor
                 if (isCreated)
                     await _commentSender.NotifySubmissionCreated(pullRequestEvent, submissionDto, repositoryLogger);
                 else
-                    await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submissionDto, repositoryLogger);
+                    await _commentSender.NotifySubmissionUpdate(pullRequestEvent, submissionDto, repositoryLogger, sendCommitComment: true);
 
                 break;
             case PullRequestActionValue.Reopened when pullRequestEvent.PullRequest.Merged is false:
@@ -91,7 +91,7 @@ public class ShreksWebhookEventProcessor
         var competeSubmissionCommand = new UpdateSubmissionState.Command(user, submission.Id, state);
 
         var response = await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
-        await _commentSender.NotifySubmissionUpdate(pullRequestEvent, response.Submission, repositoryLogger);
+        await _commentSender.NotifySubmissionUpdate(pullRequestEvent, response.Submission, repositoryLogger, sendComment: true);
 
         return response.Submission;
     }
@@ -119,8 +119,31 @@ public class ShreksWebhookEventProcessor
                     command = new RateCommand(100, 0);
                 }
 
-                result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
-                await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result, repositoryLogger);
+                var getSubmissionCommand = new GetLastSubmissionByPr.Query(pullRequestDescriptor);
+
+                var response = await _mediator.Send(getSubmissionCommand, CancellationToken.None);
+
+                switch (response.Submission.Points)
+                {
+                    case null:
+                        result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
+                        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
+                        break;
+                    case 100:
+                    {
+                        var message = "Review successfully processed, but submission already has 100 points";
+                        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, message);
+                        break;
+                    }
+                    default:
+                    {
+                        var message = $"Submission is already rated with {response.Submission.Points} points. If you want to change it, please use /update command.";
+                        await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, message);
+                        break;
+                    }
+                }
+
+
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
                 comment = pullRequestReviewEvent.Review.Body;
@@ -134,15 +157,15 @@ public class ShreksWebhookEventProcessor
                 }
 
                 result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
-                await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result, repositoryLogger);
+                await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
                 break;
-            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "comment":
+            case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
                 comment = pullRequestReviewEvent.Review.Body;
                 if (comment.FirstOrDefault() == '/')
                 {
                     command = _commandParser.Parse(comment);
                     result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
-                    await _commentSender.NotifyAboutReviewCommandProcessingResult(pullRequestReviewEvent, result, repositoryLogger);
+                    await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
                 }
 
                 if (command is not RateCommand)
@@ -158,6 +181,9 @@ public class ShreksWebhookEventProcessor
             case PullRequestReviewActionValue.Dismissed:
 
                 repositoryLogger.LogWarning($"Pull request review action {pullRequestReviewAction} is not supported.");
+                break;
+            default:
+                repositoryLogger.LogWarning("Pull request review for pr {prLink} is not processed.", pullRequestDescriptor.Payload);
                 break;
         }
     }
@@ -200,7 +226,7 @@ public class ShreksWebhookEventProcessor
         }
         catch (Exception e)
         {
-            string message = $"An error internal error occurred while processing command. Contact support for details.";
+            const string message = $"An internal error occurred while processing command. Contact support for details.";
             repositoryLogger.LogError(e, message);
             result = new BaseShreksCommandResult(false, message);
         }
@@ -220,7 +246,7 @@ public class ShreksWebhookEventProcessor
         return response.UserId;
     }
 
-    private async Task<Guid> GetAssignemntByBranchAndSubjectCourse(string branch, Guid subjectCourseId)
+    private async Task<Guid> GetAssignmentByBranchAndSubjectCourse(string branch, Guid subjectCourseId)
     {
         var response = await _mediator.Send(new GetAssignmentByBranchAndSubjectCourse.Query(branch, subjectCourseId));
         return response.AssignmentId;
