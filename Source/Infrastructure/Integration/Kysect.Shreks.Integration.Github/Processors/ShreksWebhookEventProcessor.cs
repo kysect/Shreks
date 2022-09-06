@@ -108,7 +108,7 @@ public class ShreksWebhookEventProcessor
         switch (pullRequestReviewAction)
         {
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "approved":
-                comment = pullRequestReviewEvent.Review.Body;
+                comment = pullRequestReviewEvent.Review.Body ?? string.Empty;
                 if (comment.FirstOrDefault() == '/')
                 {
                     command = _commandParser.Parse(comment);
@@ -145,7 +145,7 @@ public class ShreksWebhookEventProcessor
 
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
-                comment = pullRequestReviewEvent.Review.Body;
+                comment = pullRequestReviewEvent.Review.Body ?? string.Empty;
                 if (comment.FirstOrDefault() == '/')
                 {
                     command = _commandParser.Parse(comment);
@@ -159,7 +159,11 @@ public class ShreksWebhookEventProcessor
                 await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
-                comment = pullRequestReviewEvent.Review.Body ?? "";
+                comment = pullRequestReviewEvent.Review.Body;
+                if (comment is null)
+                {
+                    break;
+                }
                 if (comment.FirstOrDefault() == '/')
                 {
                     command = _commandParser.Parse(comment);
