@@ -5,16 +5,16 @@ using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetCurrentUnratedSubmissionByPrNumber;
+using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetLastSubmissionByPr;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-
-public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Query, Response>
+public class GetLastSubmissionByPrHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
-    public GetCurrentUnratedSubmissionByPrNumberHandler(IShreksDatabaseContext context, IMapper mapper)
+
+    public GetLastSubmissionByPrHandler(IShreksDatabaseContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
@@ -27,18 +27,19 @@ public class GetCurrentUnratedSubmissionByPrNumberHandler : IRequestHandler<Quer
             .Where(a =>
                 a.Organization == request.PullRequestDescriptor.Organization
                 && a.Repository == request.PullRequestDescriptor.Repository
-                && a.PrNumber == request.PullRequestDescriptor.PrNumber
-                && a.Submission.Rating == null)
+                && a.PrNumber == request.PullRequestDescriptor.PrNumber)
             .OrderByDescending(a => a.Submission.SubmissionDate)
             .Select(a => a.Submission)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (submission is null)
         {
-            var message = $"No unrated submission in pr {request.PullRequestDescriptor.Payload}";
+            var message = $"No submission in pr {request.PullRequestDescriptor.Payload}";
             throw new EntityNotFoundException(message);
         }
 
-        return new Response(_mapper.Map<SubmissionDto>(submission));
+        var dto = _mapper.Map<SubmissionDto>(submission);
+
+        return new Response(dto);
     }
 }
