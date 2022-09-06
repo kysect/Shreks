@@ -4,7 +4,7 @@ using Kysect.Shreks.Application.Dto.Github;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Integration.Github.ContextFactory;
+namespace Kysect.Shreks.Integration.Github.Applicaiton;
 
 public class PullRequestCommentContextFactory : ICommandContextFactory
 {
@@ -25,7 +25,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     public async Task<BaseContext> CreateBaseContext(CancellationToken cancellationToken)
     {
         var userId = await GetUserId(cancellationToken);
-        
+
         return new BaseContext(_mediator, _log, userId);
     }
 
