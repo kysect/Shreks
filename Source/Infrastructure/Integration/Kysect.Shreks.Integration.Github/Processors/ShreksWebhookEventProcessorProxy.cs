@@ -1,8 +1,9 @@
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Dto.Github;
+using Kysect.Shreks.Integration.Github.Applicaiton;
 using Kysect.Shreks.Integration.Github.Client;
-using Kysect.Shreks.Integration.Github.Entities;
 using Kysect.Shreks.Integration.Github.Helpers;
+using Kysect.Shreks.Integration.Github.Notifiers;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Octokit;
@@ -18,10 +19,10 @@ namespace Kysect.Shreks.Integration.Github.Processors;
 
 public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 {
+    private readonly IActionNotifier _actionNotifier;
     private readonly ILogger<ShreksWebhookEventProcessorProxy> _logger;
     private readonly IOrganizationGithubClientProvider _clientProvider;
     private readonly ShreksWebhookEventProcessor _processor;
-    private readonly ShreksWebhookCommentSender _commentSender;
 
     public ShreksWebhookEventProcessorProxy(
         IActionNotifier actionNotifier,
@@ -30,11 +31,10 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         IMediator mediator,
         IOrganizationGithubClientProvider clientProvider)
     {
+        _actionNotifier = actionNotifier;
         _logger = logger;
         _clientProvider = clientProvider;
-
-        _commentSender = new ShreksWebhookCommentSender(actionNotifier);
-        _processor = new ShreksWebhookEventProcessor(_commentSender, commandParser, mediator);
+        _processor = new ShreksWebhookEventProcessor(commandParser, mediator);
     }
 
     protected override async Task ProcessPullRequestWebhookAsync(
@@ -53,18 +53,18 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 
         string pullRequestAction = action;
         repositoryLogger.LogInformation($"{nameof(ProcessPullRequestWebhookAsync)}: {pullRequestEvent.GetType().Name} with type {pullRequestAction}");
+        var pullRequestCommitEventNotifier = new PullRequestCommitEventNotifier(_actionNotifier, pullRequestEvent, pullRequestEvent.PullRequest.Head.Sha, pullRequestEvent.PullRequest.Number, repositoryLogger);
 
         try
         {
-            await _processor.ProcessPullRequestWebhookAsync(pullRequestEvent, action, githubPullRequestDescriptor, repositoryLogger);
+            await _processor.ProcessPullRequestWebhookAsync(pullRequestEvent, action, githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
         }
         catch (Exception e)
         {
 
             string message = $"Failed to handle {pullRequestAction}";
             repositoryLogger.LogError(e, $"{nameof(ProcessPullRequestWebhookAsync)}: {message}");
-            int issueNumber = (int)pullRequestEvent.PullRequest.Number;
-            await _commentSender.SendExceptionMessageSafe(pullRequestEvent, issueNumber, e, repositoryLogger);
+            await pullRequestCommitEventNotifier.SendExceptionMessageSafe(e, repositoryLogger);
         }
     }
 
@@ -84,17 +84,18 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 
         string pullRequestReviewAction = action;
         repositoryLogger.LogInformation($"{nameof(ProcessPullRequestReviewWebhookAsync)}: {pullRequestReviewEvent.GetType().Name} with type {pullRequestReviewAction}");
+        var pullRequestEventNotifier = new PullRequestEventNotifier(_actionNotifier, pullRequestReviewEvent, pullRequestReviewEvent.PullRequest.Number, repositoryLogger);
 
         try
         {
-            await _processor.ProcessPullRequestReviewWebhookAsync(pullRequestReviewEvent, action, githubPullRequestDescriptor, repositoryLogger);
+            await _processor.ProcessPullRequestReviewWebhookAsync(pullRequestReviewEvent, action, githubPullRequestDescriptor, repositoryLogger, pullRequestEventNotifier);
         }
         catch (Exception e)
         {
             string message = $"Failed to handle {pullRequestReviewAction}";
             repositoryLogger.LogError(e, $"{nameof(ProcessPullRequestReviewWebhookAsync)}:{message}");
             int issueNumber = (int)pullRequestReviewEvent.PullRequest.Number;
-            await _commentSender.SendExceptionMessageSafe(pullRequestReviewEvent, issueNumber, e, repositoryLogger);
+            await pullRequestEventNotifier.SendExceptionMessageSafe(e, repositoryLogger);
         }
     }
 
@@ -120,17 +121,17 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 
         string issueCommentAction = action;
         repositoryLogger.LogInformation($"{nameof(ProcessIssueCommentWebhookAsync)}: {issueCommentEvent.GetType().Name} with type {issueCommentAction}");
+        var pullRequestCommentEventNotifier = new PullRequestCommentEventNotifier(_actionNotifier, issueCommentEvent, issueCommentEvent.Comment.Id, issueCommentEvent.Issue.Number, repositoryLogger);
 
         try
         {
-            await _processor.ProcessIssueCommentWebhookAsync(issueCommentEvent, action, githubPullRequestDescriptor, repositoryLogger);
+            await _processor.ProcessIssueCommentWebhookAsync(issueCommentEvent, action, githubPullRequestDescriptor, repositoryLogger, pullRequestCommentEventNotifier);
         }
         catch (Exception e)
         {
             string message = $"Failed to handle {issueCommentAction}";
             repositoryLogger.LogError(e, $"{nameof(ProcessIssueCommentWebhookAsync)}: {message}");
-            int issueNumber = (int)issueCommentEvent.Issue.Number;
-            await _commentSender.SendExceptionMessageSafe(issueCommentEvent, issueNumber, e, repositoryLogger);
+            await pullRequestCommentEventNotifier.SendExceptionMessageSafe(e, repositoryLogger);
         }
     }
 
