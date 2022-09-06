@@ -162,6 +162,7 @@ public class ShreksWebhookEventProcessor
                 comment = pullRequestReviewEvent.Review.Body;
                 if (comment is null)
                 {
+                    repositoryLogger.LogInformation("Review body is null, skipping review comment");
                     break;
                 }
                 if (comment.FirstOrDefault() == '/')
