@@ -10,7 +10,7 @@ namespace Kysect.Shreks.Integration.Google.Tables;
 
 public class PointsTable : RowTable<int>, ITableCustomizer
 {
-    private const string ReferenceSheetTitle = $"'{LabsSheet.Title}'";
+    private const string ReferenceSheetTitle = LabsSheet.Title;
     private const int ReferenceRowShift = 2;
     private const string ReferenceHeaderRange = "1:3";
 
