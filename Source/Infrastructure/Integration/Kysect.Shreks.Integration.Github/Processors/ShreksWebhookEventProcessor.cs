@@ -14,7 +14,6 @@ using Octokit.Webhooks.Events;
 using Octokit.Webhooks.Events.IssueComment;
 using Octokit.Webhooks.Events.PullRequest;
 using Octokit.Webhooks.Events.PullRequestReview;
-using PullRequestReviewEvent = Octokit.Webhooks.Events.PullRequestReviewEvent;
 
 namespace Kysect.Shreks.Integration.Github.Processors;
 
@@ -160,7 +159,7 @@ public class ShreksWebhookEventProcessor
                 await _commentSender.NotifyPullRequestReviewProcessed(pullRequestReviewEvent, repositoryLogger, result.Message);
                 break;
             case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
-                comment = pullRequestReviewEvent.Review.Body;
+                comment = pullRequestReviewEvent.Review.Body ?? "";
                 if (comment.FirstOrDefault() == '/')
                 {
                     command = _commandParser.Parse(comment);
