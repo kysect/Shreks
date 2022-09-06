@@ -45,31 +45,33 @@ public class GoogleTableUpdateWorker : BackgroundService
         }
     }
 
-    private async Task<bool> UpdateTablePoints(GoogleTableAccessor googleTableAccessor, CancellationToken token) {
+    private async Task<bool> UpdateTablePoints(GoogleTableAccessor googleTableAccessor, CancellationToken token)
+    {
         IReadOnlyCollection<Guid> points = _tableUpdateQueue
             .PointsUpdateSubjectCourseIds
             .GetAndClearValues();
-        if (points.Count > 0) {
+
+        if (points.Any())
             _logger.LogInformation("Going to update {count} subject courses points", points.Count);
-        }
 
         foreach (Guid point in points)
             await googleTableAccessor.UpdatePointsAsync(point, token);
 
-        return points.Count > 0;
+        return points.Any();
     }
 
-    private async Task<bool> UpdateTableQueue(GoogleTableAccessor googleTableAccessor, CancellationToken token) {
+    private async Task<bool> UpdateTableQueue(GoogleTableAccessor googleTableAccessor, CancellationToken token)
+    {
         IReadOnlyCollection<(Guid, Guid)> queues = _tableUpdateQueue
             .QueueUpdateSubjectCourseGroupIds
             .GetAndClearValues();
-        if (queues.Count > 0) {
+
+        if (queues.Any())
             _logger.LogInformation("Going to update {count} group queues", queues.Count);
-        }
 
         foreach ((Guid courseId, Guid groupId) in queues)
             await googleTableAccessor.UpdateQueueAsync(courseId, groupId, token);
 
-        return queues.Count > 0;
+        return queues.Any();
     }
 }
