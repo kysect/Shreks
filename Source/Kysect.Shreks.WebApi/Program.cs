@@ -12,6 +12,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Configuration;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Identity.Extensions;
+using Kysect.Shreks.ImageGenerator.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Google.Extensions;
@@ -84,7 +85,8 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     webApplicationBuilder.Services
         .AddHandlers()
         .AddApplicationCommands()
-        .AddMappingConfiguration();
+        .AddMappingConfiguration()
+        .AddImageGenerationService("Images");
 
     webApplicationBuilder.Services
         .AddDatabaseContext(o => o

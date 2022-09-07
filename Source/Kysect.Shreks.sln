@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.ApiClientGene
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.DataImport", "Playground\Kysect.Shreks.DataImport\Kysect.Shreks.DataImport.csproj", "{601BCCAB-8895-43CB-BC46-EE2C20F4031F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.ImageGenerator", "Infrastructure\Kysect.Shreks.ImageGenerator\Kysect.Shreks.ImageGenerator.csproj", "{88D886A7-A5DE-486C-9C3E-EC057981317C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -149,6 +151,10 @@ Global
 		{601BCCAB-8895-43CB-BC46-EE2C20F4031F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{601BCCAB-8895-43CB-BC46-EE2C20F4031F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{601BCCAB-8895-43CB-BC46-EE2C20F4031F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88D886A7-A5DE-486C-9C3E-EC057981317C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88D886A7-A5DE-486C-9C3E-EC057981317C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88D886A7-A5DE-486C-9C3E-EC057981317C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88D886A7-A5DE-486C-9C3E-EC057981317C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -176,6 +182,7 @@ Global
 		{691C37F3-F62E-4F2D-9E29-BD41F7A88A09} = {C578EF62-E40C-42E7-AB9D-E7BA215F342C}
 		{EEEAD853-2341-4D82-9B17-83076034D0E2} = {DC866D57-D41E-455D-BD7D-85F1DD575823}
 		{601BCCAB-8895-43CB-BC46-EE2C20F4031F} = {DC866D57-D41E-455D-BD7D-85F1DD575823}
+		{88D886A7-A5DE-486C-9C3E-EC057981317C} = {C578EF62-E40C-42E7-AB9D-E7BA215F342C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD5C67DB-70F8-4C47-A3F4-7C94BECE1657}
