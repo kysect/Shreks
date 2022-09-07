@@ -2,4 +2,4 @@
 
 from start import start_container
 
-start_container('shreks', 'e6qm27rggpubvhiq0oih', 5069)
+start_container('shreks', 'e6qm27rggpubvhiq0oih', 5069, 'Production')

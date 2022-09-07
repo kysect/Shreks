@@ -40,23 +40,26 @@ def get_secret(token, secret, version=None):
     return secrets
 
 
-def start_container(name, secret, port):
+def start_container(name, secret, port, asp_env=None):
     token = get_service_token()
     secrets = get_secret(token, secret)
     docker.build("./Source", file='./Docker/build.dockerfile', tags=name)
     try:
         docker.stop(name)
-        print('stopped prevoius container')
+        print('stopped previous container')
     except:
         pass
-    docker.run(name, envs={s.key: s.value for s in secrets}, publish=[(port, 5069)],
+    envs = {s.key: s.value for s in secrets}
+    envs['ASPNETCORE_ENVIRONMENT'] = asp_env if asp_env is not None else 'Production'
+    docker.run(name, envs=envs, publish=[(port, 5069)],
                tty=True, detach=True, name=name)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", dest="name")
+    parser.add_argument("-e", dest="asp_env")
     parser.add_argument("-s", dest="secret")
     parser.add_argument("-p", dest="port")
     args = parser.parse_args()
-    start_container(args.name, args.secret, args.port)
+    start_container(args.name, args.secret, args.port, args.asp_env)
