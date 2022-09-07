@@ -1,51 +1,43 @@
-﻿using AutoMapper;
-using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Application.Dto.Study;
+﻿using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Factory;
-using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Application.Validators;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Specifications.Submissions;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Kysect.Shreks.Common.Exceptions;
-using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands.CreateOrUpdateGithubSubmission;
 
-namespace Kysect.Shreks.Application.Handlers.Github;
+namespace Kysect.Shreks.Application.GithubWorkflow;
 
-public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Response>
+public class GithubSubmissionFactory
 {
-    private readonly ITableUpdateQueue _tableUpdateQueue;
     private readonly IShreksDatabaseContext _context;
+    //TODO: remove factory
     private readonly ISubmissionFactory _submissionFactory;
-    private readonly IMapper _mapper;
 
-    public CreateOrUpdateGithubSubmissionHandler(
-        ITableUpdateQueue tableUpdateQueue,
-        IShreksDatabaseContext context,
-        IMapper mapper, ISubmissionFactory submissionFactory)
+    public GithubSubmissionFactory(IShreksDatabaseContext context, ISubmissionFactory submissionFactory)
     {
-        _tableUpdateQueue = tableUpdateQueue;
         _context = context;
-        _mapper = mapper;
         _submissionFactory = submissionFactory;
     }
 
-    public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
+    public async Task<GithubSubmission> Handle(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(pullRequestDescriptor);
 
         var (sender,
-            _,
-            organization,
-            repository,
-            _,
-            prNumber) = request.PullRequestDescriptor;
+        _,
+        organization,
+        repository,
+        _,
+            prNumber) = pullRequestDescriptor;
 
-        Guid userId = request.UserId;
+        // TODO: resolve user id from sender
+        Guid userId = await GetUserId(pullRequestDescriptor);
+        Guid assignmentId = await GetAssignmentId(pullRequestDescriptor);
         bool triggeredByMentor = await PermissionValidator.IsOrganizationMentor(_context, userId, organization);
         bool triggeredByAnotherUser = !PermissionValidator.IsRepositoryOwner(sender, repository);
 
@@ -71,9 +63,9 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             }
 
             submission = await _submissionFactory.CreateGithubSubmissionAsync(
-                request.UserId,
-                request.AssignmentId,
-                request.PullRequestDescriptor,
+                userId,
+                assignmentId,
+                pullRequestDescriptor,
                 cancellationToken);
             isCreated = true;
 
@@ -95,9 +87,16 @@ public class CreateOrUpdateGithubSubmissionHandler : IRequestHandler<Command, Re
             }
         }
 
-        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
-        var dto = _mapper.Map<SubmissionDto>(submission);
+        return submission;
+    }
 
-        return new Response(isCreated, dto);
+    public async Task<Guid> GetUserId(GithubPullRequestDescriptor pullRequestDescriptor)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<Guid> GetAssignmentId(GithubPullRequestDescriptor pullRequestDescriptor)
+    {
+        throw new NotImplementedException();
     }
 }

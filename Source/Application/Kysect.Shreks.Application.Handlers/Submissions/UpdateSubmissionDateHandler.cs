@@ -2,7 +2,7 @@ using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Application.Handlers.Extensions;
-using Kysect.Shreks.Application.Handlers.Validators;
+using Kysect.Shreks.Application.Validators;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;

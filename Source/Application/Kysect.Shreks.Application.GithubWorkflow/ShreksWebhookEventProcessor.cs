@@ -8,6 +8,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries;
+using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -17,11 +18,13 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 {
     private readonly IShreksCommandParser _commandParser;
     private readonly IMediator _mediator;
+    private readonly IShreksDatabaseContext _context;
 
-    public ShreksWebhookEventProcessor(IShreksCommandParser commandParser, IMediator mediator)
+    public ShreksWebhookEventProcessor(IShreksCommandParser commandParser, IMediator mediator, IShreksDatabaseContext context)
     {
         _commandParser = commandParser;
         _mediator = mediator;
+        _context = context;
     }
 
     public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)

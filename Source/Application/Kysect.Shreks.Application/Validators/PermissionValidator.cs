@@ -6,7 +6,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kysect.Shreks.Application.Handlers.Validators;
+namespace Kysect.Shreks.Application.Validators;
 
 public static class PermissionValidator
 {
