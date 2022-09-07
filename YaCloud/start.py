@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 from base64 import b64decode
 
 import requests
@@ -53,7 +54,7 @@ def start_container(name, secret, port, asp_env=None):
     envs = {s.key: s.value for s in secrets}
     envs['ASPNETCORE_ENVIRONMENT'] = asp_env if asp_env is not None else 'Production'
     docker.run(name, envs=envs, publish=[(port, 5069)], tty=True, detach=True, name=name, 
-               volumes=[('~/Logs/%s' % name, '/app/Serilogs')])
+               volumes=[(os.environ.get('HOME') + '/Logs/%s' % name, '/app/Serilogs')])
 
 
 if __name__ == '__main__':
