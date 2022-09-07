@@ -42,9 +42,8 @@ dotnet user-secrets set "GithubIntegrationConfiguration:GithubAuthConfiguration:
    5. Pull request review
    6. Pull request review comments
    7. Push
-6. Add Webhook secret and save path to file into `appsettings.json` as `GithubIntegrationConfiguration:GithubAppConfiguration:GithubAppSecret`
-7. Generate private key (*.pem file), add save to Kysect.Shreks.WebApi/ directory
-8. Add into `appsettings.json` as `GithubIntegrationConfiguration:GithubAppConfiguration:PrivateKeySource = *path_to_private key*`
+6. Add Webhook secret and save to dotnet secrets as `GithubIntegrationConfiguration:GithubAppConfiguration:GithubAppSecret`
+7. Generate private key (*.pem file) and save to dotnet secrets as `GithubIntegrationConfiguration:GithubAppConfiguration:PrivateKey`
 9. After app creation add App ID into `appsettings.json` as `GithubIntegrationConfiguration:GithubAppConfiguration:AppIntegrationId`
 10. If you need to test Github App in another organization, you need to make your app public in Github App settings
 11. Add App into your test organization (go to https://github.com/apps/your-app-name)
