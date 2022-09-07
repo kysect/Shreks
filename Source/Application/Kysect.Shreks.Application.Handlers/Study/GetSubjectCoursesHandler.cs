@@ -26,7 +26,7 @@ public class GetSubjectCoursesHandler : IRequestHandler<Query, Response>
 
         var dto = subjectCourse
             .Select(_mapper.Map<SubjectCourseDto>)
-            .ToList();
+            .ToArray();
 
         return new Response(dto);
     }
