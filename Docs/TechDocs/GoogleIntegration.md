@@ -38,5 +38,5 @@ ITableUpdateQueue, представляемый бэкграунд воркер�
 3. Включить Google Drive API https://console.cloud.google.com/apis/library/drive.googleapis.com
 4. Создать Service Account Credentials
 5. Создать в Google Drive директорию, дать сервис аккаунту к ней write доступ(роль Editor `email`у аккаунта выдать)
-6. Скачать ключи для Service Account credential в форме JSON, переименовать client_secrets.json и положить в Kysect.Shreks.WebApi
+6. Скачать ключи для Service Account credential в форме JSON, содержимое положить в dotnet secrets как `GoogleIntegrationConfiguration:ClientSecrets`
 7. Добавить в appsettings.json значение для `GoogleIntegrationConfiguration:GoogleDriveId` - id директории, которая будет использоваться для генерации в неё таблиц

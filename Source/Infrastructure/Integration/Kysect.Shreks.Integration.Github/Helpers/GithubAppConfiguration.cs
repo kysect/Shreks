@@ -2,7 +2,7 @@
 
 public class GithubAppConfiguration : IShreksConfiguration
 {
-    public string? PrivateKeySource { get; init; }
+    public string? PrivateKey { get; init; }
     public int AppIntegrationId { get; init; }
     public int JwtExpirationSeconds { get; init; }
     public string? GithubAppSecret { get; set; }
@@ -10,7 +10,7 @@ public class GithubAppConfiguration : IShreksConfiguration
     public void Verify()
     {
         ArgumentNullException.ThrowIfNull(GithubAppSecret, nameof(GithubAppSecret));
-        ArgumentNullException.ThrowIfNull(PrivateKeySource, nameof(PrivateKeySource));
+        ArgumentNullException.ThrowIfNull(PrivateKey, nameof(PrivateKey));
 
 
         if (JwtExpirationSeconds <= 0)

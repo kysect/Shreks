@@ -41,9 +41,9 @@ public static class ServiceCollectionExtensions
         CacheConfiguration cacheConfiguration,
         GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
-        services.AddSingleton<GitHubJwtFactory>(
+        services.AddSingleton(
             new GitHubJwtFactory(
-                new FilePrivateKeySource(githubIntegrationConfiguration.GithubAppConfiguration.PrivateKeySource),
+                new FullStringPrivateKeySource(githubIntegrationConfiguration.GithubAppConfiguration.PrivateKey),
                 new GitHubJwtFactoryOptions
                 {
                     AppIntegrationId = githubIntegrationConfiguration.GithubAppConfiguration.AppIntegrationId, // The GitHub App Id
