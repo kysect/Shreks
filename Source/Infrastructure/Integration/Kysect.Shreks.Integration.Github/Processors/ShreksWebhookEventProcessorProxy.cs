@@ -64,17 +64,17 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
             {
                 case PullRequestActionValue.Synchronize:
                 case PullRequestActionValue.Opened:
-                    await _processor.ProcessPullRequestUpdateWebhookAsync(githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier, cancellationToken);
+                    await _processor.ProcessPullRequestUpdate(githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier, cancellationToken);
                     break;
 
                 case PullRequestActionValue.Reopened:
                     bool isMerged = pullRequestEvent.PullRequest.Merged ?? false;
-                    await _processor.ProcessPullRequestReopenWebhookAsync(githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier, isMerged);
+                    await _processor.ProcessPullRequestReopen(isMerged, githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
                     break;
 
                 case PullRequestActionValue.Closed:
                     bool merged = pullRequestEvent.PullRequest.Merged ?? false;
-                    await _processor.ProcessPullRequestClosedWebhookAsync(githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier, merged);
+                    await _processor.ProcessPullRequestClosed(merged, githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
                     break;
 
                 default:
@@ -116,15 +116,15 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
             switch (pullRequestReviewAction1)
             {
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "approved":
-                    await _processor.ProcessPullRequestReviewApproveWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
+                    await _processor.ProcessPullRequestReviewApprove(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
                     break;
 
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
-                    await _processor.ProcessPullRequestReviewRequestChangesWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
+                    await _processor.ProcessPullRequestReviewRequestChanges(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
                     break;
 
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
-                    await _processor.ProcessPullRequestReviewCommentWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
+                    await _processor.ProcessPullRequestReviewComment(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
                     break;
 
                 case PullRequestReviewActionValue.Edited:
@@ -175,7 +175,7 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
             switch (issueCommentAction1)
             {
                 case IssueCommentActionValue.Created:
-                    await _processor.ProcessIssueCommentCreateWebhookAsync(githubPullRequestDescriptor, repositoryLogger, pullRequestCommentEventNotifier, issueCommentEvent.Comment.Body);
+                    await _processor.ProcessIssueCommentCreate(issueCommentEvent.Comment.Body, githubPullRequestDescriptor, repositoryLogger, pullRequestCommentEventNotifier);
                     break;
 
                 case IssueCommentActionValue.Deleted:

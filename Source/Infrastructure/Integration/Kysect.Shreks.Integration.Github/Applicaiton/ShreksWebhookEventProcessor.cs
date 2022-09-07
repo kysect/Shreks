@@ -23,41 +23,41 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         _mediator = mediator;
     }
 
-    public async Task ProcessPullRequestReopenWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, bool? isMerged)
+    public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
         if (isMerged.HasValue && isMerged == false)
-            await ChangeSubmissionState(SubmissionStateDto.Active, pullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
+            await ChangeSubmissionState(SubmissionStateDto.Active, prDescriptor, logger, eventNotifier);
     }
 
-    public async Task ProcessPullRequestUpdateWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, CancellationToken cancellationToken)
+    public async Task ProcessPullRequestUpdate(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier, CancellationToken cancellationToken)
     {
-        var subjectCourseId = await GetSubjectCourseByOrganization(pullRequestDescriptor.Organization, cancellationToken);
-        var userId = await GetUserByGithubLogin(pullRequestDescriptor.Sender, cancellationToken);
-        var assignmentId = await GetAssignmentByBranchAndSubjectCourse(pullRequestDescriptor.BranchName, subjectCourseId);
+        var subjectCourseId = await GetSubjectCourseByOrganization(prDescriptor.Organization, cancellationToken);
+        var userId = await GetUserByGithubLogin(prDescriptor.Sender, cancellationToken);
+        var assignmentId = await GetAssignmentByBranchAndSubjectCourse(prDescriptor.BranchName, subjectCourseId);
 
-        var command = new CreateOrUpdateGithubSubmission.Command(userId, assignmentId, pullRequestDescriptor);
+        var command = new CreateOrUpdateGithubSubmission.Command(userId, assignmentId, prDescriptor);
 
         (bool isCreated, SubmissionDto? submissionDto) = await _mediator.Send(command, cancellationToken);
         if (isCreated)
         {
             string message = $"Submission {submissionDto.Code} ({submissionDto.SubmissionDate}) was created.";
-            await pullRequestCommitEventNotifier.SendCommentToPullRequest(message);
+            await eventNotifier.SendCommentToPullRequest(message);
         }
         else
         {
-            await pullRequestCommitEventNotifier.NotifySubmissionUpdate(submissionDto, repositoryLogger, false, true);
+            await eventNotifier.NotifySubmissionUpdate(submissionDto, logger, false, true);
         }
     }
 
-    public async Task ProcessPullRequestClosedWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, bool merged)
+    public async Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
         var state = merged ? SubmissionStateDto.Completed : SubmissionStateDto.Inactive;
-        var submission = await ChangeSubmissionState(state, pullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
+        var submission = await ChangeSubmissionState(state, prDescriptor, logger, eventNotifier);
 
         if (merged && submission.Points is null)
         {
             string message = $"Warning: pull request was merged, but submission {submission.Code} is not yet rated.";
-            await pullRequestCommitEventNotifier.SendCommentToPullRequest(message);
+            await eventNotifier.SendCommentToPullRequest(message);
         }
     }
 
@@ -81,33 +81,33 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         return response.Submission;
     }
 
-    public async Task ProcessPullRequestReviewCommentWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? comment)
+    public async Task ProcessPullRequestReviewComment(string? comment, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
     {
         IShreksCommand? command = null;
 
         if (comment is null)
         {
-            repositoryLogger.LogInformation("Review body is null, skipping review comment");
+            logger.LogInformation("Review body is null, skipping review comment");
             return;
         }
 
         if (comment.FirstOrDefault() == '/')
         {
             command = _commandParser.Parse(comment);
-            var result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
-            await pullRequestEventNotifier.SendCommentToPullRequest(result.Message);
-            repositoryLogger.LogInformation("Notify: " + result.Message);
+            var result = await ProceedCommandAsync(command, prDescriptor, logger);
+            await eventNotifier.SendCommentToPullRequest(result.Message);
+            logger.LogInformation("Notify: " + result.Message);
         }
 
         if (command is not RateCommand)
         {
             string message = $"Review proceeded, but submission is not yet rated and still will be presented in queue";
-            await pullRequestEventNotifier.SendCommentToPullRequest(message);
-            repositoryLogger.LogInformation("Notify: " + message);
+            await eventNotifier.SendCommentToPullRequest(message);
+            logger.LogInformation("Notify: " + message);
         }
     }
 
-    public async Task ProcessPullRequestReviewRequestChangesWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? reviewBody)
+    public async Task ProcessPullRequestReviewRequestChanges(string? reviewBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
     {
         var changesComment = reviewBody ?? string.Empty;
         IShreksCommand requestChangesCommand;
@@ -121,12 +121,12 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             requestChangesCommand = new RateCommand(0, 0);
         }
 
-        var result = await ProceedCommandAsync(requestChangesCommand, pullRequestDescriptor, repositoryLogger);
-        await pullRequestEventNotifier.SendCommentToPullRequest(result.Message);
-        repositoryLogger.LogInformation("Notify: " + result.Message);
+        var result = await ProceedCommandAsync(requestChangesCommand, prDescriptor, logger);
+        await eventNotifier.SendCommentToPullRequest(result.Message);
+        logger.LogInformation("Notify: " + result.Message);
     }
 
-    public async Task ProcessPullRequestReviewApproveWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? commentBody)
+    public async Task ProcessPullRequestReviewApprove(string? commentBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
     {
         string approveComment = commentBody ?? string.Empty;
         IShreksCommand approveCommand;
@@ -140,50 +140,48 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             approveCommand = new RateCommand(100, 0);
         }
 
-        var getSubmissionCommand = new GetLastSubmissionByPr.Query(pullRequestDescriptor);
+        var getSubmissionCommand = new GetLastSubmissionByPr.Query(prDescriptor);
 
         var response = await _mediator.Send(getSubmissionCommand, CancellationToken.None);
 
         switch (response.Submission.Points)
         {
             case null:
-                BaseShreksCommandResult result = await ProceedCommandAsync(approveCommand, pullRequestDescriptor, repositoryLogger);
-                await pullRequestEventNotifier.SendCommentToPullRequest(result.Message);
-                repositoryLogger.LogInformation("Notify: " + result.Message);
+                BaseShreksCommandResult result = await ProceedCommandAsync(approveCommand, prDescriptor, logger);
+                await eventNotifier.SendCommentToPullRequest(result.Message);
+                logger.LogInformation("Notify: " + result.Message);
                 break;
 
             case 100:
                 {
                     var message = "Review successfully processed, but submission already has 100 points";
-                    await pullRequestEventNotifier.SendCommentToPullRequest(message);
-                    repositoryLogger.LogInformation("Notify: " + message);
+                    await eventNotifier.SendCommentToPullRequest(message);
+                    logger.LogInformation("Notify: " + message);
                     break;
                 }
             default:
                 {
                     var message = $"Submission is already rated with {response.Submission.Points} points. If you want to change it, please use /update command.";
-                    await pullRequestEventNotifier.SendCommentToPullRequest(message);
-                    repositoryLogger.LogInformation("Notify: " + message);
+                    await eventNotifier.SendCommentToPullRequest(message);
+                    logger.LogInformation("Notify: " + message);
                     break;
                 }
         }
     }
 
-    public async Task ProcessIssueCommentCreateWebhookAsync(
-        GithubPullRequestDescriptor pullRequestDescriptor,
-        ILogger repositoryLogger,
-        IPullRequestCommentEventNotifier pullRequestCommentEventNotifier,
-        string issueCommentBody)
+    public async Task ProcessIssueCommentCreate(string issueCommentBody, GithubPullRequestDescriptor prDescriptor,
+        ILogger logger,
+        IPullRequestCommentEventNotifier eventNotifier)
     {
         if (issueCommentBody.FirstOrDefault() != '/')
             return;
 
         IShreksCommand command = _commandParser.Parse(issueCommentBody);
-        var result = await ProceedCommandAsync(command, pullRequestDescriptor, repositoryLogger);
+        var result = await ProceedCommandAsync(command, prDescriptor, logger);
         if (!string.IsNullOrEmpty(result.Message))
-            await pullRequestCommentEventNotifier.SendCommentToPullRequest(result.Message);
+            await eventNotifier.SendCommentToPullRequest(result.Message);
 
-        await pullRequestCommentEventNotifier.ReactToUserComment(result.IsSuccess);
+        await eventNotifier.ReactToUserComment(result.IsSuccess);
     }
 
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)

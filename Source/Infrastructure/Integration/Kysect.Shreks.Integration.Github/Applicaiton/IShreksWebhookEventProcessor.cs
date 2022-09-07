@@ -5,11 +5,11 @@ namespace Kysect.Shreks.Integration.Github.Applicaiton;
 
 public interface IShreksWebhookEventProcessor
 {
-    Task ProcessPullRequestReopenWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, bool? isMerged);
-    Task ProcessPullRequestUpdateWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, CancellationToken cancellationToken);
-    Task ProcessPullRequestClosedWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, bool merged);
-    Task ProcessPullRequestReviewCommentWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? comment);
-    Task ProcessPullRequestReviewRequestChangesWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? reviewBody);
-    Task ProcessPullRequestReviewApproveWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? commentBody);
-    Task ProcessIssueCommentCreateWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommentEventNotifier pullRequestCommentEventNotifier, string issueCommentBody);
+    Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier);
+    Task ProcessPullRequestUpdate(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier, CancellationToken cancellationToken);
+    Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier);
+    Task ProcessPullRequestReviewComment(string? comment, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier);
+    Task ProcessPullRequestReviewRequestChanges(string? reviewBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier);
+    Task ProcessPullRequestReviewApprove(string? commentBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier);
+    Task ProcessIssueCommentCreate(string issueCommentBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommentEventNotifier eventNotifier);
 }
