@@ -1,6 +1,6 @@
 namespace Kysect.Shreks.Integration.Github.Applicaiton;
 
-public interface IPullRequetsEventNotifier
+public interface IPullRequestEventNotifier
 {
     Task SendCommentToPullRequest(string message);
 }

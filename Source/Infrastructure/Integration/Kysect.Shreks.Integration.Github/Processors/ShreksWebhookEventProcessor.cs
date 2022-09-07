@@ -110,7 +110,7 @@ public class ShreksWebhookEventProcessor
         PullRequestReviewAction action,
         GithubPullRequestDescriptor pullRequestDescriptor,
         ILogger repositoryLogger,
-        IPullRequetsEventNotifier pullRequestEventNotifier)
+        IPullRequestEventNotifier pullRequestEventNotifier)
     {
         IShreksCommand command = null;
         string comment;

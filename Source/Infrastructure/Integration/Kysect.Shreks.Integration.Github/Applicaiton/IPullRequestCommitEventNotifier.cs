@@ -1,6 +1,6 @@
 namespace Kysect.Shreks.Integration.Github.Applicaiton;
 
-public interface IPullRequestCommitEventNotifier : IPullRequetsEventNotifier
+public interface IPullRequestCommitEventNotifier : IPullRequestEventNotifier
 {
     Task SendCommentToTriggeredCommit(string message);
 }

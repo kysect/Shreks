@@ -4,7 +4,7 @@ using Octokit.Webhooks;
 
 namespace Kysect.Shreks.Integration.Github.Notifiers;
 
-public class PullRequestEventNotifier : IPullRequetsEventNotifier
+public class PullRequestEventNotifier : IPullRequestEventNotifier
 {
     private readonly ILogger _logger;
     private readonly IActionNotifier _actionNotifier;
