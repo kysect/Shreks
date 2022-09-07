@@ -11,7 +11,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using static Kysect.Shreks.Application.Abstractions.Github.Commands.CreateGithubSubmission;
+using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands.CreateGithubSubmission;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

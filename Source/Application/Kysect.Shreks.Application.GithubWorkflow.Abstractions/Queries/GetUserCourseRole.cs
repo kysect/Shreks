@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Application.Dto.Users;
 using MediatR;
 
-namespace Kysect.Shreks.Application.Abstractions.Github.Queries;
+namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries;
 
 public static class GetUserCourseRole
 {

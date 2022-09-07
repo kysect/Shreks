@@ -5,7 +5,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-using static Kysect.Shreks.Application.Abstractions.Github.Commands.GetSubmissionByPrAndSubmissionCode;
+using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands.GetSubmissionByPrAndSubmissionCode;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

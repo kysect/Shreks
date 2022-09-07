@@ -5,7 +5,7 @@ using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetLastSubmissionByPr;
+using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries.GetLastSubmissionByPr;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

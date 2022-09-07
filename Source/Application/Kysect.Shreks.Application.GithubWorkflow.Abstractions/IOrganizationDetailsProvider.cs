@@ -1,4 +1,4 @@
-﻿namespace Kysect.Shreks.Application.Abstractions.Github;
+﻿namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 
 public interface IOrganizationDetailsProvider
 {

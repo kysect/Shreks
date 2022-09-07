@@ -1,4 +1,5 @@
-﻿using Kysect.Shreks.Core.Extensions;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -6,7 +7,7 @@ using Kysect.Shreks.Integration.Github.Invites;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using static Kysect.Shreks.Application.Abstractions.Github.Commands.UpdateSubjectCourseOrganizations;
+using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands.UpdateSubjectCourseOrganizations;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

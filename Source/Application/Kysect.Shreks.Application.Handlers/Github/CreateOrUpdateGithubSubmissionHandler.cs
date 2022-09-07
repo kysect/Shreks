@@ -12,7 +12,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Kysect.Shreks.Application.Handlers.Validators;
 using Kysect.Shreks.Common.Exceptions;
-using static Kysect.Shreks.Application.Abstractions.Github.Commands.CreateOrUpdateGithubSubmission;
+using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands.CreateOrUpdateGithubSubmission;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

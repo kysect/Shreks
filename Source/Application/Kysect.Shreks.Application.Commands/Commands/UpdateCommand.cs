@@ -1,10 +1,10 @@
 using CommandLine;
-using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
 using Kysect.Shreks.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 using Serilog;

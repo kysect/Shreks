@@ -6,7 +6,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetUserByGithubUsername;
+using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries.GetUserByGithubUsername;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

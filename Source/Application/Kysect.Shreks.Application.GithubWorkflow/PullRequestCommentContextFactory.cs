@@ -1,6 +1,6 @@
-using Kysect.Shreks.Application.Abstractions.Github.Queries;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Dto.Github;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

@@ -1,9 +1,9 @@
 ﻿using CommandLine;
-using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
 using Serilog;
 
 namespace Kysect.Shreks.Application.Commands.Commands;

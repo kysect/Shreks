@@ -1,4 +1,4 @@
-﻿namespace Kysect.Shreks.Integration.Github.Invites;
+﻿namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 
 public interface ISubjectCourseGithubOrganizationInviteSender
 {

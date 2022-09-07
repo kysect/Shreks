@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using GitHubJwt;
-using Kysect.Shreks.Application.Abstractions.Github;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.CredentialStores;
 using Kysect.Shreks.Integration.Github.Entities;

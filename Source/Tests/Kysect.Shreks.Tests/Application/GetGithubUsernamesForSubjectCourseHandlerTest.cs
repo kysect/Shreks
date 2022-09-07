@@ -2,7 +2,7 @@
 using Kysect.Shreks.Core.Study;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
-using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetGithubUsernamesForSubjectCourse;
+using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries.GetGithubUsernamesForSubjectCourse;
 
 namespace Kysect.Shreks.Tests.Application;
 
