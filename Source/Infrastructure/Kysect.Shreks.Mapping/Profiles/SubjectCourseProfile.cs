@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 
 namespace Kysect.Shreks.Mapping.Profiles
@@ -8,7 +9,13 @@ namespace Kysect.Shreks.Mapping.Profiles
     {
         public SubjectCourserProfile()
         {
-            CreateMap<SubjectCourseAssociation, SubjectCourseAssociationDto>();
+            CreateMap<SubjectCourse, SubjectCourseDto>();
+
+            CreateMap<GoogleTableSubjectCourseAssociation, SubjectCourseAssociationDto>().ConstructUsing(x =>
+                new SubjectCourseAssociationDto(nameof(GoogleTableSubjectCourseAssociation), x.SpreadsheetId));
+
+            CreateMap<GithubSubjectCourseAssociation, SubjectCourseAssociationDto>().ConstructUsing(x =>
+                new SubjectCourseAssociationDto(nameof(GithubSubjectCourseAssociation), x.GithubOrganizationName));
         }
     }
 }
