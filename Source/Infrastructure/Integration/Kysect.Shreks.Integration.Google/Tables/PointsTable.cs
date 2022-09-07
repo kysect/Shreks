@@ -1,85 +1,97 @@
 ﻿using FluentSpreadsheets;
+using FluentSpreadsheets.GoogleSheets.Extensions;
 using FluentSpreadsheets.Tables;
-using Kysect.Shreks.Application.Abstractions.Formatters;
-using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
-using Kysect.Shreks.Integration.Google.Providers;
-using System.Globalization;
+using Kysect.Shreks.Integration.Google.Sheets;
 using static FluentSpreadsheets.ComponentFactory;
+using Index = FluentSpreadsheets.Index;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class PointsTable : RowTable<CoursePointsDto>, ITableCustomizer
+public class PointsTable : RowTable<int>, ITableCustomizer
 {
-    private static readonly IComponent EmptyAssignmentPointsCell = HStack(Enumerable.Repeat(Empty(), 2));
+    private const string ReferenceSheetTitle = LabsSheet.Title;
+    private const int ReferenceRowShift = 2;
+    private const string ReferenceHeaderRange = "1:3";
 
-    private readonly IUserFullNameFormatter _userFullNameFormatter;
-    private readonly ICultureInfoProvider _cultureInfoProvider;
-
-    public PointsTable(IUserFullNameFormatter userFullNameFormatter, ICultureInfoProvider cultureInfoProvider)
-    {
-        _userFullNameFormatter = userFullNameFormatter;
-        _cultureInfoProvider = cultureInfoProvider;
-    }
+    private static readonly IRowComponent Header = Row
+    (
+        Label("ISU").WithColumnWidth(60),
+        Label("ФИО").WithColumnWidth(240),
+        Label("Группа"),
+        Label("GitHub").WithColumnWidth(150),
+        Label("Лабораторные").WithColumnWidth(110),
+        Label("Karma"),
+        Label("Экзамен"),
+        Label("Сумма"),
+        Label("Оценка"),
+        Label("Комментарий").WithColumnWidth(350)
+    );
 
     public IComponent Customize(IComponent component)
         => component.WithDefaultStyle();
-    
-    protected override IEnumerable<IRowComponent> RenderRows(CoursePointsDto points)
+
+    protected override IEnumerable<IRowComponent> RenderRows(int studentsCount)
     {
-        yield return Row
-        (
-            Label("ISU").WithColumnWidth(60),
-            Label("ФИО").WithColumnWidth(240),
-            Label("Группа"),
-            Label("GitHub").WithColumnWidth(150),
-            ForEach(points.Assignments, a => VStack
-            (
-                Label(a.ShortName),
-                HStack
-                (
-                    Label("Балл"),
-                    Label("Дата")
-                )
-            )).CustomizedWith(g => VStack(Label("Лабораторные"), g)),
-            Label("Итог")
-        );
+        yield return Header;
 
-        CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
-
-        foreach (var (student, assignmentPoints) in points.StudentsPoints)
+        foreach (var row in Enumerable.Range(1, studentsCount).Select(GetRowReference))
         {
-            double totalPoints = assignmentPoints.Sum(p => p.Points);
-            double roundedPoints = Math.Round(totalPoints, 2);
-
-            yield return Row
-            (
-                Label(student.UniversityId),
-                Label(_userFullNameFormatter.GetFullName(student.User)), 
-                Label(student.GroupName),
-                Label(student.GitHubUsername!),
-                ForEach(points.Assignments, a =>
-                    BuildAssignmentPointsCell(a, assignmentPoints, currentCulture)),
-                Label(roundedPoints, currentCulture)
-            );
+            yield return row;
         }
     }
 
-    private static IComponent BuildAssignmentPointsCell(
-        AssignmentDto assignment,
-        IEnumerable<AssignmentPointsDto> points,
-        IFormatProvider formatProvider)
+    private static IRowComponent GetRowReference(int row)
     {
-        var assignmentPoints = points.FirstOrDefault(p => p.AssignmentId == assignment.Id);
-
-        if (assignmentPoints is null)
-            return EmptyAssignmentPointsCell;
-
-        return HStack
+        return Row
         (
-            Label(assignmentPoints.Points, formatProvider),
-            Label(assignmentPoints.Date, formatProvider)
+            Label(AssignedReference),
+            Label(AssignedReference),
+            Label(AssignedReference),
+            Label(AssignedReference),
+            Label(i => LookUp("\"Итог\"", ReferenceHeaderRange, i.Row)),
+            Empty(),
+            Empty(),
+            Label(GetTotalFunction),
+            Label(PointsFormula),
+            Empty()
         );
+    }
+
+    private static string AssignedReference(Index index)
+    {
+        index = index.WithRowShift(ReferenceRowShift);
+        return $"={index.ToGoogleSheetsIndex(ReferenceSheetTitle)}";
+    }
+
+    private static string LookUp(string value, string fieldsRange, int row)
+    {
+        row += ReferenceRowShift;
+        string rowRange = $"{row}:{row}";
+        return $"=LOOKUP({value},{GetCellsReference(fieldsRange)},{GetCellsReference(rowRange)})";
+    }
+
+    private static string GetCellsReference(string range)
+        => $"{ReferenceSheetTitle}!{range}";
+
+    private static string GetTotalFunction(Index index)
+    {
+        string labsPoints = GetCellNumber(index.WithColumnShift(-3));
+        string karmaPoints = GetCellNumber(index.WithColumnShift(-2));
+        string examPoints = GetCellNumber(index.WithColumnShift(-1));
+        string total = $"{labsPoints}+{karmaPoints}+{examPoints}";
+        return $"=SUBSTITUTE({total},\".\",\",\")";
+    }
+
+    private static string GetCellNumber(Index index)
+    {
+        string i = index.ToGoogleSheetsIndex();
+        return $"IFERROR(VALUE(SUBSTITUTE({i},\",\",\".\")), VALUE(SUBSTITUTE({i},\".\",\",\")))";
+    }
+
+    private static string PointsFormula(Index index)
+    {
+        string n = GetCellNumber(index.WithColumnShift(-1));
+        return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>= 40,\"FX-E\",\"FX\"))";
     }
 }

@@ -14,20 +14,20 @@ public class GoogleTableAccessor : IDisposable
 
     private readonly ISheet<CoursePointsDto> _pointsSheet;
     private readonly ISheet<SubmissionsQueueDto> _queueSheet;
-    private readonly ISheetManagementService _sheetManagementService;
+    private readonly ISpreadsheetManagementService _spreadsheetManagementService;
     private readonly IMediator _mediator;
     private readonly ILogger<GoogleTableAccessor> _logger;
 
     public GoogleTableAccessor(
         ISheet<CoursePointsDto> pointsSheet,
         ISheet<SubmissionsQueueDto> queueSheet,
-        ISheetManagementService sheetManagementService,
+        ISpreadsheetManagementService spreadsheetManagementService,
         IMediator mediator,
         ILogger<GoogleTableAccessor> logger)
     {
         _pointsSheet = pointsSheet;
         _queueSheet = queueSheet;
-        _sheetManagementService = sheetManagementService;
+        _spreadsheetManagementService = spreadsheetManagementService;
         _mediator = mediator;
         _logger = logger;
         
@@ -104,7 +104,7 @@ public class GoogleTableAccessor : IDisposable
 
         try
         {
-            spreadsheetId = await _sheetManagementService.CreateSpreadsheetAsync(subjectCourseName, token);
+            spreadsheetId = await _spreadsheetManagementService.CreateSpreadsheetAsync(subjectCourseName, token);
             var addTableCommand = new AddGoogleTableSubjectCourseAssociation.Command(subjectCourseId, spreadsheetId);
             await _mediator.Send(addTableCommand, token);
 
