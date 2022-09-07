@@ -5,7 +5,7 @@ using Octokit.Webhooks;
 using Octokit.Webhooks.Models;
 using Repository = Octokit.Webhooks.Models.Repository;
 
-namespace Kysect.Shreks.Integration.Github.Entities;
+namespace Kysect.Shreks.Integration.Github.Notifiers;
 
 public class ActionNotifier : IActionNotifier
 {
@@ -25,12 +25,12 @@ public class ActionNotifier : IActionNotifier
         var installationClient = _installationClientFactory.GetClient(installation.Id);
 
         await installationClient.Issue.Comment.Create(
-            repository.Owner.Login, 
-            repository.Name, 
-            (int) issueNumber, 
+            repository.Owner.Login,
+            repository.Name,
+            (int)issueNumber,
             message);
     }
-    
+
     public async Task SendCommitComment(WebhookEvent webhookEvent, string sha, string message)
     {
         ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
@@ -46,12 +46,12 @@ public class ActionNotifier : IActionNotifier
 
         var installationClient = _installationClientFactory.GetClient(installation.Id);
 
-        Reaction? reaction = await installationClient.Reaction.IssueComment.Create(
+        await installationClient.Reaction.IssueComment.Create(
             repository.Id,
-            (int) commentId,
+            (int)commentId,
             new NewReaction(isSuccessful ? ReactionType.Plus1 : ReactionType.Minus1));
     }
-    
+
     private void ParseWebhookEvent(WebhookEvent webhookEvent, out Repository repository, out InstallationLite installation)
     {
         if (webhookEvent is null)

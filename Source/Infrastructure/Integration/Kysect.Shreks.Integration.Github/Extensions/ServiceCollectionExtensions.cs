@@ -6,6 +6,7 @@ using Kysect.Shreks.Integration.Github.CredentialStores;
 using Kysect.Shreks.Integration.Github.Entities;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Github.Invites;
+using Kysect.Shreks.Integration.Github.Notifiers;
 using Kysect.Shreks.Integration.Github.Processors;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
