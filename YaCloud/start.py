@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+
+import argparse
+from base64 import b64decode
+
+import requests
+from python_on_whales import docker
+
+
+def get_service_token():
+    resp = requests.get(
+        url='http://169.254.169.254/computeMetadata/v1/instance/service-accounts/default/token',
+        headers={'Metadata-Flavor': 'Google'}
+    ).json()
+    return resp['access_token']
+
+
+class Secret:
+    def __init__(self, key, value):
+        self.key = key
+        self.value = value
+
+    def __repr__(self):
+        return str(self)
+
+    def __str__(self):
+        return self.key + ": " + self.value
+
+
+def get_secret(token, secret, version=None):
+    resp = requests.get(
+        url='https://payload.lockbox.api.cloud.yandex.net/lockbox/v1/secrets/%s/payload' % secret,
+        headers={'Authorization': 'Bearer %s' % token}
+    ).json()
+
+    def get_value(e):
+        return e['textValue'] if e.get('textValue') is not None else b64decode(e['binaryValue']).decode("utf-8")
+
+    secrets = [Secret(e['key'], get_value(e)) for e in resp['entries']]
+    return secrets
+
+
+def start_container(name, secret, port):
+    token = get_service_token()
+    secrets = get_secret(token, secret)
+    docker.build("./Source", file='./Docker/build.dockerfile', tags=name)
+    try:
+        docker.stop(name)
+        print('stopped prevoius container')
+    except:
+        pass
+    docker.run(name, envs={s.key: s.value for s in secrets}, publish=[(port, 5069)],
+               tty=True, detach=True, name=name)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-n", dest="name")
+    parser.add_argument("-s", dest="secret")
+    parser.add_argument("-p", dest="port")
+    args = parser.parse_args()
+    start_container(args.name, args.secret, args.port)

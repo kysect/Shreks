@@ -42,7 +42,10 @@ await InitWebApplication(builder);
 
 void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 {
-    webApplicationBuilder.Services.TryAddSingleton(testEnvironmentConfiguration);
+    if (testEnvironmentConfiguration is not null)
+    {
+        webApplicationBuilder.Services.TryAddSingleton(testEnvironmentConfiguration);
+    }
     webApplicationBuilder.Services.AddControllers(x => x.Filters.Add<AuthenticationFilter>()).AddNewtonsoftJson();
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
     webApplicationBuilder.Services.AddSwaggerGen(c =>
