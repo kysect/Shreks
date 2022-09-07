@@ -3,6 +3,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Application.Handlers.Validators;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
@@ -25,7 +26,10 @@ public class UpdateSubmissionDateHandler : IRequestHandler<Command, Response>
     {
         var submission = await _context.Submissions.GetByIdAsync(request.SubmissionId, cancellationToken);
 
-        PermissionValidator.IsRepositoryMentor(request.IssuerId, submission);
+        if (!PermissionValidator.IsRepositoryMentor(request.IssuerId, submission))
+        {
+            throw new UnauthorizedException("Only mentors can change submission date");
+        }
 
         submission.SubmissionDate = new SpbDateTime(request.NewDate);
         _context.Submissions.Update(submission);
