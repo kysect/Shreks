@@ -11,6 +11,7 @@ using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetCoursePointsBySubjectCourse;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
@@ -19,16 +20,20 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger<GetCoursePointsBySubjectCourseHandler> _logger;
 
-    public GetCoursePointsBySubjectCourseHandler(IShreksDatabaseContext context, IMapper mapper)
+    public GetCoursePointsBySubjectCourseHandler(IShreksDatabaseContext context, IMapper mapper, ILogger<GetCoursePointsBySubjectCourseHandler> logger)
     {
         _context = context;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(request);
+
+        _logger.LogInformation("Started to collecting all course {courseId} points", request.SubjectCourseId);
 
         var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
@@ -48,6 +53,8 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         var assignmentsDto = subjectCourse.Assignments
             .Select(_mapper.Map<AssignmentDto>)
             .ToArray();
+
+        _logger.LogInformation("Finished to collect all course {courseId} points", request.SubjectCourseId);
 
         var points = new CoursePointsDto(assignmentsDto, studentPoints);
         return new Response(points);

@@ -19,21 +19,16 @@ using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Playground.Github.TestEnv;
 using Kysect.Shreks.Seeding.Extensions;
+using Kysect.Shreks.WebApi.Extensions;
 using Kysect.Shreks.WebApi.Filters;
 using Kysect.Shreks.WebApi.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
-using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
-
-builder.Host.UseSerilog();
+builder.Host.UseSerilogForAppLogs();
 
 var googleIntegrationConfiguration = builder.Configuration.GetSection(nameof(GoogleIntegrationConfiguration)).Get<GoogleIntegrationConfiguration>();
 var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
@@ -135,30 +130,24 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
 {
     var app = webApplicationBuilder.Build();
 
+    app.UseRequestLogging();
+
     if (app.Environment.IsDevelopment())
     {
-        using (IServiceScope scope = app.Services.CreateScope())
-        {
-            //scope.ServiceProvider.GetRequiredService<ShreksDatabaseContext>().Database.EnsureDeleted();
-        }
-
         await app.Services.UseDatabaseSeeders();
         app.UseSwagger();
         app.UseSwaggerUI();
         app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
     }
 
-    app.UseBlazorFrameworkFiles();
-    app.UseStaticFiles();
-
-    app.UseRouting();
-
-    app.UseAuthentication();
-    app.UseAuthorization();
+    app
+        .UseBlazorFrameworkFiles()
+        .UseStaticFiles()
+        .UseRouting()
+        .UseAuthentication()
+        .UseAuthorization();
 
     app.MapControllers();
-    app.UseSerilogRequestLogging();
-
     app.UseGithubIntegration(githubIntegrationConfiguration);
 
     using (var scope = app.Services.CreateScope())

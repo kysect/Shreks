@@ -9,10 +9,8 @@ public interface ISheetManagementService
     /// <returns>Sheet id</returns>
     Task<int> CreateOrClearSheetAsync(string spreadsheetId, string sheetTitle, CancellationToken token);
 
-    /// <summary>
-    ///     Creates spreadsheet in drive,
-    ///     configured by DriveParentProvider
-    /// </summary>
-    /// <returns>Spreadsheet id</returns>
-    Task<string> CreateSpreadsheetAsync(string title, CancellationToken token);
+    /// <returns>Sheet id</returns>
+    Task<int> CreateSheetAsync(string spreadsheetId, string sheetTitle, CancellationToken token);
+
+    Task<bool> CheckIfExists(string spreadsheetId, string sheetTitle, CancellationToken token);
 }

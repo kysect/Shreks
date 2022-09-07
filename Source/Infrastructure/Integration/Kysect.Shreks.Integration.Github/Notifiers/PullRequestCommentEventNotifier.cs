@@ -4,7 +4,7 @@ using Octokit.Webhooks;
 
 namespace Kysect.Shreks.Integration.Github.Notifiers;
 
-public class PullRequestCommentEventNotifier : IPullRequestCommentEventNotifier
+public class PullRequestCommentEventNotifier : PullRequestEventNotifier, IPullRequestCommentEventNotifier
 {
     private readonly ILogger _logger;
     private readonly IActionNotifier _actionNotifier;
@@ -13,6 +13,7 @@ public class PullRequestCommentEventNotifier : IPullRequestCommentEventNotifier
     private readonly long _issueNumber;
 
     public PullRequestCommentEventNotifier(IActionNotifier actionNotifier, WebhookEvent webhookEvent, long commentId, long issueNumber, ILogger logger)
+        : base(actionNotifier, webhookEvent, issueNumber, logger)
     {
         _actionNotifier = actionNotifier;
         _webhookEvent = webhookEvent;
@@ -28,11 +29,5 @@ public class PullRequestCommentEventNotifier : IPullRequestCommentEventNotifier
             _commentId,
             isSuccess);
         _logger.LogInformation("Send reaction: " + isSuccess);
-    }
-
-    public async Task SendCommentToPullRequest(string message)
-    {
-        await _actionNotifier.SendComment(_webhookEvent, _issueNumber, message);
-        _logger.LogInformation("Send comment to PR: " + message);
     }
 }

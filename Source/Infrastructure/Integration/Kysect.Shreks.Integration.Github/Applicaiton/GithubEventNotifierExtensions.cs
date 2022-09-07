@@ -6,18 +6,18 @@ namespace Kysect.Shreks.Integration.Github.Applicaiton;
 
 public static class GithubEventNotifierExtensions
 {
-    public static async Task SendExceptionMessageSafe(this IPullRequetsEventNotifier pullRequetsEventNotifier, Exception exception, ILogger logger)
+    public static async Task SendExceptionMessageSafe(this IPullRequestEventNotifier pullRequestEventNotifier, Exception exception, ILogger logger)
     {
         try
         {
             if (exception is ShreksDomainException domainException)
             {
-                await pullRequetsEventNotifier.SendCommentToPullRequest(domainException.Message);
+                await pullRequestEventNotifier.SendCommentToPullRequest(domainException.Message);
             }
             else
             {
                 const string newMessage = "An internal error occurred while processing command. Contact support for details.";
-                await pullRequetsEventNotifier.SendCommentToPullRequest(newMessage);
+                await pullRequestEventNotifier.SendCommentToPullRequest(newMessage);
             }
         }
         catch (Exception e)

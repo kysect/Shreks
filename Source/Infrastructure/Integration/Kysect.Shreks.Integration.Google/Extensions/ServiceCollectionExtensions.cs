@@ -10,6 +10,7 @@ using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tables;
 using Kysect.Shreks.Integration.Google.Tools;
+using Kysect.Shreks.Integration.Google.Tools.Comparers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
@@ -26,12 +27,16 @@ public static class ServiceCollectionExtensions
         action.Invoke(options);
 
         return serviceCollection
-            .AddSingleton<ISheet<CoursePointsDto>, PointsSheet>()
+            .AddSingleton<ISheet<int>, PointsSheet>()
+            .AddSingleton<ISheet<CoursePointsDto>, LabsSheet>()
             .AddSingleton<ISheet<SubmissionsQueueDto>, QueueSheet>()
-            .AddSingleton<ITable<CoursePointsDto>, PointsTable>()
+            .AddSingleton<ITable<int>, PointsTable>()
+            .AddSingleton<ITable<CoursePointsDto>, LabsTable>()
             .AddSingleton<ITable<SubmissionsQueueDto>, QueueTable>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()
+            .AddSingleton<ISpreadsheetManagementService, SpreadsheetManagementService>()
             .AddSingleton<IRenderCommandFactory, RenderCommandFactory>()
+            .AddSingleton<ISheetTitleComparer, SheetTitleComparer>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
             .AddGoogleTableUpdateWorker()
             .AddGoogleFormatter();
