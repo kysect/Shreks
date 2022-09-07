@@ -27,7 +27,7 @@ class Secret:
         return self.key + ": " + self.value
 
 
-def get_secret(token, secret, version=None):
+def get_secrets(token, secret, version=None):
     resp = requests.get(
         url='https://payload.lockbox.api.cloud.yandex.net/lockbox/v1/secrets/%s/payload' % secret,
         headers={'Authorization': 'Bearer %s' % token}
@@ -42,7 +42,7 @@ def get_secret(token, secret, version=None):
 
 def start_container(name, secret, port, asp_env=None):
     token = get_service_token()
-    secrets = get_secret(token, secret)
+    secrets = get_secrets(token, secret)
     docker.build("./Source", file='./Docker/build.dockerfile', tags=name)
     try:
         docker.stop(name)
@@ -52,8 +52,7 @@ def start_container(name, secret, port, asp_env=None):
         pass
     envs = {s.key: s.value for s in secrets}
     envs['ASPNETCORE_ENVIRONMENT'] = asp_env if asp_env is not None else 'Production'
-    docker.run(name, envs=envs, publish=[(port, 5069)],
-               tty=True, detach=True, name=name)
+    docker.run(name, envs=envs, publish=[(port, 5069)], tty=True, detach=True, name=name)
 
 
 if __name__ == '__main__':
