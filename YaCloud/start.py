@@ -46,7 +46,8 @@ def start_container(name, secret, port, asp_env=None):
     docker.build("./Source", file='./Docker/build.dockerfile', tags=name)
     try:
         docker.stop(name)
-        print('stopped previous container')
+        docker.remove(name)
+        print('stopped and removed previous container')
     except:
         pass
     envs = {s.key: s.value for s in secrets}
