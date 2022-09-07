@@ -4,7 +4,7 @@ using Kysect.Shreks.Application.Dto.Github;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Integration.Github.Applicaiton;
+namespace Kysect.Shreks.Application.GithubWorkflow;
 
 public class PullRequestCommentContextFactory : ICommandContextFactory
 {

@@ -1,7 +1,7 @@
 using Kysect.Shreks.Application.Dto.Github;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Integration.Github.Applicaiton;
+namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 
 public interface IShreksWebhookEventProcessor
 {

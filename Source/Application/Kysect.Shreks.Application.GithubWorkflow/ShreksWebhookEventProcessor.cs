@@ -7,10 +7,11 @@ using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Integration.Github.Applicaiton;
+namespace Kysect.Shreks.Application.GithubWorkflow;
 
 public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 {

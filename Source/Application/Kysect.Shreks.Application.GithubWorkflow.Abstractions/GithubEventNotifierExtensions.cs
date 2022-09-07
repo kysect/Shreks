@@ -2,7 +2,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Integration.Github.Applicaiton;
+namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 
 public static class GithubEventNotifierExtensions
 {

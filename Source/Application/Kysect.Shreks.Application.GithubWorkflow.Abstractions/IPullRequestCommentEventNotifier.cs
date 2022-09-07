@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.Integration.Github.Applicaiton;
+namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 
 public interface IPullRequestCommentEventNotifier : IPullRequestEventNotifier
 {
