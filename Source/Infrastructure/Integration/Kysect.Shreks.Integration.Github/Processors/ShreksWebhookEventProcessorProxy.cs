@@ -22,7 +22,7 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
     private readonly IActionNotifier _actionNotifier;
     private readonly ILogger<ShreksWebhookEventProcessorProxy> _logger;
     private readonly IOrganizationGithubClientProvider _clientProvider;
-    private readonly ShreksWebhookEventProcessor _processor;
+    private readonly IShreksWebhookEventProcessor _processor;
 
     public ShreksWebhookEventProcessorProxy(
         IActionNotifier actionNotifier,
@@ -116,15 +116,15 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
             switch (pullRequestReviewAction1)
             {
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "approved":
-                    await _processor.ProcessPullRequestReviewApproveWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequetsEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
+                    await _processor.ProcessPullRequestReviewApproveWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
                     break;
 
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
-                    await _processor.ProcessPullRequestReviewRequestChangesWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequetsEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
+                    await _processor.ProcessPullRequestReviewRequestChangesWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
                     break;
 
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
-                    await _processor.ProcessPullRequestReviewCommentWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequetsEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
+                    await _processor.ProcessPullRequestReviewCommentWebhookAsync(githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier, pullRequestReviewEvent.Review.Body);
                     break;
 
                 case PullRequestReviewActionValue.Edited:

@@ -8,8 +8,8 @@ public interface IShreksWebhookEventProcessor
     Task ProcessPullRequestReopenWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, bool? isMerged);
     Task ProcessPullRequestUpdateWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, CancellationToken cancellationToken);
     Task ProcessPullRequestClosedWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommitEventNotifier pullRequestCommitEventNotifier, bool merged);
-    Task ProcessPullRequestReviewCommentWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequetsEventNotifier pullRequestEventNotifier, string? comment);
-    Task ProcessPullRequestReviewRequestChangesWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequetsEventNotifier pullRequestEventNotifier, string? reviewBody);
-    Task ProcessPullRequestReviewApproveWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequetsEventNotifier pullRequestEventNotifier, string? commentBody);
+    Task ProcessPullRequestReviewCommentWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? comment);
+    Task ProcessPullRequestReviewRequestChangesWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? reviewBody);
+    Task ProcessPullRequestReviewApproveWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestEventNotifier pullRequestEventNotifier, string? commentBody);
     Task ProcessIssueCommentCreateWebhookAsync(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger, IPullRequestCommentEventNotifier pullRequestCommentEventNotifier, string issueCommentBody);
 }
