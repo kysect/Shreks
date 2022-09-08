@@ -25,7 +25,7 @@ public class HelpCommand : IShreksCommand<BaseContext, string>
 
 - `/rate [RatingPercent] {ExtraPoints}`. Например, `/rate 90 2` - это 90% баллов за работу +2 дополнительных баллов;
 - `/update [Submission number] {-r RatingPercent} {-e ExtraPoints} {-d Date}`. Например:
-  - `/update 1 -d 09.09.2022` обновит сабмишен с номером 1 и поставит ему дату 09.09
+  - `/update 1 -d 27.09.2022` обновит сабмишен с номером 1 и поставит ему дату 27.09
   - `/update 2 -r 100 -e 5` обновит сабмишен с номером 2 и поставит ему 100% рейта и 5 дополнительных баллов
 
 Обрабатываемые ивенты:
