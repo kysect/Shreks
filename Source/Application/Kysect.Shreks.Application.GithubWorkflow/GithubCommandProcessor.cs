@@ -41,7 +41,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            PullRequestContext context = await _contextFactory.CreatePullRequestContext(_cancellationToken);
+            SubmissionContext context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
             SubmissionRateDto submission = await updateCommand.ExecuteAsync(context, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission updated.\n{submission.ToPullRequestString()}");
         }

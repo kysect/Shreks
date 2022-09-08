@@ -110,7 +110,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 
     webApplicationBuilder.Services
         .AddGithubServices(cacheConfiguration, githubIntegrationConfiguration)
-        .AddGithubInviteBackgroundService();
+        .AddGithubWorkflowServices();
 
     if (webApplicationBuilder.Environment.IsDevelopment())
     {

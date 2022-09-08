@@ -11,15 +11,18 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     private readonly IMediator _mediator;
     private readonly ILogger _log;
     private readonly GithubPullRequestDescriptor _pullRequestDescriptor;
+    private readonly GithubCommandSubmissionFactory _githubCommandSubmissionFactory;
 
     public PullRequestCommentContextFactory(
         IMediator mediator,
         GithubPullRequestDescriptor pullRequestDescriptor,
-        ILogger log)
+        ILogger log,
+        GithubSubmissionFactory githubSubmissionFactory)
     {
         _mediator = mediator;
         _pullRequestDescriptor = pullRequestDescriptor;
         _log = log;
+        _githubCommandSubmissionFactory = new GithubCommandSubmissionFactory(githubSubmissionFactory);
     }
 
     public async Task<BaseContext> CreateBaseContext(CancellationToken cancellationToken)
@@ -52,7 +55,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
 
         var subjectCourseId = await GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
         var assignmentId = await GetAssignemntByBranchAndSubjectCourse(_pullRequestDescriptor.BranchName, subjectCourseId, cancellationToken);
-        return new PullRequestAndAssignmentContext(_mediator, userId, _pullRequestDescriptor, assignmentId, _log);
+        return new PullRequestAndAssignmentContext(_mediator, userId, _pullRequestDescriptor, assignmentId, _log, _githubCommandSubmissionFactory);
     }
 
     private async Task<Guid> GetSubjectCourseByOrganization(string organization, CancellationToken cancellationToken)

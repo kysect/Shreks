@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Kysect.CommonLib" Version="0.0.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
     <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
+    <ProjectReference Include="..\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
     <ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
     <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
   </ItemGroup>

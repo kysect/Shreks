@@ -1,10 +1,8 @@
-using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Github.Notifiers;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using Octokit.Webhooks;
@@ -27,8 +25,6 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
     public ShreksWebhookEventProcessorProxy(
         IActionNotifier actionNotifier,
         ILogger<ShreksWebhookEventProcessorProxy> logger,
-        IShreksCommandParser commandParser,
-        IMediator mediator,
         IOrganizationGithubClientProvider clientProvider,
         IShreksWebhookEventProcessor eventProcessor)
     {
