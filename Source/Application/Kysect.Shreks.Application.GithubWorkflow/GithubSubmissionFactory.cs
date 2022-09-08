@@ -8,7 +8,6 @@ using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Kysect.CommonLib;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
@@ -21,35 +20,25 @@ namespace Kysect.Shreks.Application.GithubWorkflow;
 public class GithubSubmissionFactory
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly ILogger _logger;
 
-    public GithubSubmissionFactory(IShreksDatabaseContext context, ILogger logger)
+    public GithubSubmissionFactory(IShreksDatabaseContext context)
     {
         _context = context;
-        _logger = logger;
     }
 
     public async Task<GithubSubmissionCreationResult> CreateOrUpdateGithubSubmission(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(pullRequestDescriptor);
 
-        var (sender,
-        _,
-        organization,
-        repository,
-        _,
-            prNumber) = pullRequestDescriptor;
-
-        // TODO: resolve user id from sender
         Guid userId = await GetUserId(pullRequestDescriptor, cancellationToken);
         Guid assignmentId = await GetAssignmentId(pullRequestDescriptor, cancellationToken);
-        bool triggeredByMentor = await PermissionValidator.IsOrganizationMentor(_context, userId, organization);
-        bool triggeredByAnotherUser = !PermissionValidator.IsRepositoryOwner(sender, repository);
+        bool triggeredByMentor = await PermissionValidator.IsOrganizationMentor(_context, userId, pullRequestDescriptor.Organization);
+        bool triggeredByAnotherUser = !PermissionValidator.IsRepositoryOwner(pullRequestDescriptor.Sender, pullRequestDescriptor.Repository);
 
         var submissionSpec = new FindLatestGithubSubmission(
-            organization,
-            repository,
-            prNumber);
+            pullRequestDescriptor.Organization,
+            pullRequestDescriptor.Repository,
+            pullRequestDescriptor.PrNumber);
 
         var submission = await _context.SubmissionAssociations
             .WithSpecification(submissionSpec)
@@ -62,8 +51,8 @@ public class GithubSubmissionFactory
         {
             if (triggeredByAnotherUser && !triggeredByMentor)
             {
-                var message = $"Repository {repository} is assigned to another student. " +
-                              $"User {sender} does not have permission here. Close this PR and open new with correct account.";
+                var message = $"Repository {pullRequestDescriptor.Repository} is assigned to another student. " +
+                              $"User {pullRequestDescriptor.Sender} does not have permission here. Close this PR and open new with correct account.";
                 throw new DomainInvalidOperationException(message);
             }
 
@@ -86,8 +75,8 @@ public class GithubSubmissionFactory
 
             if (triggeredByAnotherUser)
             {
-                var message = $"Repository {repository} is assigned to another student. " +
-                              $"Do not use {sender} account for this repository. Submission date will be updated.";
+                var message = $"Repository {pullRequestDescriptor.Repository} is assigned to another student. " +
+                              $"Do not use {pullRequestDescriptor.Sender} account for this repository. Submission date will be updated.";
                 throw new DomainInvalidOperationException(message);
             }
         }
