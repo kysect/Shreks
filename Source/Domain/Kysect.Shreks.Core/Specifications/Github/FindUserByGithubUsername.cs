@@ -9,14 +9,14 @@ public class FindUserByGithubUsername : ISpecification<UserAssociation, User>
 
     public FindUserByGithubUsername(string githubUsername)
     {
-        _githubUsername = githubUsername;
+        _githubUsername = githubUsername.ToLower();
     }
 
     public IQueryable<User> Apply(IQueryable<UserAssociation> query)
     {
         return query
             .OfType<GithubUserAssociation>()
-            .Where(u => u.GithubUsername == _githubUsername)
+            .Where(u => u.GithubUsername.ToLower() == _githubUsername)
             .Select(a => a.User);
     }
 }
