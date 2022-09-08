@@ -10,7 +10,7 @@ public static class UserExtensions
     {
         return await users
             .OfType<GithubUserAssociation>()
-            .Where(u => u.GithubUsername == githubUsername)
+            .Where(u => u.GithubUsername.ToLower() == githubUsername.ToLower())
             .Select(u => u.User)
             .SingleOrDefaultAsync();
     }
