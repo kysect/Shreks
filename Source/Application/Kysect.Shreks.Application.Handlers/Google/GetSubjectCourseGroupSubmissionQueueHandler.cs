@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Common.Exceptions;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;

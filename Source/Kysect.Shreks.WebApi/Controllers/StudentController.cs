@@ -1,7 +1,6 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
-using Kysect.Shreks.Application.Handlers.Students;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

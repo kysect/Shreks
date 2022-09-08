@@ -1,6 +1,6 @@
 ﻿using Kysect.Shreks.Core.Submissions;
 
-namespace Kysect.Shreks.Application.Handlers.Extensions;
+namespace Kysect.Shreks.Application.Extensions;
 
 public static class SubmissionExtensions
 {

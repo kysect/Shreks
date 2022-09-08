@@ -1,6 +1,5 @@
 using Kysect.Shreks.Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using RichEntity.Annotations;
 
 namespace Kysect.Shreks.DataAccess.Abstractions.Extensions;
 

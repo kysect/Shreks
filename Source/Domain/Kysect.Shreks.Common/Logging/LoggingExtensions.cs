@@ -1,5 +1,4 @@
-﻿using Kysect.Shreks.Common;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Common.Logging;
 

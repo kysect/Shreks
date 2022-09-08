@@ -1,5 +1,4 @@
 using Bogus;
-using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.Seeding.Options;

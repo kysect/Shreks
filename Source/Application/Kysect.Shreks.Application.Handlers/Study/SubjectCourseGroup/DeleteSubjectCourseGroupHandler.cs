@@ -1,5 +1,4 @@
 using AutoMapper;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;

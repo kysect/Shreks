@@ -1,4 +1,3 @@
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 

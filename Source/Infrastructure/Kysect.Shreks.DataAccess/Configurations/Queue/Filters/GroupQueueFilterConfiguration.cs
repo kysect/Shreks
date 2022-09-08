@@ -1,5 +1,4 @@
 using Kysect.Shreks.Core.Queue.Filters;
-using Kysect.Shreks.Core.Study;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

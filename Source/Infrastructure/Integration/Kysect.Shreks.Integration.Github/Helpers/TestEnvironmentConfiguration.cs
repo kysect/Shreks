@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.Playground.Github.TestEnv;
+namespace Kysect.Shreks.Integration.Github.Helpers;
 
 public class TestEnvironmentConfiguration
 {

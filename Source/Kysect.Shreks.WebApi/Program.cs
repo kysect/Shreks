@@ -18,7 +18,6 @@ using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Mapping.Extensions;
-using Kysect.Shreks.Playground.Github.TestEnv;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi.Extensions;
 using Kysect.Shreks.WebApi.Filters;

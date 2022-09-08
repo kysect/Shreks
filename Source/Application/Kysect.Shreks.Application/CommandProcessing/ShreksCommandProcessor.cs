@@ -1,5 +1,5 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Validators;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
