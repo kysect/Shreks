@@ -22,7 +22,7 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
     private readonly IActionNotifier _actionNotifier;
     private readonly ILogger<ShreksWebhookEventProcessorProxy> _logger;
     private readonly IOrganizationGithubClientProvider _clientProvider;
-    private readonly ShreksWebhookEventProcessor _processor;
+    private readonly IShreksWebhookEventProcessor _processor;
 
     public ShreksWebhookEventProcessorProxy(
         IActionNotifier actionNotifier,
@@ -57,7 +57,30 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 
         try
         {
-            await _processor.ProcessPullRequestWebhookAsync(pullRequestEvent, action, githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
+            string pullRequestAction1 = action;
+            CancellationToken cancellationToken = CancellationToken.None;
+
+            switch (pullRequestAction1)
+            {
+                case PullRequestActionValue.Synchronize:
+                case PullRequestActionValue.Opened:
+                    await _processor.ProcessPullRequestUpdate(githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier, cancellationToken);
+                    break;
+
+                case PullRequestActionValue.Reopened:
+                    bool isMerged = pullRequestEvent.PullRequest.Merged ?? false;
+                    await _processor.ProcessPullRequestReopen(isMerged, githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
+                    break;
+
+                case PullRequestActionValue.Closed:
+                    bool merged = pullRequestEvent.PullRequest.Merged ?? false;
+                    await _processor.ProcessPullRequestClosed(merged, githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
+                    break;
+
+                default:
+                    repositoryLogger.LogWarning($"Unsupported pull request webhook type was received: {pullRequestAction1}");
+                    break;
+            }
         }
         catch (Exception e)
         {
@@ -88,13 +111,36 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 
         try
         {
-            await _processor.ProcessPullRequestReviewWebhookAsync(pullRequestReviewEvent, action, githubPullRequestDescriptor, repositoryLogger, pullRequestEventNotifier);
+            string pullRequestReviewAction1 = action;
+
+            switch (pullRequestReviewAction1)
+            {
+                case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "approved":
+                    await _processor.ProcessPullRequestReviewApprove(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
+                    break;
+
+                case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
+                    await _processor.ProcessPullRequestReviewRequestChanges(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
+                    break;
+
+                case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
+                    await _processor.ProcessPullRequestReviewComment(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
+                    break;
+
+                case PullRequestReviewActionValue.Edited:
+                case PullRequestReviewActionValue.Dismissed:
+
+                    repositoryLogger.LogWarning($"Pull request review action {pullRequestReviewAction1} is not supported.");
+                    break;
+                default:
+                    repositoryLogger.LogWarning("Pull request review for pr {prLink} is not processed.", githubPullRequestDescriptor.Payload);
+                    break;
+            }
         }
         catch (Exception e)
         {
             string message = $"Failed to handle {pullRequestReviewAction}";
             repositoryLogger.LogError(e, $"{nameof(ProcessPullRequestReviewWebhookAsync)}:{message}");
-            int issueNumber = (int)pullRequestReviewEvent.PullRequest.Number;
             await pullRequestEventNotifier.SendExceptionMessageSafe(e, repositoryLogger);
         }
     }
@@ -125,7 +171,18 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 
         try
         {
-            await _processor.ProcessIssueCommentWebhookAsync(issueCommentEvent, action, githubPullRequestDescriptor, repositoryLogger, pullRequestCommentEventNotifier);
+            string issueCommentAction1 = action;
+            switch (issueCommentAction1)
+            {
+                case IssueCommentActionValue.Created:
+                    await _processor.ProcessIssueCommentCreate(issueCommentEvent.Comment.Body, githubPullRequestDescriptor, repositoryLogger, pullRequestCommentEventNotifier);
+                    break;
+
+                case IssueCommentActionValue.Deleted:
+                case IssueCommentActionValue.Edited:
+                    repositoryLogger.LogTrace($"Pull request comment {issueCommentAction1} event will be ignored.");
+                    break;
+            }
         }
         catch (Exception e)
         {

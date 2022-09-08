@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Integration.Github.Invites;
+namespace Kysect.Shreks.Integration.Github.Applicaiton;
 
 public class GithubInvitingWorker : BackgroundService
 {
