@@ -10,12 +10,11 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Kysect.CommonLib;
+using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
-using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
-using Kysect.Shreks.Core.Specifications.Github;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 
@@ -100,8 +99,7 @@ public class GithubSubmissionFactory
     {
         string userGithubUsername = pullRequestDescriptor.Sender;
         User? user = await _context.UserAssociations
-            .WithSpecification(new FindUserByGithubUsername(userGithubUsername))
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            .FindUserByGithubUsername(userGithubUsername);
 
         if (user is null)
             throw new UserWasNotFoundByGithubUsernameException(userGithubUsername);
@@ -191,12 +189,10 @@ public class GithubSubmissionFactory
         GithubPullRequestDescriptor pullRequestDescriptor,
         CancellationToken cancellationToken)
     {
-        var association = await _context.UserAssociations
-                              .OfType<GithubUserAssociation>()
-                              .Include(x => x.User)
-                              .SingleOrDefaultAsync(x => x.GithubUsername == pullRequestDescriptor.Repository, cancellationToken)
-                          ?? throw new EntityNotFoundException($"Unable to find student by GithubUserAssociation for {pullRequestDescriptor.Repository} repository");
+        User? user = await _context.UserAssociations.FindUserByGithubUsername(pullRequestDescriptor.Repository);
+        if (user is null)
+            throw new EntityNotFoundException($"Unable to find student by GithubUserAssociation for {pullRequestDescriptor.Repository} repository");
 
-        return await _context.Students.GetByIdAsync(association.User.Id, cancellationToken);
+        return await _context.Students.GetByIdAsync(user.Id, cancellationToken);
     }
 }

@@ -1,18 +1,21 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
-using Kysect.Shreks.Application.Abstractions.Submissions.Queries;
+using Kysect.Shreks.Application.CommandProcessing;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Github;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
-using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
-using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.Extensions;
+using Kysect.Shreks.Core.Specifications.Submissions;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Kysect.Shreks.Core.Submissions;
+using Microsoft.EntityFrameworkCore;
+using Kysect.Shreks.Core.Models;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 
@@ -20,6 +23,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 {
     private readonly IShreksCommandParser _commandParser;
     private readonly IMediator _mediator;
+    private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _queue;
     private readonly GithubSubmissionFactory _githubSubmissionFactory;
 
@@ -32,6 +36,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     {
         _commandParser = commandParser;
         _mediator = mediator;
+        _context = context;
         _queue = queue;
         _githubSubmissionFactory = githubSubmissionFactory;
     }
@@ -39,7 +44,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
         if (isMerged.HasValue && isMerged == false)
-            await ChangeSubmissionState(SubmissionStateDto.Active, prDescriptor, logger, eventNotifier);
+            await ChangeSubmissionState(SubmissionState.Active, prDescriptor, logger, eventNotifier);
     }
 
     public async Task ProcessPullRequestUpdate(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier, CancellationToken cancellationToken)
@@ -60,7 +65,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     public async Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
-        var state = merged ? SubmissionStateDto.Completed : SubmissionStateDto.Inactive;
+        var state = merged ? SubmissionState.Completed : SubmissionState.Inactive;
         var submission = await ChangeSubmissionState(state, prDescriptor, logger, eventNotifier);
 
         if (merged && submission.Points is null)
@@ -70,24 +75,25 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         }
     }
 
-    private async Task<SubmissionDto> ChangeSubmissionState(
-        SubmissionStateDto state,
+    private async Task<Submission> ChangeSubmissionState(
+        SubmissionState state,
         GithubPullRequestDescriptor githubPullRequestDescriptor,
         ILogger repositoryLogger,
         IPullRequestCommitEventNotifier pullRequestCommitEventNotifier)
     {
-        var user = await GetUserByGithubLogin(githubPullRequestDescriptor.Sender, CancellationToken.None);
-        var submission = await GetGithubSubmissionAsync(
-            githubPullRequestDescriptor.Sender,
+        User? user = await _context.UserAssociations.FindUserByGithubUsername(githubPullRequestDescriptor.Sender)
+                      ?? throw new EntityNotFoundException($"Entity of type User with login {githubPullRequestDescriptor.Sender}");
+        GithubSubmission submission = await GetGithubSubmissionAsync(
+            githubPullRequestDescriptor.Organization,
             githubPullRequestDescriptor.Repository,
             githubPullRequestDescriptor.PrNumber);
 
-        var competeSubmissionCommand = new UpdateSubmissionState.Command(user, submission.Id, state);
+        var shreksCommandProcessor = new ShreksCommandProcessor(_context, _queue);
+        Submission completedSubmission = await shreksCommandProcessor.UpdateSubmission(submission.Id, user.Id, state, CancellationToken.None);
 
-        var response = await _mediator.Send(competeSubmissionCommand, CancellationToken.None);
         var pullRequestCommentEventNotifier = pullRequestCommitEventNotifier;
-        await pullRequestCommentEventNotifier.NotifySubmissionUpdate(response.Submission, repositoryLogger, true, false);
-        return response.Submission;
+        await pullRequestCommentEventNotifier.NotifySubmissionUpdate(completedSubmission, repositoryLogger, true, false);
+        return completedSubmission;
     }
 
     public async Task ProcessPullRequestReviewComment(string? comment, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
@@ -149,11 +155,11 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             approveCommand = new RateCommand(100, 0);
         }
 
-        var getSubmissionCommand = new GetLastSubmissionByPr.Query(prDescriptor);
+        var githubSubmissionService = new GithubSubmissionService(_context);
+        Submission submission = await githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
+        double? points = submission.Points?.Value;
 
-        var response = await _mediator.Send(getSubmissionCommand, CancellationToken.None);
-
-        switch (response.Submission.Points)
+        switch (points)
         {
             case null:
                 BaseShreksCommandResult result = await ProceedCommandAsync(approveCommand, prDescriptor, logger);
@@ -170,7 +176,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
                 }
             default:
                 {
-                    var message = $"Submission is already rated with {response.Submission.Points} points. If you want to change it, please use /update command.";
+                    var message = $"Submission is already rated with {points} points. If you want to change it, please use /update command.";
                     await eventNotifier.SendCommentToPullRequest(message);
                     logger.LogInformation("Notify: " + message);
                     break;
@@ -195,7 +201,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
     {
-        var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory);
+        var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context);
         var processor = new GithubCommandProcessor(contextCreator, repositoryLogger, CancellationToken.None);
         BaseShreksCommandResult result;
 
@@ -213,28 +219,17 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         return result;
     }
 
-    private async Task<Guid> GetSubjectCourseByOrganization(string organization, CancellationToken cancellationToken)
+    private async Task<GithubSubmission> GetGithubSubmissionAsync(string organization, string repository, long prNumber)
     {
-        var response = await _mediator.Send(new GetSubjectCourseByOrganization.Query(organization));
-        return response.SubjectCourseId;
-    }
+        var spec = new FindLatestGithubSubmission(organization, repository, prNumber);
 
-    private async Task<Guid> GetUserByGithubLogin(string login, CancellationToken cancellationToken)
-    {
-        var response = await _mediator.Send(new GetUserByGithubUsername.Query(login));
-        return response.UserId;
-    }
+        var submission = await _context.SubmissionAssociations
+            .WithSpecification(spec)
+            .FirstOrDefaultAsync();
 
-    private async Task<Guid> GetAssignmentByBranchAndSubjectCourse(string branch, Guid subjectCourseId)
-    {
-        var response = await _mediator.Send(new GetAssignmentByBranchAndSubjectCourse.Query(branch, subjectCourseId));
-        return response.AssignmentId;
-    }
+        if (submission is null)
+            throw new EntityNotFoundException("No submission found");
 
-    private async Task<SubmissionDto> GetGithubSubmissionAsync(string organization, string repository, long prNumber)
-    {
-        var query = new GetGithubSubmission.Query(organization, repository, prNumber);
-        var response = await _mediator.Send(query);
-        return response.Submission;
+        return submission;
     }
 }

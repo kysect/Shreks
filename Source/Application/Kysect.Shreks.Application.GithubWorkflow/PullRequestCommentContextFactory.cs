@@ -1,6 +1,11 @@
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries;
+using Kysect.Shreks.Application.GithubWorkflow.Extensions;
+using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -12,16 +17,19 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     private readonly ILogger _log;
     private readonly GithubPullRequestDescriptor _pullRequestDescriptor;
     private readonly GithubCommandSubmissionFactory _githubCommandSubmissionFactory;
+    private readonly IShreksDatabaseContext _context;
 
     public PullRequestCommentContextFactory(
         IMediator mediator,
         GithubPullRequestDescriptor pullRequestDescriptor,
         ILogger log,
-        GithubSubmissionFactory githubSubmissionFactory)
+        GithubSubmissionFactory githubSubmissionFactory,
+        IShreksDatabaseContext context)
     {
         _mediator = mediator;
         _pullRequestDescriptor = pullRequestDescriptor;
         _log = log;
+        _context = context;
         _githubCommandSubmissionFactory = new GithubCommandSubmissionFactory(githubSubmissionFactory);
     }
 
@@ -51,31 +59,19 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
 
     public async Task<PullRequestAndAssignmentContext> CreatePullRequestAndAssignmentContext(CancellationToken cancellationToken)
     {
+        var githubSubmissionService = new GithubSubmissionService(_context);
         var userId = await GetUserId(cancellationToken);
 
-        var subjectCourseId = await GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
-        var assignmentId = await GetAssignemntByBranchAndSubjectCourse(_pullRequestDescriptor.BranchName, subjectCourseId, cancellationToken);
-        return new PullRequestAndAssignmentContext(_mediator, userId, _pullRequestDescriptor, assignmentId, _log, _githubCommandSubmissionFactory);
-    }
+        SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
+        Assignment assignment = await githubSubmissionService.GetAssignmentByBranchAndSubjectCourse(subjectCourse.Id, _pullRequestDescriptor, cancellationToken);
 
-    private async Task<Guid> GetSubjectCourseByOrganization(string organization, CancellationToken cancellationToken)
-    {
-        var response = await _mediator.Send(new GetSubjectCourseByOrganization.Query(organization));
-        return response.SubjectCourseId;
-    }
-
-    private async Task<Guid> GetAssignemntByBranchAndSubjectCourse(string branch, Guid subjectCourseId, CancellationToken cancellationToken)
-    {
-        var response = await _mediator.Send(
-            new GetAssignmentByBranchAndSubjectCourse.Query(branch,
-                subjectCourseId));
-        return response.AssignmentId;
+        return new PullRequestAndAssignmentContext(_mediator, userId, _pullRequestDescriptor, assignment.Id, _log, _githubCommandSubmissionFactory);
     }
 
     private async Task<Guid> GetUserId(CancellationToken cancellationToken)
     {
-        var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Sender);
-        var response = await _mediator.Send(query, cancellationToken);
-        return response.UserId;
+        User user = await _context.UserAssociations.FindUserByGithubUsername(_pullRequestDescriptor.Sender)
+                                        ?? throw new EntityNotFoundException($"Entity of type User with login {_pullRequestDescriptor.Sender}");
+        return user.Id;
     }
 }
