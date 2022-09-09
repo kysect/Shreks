@@ -69,7 +69,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     {
         var user = await GetUserByGithubLogin(githubPullRequestDescriptor.Sender, CancellationToken.None);
         var submission = await GetGithubSubmissionAsync(
-            githubPullRequestDescriptor.Sender,
+            githubPullRequestDescriptor.Organization,
             githubPullRequestDescriptor.Repository,
             githubPullRequestDescriptor.PrNumber);
 
