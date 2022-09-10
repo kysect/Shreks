@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Commands.Submissions;
+using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Dto.Github;
 using MediatR;
 using Microsoft.Extensions.Logging;

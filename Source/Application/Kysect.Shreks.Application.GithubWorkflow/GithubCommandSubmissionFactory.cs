@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.Commands.Submissions;
+﻿using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factories;

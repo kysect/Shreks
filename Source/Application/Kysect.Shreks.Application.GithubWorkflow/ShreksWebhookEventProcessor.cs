@@ -1,12 +1,13 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.CommandProcessing;
-using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
+using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
+using Kysect.Shreks.Application.UserCommands.Abstractions.Commands;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Specifications.Submissions;
@@ -203,12 +204,13 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
     {
         var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context);
-        var processor = new GithubCommandProcessor(contextCreator, repositoryLogger, CancellationToken.None);
+        var commandProcessor = new ShreksCommandProcessor(contextCreator);
+        var processor = new GithubCommandProcessor(contextCreator, repositoryLogger, CancellationToken.None, commandProcessor);
         BaseShreksCommandResult result;
 
         try
         {
-            result = await command.AcceptAsync(processor);
+            result = await processor.Visit(command);
         }
         catch (Exception e)
         {

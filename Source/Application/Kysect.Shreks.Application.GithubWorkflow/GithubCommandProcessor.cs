@@ -1,8 +1,9 @@
-using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.UserCommands.Abstractions;
+using Kysect.Shreks.Application.UserCommands.Abstractions.Commands;
 using Kysect.Shreks.Common.Exceptions;
 using Microsoft.Extensions.Logging;
 
@@ -13,11 +14,13 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     private readonly ICommandContextFactory _contextFactory;
     private readonly CancellationToken _cancellationToken;
     private readonly ILogger _logger;
+    private readonly IShreksCommandProcessor _shreksCommandProcessor;
 
-    public GithubCommandProcessor(ICommandContextFactory contextFactory, ILogger logger, CancellationToken cancellationToken)
+    public GithubCommandProcessor(ICommandContextFactory contextFactory, ILogger logger, CancellationToken cancellationToken, IShreksCommandProcessor shreksCommandProcessor)
     {
         _contextFactory = contextFactory;
         _cancellationToken = cancellationToken;
+        _shreksCommandProcessor = shreksCommandProcessor;
         _logger = logger;
     }
 
@@ -25,8 +28,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            SubmissionContext context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            SubmissionRateDto submission = await rateCommand.ExecuteAsync(context, _cancellationToken);
+            SubmissionRateDto submission = await _shreksCommandProcessor.Rate(rateCommand, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission rated.\n{submission.ToPullRequestString()}");
         }
         catch (ShreksDomainException e)
@@ -41,8 +43,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            SubmissionContext context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            SubmissionRateDto submission = await updateCommand.ExecuteAsync(context, _cancellationToken);
+            SubmissionRateDto submission = await _shreksCommandProcessor.Update(updateCommand, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission updated.\n{submission.ToPullRequestString()}");
         }
         catch (ShreksDomainException e)
@@ -56,7 +57,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     public async Task<BaseShreksCommandResult> VisitAsync(HelpCommand helpCommand)
     {
         BaseContext context = await _contextFactory.CreateBaseContext(_cancellationToken);
-        string result = await helpCommand.ExecuteAsync(context, _cancellationToken);
+        string result = await _shreksCommandProcessor.Help(helpCommand, _cancellationToken);
         return new BaseShreksCommandResult(true, result);
     }
 
@@ -64,8 +65,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            await command.ExecuteAsync(context, _cancellationToken);
+            await _shreksCommandProcessor.Activate(command, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission activated successfully");
         }
         catch (ShreksDomainException e)
@@ -80,8 +80,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            await command.ExecuteAsync(context, _cancellationToken);
+            await _shreksCommandProcessor.Deactivate(command, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission deactivated successfully");
         }
         catch (ShreksDomainException e)
@@ -96,10 +95,8 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            var context = await _contextFactory.CreatePullRequestAndAssignmentContext(_cancellationToken);
-            SubmissionRateDto submission = await command.ExecuteAsync(context, _cancellationToken);
+            SubmissionRateDto submission = await _shreksCommandProcessor.CreateSubmission(command, _cancellationToken);
             return new BaseShreksCommandResult(true, $"Submission created.\n{submission.ToPullRequestString()}");
-
         }
         catch (ShreksDomainException e)
         {
@@ -113,8 +110,7 @@ public class GithubCommandProcessor : IShreksCommandVisitor<BaseShreksCommandRes
     {
         try
         {
-            var context = await _contextFactory.CreateSubmissionContext(_cancellationToken);
-            await command.ExecuteAsync(context, _cancellationToken);
+            await _shreksCommandProcessor.Delete(command, _cancellationToken);
             return new BaseShreksCommandResult(true, "Submission deleted successfully");
         }
         catch (ShreksDomainException e)

@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Dto.Study;
 
-namespace Kysect.Shreks.Application.Commands.Submissions;
+namespace Kysect.Shreks.Application.Commands.Processors;
 
 public interface ICommandSubmissionFactory
 {
