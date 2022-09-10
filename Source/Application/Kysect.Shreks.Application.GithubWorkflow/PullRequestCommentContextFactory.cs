@@ -1,4 +1,3 @@
-using AutoMapper;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Dto.Study;
@@ -19,18 +18,15 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     private readonly GithubCommandSubmissionFactory _githubCommandSubmissionFactory;
     private readonly IShreksDatabaseContext _context;
     private readonly GithubSubmissionService _githubSubmissionService;
-    private readonly IMapper _mapper;
 
     public PullRequestCommentContextFactory(GithubPullRequestDescriptor pullRequestDescriptor,
         ILogger log,
         GithubSubmissionFactory githubSubmissionFactory,
-        IShreksDatabaseContext context,
-        IMapper mapper)
+        IShreksDatabaseContext context)
     {
         _pullRequestDescriptor = pullRequestDescriptor;
         _log = log;
         _context = context;
-        _mapper = mapper;
         _githubCommandSubmissionFactory = new GithubCommandSubmissionFactory(githubSubmissionFactory);
         _githubSubmissionService = new GithubSubmissionService(_context);
     }
@@ -46,8 +42,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     {
         Guid userId = await GetUserId(cancellationToken);
         Submission submission = await _githubSubmissionService.GetCurrentUnratedSubmissionByPrNumber(_pullRequestDescriptor, cancellationToken);
-        var dto = _mapper.Map<SubmissionDto>(submission);
-        return new SubmissionContext(_log, userId, dto);
+        return new SubmissionContext(_log, userId, submission);
     }
 
     public async Task<PullRequestContext> CreatePullRequestContext(CancellationToken cancellationToken)

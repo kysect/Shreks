@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using Kysect.Shreks.Application.Abstractions.Google;
+﻿using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
@@ -7,7 +7,6 @@ using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
-using Kysect.Shreks.Application.UserCommands.Abstractions.Commands;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Specifications.Submissions;
@@ -27,19 +26,17 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _queue;
     private readonly GithubSubmissionFactory _githubSubmissionFactory;
-    private readonly IMapper _mapper;
 
     public ShreksWebhookEventProcessor(
         IShreksCommandParser commandParser,
         IShreksDatabaseContext context,
         ITableUpdateQueue queue,
-        GithubSubmissionFactory githubSubmissionFactory, IMapper mapper)
+        GithubSubmissionFactory githubSubmissionFactory)
     {
         _commandParser = commandParser;
         _context = context;
         _queue = queue;
         _githubSubmissionFactory = githubSubmissionFactory;
-        _mapper = mapper;
     }
 
     public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
@@ -202,8 +199,8 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
     {
-        var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context, _mapper);
-        var commandProcessor = new ShreksCommandProcessor(contextCreator, new ShreksCommandService(_context, _queue), _mapper);
+        var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context);
+        var commandProcessor = new ShreksCommandProcessor(contextCreator, new ShreksCommandService(_context, _queue));
         BaseShreksCommandResult result;
 
         try

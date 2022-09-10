@@ -1,7 +1,7 @@
+using Kysect.Shreks.Application.Commands.Commands;
+using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.UserCommands.Abstractions;
-using Kysect.Shreks.Application.UserCommands.Abstractions.Commands;
 using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Commands.Extensions;

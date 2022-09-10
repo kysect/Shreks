@@ -1,4 +1,3 @@
-using AutoMapper;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -12,7 +11,7 @@ public class AddGithubUserAssociationHandler : IRequestHandler<Command, Response
 {
     private readonly IShreksDatabaseContext _context;
 
-    public AddGithubUserAssociationHandler(IShreksDatabaseContext context, IMapper mapper)
+    public AddGithubUserAssociationHandler(IShreksDatabaseContext context)
     {
         _context = context;
     }

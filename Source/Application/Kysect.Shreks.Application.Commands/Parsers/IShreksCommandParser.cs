@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.UserCommands.Abstractions.Commands;
+using Kysect.Shreks.Application.Commands.Commands;
 
 namespace Kysect.Shreks.Application.Commands.Parsers;
 

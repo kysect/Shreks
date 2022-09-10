@@ -1,11 +1,9 @@
-﻿using AutoMapper;
+﻿using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.UserCommands.Abstractions.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Factories;
 using Microsoft.Extensions.Logging;
 using Kysect.Shreks.Common.Exceptions;
-using Kysect.Shreks.Application.UserCommands.Abstractions;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Models;
 
@@ -15,13 +13,11 @@ public class ShreksCommandProcessor : IShreksCommandProcessor
 {
     private readonly ICommandContextFactory _commandContextFactory;
     private readonly IShreksCommandService _shreksCommandService;
-    private readonly IMapper _mapper;
 
-    public ShreksCommandProcessor(ICommandContextFactory commandContextFactory, IShreksCommandService shreksCommandService, IMapper mapper)
+    public ShreksCommandProcessor(ICommandContextFactory commandContextFactory, IShreksCommandService shreksCommandService)
     {
         _commandContextFactory = commandContextFactory;
         _shreksCommandService = shreksCommandService;
-        _mapper = mapper;
     }
 
     public async Task<SubmissionRateDto> Rate(RateCommand rateCommand, CancellationToken cancellationToken)
@@ -89,22 +85,22 @@ public class ShreksCommandProcessor : IShreksCommandProcessor
         return HelpCommand.HelpString;
     }
 
-    public async Task<SubmissionDto> Activate(ActivateCommand activateCommand, CancellationToken cancellationToken)
+    public async Task<Submission> Activate(ActivateCommand activateCommand, CancellationToken cancellationToken)
     {
         var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
 
         context.Log.LogInformation($"Handle /activate command for submission {context.Submission.Id} from user {context.IssuerId}");
         Submission submission = await _shreksCommandService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Active, cancellationToken);
-        return _mapper.Map<SubmissionDto>(submission);
+        return submission;
     }
 
-    public async Task<SubmissionDto> Deactivate(DeactivateCommand deactivateCommand, CancellationToken cancellationToken)
+    public async Task<Submission> Deactivate(DeactivateCommand deactivateCommand, CancellationToken cancellationToken)
     {
         var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
 
         context.Log.LogInformation($"Handle /deactivate command for submission {context.Submission.Id} from user {context.IssuerId}");
         Submission submission = await _shreksCommandService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Inactive, cancellationToken);
-        return _mapper.Map<SubmissionDto>(submission);
+        return submission;
     }
 
     public async Task<SubmissionRateDto> CreateSubmission(CreateSubmissionCommand createSubmissionCommand, CancellationToken cancellationToken)
@@ -121,12 +117,12 @@ public class ShreksCommandProcessor : IShreksCommandProcessor
         return result;
     }
 
-    public async Task<SubmissionDto> Delete(DeleteCommand deleteCommand, CancellationToken cancellationToken)
+    public async Task<Submission> Delete(DeleteCommand deleteCommand, CancellationToken cancellationToken)
     {
         var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
         context.Log.LogInformation($"Handle /delete command for submission {context.Submission.Id} from user {context.IssuerId}");
 
         Submission submission = await _shreksCommandService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Deleted, cancellationToken);
-        return _mapper.Map<SubmissionDto>(submission);
+        return submission;
     }
 }

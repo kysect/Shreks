@@ -18,7 +18,6 @@
       <ProjectReference Include="..\..\Domain\Kysect.Shreks.Common\Kysect.Shreks.Common.csproj" />
       <ProjectReference Include="..\..\Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj" />
       <ProjectReference Include="..\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
-      <ProjectReference Include="..\Kysect.Shreks.Application.UserCommands.Abstractions\Kysect.Shreks.Application.UserCommands.Abstractions.csproj" />
       <ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
     </ItemGroup>
 

@@ -1,5 +1,4 @@
 ﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

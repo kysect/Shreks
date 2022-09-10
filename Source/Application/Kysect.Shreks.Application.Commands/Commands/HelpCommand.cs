@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace Kysect.Shreks.Application.UserCommands.Abstractions.Commands;
+namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/help")]
 public class HelpCommand : IShreksCommand
