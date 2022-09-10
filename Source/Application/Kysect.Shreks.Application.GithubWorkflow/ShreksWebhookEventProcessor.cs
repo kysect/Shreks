@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Kysect.Shreks.Core.Submissions;
 using Microsoft.EntityFrameworkCore;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Application.Commands.Extensions;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 
@@ -203,12 +204,11 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     {
         var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context, _mapper);
         var commandProcessor = new ShreksCommandProcessor(contextCreator, new ShreksCommandService(_context, _queue), _mapper);
-        var processor = new GithubCommandProcessor(contextCreator, repositoryLogger, CancellationToken.None, commandProcessor);
         BaseShreksCommandResult result;
 
         try
         {
-            result = await processor.Visit(command);
+            return await commandProcessor.ProcessBaseCommand(command, repositoryLogger, CancellationToken.None);
         }
         catch (Exception e)
         {
