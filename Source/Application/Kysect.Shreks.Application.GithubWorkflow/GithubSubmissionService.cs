@@ -61,4 +61,26 @@ public class GithubSubmissionService
 
         return assignment;
     }
+
+    public async Task<Submission> GetCurrentUnratedSubmissionByPrNumber(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
+    {
+        var submission = await _context.SubmissionAssociations
+            .OfType<GithubSubmissionAssociation>()
+            .Where(a =>
+                a.Organization == pullRequestDescriptor.Organization
+                && a.Repository == pullRequestDescriptor.Repository
+                && a.PrNumber == pullRequestDescriptor.PrNumber
+                && a.Submission.Rating == null)
+            .OrderByDescending(a => a.Submission.SubmissionDate)
+            .Select(a => a.Submission)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (submission is null)
+        {
+            var message = $"No unrated submission in pr {pullRequestDescriptor.Payload}";
+            throw new EntityNotFoundException(message);
+        }
+
+        return submission;
+    }
 }

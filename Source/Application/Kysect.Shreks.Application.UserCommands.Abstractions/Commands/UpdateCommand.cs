@@ -24,4 +24,13 @@ public class UpdateCommand : IShreksCommand
     
     [Option(shortName:'d', longName:"date", Group = "update", Required = false)]
     public string? DateStr { get; }
+
+    public string ToLogLine()
+    {
+        return $" {{ SubmissionCode : {SubmissionCode}," +
+               $" RatingPercent: {RatingPercent}" +
+               $" ExtraPoints: {ExtraPoints}" +
+               $" DateStr: {DateStr}" +
+               $" }}";
+    }
 }

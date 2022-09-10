@@ -1,5 +1,5 @@
-﻿using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Application.CommandProcessing;
+﻿using AutoMapper;
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
@@ -13,7 +13,6 @@ using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Specifications.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Kysect.Shreks.Core.Submissions;
 using Microsoft.EntityFrameworkCore;
@@ -24,23 +23,22 @@ namespace Kysect.Shreks.Application.GithubWorkflow;
 public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 {
     private readonly IShreksCommandParser _commandParser;
-    private readonly IMediator _mediator;
     private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _queue;
     private readonly GithubSubmissionFactory _githubSubmissionFactory;
+    private readonly IMapper _mapper;
 
     public ShreksWebhookEventProcessor(
         IShreksCommandParser commandParser,
-        IMediator mediator,
         IShreksDatabaseContext context,
         ITableUpdateQueue queue,
-        GithubSubmissionFactory githubSubmissionFactory)
+        GithubSubmissionFactory githubSubmissionFactory, IMapper mapper)
     {
         _commandParser = commandParser;
-        _mediator = mediator;
         _context = context;
         _queue = queue;
         _githubSubmissionFactory = githubSubmissionFactory;
+        _mapper = mapper;
     }
 
     public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
@@ -90,8 +88,8 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             githubPullRequestDescriptor.Repository,
             githubPullRequestDescriptor.PrNumber);
 
-        var shreksCommandProcessor = new ShreksCommandHandler(_context, _queue);
-        Submission completedSubmission = await shreksCommandProcessor.UpdateSubmission(submission.Id, user.Id, state, CancellationToken.None);
+        var shreksCommandProcessor = new ShreksCommandService(_context, _queue);
+        Submission completedSubmission = await shreksCommandProcessor.UpdateSubmissionState(submission.Id, user.Id, state, CancellationToken.None);
 
         var pullRequestCommentEventNotifier = pullRequestCommitEventNotifier;
         await pullRequestCommentEventNotifier.NotifySubmissionUpdate(completedSubmission, repositoryLogger, true, false);
@@ -203,8 +201,8 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
     {
-        var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context);
-        var commandProcessor = new ShreksCommandProcessor(contextCreator);
+        var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context, _mapper);
+        var commandProcessor = new ShreksCommandProcessor(contextCreator, new ShreksCommandService(_context, _queue), _mapper);
         var processor = new GithubCommandProcessor(contextCreator, repositoryLogger, CancellationToken.None, commandProcessor);
         BaseShreksCommandResult result;
 
