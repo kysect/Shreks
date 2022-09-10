@@ -89,7 +89,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             githubPullRequestDescriptor.Repository,
             githubPullRequestDescriptor.PrNumber);
 
-        var shreksCommandProcessor = new ShreksCommandProcessor(_context, _queue);
+        var shreksCommandProcessor = new ShreksCommandHandler(_context, _queue);
         Submission completedSubmission = await shreksCommandProcessor.UpdateSubmission(submission.Id, user.Id, state, CancellationToken.None);
 
         var pullRequestCommentEventNotifier = pullRequestCommitEventNotifier;

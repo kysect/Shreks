@@ -8,12 +8,12 @@ using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 
 namespace Kysect.Shreks.Application.CommandProcessing;
 
-public class ShreksCommandProcessor
+public class ShreksCommandHandler
 {
     private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _updateQueue;
 
-    public ShreksCommandProcessor(IShreksDatabaseContext context, ITableUpdateQueue updateQueue)
+    public ShreksCommandHandler(IShreksDatabaseContext context, ITableUpdateQueue updateQueue)
     {
         _context = context;
         _updateQueue = updateQueue;
