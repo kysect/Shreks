@@ -12,7 +12,7 @@ namespace Kysect.Shreks.Integration.Google.Tables;
 
 public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
 {
-    private static readonly IComponent EmptyAssignmentPointsCell = HStack(Enumerable.Repeat(Empty(), 2));
+    private static readonly IComponent EmptyAssignmentPointsCell = HStack(Enumerable.Repeat(Label(string.Empty), 2));
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ICultureInfoProvider _cultureInfoProvider;
