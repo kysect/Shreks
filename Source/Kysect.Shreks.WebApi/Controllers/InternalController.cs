@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.Integration.Github.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +14,23 @@ namespace Kysect.Shreks.WebApi.Controllers;
 public class InternalController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly TestEnvironmentConfiguration _testEnvironmentConfiguration;
 
-    public InternalController(IMediator mediator)
+    public InternalController(IMediator mediator, TestEnvironmentConfiguration testEnvironmentConfiguration)
     {
         _mediator = mediator;
+        _testEnvironmentConfiguration = testEnvironmentConfiguration;
     }
 
     [HttpPost("seed-test-data")]
     public async Task<IActionResult> SeedTestData([FromQuery] string environment)
     {
-        var command = new Query(environment);
+        var command = new Query(
+            environment,
+            _testEnvironmentConfiguration.Organization,
+            _testEnvironmentConfiguration.TemplateRepository,
+            _testEnvironmentConfiguration.Users);
+
         try
         {
             await _mediator.Send(command);

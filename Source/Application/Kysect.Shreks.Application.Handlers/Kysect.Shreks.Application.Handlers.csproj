@@ -7,9 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
         <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj" />
         <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />
+        <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
         <ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
         <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
     </ItemGroup>
