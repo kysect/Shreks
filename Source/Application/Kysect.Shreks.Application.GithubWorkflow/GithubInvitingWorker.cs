@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,9 +35,8 @@ public class GithubInvitingWorker : BackgroundService
             {
                 using IServiceScope scope = _serviceProvider.CreateScope();
 
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                var updateOrganizationCommand = new UpdateSubjectCourseOrganizations.Command();
-                await mediator.Send(updateOrganizationCommand, stoppingToken);
+                var subjectCourseGithubOrganizationManager = scope.ServiceProvider.GetRequiredService<ISubjectCourseGithubOrganizationManager>();
+                await subjectCourseGithubOrganizationManager.UpdateOrganizations(stoppingToken);
             }
             catch (Exception ex)
             {

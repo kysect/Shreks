@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Application.Dto.Study;
 using MediatR;
 
-namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
+namespace Kysect.Shreks.Application.Abstractions.Github;
 
 public static class AddGithubSubjectCourseAssociation
 {

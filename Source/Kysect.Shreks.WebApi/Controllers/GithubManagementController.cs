@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
+﻿using Kysect.Shreks.Application.Abstractions.Github;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

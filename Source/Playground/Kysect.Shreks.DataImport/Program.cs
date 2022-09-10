@@ -1,8 +1,8 @@
 // See https://aka.ms/new-console-template for more information
 
+using Kysect.Shreks.DataImport;
 using Newtonsoft.Json;
 using Shreks.ApiClient;
-using TimeSpan = System.TimeSpan;
 
 Console.WriteLine();
 
@@ -144,32 +144,35 @@ foreach (var task in tasks)
 DateTime CreateDateTime(int month, int day)
     => new DateTime(2022, month, day);
 
-public readonly record struct StudentInfo(
-    string FullName,
-    string Group,
-    string GithubUsername,
-    string TelegramTag,
-    int IsuNumber,
-    DateTime Submitted);
-
-public readonly record struct StudentName(string FirstName, string MiddleName, string LastName)
+namespace Kysect.Shreks.DataImport
 {
-    public static StudentName FromString(string value)
+    public readonly record struct StudentInfo(
+        string FullName,
+        string Group,
+        string GithubUsername,
+        string TelegramTag,
+        int IsuNumber,
+        DateTime Submitted);
+
+    public readonly record struct StudentName(string FirstName, string MiddleName, string LastName)
     {
-        var split = value.Trim().Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        public static StudentName FromString(string value)
+        {
+            var split = value.Trim().Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-        var lastName = split.Length > 0 ? split[0] : string.Empty;
-        var firstName = split.Length > 1 ? split[1] : string.Empty;
-        var middleName = split.Length > 2 ? split[2] : string.Empty;
+            var lastName = split.Length > 0 ? split[0] : string.Empty;
+            var firstName = split.Length > 1 ? split[1] : string.Empty;
+            var middleName = split.Length > 2 ? split[2] : string.Empty;
 
-        return new StudentName(firstName, middleName, lastName);
+            return new StudentName(firstName, middleName, lastName);
+        }
     }
-}
 
-public readonly record struct GroupName(string Name)
-{
-    public static GroupName FromShortName(int value)
-        => new GroupName($"M32{value:00}1");
-}
+    public readonly record struct GroupName(string Name)
+    {
+        public static GroupName FromShortName(int value)
+            => new GroupName($"M32{value:00}1");
+    }
 
-public readonly record struct LabConfig(string Title, int Index, double MaxPoints, DateTime Deadline);
+    public readonly record struct LabConfig(string Title, int Index, double MaxPoints, DateTime Deadline);
+}
