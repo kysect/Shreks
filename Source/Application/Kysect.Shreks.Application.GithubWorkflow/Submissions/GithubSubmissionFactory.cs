@@ -27,7 +27,9 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
         _context = context;
     }
 
-    public async Task<GithubSubmissionCreationResult> CreateOrUpdateGithubSubmission(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
+    public async Task<GithubSubmissionCreationResult> CreateOrUpdateGithubSubmission(
+        GithubPullRequestDescriptor pullRequestDescriptor,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(pullRequestDescriptor);
 
@@ -92,7 +94,7 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
             .FindUserByGithubUsername(userGithubUsername);
 
         if (user is null)
-            throw new UserWasNotFoundByGithubUsernameException(userGithubUsername);
+            throw new UserNotFoundByGithubUsernameException(userGithubUsername);
 
         return user.Id;
     }

@@ -10,7 +10,11 @@ public class PullRequestAndAssignmentContext : BaseContext
     public Guid AssignmentId { get; }
     public ICommandSubmissionFactory CommandSubmissionFactory { get; }
 
-    public PullRequestAndAssignmentContext(Guid issuerId, GithubPullRequestDescriptor pullRequestDescriptor, Guid assignmentId, ILogger log, ICommandSubmissionFactory commandSubmissionFactory)
+    public PullRequestAndAssignmentContext(ICommandSubmissionFactory commandSubmissionFactory,
+        GithubPullRequestDescriptor pullRequestDescriptor,
+        Guid issuerId,
+        Guid assignmentId,
+        ILogger log)
         : base(log, issuerId)
     {
         PullRequestDescriptor = pullRequestDescriptor;

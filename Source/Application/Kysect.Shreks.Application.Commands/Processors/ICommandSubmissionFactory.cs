@@ -5,5 +5,5 @@ namespace Kysect.Shreks.Application.Commands.Processors;
 
 public interface ICommandSubmissionFactory
 {
-    public Task<SubmissionRateDto> CreateSubmission(Guid userId, Guid assignmentId, GithubPullRequestDescriptor pullRequestDescriptor);
+    Task<SubmissionRateDto> CreateSubmission(Guid userId, Guid assignmentId, GithubPullRequestDescriptor pullRequestDescriptor);
 }

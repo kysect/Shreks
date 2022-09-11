@@ -60,7 +60,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
         Assignment assignment = await _githubSubmissionService.GetAssignmentByBranchAndSubjectCourse(subjectCourse.Id, _pullRequestDescriptor, cancellationToken);
 
-        return new PullRequestAndAssignmentContext(userId, _pullRequestDescriptor, assignment.Id, _log, _githubCommandSubmissionFactory);
+        return new PullRequestAndAssignmentContext(_githubCommandSubmissionFactory, _pullRequestDescriptor, userId, assignment.Id, _log);
     }
 
     private async Task<Guid> GetUserId(CancellationToken cancellationToken)
