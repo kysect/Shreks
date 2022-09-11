@@ -13,10 +13,11 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
     private static readonly IRowComponent Header = Row
     (
         Label("ФИО").WithColumnWidth(240),
-            Label("Группа"),
-            Label("Лабораторная работа").WithColumnWidth(150),
-            Label("Дата").WithColumnWidth(150),
-            Label("GitHub").WithColumnWidth(400)
+        Label("Группа"),
+        Label("Лабораторная работа").WithColumnWidth(150),
+        Label("Дата").WithColumnWidth(150),
+        Label("Статус"),
+        Label("GitHub").WithColumnWidth(400)
     );
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
@@ -43,6 +44,7 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
                 Label(student.GroupName),
                 Label(submission.AssignmentShortName),
                 Label(submission.SubmissionDate, _cultureInfoProvider.GetCultureInfo()),
+                Label(submission.State.ToString()),
                 Label(submission.Payload)
             );
         }

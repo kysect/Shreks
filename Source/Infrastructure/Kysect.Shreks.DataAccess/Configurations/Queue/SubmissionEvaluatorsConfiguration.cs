@@ -10,6 +10,7 @@ public class SubmissionEvaluatorsConfiguration : IEntityTypeConfiguration<Submis
     {
         builder.HasDiscriminator<string>("Discriminator")
             .HasValue<AssignmentDeadlineStateEvaluator>(nameof(AssignmentDeadlineStateEvaluator))
-            .HasValue<SubmissionDateTimeEvaluator>(nameof(SubmissionDateTimeEvaluator));
+            .HasValue<SubmissionDateTimeEvaluator>(nameof(SubmissionDateTimeEvaluator))
+            .HasValue<SubmissionStateEvaluator>(nameof(SubmissionStateEvaluator));
     }
 }

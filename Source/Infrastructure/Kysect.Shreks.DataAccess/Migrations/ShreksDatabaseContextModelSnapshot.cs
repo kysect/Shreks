@@ -477,6 +477,13 @@ namespace Kysect.Shreks.DataAccess.Migrations
                     b.HasDiscriminator().HasValue("SubmissionDateTimeEvaluator");
                 });
 
+            modelBuilder.Entity("Kysect.Shreks.Core.Queue.Evaluators.SubmissionStateEvaluator", b =>
+                {
+                    b.HasBaseType("Kysect.Shreks.Core.Queue.Evaluators.SubmissionEvaluator");
+
+                    b.HasDiscriminator().HasValue("SubmissionStateEvaluator");
+                });
+
             modelBuilder.Entity("Kysect.Shreks.Core.Queue.Filters.AssignmentGroupFilter", b =>
                 {
                     b.HasBaseType("Kysect.Shreks.Core.Queue.Filters.SubmissionQueueFilter");
