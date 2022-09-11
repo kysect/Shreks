@@ -8,9 +8,6 @@ namespace Kysect.Shreks.Core.Study;
 public partial class StudentGroup : IEntity<Guid>
 {
     private readonly HashSet<Student> _students;
-    
-    // TODO: Remove when .NET 7 is released
-    protected virtual IReadOnlyCollection<GroupQueueFilter> Filters { get; set; }
 
     public StudentGroup(string name)
         : this(Guid.NewGuid())
