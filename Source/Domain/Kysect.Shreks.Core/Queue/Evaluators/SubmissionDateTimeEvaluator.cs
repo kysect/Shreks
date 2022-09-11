@@ -3,10 +3,15 @@ using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Evaluators;
 
-public partial class SubmissionDateTimeEvaluator : SubmissionEvaluator
+public class SubmissionDateTimeEvaluator : ISubmissionEvaluator
 {
-    public SubmissionDateTimeEvaluator(int position, SortingOrder sortingOrder) : base(position, sortingOrder) { }
+    public SubmissionDateTimeEvaluator(SortingOrder sortingOrder)
+    {
+        SortingOrder = sortingOrder;
+    }
 
-    public override double Evaluate(Submission submission)
+    public SortingOrder SortingOrder { get; }
+
+    public double Evaluate(Submission submission)
         => submission.SubmissionDate.Value.Ticks;
 }

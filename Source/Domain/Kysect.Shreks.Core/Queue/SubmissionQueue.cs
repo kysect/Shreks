@@ -9,13 +9,12 @@ namespace Kysect.Shreks.Core.Queue;
 
 public partial class SubmissionQueue : IEntity<Guid>
 {
-    private readonly IReadOnlyCollection<SubmissionQueueFilter> _filters;
-    private readonly IReadOnlyCollection<SubmissionEvaluator> _evaluators;
-    private readonly Lazy<IReadOnlyList<SubmissionEvaluator>> _orderedEvaluators;
+    private readonly IReadOnlyCollection<IQueueFilter> _filters;
+    private readonly IReadOnlyList<ISubmissionEvaluator> _evaluators;
 
     public SubmissionQueue(
-        IReadOnlyCollection<SubmissionQueueFilter> filters,
-        IReadOnlyCollection<SubmissionEvaluator> evaluators)
+        IReadOnlyCollection<IQueueFilter> filters,
+        IReadOnlyList<ISubmissionEvaluator> evaluators)
         : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(filters);
@@ -23,42 +22,20 @@ public partial class SubmissionQueue : IEntity<Guid>
 
         _filters = filters;
         _evaluators = evaluators;
-        _orderedEvaluators = new Lazy<IReadOnlyList<SubmissionEvaluator>>(OrderedEvaluators);
     }
-
-#pragma warning disable CS8618
-    protected SubmissionQueue()
-#pragma warning restore CS8618
-    {
-        _orderedEvaluators = new Lazy<IReadOnlyList<SubmissionEvaluator>>(OrderedEvaluators);
-    }
-
-    public virtual IReadOnlyCollection<SubmissionQueueFilter> Filters => _filters;
-    public virtual IReadOnlyCollection<SubmissionEvaluator> Evaluators => _evaluators;
 
     public async Task<IEnumerable<Submission>> UpdateSubmissions(
-        IQueryable<Submission> submissionsQuery,
+        IQueryable<Submission> query,
         IQueryExecutor queryExecutor,
         CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(query);
         ArgumentNullException.ThrowIfNull(queryExecutor);
-        ArgumentNullException.ThrowIfNull(Filters);
 
-        foreach (var filter in Filters)
-        {
-            submissionsQuery = filter.Filter(submissionsQuery);
-        }
+        query = _filters.Aggregate(query, (current, filter) => filter.Filter(current));
+        IReadOnlyCollection<Submission> submissions = await queryExecutor.ExecuteAsync(query, cancellationToken);
 
-        var submissions = await queryExecutor.ExecuteAsync(submissionsQuery, cancellationToken);
-
-        return SortedBy(submissions, _orderedEvaluators.Value);
-    }
-
-    private IReadOnlyList<SubmissionEvaluator> OrderedEvaluators()
-    {
-        return Evaluators
-            .OrderBy(x => x.Position)
-            .ToArray();
+        return SortedBy(submissions, _evaluators);
     }
 
     private static IEnumerable<Submission> SortedBy(
@@ -75,10 +52,10 @@ public partial class SubmissionQueue : IEntity<Guid>
     {
         var evaluator = evaluators.Current;
 
-        var groupings = submissions
+        IEnumerable<IGrouping<double, Submission>> groupings = submissions
             .GroupBy(x => evaluator.Evaluate(x));
 
-        var orderedGroupings = evaluator.SortingOrder switch
+        IOrderedEnumerable<IGrouping<double, Submission>> orderedGroupings = evaluator.SortingOrder switch
         {
             SortingOrder.Ascending => groupings.OrderBy(x => x.Key),
             SortingOrder.Descending => groupings.OrderByDescending(x => x.Key),

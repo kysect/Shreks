@@ -12,6 +12,5 @@ public class SubjectCourseGroupConfiguration : IEntityTypeConfiguration<SubjectC
 
         builder.HasOne(x => x.SubjectCourse);
         builder.HasOne(x => x.StudentGroup);
-        builder.HasOne(x => x.Queue);
     }
 }

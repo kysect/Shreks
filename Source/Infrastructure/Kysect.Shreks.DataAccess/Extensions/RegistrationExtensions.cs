@@ -15,4 +15,10 @@ public static class RegistrationExtensions
 
         return collection;
     }
+
+    public static Task UseDatabaseContext(this IServiceProvider provider)
+    {
+        var context = provider.GetRequiredService<ShreksDatabaseContext>();
+        return context.Database.MigrateAsync();
+    }
 }
