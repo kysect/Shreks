@@ -6,4 +6,5 @@ public enum SubmissionState
     Inactive,
     Deleted,
     Completed,
+    Reviewed,
 }

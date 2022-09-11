@@ -1,8 +1,6 @@
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.DeadlinePolicies;
-using Kysect.Shreks.Core.Models;
-using Kysect.Shreks.Core.Queue;
-using Kysect.Shreks.Core.Queue.Evaluators;
+using Kysect.Shreks.Core.Queue.Building;
 using Kysect.Shreks.Core.Queue.Filters;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Users;
@@ -17,7 +15,7 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<SubjectCourseAssociation> _associations;
     private readonly HashSet<Mentor> _mentors;
     private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
-    
+
     // TODO: Remove when .NET 7 is released
     protected virtual IReadOnlyCollection<SubmissionQueueFilter> Filters { get; init; }
 
@@ -41,7 +39,8 @@ public partial class SubjectCourse : IEntity<Guid>
     public virtual IReadOnlyCollection<Mentor> Mentors => _mentors;
     public virtual IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
-    public override string ToString() => Title;
+    public override string ToString()
+        => Title;
 
     public SubjectCourseGroup AddGroup(StudentGroup group)
     {
@@ -50,22 +49,9 @@ public partial class SubjectCourse : IEntity<Guid>
         if (Groups.Any(x => x.StudentGroup.Equals(group)))
             throw new DomainInvalidOperationException($"Group {group} is already assigned to this course");
 
-        var filters = new SubmissionQueueFilter[]
-        {
-            new GroupQueueFilter(new[] { group }),
-            new SubmissionStateFilter(SubmissionState.Active),
-            new SubjectCoursesFilter(Id)
-        };
-
-        var evaluators = new SubmissionEvaluator[]
-        {
-            new AssignmentDeadlineStateEvaluator(0, SortingOrder.Descending),
-            new SubmissionDateTimeEvaluator(1, SortingOrder.Ascending),
-        };
-
-        var queue = new SubmissionQueue(filters, evaluators);
+        var queue = new DefaultQueueBuilder(group, Id).Build();
         var subjectCourseGroup = new SubjectCourseGroup(this, group, queue);
-        
+
         _groups.Add(subjectCourseGroup);
         return subjectCourseGroup;
     }
@@ -93,7 +79,7 @@ public partial class SubjectCourse : IEntity<Guid>
         if (!_assignments.Remove(assignment))
             throw new DomainInvalidOperationException($"Assignment {assignment} is not assigned to this course");
     }
-    
+
     public void AddAssociation(SubjectCourseAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
@@ -105,7 +91,7 @@ public partial class SubjectCourse : IEntity<Guid>
 
         _associations.Add(association);
     }
-    
+
     public void RemoveAssociation(SubjectCourseAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
@@ -117,7 +103,7 @@ public partial class SubjectCourse : IEntity<Guid>
     public Mentor AddMentor(User user)
     {
         ArgumentNullException.ThrowIfNull(user);
-        
+
         if (Mentors.Any(x => x.User.Equals(user)))
             throw new DomainInvalidOperationException($"User {user} is already a mentor of this subject course");
 
@@ -126,11 +112,11 @@ public partial class SubjectCourse : IEntity<Guid>
 
         return mentor;
     }
-    
+
     public void RemoveMentor(Mentor mentor)
     {
         ArgumentNullException.ThrowIfNull(mentor);
-        
+
         if (!_mentors.Remove(mentor))
             throw new DomainInvalidOperationException($"Mentor {mentor} is not a mentor of this subject course");
     }

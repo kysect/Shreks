@@ -22,7 +22,7 @@ public partial class SubjectCourseGroup : IEntity
     [KeyProperty]
     public virtual StudentGroup StudentGroup { get; protected init; }
     
-    public virtual SubmissionQueue Queue { get; protected init; }
+    public virtual SubmissionQueue Queue { get; set; }
 
     public override string ToString()
         => StudentGroup.ToString();
