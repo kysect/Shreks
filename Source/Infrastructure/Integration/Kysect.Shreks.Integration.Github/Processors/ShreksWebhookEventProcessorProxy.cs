@@ -1,10 +1,8 @@
-using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Dto.Github;
-using Kysect.Shreks.Integration.Github.Applicaiton;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Github.Notifiers;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using Octokit.Webhooks;
@@ -27,14 +25,13 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
     public ShreksWebhookEventProcessorProxy(
         IActionNotifier actionNotifier,
         ILogger<ShreksWebhookEventProcessorProxy> logger,
-        IShreksCommandParser commandParser,
-        IMediator mediator,
-        IOrganizationGithubClientProvider clientProvider)
+        IOrganizationGithubClientProvider clientProvider,
+        IShreksWebhookEventProcessor eventProcessor)
     {
         _actionNotifier = actionNotifier;
         _logger = logger;
         _clientProvider = clientProvider;
-        _processor = new ShreksWebhookEventProcessor(commandParser, mediator);
+        _processor = eventProcessor;
     }
 
     protected override async Task ProcessPullRequestWebhookAsync(
@@ -116,15 +113,15 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
             switch (pullRequestReviewAction1)
             {
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "approved":
-                    await _processor.ProcessPullRequestReviewApprove(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
+                    await _processor.ProcessPullRequestReviewApprove(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, pullRequestEventNotifier);
                     break;
 
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "changes_requested":
-                    await _processor.ProcessPullRequestReviewRequestChanges(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
+                    await _processor.ProcessPullRequestReviewRequestChanges(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, pullRequestEventNotifier);
                     break;
 
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
-                    await _processor.ProcessPullRequestReviewComment(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, (IPullRequestEventNotifier) pullRequestEventNotifier);
+                    await _processor.ProcessPullRequestReviewComment(pullRequestReviewEvent.Review.Body, githubPullRequestDescriptor, repositoryLogger, pullRequestEventNotifier);
                     break;
 
                 case PullRequestReviewActionValue.Edited:

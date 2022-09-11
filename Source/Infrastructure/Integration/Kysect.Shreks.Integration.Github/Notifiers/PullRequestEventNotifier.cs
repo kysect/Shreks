@@ -1,4 +1,4 @@
-using Kysect.Shreks.Integration.Github.Applicaiton;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Microsoft.Extensions.Logging;
 using Octokit.Webhooks;
 

@@ -1,5 +1,4 @@
 using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.UserAssociations;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Users;

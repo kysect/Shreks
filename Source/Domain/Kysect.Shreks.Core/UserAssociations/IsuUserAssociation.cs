@@ -1,4 +1,3 @@
-using Kysect.Shreks.Common.Exceptions.User;
 using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.Core.UserAssociations;

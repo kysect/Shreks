@@ -15,7 +15,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Domain\Kysect.Shreks.Common\Kysect.Shreks.Common.csproj" />
       <ProjectReference Include="..\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Submissions\" />
     </ItemGroup>
 
 </Project>

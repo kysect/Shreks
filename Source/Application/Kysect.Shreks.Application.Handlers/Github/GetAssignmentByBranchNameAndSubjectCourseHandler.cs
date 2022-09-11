@@ -3,7 +3,7 @@ using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Github.Queries.GetAssignmentByBranchAndSubjectCourse;
+using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Queries.GetAssignmentByBranchAndSubjectCourse;
 namespace Kysect.Shreks.Application.Handlers.Github;
 
 public class GetAssignmentByBranchAndSubjectCourseHandler : IRequestHandler<Query, Response>

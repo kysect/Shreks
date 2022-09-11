@@ -2,6 +2,7 @@ using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Abstractions.Identity.Commands;
 using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Extensions;
+using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
@@ -17,7 +18,6 @@ using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Mapping.Extensions;
-using Kysect.Shreks.Playground.Github.TestEnv;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi.Extensions;
 using Kysect.Shreks.WebApi.Filters;
@@ -107,7 +107,9 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
                 .ConfigureDriveId(googleIntegrationConfiguration.GoogleDriveId));
     }
 
-    webApplicationBuilder.Services.AddGithubServices(cacheConfiguration, githubIntegrationConfiguration);
+    webApplicationBuilder.Services
+        .AddGithubServices(cacheConfiguration, githubIntegrationConfiguration)
+        .AddGithubWorkflowServices();
 
     if (webApplicationBuilder.Environment.IsDevelopment())
     {

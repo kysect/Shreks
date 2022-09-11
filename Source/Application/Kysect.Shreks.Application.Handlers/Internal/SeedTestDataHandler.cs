@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Kysect.Shreks.Playground.Github.TestEnv;
+using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using MediatR;
 using static Kysect.Shreks.Application.Abstractions.Internal.SeedTestData;

@@ -2,7 +2,6 @@
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Abstractions.Study.Commands.AddFractionDeadlinePolicy;

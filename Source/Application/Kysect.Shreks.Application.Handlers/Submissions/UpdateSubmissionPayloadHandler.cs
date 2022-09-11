@@ -1,7 +1,7 @@
 using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;

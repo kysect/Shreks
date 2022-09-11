@@ -1,5 +1,4 @@
 using CommandLine;
-using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
@@ -7,12 +6,11 @@ using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Common.Exceptions;
 using Microsoft.Extensions.Logging;
-using Serilog;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/update")]
-public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDto>
+public class UpdateCommand : IShreksCommand<SubmissionContext, SubmissionRateDto>
 {
     public UpdateCommand(int submissionCode, double? ratingPercent, double? extraPoints, string? dateStr)
     {
@@ -40,7 +38,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDt
         return visitor.VisitAsync(this);
     }
 
-    public async Task<SubmissionRateDto> ExecuteAsync(PullRequestContext context, CancellationToken cancellationToken)
+    public async Task<SubmissionRateDto> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
     {
         string message = $"Handle /update command from {context.IssuerId} with arguments:" +
                          $" {{ SubmissionCode : {SubmissionCode}," +
@@ -52,16 +50,15 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDt
 
         SubmissionRateDto submissionRateDto = null!;
 
-        var query = new GetSubmissionByPrAndSubmissionCode.Query(context.PullRequestDescriptor, SubmissionCode);
-        var submissionResponse = await context.Mediator.Send(query, cancellationToken);
+        var submissionResponse = context.Submission;
 
         if (RatingPercent is not null || ExtraPoints is not null)
         {
-            context.Log.LogInformation($"Invoke update command for submission {submissionResponse.Submission.Id} with arguments:" +
+            context.Log.LogInformation($"Invoke update command for submission {submissionResponse.Id} with arguments:" +
                                        $"{{ Rating: {RatingPercent}," +
                                        $" ExtraPoints: {ExtraPoints}}}");
 
-            var command = new UpdateSubmissionPoints.Command(submissionResponse.Submission.Id, context.IssuerId, RatingPercent, ExtraPoints);
+            var command = new UpdateSubmissionPoints.Command(submissionResponse.Id, context.IssuerId, RatingPercent, ExtraPoints);
             var response = await context.Mediator.Send(command, cancellationToken);
             submissionRateDto = response.SubmissionRate;
         }
@@ -71,7 +68,7 @@ public class UpdateCommand : IShreksCommand<PullRequestContext, SubmissionRateDt
             if (!DateOnly.TryParse(DateStr, out DateOnly date))
                 throw new InvalidUserInputException($"Cannot parse input date ({DateStr} as date. Ensure that you use correct format.");
 
-            var command = new UpdateSubmissionDate.Command(submissionResponse.Submission.Id, context.IssuerId, date.ToDateTime(TimeOnly.MinValue));
+            var command = new UpdateSubmissionDate.Command(submissionResponse.Id, context.IssuerId, date.ToDateTime(TimeOnly.MinValue));
             var response = await context.Mediator.Send(command, cancellationToken);
             submissionRateDto = response.SubmissionRate;
         }

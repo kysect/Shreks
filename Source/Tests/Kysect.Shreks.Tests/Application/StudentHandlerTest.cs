@@ -1,13 +1,7 @@
 using FluentAssertions;
 using Kysect.Shreks.Application.Abstractions.Students;
-using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Handlers.Students;
-using Kysect.Shreks.Application.Handlers.Submissions;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Integration.Google;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Kysect.Shreks.Tests.Application;

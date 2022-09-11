@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using GitHubJwt;
-using Kysect.Shreks.Application.Abstractions.Github;
-using Kysect.Shreks.Integration.Github.Applicaiton;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.CredentialStores;
 using Kysect.Shreks.Integration.Github.Entities;
@@ -30,7 +29,7 @@ public static class ServiceCollectionExtensions
 //        services.AddGithubAuth(githubIntegrationConfiguration.GithubAuthConfiguration);
         services.AddScoped<IActionNotifier, ActionNotifier>();
         services.AddScoped<WebhookEventProcessor, ShreksWebhookEventProcessorProxy>();
-        services.AddGithubInviteBackgroundService();
+        services.AddGithubServices();
         services.AddSingleton<IOrganizationDetailsProvider, OrganizationDetailsProvider>();
 
         return services;
@@ -128,11 +127,10 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddGithubInviteBackgroundService(this IServiceCollection services)
+    private static IServiceCollection AddGithubServices(this IServiceCollection services)
     {
         return services
             .AddScoped<ISubjectCourseGithubOrganizationInviteSender, SubjectCourseGithubOrganizationInviteSender>()
-            .AddScoped<ISubjectCourseGithubOrganizationRepositoryManager, SubjectCourseGithubOrganizationRepositoryManager>()
-            .AddHostedService<GithubInvitingWorker>();
+            .AddScoped<ISubjectCourseGithubOrganizationRepositoryManager, SubjectCourseGithubOrganizationRepositoryManager>();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using Kysect.Shreks.Application.Abstractions.Github.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
@@ -15,10 +14,12 @@ public class CreateSubmissionCommand : IShreksCommand<PullRequestAndAssignmentCo
     {
         Log.Information($"Handle /create-submission command for pr {context.PullRequestDescriptor.Payload}");
 
-        var command = new CreateGithubSubmission.Command(context.IssuerId, context.AssignmentId, context.PullRequestDescriptor);
-        var response = await context.Mediator.Send(command, cancellationToken);
-
-        return response.Submission;
+        SubmissionRateDto result = await context.CommandSubmissionFactory.CreateSubmission(
+            context.IssuerId,
+            context.AssignmentId,
+            context.PullRequestDescriptor);
+        
+        return result;
     }
 
     public Task<TResult> AcceptAsync<TResult>(IShreksCommandVisitor<TResult> visitor) where TResult : IShreksCommandResult
