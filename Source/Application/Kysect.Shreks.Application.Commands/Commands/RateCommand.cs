@@ -16,4 +16,9 @@ public class RateCommand : IShreksCommand
     
     [Value(1, Required = false, Default = 0.0, MetaName = "ExtraPoints")]
     public double? ExtraPoints { get; }
+
+    public string ToLogLine()
+    {
+        return $"RatingPercent: {{rateCommand.RatingPercent}}, ExtraPoints: {{rateCommand.ExtraPoints}}";
+    }
 }

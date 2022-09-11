@@ -11,12 +11,12 @@ using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 
 namespace Kysect.Shreks.Application.Commands.Processors;
 
-public class ShreksCommandService : IShreksCommandService
+public class SubmissionService : ISubmissionService
 {
     private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _updateQueue;
 
-    public ShreksCommandService(IShreksDatabaseContext context, ITableUpdateQueue updateQueue)
+    public SubmissionService(IShreksDatabaseContext context, ITableUpdateQueue updateQueue)
     {
         _context = context;
         _updateQueue = updateQueue;
@@ -45,8 +45,7 @@ public class ShreksCommandService : IShreksCommandService
             throw new UnauthorizedException("Only mentors can change submission date");
         }
 
-        var dateTime = newDate.ToDateTime(TimeOnly.MinValue);
-        submission.SubmissionDate = new SpbDateTime(dateTime);
+        submission.SubmissionDate = SpbDateTime.FromDateOnly(newDate);
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -61,9 +60,7 @@ public class ShreksCommandService : IShreksCommandService
         var submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
         if (!PermissionValidator.IsRepositoryMentor(userId, submission))
-        {
             throw new UnauthorizedException("Only mentors can rate submission");
-        }
 
         Fraction? fraction = newRating is null ? null : new Fraction(newRating.Value / 100);
         Points? extraPointsTyped = extraPoints is null ? null : new Points(extraPoints.Value);

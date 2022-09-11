@@ -88,7 +88,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             githubPullRequestDescriptor.Repository,
             githubPullRequestDescriptor.PrNumber);
 
-        var shreksCommandProcessor = new ShreksCommandService(_context, _queue);
+        var shreksCommandProcessor = new SubmissionService(_context, _queue);
         Submission completedSubmission = await shreksCommandProcessor.UpdateSubmissionState(submission.Id, user.Id, state, CancellationToken.None);
 
         var pullRequestCommentEventNotifier = pullRequestCommitEventNotifier;
@@ -202,12 +202,12 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
     {
         var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context);
-        var commandProcessor = new ShreksCommandProcessor(contextCreator, new ShreksCommandService(_context, _queue), repositoryLogger);
+        var commandProcessor = new ShreksCommandProcessor(contextCreator, new SubmissionService(_context, _queue), repositoryLogger);
         BaseShreksCommandResult result;
 
         try
         {
-            return await commandProcessor.ProcessBaseCommand(command, repositoryLogger, CancellationToken.None);
+            return await commandProcessor.ProcessBaseCommandSafe(command, repositoryLogger, CancellationToken.None);
         }
         catch (Exception e)
         {

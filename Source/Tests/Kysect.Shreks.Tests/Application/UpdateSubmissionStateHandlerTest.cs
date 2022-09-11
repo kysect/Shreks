@@ -14,7 +14,7 @@ public class UpdateSubmissionStateHandlerTest : ApplicationTestBase
     public async Task Handle_Should_UpdateSubmissionState()
     {
         // Arrange
-        var shreksCommandService = new ShreksCommandService(Context, new TableUpdateQueue());
+        var submissionService = new SubmissionService(Context, new TableUpdateQueue());
         const SubmissionState stateDto = SubmissionState.Active;
         const SubmissionState state = SubmissionState.Active;
         var submission = await Context.Submissions
@@ -22,7 +22,7 @@ public class UpdateSubmissionStateHandlerTest : ApplicationTestBase
             .FirstAsync();
 
         // Act
-        Submission response = await shreksCommandService.UpdateSubmissionState(submission.Id, submission.Student.UserId, state, CancellationToken.None);
+        Submission response = await submissionService.UpdateSubmissionState(submission.Id, submission.Student.UserId, state, CancellationToken.None);
 
         // Assert
         response.State.Should().Be(stateDto);

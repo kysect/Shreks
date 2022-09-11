@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Factories;
 using Microsoft.Extensions.Logging;
-using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Models;
 
@@ -12,13 +11,13 @@ namespace Kysect.Shreks.Application.Commands.Processors;
 public class ShreksCommandProcessor : IShreksCommandProcessor
 {
     private readonly ICommandContextFactory _commandContextFactory;
-    private readonly IShreksCommandService _shreksCommandService;
+    private readonly ISubmissionService _submissionService;
     private readonly ILogger _logger;
 
-    public ShreksCommandProcessor(ICommandContextFactory commandContextFactory, IShreksCommandService shreksCommandService, ILogger logger)
+    public ShreksCommandProcessor(ICommandContextFactory commandContextFactory, ISubmissionService submissionService, ILogger logger)
     {
         _commandContextFactory = commandContextFactory;
-        _shreksCommandService = shreksCommandService;
+        _submissionService = submissionService;
         _logger = logger;
     }
 
@@ -26,17 +25,15 @@ public class ShreksCommandProcessor : IShreksCommandProcessor
     {
         var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
 
-        string message = $"Handle /rate command from {context.IssuerId} with arguments:" +
-                         $" {{ RatingPercent: {rateCommand.RatingPercent}," +
-                         $" ExtraPoints: {rateCommand.ExtraPoints}}}";
-        _logger.LogInformation(message);
+        _logger.LogInformation($"Handle /rate command from {context.IssuerId} with arguments: {rateCommand.ToLogLine()}");
 
-        Submission submission = await _shreksCommandService.UpdateSubmissionPoints(
+        Submission submission = await _submissionService.UpdateSubmissionPoints(
             context.Submission.Id,
             context.IssuerId,
             rateCommand.RatingPercent,
             rateCommand.ExtraPoints,
             cancellationToken);
+
         return SubmissionRateDtoFactory.CreateFromSubmission(submission);
     }
 
@@ -44,38 +41,30 @@ public class ShreksCommandProcessor : IShreksCommandProcessor
     {
         var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
 
-        string message = $"Handle /update command from {context.IssuerId} with arguments:" + updateCommand.ToLogLine();
-        _logger.LogInformation(message);
+        _logger.LogInformation($"Handle /update command from {context.IssuerId} with arguments: {updateCommand.ToLogLine()}");
 
-        SubmissionRateDto submissionRateDto = null!;
-
-        var submissionResponse = context.Submission;
+        Submission submission = null!;
 
         if (updateCommand.RatingPercent is not null || updateCommand.ExtraPoints is not null)
         {
-            _logger.LogInformation($"Invoke update command for submission {submissionResponse.Id} with arguments:" +
-                                   $"{{ Rating: {updateCommand.RatingPercent}," +
-                                   $" ExtraPoints: {updateCommand.ExtraPoints}}}");
-
-            Submission submission = await _shreksCommandService.UpdateSubmissionPoints(
+            submission = await _submissionService.UpdateSubmissionPoints(
                 context.Submission.Id,
                 context.IssuerId,
                 updateCommand.RatingPercent,
                 updateCommand.ExtraPoints,
                 cancellationToken);
-            submissionRateDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
         }
 
         if (updateCommand.DateStr is not null)
         {
-            if (!DateOnly.TryParse(updateCommand.DateStr, out DateOnly date))
-                throw new InvalidUserInputException($"Cannot parse input date ({updateCommand.DateStr} as date. Ensure that you use correct format.");
-
-            Submission submission = await _shreksCommandService.UpdateSubmissionDate(context.Submission.Id, context.IssuerId, date, cancellationToken);
-            submissionRateDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
+            submission = await _submissionService.UpdateSubmissionDate(
+                context.Submission.Id,
+                context.IssuerId,
+                updateCommand.GetDate(),
+                cancellationToken);
         }
 
-        return submissionRateDto;
+        return SubmissionRateDtoFactory.CreateFromSubmission(submission);
     }
 
     public async Task<string> Help(HelpCommand helpCommand, CancellationToken token)
@@ -92,7 +81,7 @@ public class ShreksCommandProcessor : IShreksCommandProcessor
         var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
 
         _logger.LogInformation($"Handle /activate command for submission {context.Submission.Id} from user {context.IssuerId}");
-        Submission submission = await _shreksCommandService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Active, cancellationToken);
+        Submission submission = await _submissionService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Active, cancellationToken);
         return submission;
     }
 
@@ -101,7 +90,7 @@ public class ShreksCommandProcessor : IShreksCommandProcessor
         var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
 
         _logger.LogInformation($"Handle /deactivate command for submission {context.Submission.Id} from user {context.IssuerId}");
-        Submission submission = await _shreksCommandService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Inactive, cancellationToken);
+        Submission submission = await _submissionService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Inactive, cancellationToken);
         return submission;
     }
 
@@ -111,20 +100,19 @@ public class ShreksCommandProcessor : IShreksCommandProcessor
 
         _logger.LogInformation($"Handle /create-submission command for pr {context.PullRequestDescriptor.Payload}");
 
-        SubmissionRateDto result = await context.CommandSubmissionFactory.CreateSubmission(
+        return await context.CommandSubmissionFactory.CreateSubmission(
             context.IssuerId,
             context.AssignmentId,
             context.PullRequestDescriptor);
-
-        return result;
     }
 
     public async Task<Submission> Delete(DeleteCommand deleteCommand, CancellationToken cancellationToken)
     {
         var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+        
         _logger.LogInformation($"Handle /delete command for submission {context.Submission.Id} from user {context.IssuerId}");
-
-        Submission submission = await _shreksCommandService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Deleted, cancellationToken);
+        
+        Submission submission = await _submissionService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Deleted, cancellationToken);
         return submission;
     }
 }
