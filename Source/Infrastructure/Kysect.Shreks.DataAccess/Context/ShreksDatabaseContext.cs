@@ -14,10 +14,7 @@ namespace Kysect.Shreks.DataAccess.Context;
 
 public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
 {
-    public ShreksDatabaseContext(DbContextOptions<ShreksDatabaseContext> options) : base(options)
-    {
-        Database.EnsureCreated();
-    }
+    public ShreksDatabaseContext(DbContextOptions<ShreksDatabaseContext> options) : base(options) { }
 
     public DbSet<User> Users { get; protected init; } = null!;
     public DbSet<Student> Students { get; protected init; } = null!;
