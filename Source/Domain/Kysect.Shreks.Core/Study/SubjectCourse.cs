@@ -49,8 +49,7 @@ public partial class SubjectCourse : IEntity<Guid>
         if (Groups.Any(x => x.StudentGroup.Equals(group)))
             throw new DomainInvalidOperationException($"Group {group} is already assigned to this course");
 
-        var queue = new DefaultQueueBuilder(group, Id).Build();
-        var subjectCourseGroup = new SubjectCourseGroup(this, group, queue);
+        var subjectCourseGroup = new SubjectCourseGroup(this, group);
 
         _groups.Add(subjectCourseGroup);
         return subjectCourseGroup;

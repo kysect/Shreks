@@ -2,8 +2,10 @@
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Queue;
+using Kysect.Shreks.Core.Queue.Building;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetSubjectCourseGroupSubmissionQueue;
@@ -28,14 +30,8 @@ public class GetSubjectCourseGroupSubmissionQueueHandler : IRequestHandler<Query
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        var queue = await _context.SubjectCourseGroups
-            .Where(x => x.SubjectCourseId.Equals(request.SubjectCourseId))
-            .Where(x => x.StudentGroupId.Equals(request.StudentGroupId))
-            .Select(x => x.Queue)
-            .FirstOrDefaultAsync(cancellationToken);
-        
-        if (queue is null)
-            throw new EntityNotFoundException("Queue for specified subject course group was not found");
+        var group = await _context.StudentGroups.GetByIdAsync(request.StudentGroupId, cancellationToken);
+        var queue = new DefaultQueueBuilder(group, request.SubjectCourseId).Build();
 
         IEnumerable<Submission> submissions = await queue.UpdateSubmissions(
             _context.Submissions, _queryExecutor, cancellationToken);
