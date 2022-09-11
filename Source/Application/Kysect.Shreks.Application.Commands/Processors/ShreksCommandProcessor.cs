@@ -29,7 +29,7 @@ public class ShreksCommandProcessor
         {
             var message = $"An error occurred while processing {command.GetType().Name} command: {e.Message}";
             _logger.LogError(e, message);
-            return new BaseShreksCommandResult(false, message);
+            return new BaseShreksCommandResult(isSuccess: false, message);
         }
     }
 
@@ -40,52 +40,52 @@ public class ShreksCommandProcessor
             case ActivateCommand activateCommand:
                 {
                     SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-                    await activateCommand.Execute(context, _logger, cancellationToken);
-                    return new BaseShreksCommandResult(true, "Submission activated successfully");
+                    await activateCommand.ExecuteAsync(context, _logger, cancellationToken);
+                    return new BaseShreksCommandResult(isSuccess: true, "Submission activated successfully");
                 }
 
             case CreateSubmissionCommand createSubmissionCommand:
                 {
                     PullRequestAndAssignmentContext context = await _commandContextFactory.CreatePullRequestAndAssignmentContext(cancellationToken);
-                    SubmissionRateDto submission = await createSubmissionCommand.Execute(context, _logger, cancellationToken);
-                    return new BaseShreksCommandResult(true, $"Submission created.\n{submission.ToPullRequestString()}");
+                    SubmissionRateDto submission = await createSubmissionCommand.ExecuteAsync(context, _logger, cancellationToken);
+                    return new BaseShreksCommandResult(isSuccess: true, $"Submission created.\n{submission.ToPullRequestString()}");
                 }
 
             case DeactivateCommand deactivateCommand:
                 {
                     SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-                    await deactivateCommand.Execute(context, _logger, cancellationToken);
-                    return new BaseShreksCommandResult(true, "Submission deactivated successfully");
+                    await deactivateCommand.ExecuteAsync(context, _logger, cancellationToken);
+                    return new BaseShreksCommandResult(isSuccess: true, "Submission deactivated successfully");
                 }
 
             case DeleteCommand deleteCommand:
                 {
                     SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-                    await deleteCommand.Execute(context, _logger, cancellationToken);
-                    return new BaseShreksCommandResult(true, "Submission deleted successfully");
+                    await deleteCommand.ExecuteAsync(context, _logger, cancellationToken);
+                    return new BaseShreksCommandResult(isSuccess: true, "Submission deleted successfully");
                 }
 
             case HelpCommand helpCommand:
                 {
                     SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-                    string result = helpCommand.Execute(context, _logger);
-                    return new BaseShreksCommandResult(true, result);
+                    string result = helpCommand.ExecuteAsync(context, _logger);
+                    return new BaseShreksCommandResult(isSuccess: true, result);
                 }
 
             case RateCommand rateCommand:
                 {
                     SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-                    Submission submission = await rateCommand.Execute(context, _logger, cancellationToken);
+                    Submission submission = await rateCommand.ExecuteAsync(context, _logger, cancellationToken);
                     SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
-                    return new BaseShreksCommandResult(true, $"Submission rated.\n{submissionDto.ToPullRequestString()}");
+                    return new BaseShreksCommandResult(isSuccess: true, $"Submission rated.\n{submissionDto.ToPullRequestString()}");
                 }
 
             case UpdateCommand updateCommand:
                 {
                     SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-                    Submission submission = await updateCommand.Execute(context, _logger, cancellationToken);
+                    Submission submission = await updateCommand.ExecuteAsync(context, _logger, cancellationToken);
                     SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
-                    return new BaseShreksCommandResult(true, $"Submission updated.\n{submissionDto.ToPullRequestString()}");
+                    return new BaseShreksCommandResult(isSuccess: true, $"Submission updated.\n{submissionDto.ToPullRequestString()}");
                 }
 
             default:

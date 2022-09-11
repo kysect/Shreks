@@ -37,7 +37,7 @@ public class UpdateCommand : IShreksCommand
         return date;
     }
 
-    public async Task<Submission> Execute(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
+    public async Task<Submission> ExecuteAsync(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
     {
         logger.LogInformation($"Handle /update command from {context.IssuerId} with arguments: {ToLogLine()}");
 
@@ -46,7 +46,7 @@ public class UpdateCommand : IShreksCommand
         if (RatingPercent is not null || ExtraPoints is not null)
         {
             submission = await context.SubmissionService.UpdateSubmissionPoints(
-                context.Submission.Id,
+                context.SubmissionId,
                 context.IssuerId,
                 RatingPercent,
                 ExtraPoints,
@@ -56,7 +56,7 @@ public class UpdateCommand : IShreksCommand
         if (DateStr is not null)
         {
             submission = await context.SubmissionService.UpdateSubmissionDate(
-                context.Submission.Id,
+                context.SubmissionId,
                 context.IssuerId,
                 GetDate(),
                 cancellationToken);

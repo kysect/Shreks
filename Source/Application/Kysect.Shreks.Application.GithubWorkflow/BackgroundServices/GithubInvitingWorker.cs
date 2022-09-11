@@ -24,18 +24,18 @@ public class GithubInvitingWorker : BackgroundService
         _serviceProvider = serviceProvider;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         using var timer = new PeriodicTimer(_delayBetweenInviteIteration);
 
-        while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
+        while (!cancellationToken.IsCancellationRequested && await timer.WaitForNextTickAsync(cancellationToken))
         {
             try
             {
                 using IServiceScope scope = _serviceProvider.CreateScope();
 
                 var subjectCourseGithubOrganizationManager = scope.ServiceProvider.GetRequiredService<ISubjectCourseGithubOrganizationManager>();
-                await subjectCourseGithubOrganizationManager.UpdateOrganizations(stoppingToken);
+                await subjectCourseGithubOrganizationManager.UpdateOrganizations(cancellationToken);
             }
             catch (Exception ex)
             {

@@ -77,8 +77,7 @@ public class GithubSubmissionService : IGithubSubmissionService
 
         if (submission is null)
         {
-            var message = $"No unrated submission in pr {pullRequestDescriptor.Payload}";
-            throw new EntityNotFoundException(message);
+            throw new EntityNotFoundException($"No unrated submission in pr {pullRequestDescriptor.Payload}");
         }
 
         return submission;

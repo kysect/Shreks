@@ -20,12 +20,12 @@ public class RateCommand : IShreksCommand
     [Value(1, Required = false, Default = 0.0, MetaName = "ExtraPoints")]
     public double? ExtraPoints { get; }
 
-    public async Task<Submission> Execute(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
+    public async Task<Submission> ExecuteAsync(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
     {
         logger.LogInformation($"Handle /rate command from {context.IssuerId} with arguments: {ToLogLine()}");
 
         return await context.SubmissionService.UpdateSubmissionPoints(
-            context.Submission.Id,
+            context.SubmissionId,
             context.IssuerId,
             RatingPercent,
             ExtraPoints,

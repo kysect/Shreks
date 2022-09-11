@@ -40,7 +40,7 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
                 .SubjectCourseGroups
                 .WithSpecification(new GetSubjectCourseGithubUsers(subjectAssociation.SubjectCourse.Id))
                 .Select(association => association.GithubUsername)
-                .ToListAsync(cancellationToken: cancellationToken);
+                .ToListAsync(cancellationToken);
 
             await _inviteSender.Invite(subjectAssociation.GithubOrganizationName, usernames);
             await GenerateRepositories(_repositoryManager, usernames, subjectAssociation.GithubOrganizationName, subjectAssociation.TemplateRepositoryName);
@@ -75,7 +75,7 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Failed to create repo for {username}", username);
+                _logger.LogError(e, $"Failed to create repo for {username}");
             }
 
             try

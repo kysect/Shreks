@@ -28,7 +28,7 @@ public class HelpCommand : IShreksCommand
 - Создание или переоткрытие PR - создаёт сабмишен
 - Добавление нового комита в PR - обновляет дату сабмишена на текущую";
 
-    public string Execute(SubmissionContext context, ILogger logger)
+    public string ExecuteAsync(SubmissionContext context, ILogger logger)
     {
         logger.LogDebug($"Handle /help command from {context.IssuerId}");
 

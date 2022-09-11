@@ -43,7 +43,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     {
         Guid userId = await GetUserId(cancellationToken);
         Submission submission = await _githubSubmissionService.GetCurrentUnratedSubmissionByPrNumber(_pullRequestDescriptor, cancellationToken);
-        return new SubmissionContext(userId, submission, _submissionService);
+        return new SubmissionContext(userId, submission.Id, _submissionService);
     }
 
     public async Task<PullRequestContext> CreatePullRequestContext(CancellationToken cancellationToken)

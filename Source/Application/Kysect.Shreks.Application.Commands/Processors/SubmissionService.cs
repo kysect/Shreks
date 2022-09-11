@@ -41,9 +41,7 @@ public class SubmissionService : ISubmissionService
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
         if (!PermissionValidator.IsRepositoryMentor(userId, submission))
-        {
             throw new UnauthorizedException("Only mentors can change submission date");
-        }
 
         submission.SubmissionDate = SpbDateTime.FromDateOnly(newDate);
         _context.Submissions.Update(submission);

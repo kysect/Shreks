@@ -9,12 +9,12 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 [Verb("/deactivate")]
 public class DeactivateCommand : IShreksCommand
 {
-    public async Task<Submission> Execute(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
+    public async Task<Submission> ExecuteAsync(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
     {
-        logger.LogInformation($"Handle /deactivate command for submission {context.Submission.Id} from user {context.IssuerId}");
+        logger.LogInformation($"Handle /deactivate command for submission {context.SubmissionId} from user {context.IssuerId}");
 
         return await context.SubmissionService.UpdateSubmissionState(
-            context.Submission.Id,
+            context.SubmissionId,
             context.IssuerId,
             SubmissionState.Inactive,
             cancellationToken);
