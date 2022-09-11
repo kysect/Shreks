@@ -4,15 +4,20 @@ using Kysect.Shreks.Core.Tools;
 
 namespace Kysect.Shreks.Core.Queue.Evaluators;
 
-public partial class AssignmentDeadlineStateEvaluator : SubmissionEvaluator
+public class AssignmentDeadlineStateEvaluator : ISubmissionEvaluator
 {
     private const double CurrentAssignmentPriority = 2;
     private const double ExpiredAssignmentPriority = 1;
     private const double OtherAssignmentPriority = 0;
-    
-    public AssignmentDeadlineStateEvaluator(int position, SortingOrder sortingOrder) : base(position, sortingOrder) { }
 
-    public override double Evaluate(Submission submission)
+    public AssignmentDeadlineStateEvaluator(SortingOrder sortingOrder)
+    {
+        SortingOrder = sortingOrder;
+    }
+
+    public SortingOrder SortingOrder { get; }
+
+    public double Evaluate(Submission submission)
     {
         ArgumentNullException.ThrowIfNull(submission);
 

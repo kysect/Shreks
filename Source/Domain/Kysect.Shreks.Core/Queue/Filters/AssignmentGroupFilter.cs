@@ -3,10 +3,15 @@ using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 
-public partial class AssignmentGroupFilter : SubmissionQueueFilter
+public class AssignmentGroupFilter : IQueueFilter
 {
-    public virtual IReadOnlyCollection<Assignment> Assignments { get; protected init; }
+    public AssignmentGroupFilter(IReadOnlyCollection<Assignment> assignments)
+    {
+        Assignments = assignments;
+    }
 
-    public override IQueryable<Submission> Filter(IQueryable<Submission> query)
+    public IReadOnlyCollection<Assignment> Assignments { get; }
+
+    public IQueryable<Submission> Filter(IQueryable<Submission> query)
         => query.Where(x => Assignments.Contains(x.GroupAssignment.Assignment));
 }

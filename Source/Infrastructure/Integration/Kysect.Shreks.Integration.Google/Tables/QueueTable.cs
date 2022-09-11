@@ -1,6 +1,8 @@
-﻿using FluentSpreadsheets;
+﻿using System.Drawing;
+using FluentSpreadsheets;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
+using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
@@ -13,10 +15,11 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
     private static readonly IRowComponent Header = Row
     (
         Label("ФИО").WithColumnWidth(240),
-            Label("Группа"),
-            Label("Лабораторная работа").WithColumnWidth(150),
-            Label("Дата").WithColumnWidth(150),
-            Label("GitHub").WithColumnWidth(400)
+        Label("Группа"),
+        Label("Лабораторная работа").WithColumnWidth(150),
+        Label("Дата").WithColumnWidth(150),
+        Label("Статус"),
+        Label("GitHub").WithColumnWidth(400)
     );
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
@@ -37,14 +40,22 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
 
         foreach (var (student, submission) in queue.Submissions)
         {
-            yield return Row
+            var row = Row
             (
                 Label(_userFullNameFormatter.GetFullName(student.User)),
                 Label(student.GroupName),
                 Label(submission.AssignmentShortName),
                 Label(submission.SubmissionDate, _cultureInfoProvider.GetCultureInfo()),
+                Label(submission.State.ToString()),
                 Label(submission.Payload)
             );
+
+            if (submission.State is SubmissionStateDto.Reviewed)
+            {
+                row = row.FilledWith(Color.FromArgb(125, Color.LightGreen));
+            }
+
+            yield return row;
         }
     }
 }

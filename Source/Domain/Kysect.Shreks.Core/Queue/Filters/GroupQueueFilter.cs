@@ -3,15 +3,15 @@ using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 
-public partial class GroupQueueFilter : SubmissionQueueFilter
+public class GroupQueueFilter : IQueueFilter
 {
     public GroupQueueFilter(IReadOnlyCollection<StudentGroup> groups)
     {
         Groups = groups;
     }
 
-    public virtual IReadOnlyCollection<StudentGroup> Groups { get; protected init; }
+    public IReadOnlyCollection<StudentGroup> Groups { get; }
 
-    public override IQueryable<Submission> Filter(IQueryable<Submission> query)
+    public IQueryable<Submission> Filter(IQueryable<Submission> query)
         => query.Where(s => Groups.Contains(s.Student.Group));
 }

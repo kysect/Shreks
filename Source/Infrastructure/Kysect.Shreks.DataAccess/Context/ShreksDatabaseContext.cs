@@ -1,4 +1,3 @@
-using Kysect.Shreks.Core.Queue;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.SubmissionAssociations;
@@ -15,10 +14,7 @@ namespace Kysect.Shreks.DataAccess.Context;
 
 public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
 {
-    public ShreksDatabaseContext(DbContextOptions<ShreksDatabaseContext> options) : base(options)
-    {
-        Database.EnsureCreated();
-    }
+    public ShreksDatabaseContext(DbContextOptions<ShreksDatabaseContext> options) : base(options) { }
 
     public DbSet<User> Users { get; protected init; } = null!;
     public DbSet<Student> Students { get; protected init; } = null!;
@@ -33,7 +29,6 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     public DbSet<SubmissionAssociation> SubmissionAssociations { get; protected init; } = null!;
     public DbSet<UserAssociation> UserAssociations { get; protected init; } = null!;
     public DbSet<SubjectCourseAssociation> SubjectCourseAssociations { get; protected init; } = null!;
-    public DbSet<SubmissionQueue> SubmissionQueues { get; protected init; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,5 +1,4 @@
 using Kysect.Shreks.Common.Exceptions;
-using Kysect.Shreks.Core.Queue.Filters;
 using Kysect.Shreks.Core.ValueObject;
 using RichEntity.Annotations;
 
@@ -9,10 +8,13 @@ public partial class Assignment : IEntity<Guid>
 {
     private readonly HashSet<GroupAssignment> _groupAssignments;
 
-    // TODO: Remove when .NET 7 is released
-    protected virtual IReadOnlyCollection<SubmissionQueueFilter> Filters { get; init; }
-
-    public Assignment(string title, string shortName, int order, Points minPoints, Points maxPoints, SubjectCourse subjectCourse)
+    public Assignment(
+        string title,
+        string shortName,
+        int order,
+        Points minPoints,
+        Points maxPoints,
+        SubjectCourse subjectCourse)
         : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(title);
@@ -28,7 +30,7 @@ public partial class Assignment : IEntity<Guid>
         SubjectCourse = subjectCourse;
         _groupAssignments = new HashSet<GroupAssignment>();
     }
-    
+
     public string Title { get; set; }
     public string ShortName { get; set; }
     public int Order { get; set; }

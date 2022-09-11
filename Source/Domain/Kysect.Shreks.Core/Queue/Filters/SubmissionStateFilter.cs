@@ -3,17 +3,18 @@ using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Filters;
 
-public partial class SubmissionStateFilter : SubmissionQueueFilter
+public class SubmissionStateFilter : IQueueFilter
 {
-    public SubmissionStateFilter(SubmissionState state) : this(Guid.NewGuid())
+    public SubmissionStateFilter(IReadOnlyCollection<SubmissionState> states)
     {
-        State = state;
+        States = states;
     }
 
-    public SubmissionState State { get; protected init; }
+    public SubmissionStateFilter(params SubmissionState[] states)
+        : this((IReadOnlyCollection<SubmissionState>)states) { }
 
-    public override IQueryable<Submission> Filter(IQueryable<Submission> query)
-    {
-        return query.Where(x => x.State.Equals(State));
-    }
+    public IReadOnlyCollection<SubmissionState> States { get; }
+
+    public IQueryable<Submission> Filter(IQueryable<Submission> query)
+        => query.Where(x => States.Contains(x.State));
 }
