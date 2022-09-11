@@ -8,9 +8,9 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kysect.Shreks.Application.GithubWorkflow;
+namespace Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
-public class GithubSubmissionService
+public class GithubSubmissionService : IGithubSubmissionService
 {
     private readonly IShreksDatabaseContext _context;
 

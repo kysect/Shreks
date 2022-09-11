@@ -2,6 +2,7 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
+using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;

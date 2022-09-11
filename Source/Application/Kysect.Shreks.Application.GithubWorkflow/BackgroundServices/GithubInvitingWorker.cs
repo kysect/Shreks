@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Application.GithubWorkflow;
+namespace Kysect.Shreks.Application.GithubWorkflow.BackgroundServices;
 
 public class GithubInvitingWorker : BackgroundService
 {

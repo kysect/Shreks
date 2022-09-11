@@ -17,6 +17,8 @@ using Kysect.Shreks.Core.Submissions;
 using Microsoft.EntityFrameworkCore;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Application.Commands.Extensions;
+using Kysect.Shreks.Application.GithubWorkflow.Models;
+using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 

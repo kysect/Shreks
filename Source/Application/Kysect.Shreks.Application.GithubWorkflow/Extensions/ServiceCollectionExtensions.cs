@@ -1,4 +1,7 @@
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.Application.GithubWorkflow.BackgroundServices;
+using Kysect.Shreks.Application.GithubWorkflow.OrganizationManagement;
+using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kysect.Shreks.Application.GithubWorkflow.Extensions;

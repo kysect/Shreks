@@ -6,7 +6,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Application.GithubWorkflow;
+namespace Kysect.Shreks.Application.GithubWorkflow.OrganizationManagement;
 
 public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrganizationManager
 {

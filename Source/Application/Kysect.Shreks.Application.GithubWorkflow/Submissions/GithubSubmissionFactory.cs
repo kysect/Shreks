@@ -14,10 +14,11 @@ using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using Kysect.Shreks.Application.GithubWorkflow.Models;
 
-namespace Kysect.Shreks.Application.GithubWorkflow;
+namespace Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
-public class GithubSubmissionFactory
+public class GithubSubmissionFactory : IGithubSubmissionFactory
 {
     private readonly IShreksDatabaseContext _context;
 

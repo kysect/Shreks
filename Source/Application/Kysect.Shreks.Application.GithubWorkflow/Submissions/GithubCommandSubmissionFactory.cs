@@ -4,7 +4,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Core.Submissions;
 
-namespace Kysect.Shreks.Application.GithubWorkflow;
+namespace Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
 public class GithubCommandSubmissionFactory : ICommandSubmissionFactory
 {
