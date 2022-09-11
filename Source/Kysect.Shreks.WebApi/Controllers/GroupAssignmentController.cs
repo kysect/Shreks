@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.Abstractions.Study.Commands;
+using Kysect.Shreks.Application.Abstractions.Study.Commands;
 using Kysect.Shreks.Application.Abstractions.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Identity.Entities;
@@ -42,9 +42,9 @@ namespace Kysect.Shreks.WebApi.Controllers
         }
 
         [HttpPut("groups/{groupId}")]
-        public async Task<ActionResult<GroupAssignmentDto>> UpdateById(Guid groupId, Guid assignmentId, DateOnly newDeadline)
+        public async Task<ActionResult<GroupAssignmentDto>> UpdateById(Guid groupId, Guid assignmentId, DateTime newDeadline)
         {
-            UpdateGroupAssignmentDeadline.Response response = await _mediator.Send(new UpdateGroupAssignmentDeadline.Command(groupId, assignmentId, newDeadline));
+            UpdateGroupAssignmentDeadline.Response response = await _mediator.Send(new UpdateGroupAssignmentDeadline.Command(groupId, assignmentId, DateOnly.FromDateTime(newDeadline)));
             return Ok(response.GroupAssignment);
         }
     }
