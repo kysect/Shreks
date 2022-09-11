@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
@@ -57,7 +58,10 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
             : Points.None;
 
         if (rating.HasValue)
+        {
             submission.Rate(rating, extraPoints);
+            submission.State = SubmissionState.Completed;
+        }
 
         return submission;
     }
