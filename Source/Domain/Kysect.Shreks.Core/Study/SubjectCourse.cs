@@ -16,9 +16,6 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<Mentor> _mentors;
     private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
 
-    // TODO: Remove when .NET 7 is released
-    protected virtual IReadOnlyCollection<SubmissionQueueFilter> Filters { get; init; }
-
     public SubjectCourse(Subject subject, string title) : this(Guid.NewGuid())
     {
         Subject = subject;

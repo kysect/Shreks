@@ -29,8 +29,8 @@ public class QueueBuilder : IQueueFilterBuilder
 
     public SubmissionQueue Build()
     {
-        SubmissionQueueFilter[] filters = _filters.OfType<SubmissionQueueFilter>().ToArray();
-        SubmissionEvaluator[] evaluators = _evaluators.OfType<SubmissionEvaluator>().ToArray();
+        IQueueFilter[] filters = _filters.ToArray();
+        ISubmissionEvaluator[] evaluators = _evaluators.ToArray();
         return new SubmissionQueue(filters, evaluators);
     }
 }

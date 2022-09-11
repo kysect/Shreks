@@ -3,11 +3,16 @@ using Kysect.Shreks.Core.Submissions;
 
 namespace Kysect.Shreks.Core.Queue.Evaluators;
 
-public partial class SubmissionStateEvaluator : SubmissionEvaluator
+public class SubmissionStateEvaluator : ISubmissionEvaluator
 {
-    public SubmissionStateEvaluator(int position, SortingOrder sortingOrder) : base(position, sortingOrder) { }
+    public SubmissionStateEvaluator(SortingOrder sortingOrder)
+    {
+        SortingOrder = sortingOrder;
+    }
 
-    public override double Evaluate(Submission submission)
+    public SortingOrder SortingOrder { get; }
+
+    public double Evaluate(Submission submission)
     {
         return submission.State switch
         {

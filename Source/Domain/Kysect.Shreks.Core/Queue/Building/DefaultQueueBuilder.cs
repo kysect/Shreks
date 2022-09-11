@@ -10,11 +10,11 @@ public class DefaultQueueBuilder : QueueBuilder
     public DefaultQueueBuilder(StudentGroup group, Guid subjectCourseId)
     {
         AddFilter(new GroupQueueFilter(new[] { group }));
-        AddFilter(new SubmissionStateFilter(SubmissionState.Active | SubmissionState.Reviewed));
+        AddFilter(new SubmissionStateFilter(SubmissionState.Active, SubmissionState.Reviewed));
         AddFilter(new SubjectCoursesFilter(subjectCourseId));
 
-        AddEvaluator(new SubmissionStateEvaluator(-1, SortingOrder.Descending));
-        AddEvaluator(new AssignmentDeadlineStateEvaluator(0, SortingOrder.Descending));
-        AddEvaluator(new SubmissionDateTimeEvaluator(1, SortingOrder.Ascending));
+        AddEvaluator(new SubmissionStateEvaluator(SortingOrder.Descending));
+        AddEvaluator(new AssignmentDeadlineStateEvaluator(SortingOrder.Descending));
+        AddEvaluator(new SubmissionDateTimeEvaluator(SortingOrder.Ascending));
     }
 }
