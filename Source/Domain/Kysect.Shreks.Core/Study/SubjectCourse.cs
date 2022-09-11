@@ -1,7 +1,5 @@
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.DeadlinePolicies;
-using Kysect.Shreks.Core.Queue.Building;
-using Kysect.Shreks.Core.Queue.Filters;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;

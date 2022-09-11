@@ -5,6 +5,9 @@ namespace Kysect.Shreks.Core.Queue.Evaluators;
 
 public class SubmissionStateEvaluator : ISubmissionEvaluator
 {
+    private const double ActiveSubmissionPriority = 2;
+    private const double ReviewedSubmissionPriority = 1;
+    
     public SubmissionStateEvaluator(SortingOrder sortingOrder)
     {
         SortingOrder = sortingOrder;
@@ -14,10 +17,12 @@ public class SubmissionStateEvaluator : ISubmissionEvaluator
 
     public double Evaluate(Submission submission)
     {
+        ArgumentNullException.ThrowIfNull(submission);
+
         return submission.State switch
         {
-            SubmissionState.Active => 2,
-            SubmissionState.Reviewed => 1,
+            SubmissionState.Active => ActiveSubmissionPriority,
+            SubmissionState.Reviewed => ReviewedSubmissionPriority,
             _ => 0,
         };
     }
