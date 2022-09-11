@@ -1,5 +1,6 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Study.Commands;
 using Kysect.Shreks.Application.Abstractions.Study.Queries;
+using Kysect.Shreks.Application.Abstractions.SubjectCourses.Commands;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
 using Kysect.Shreks.Identity.Entities;
@@ -68,6 +69,14 @@ public class SubjectCourseController : ControllerBase
     {
         var command = new AddFractionDeadlinePolicy.Command(subjectCourseId, spanBeforeActivation, fraction);
         AddFractionDeadlinePolicy.Response response = await _mediator.Send(command);
+        return Ok();
+    }
+
+    [HttpPut("{subjectCourseId}/update-default-queue")]
+    public async Task<ActionResult> UpdateDefaultQueue(Guid subjectCourseId)
+    {
+        var command = new UpdateDefaultSubjectCourseQueue.Command(subjectCourseId);
+        await _mediator.Send(command);
         return Ok();
     }
 }
