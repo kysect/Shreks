@@ -17,7 +17,7 @@ jobs:
       
     - name: Docker login
       run:
-          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }} ${{ secrets.DOCKER_REGISTRY_PREFIX }}
     - name: Docker push
       run:
           docker push --tag ${{ secrets.DOCKER_REGISTRY  }}/${{ secrets.IMAGE_NAME }}:${{ github.run_number }}
