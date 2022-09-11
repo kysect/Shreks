@@ -36,21 +36,21 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     {
         var userId = await GetUserId(cancellationToken);
 
-        return new BaseContext(_log, userId);
+        return new BaseContext(userId);
     }
 
     public async Task<SubmissionContext> CreateSubmissionContext(CancellationToken cancellationToken)
     {
         Guid userId = await GetUserId(cancellationToken);
         Submission submission = await _githubSubmissionService.GetCurrentUnratedSubmissionByPrNumber(_pullRequestDescriptor, cancellationToken);
-        return new SubmissionContext(_log, userId, submission);
+        return new SubmissionContext(userId, submission);
     }
 
     public async Task<PullRequestContext> CreatePullRequestContext(CancellationToken cancellationToken)
     {
         var userId = await GetUserId(cancellationToken);
 
-        return new PullRequestContext(_log, userId, _pullRequestDescriptor);
+        return new PullRequestContext(userId, _pullRequestDescriptor);
     }
 
     public async Task<PullRequestAndAssignmentContext> CreatePullRequestAndAssignmentContext(CancellationToken cancellationToken)
@@ -60,7 +60,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
         Assignment assignment = await _githubSubmissionService.GetAssignmentByBranchAndSubjectCourse(subjectCourse.Id, _pullRequestDescriptor, cancellationToken);
 
-        return new PullRequestAndAssignmentContext(_githubCommandSubmissionFactory, _pullRequestDescriptor, userId, assignment.Id, _log);
+        return new PullRequestAndAssignmentContext(_githubCommandSubmissionFactory, _pullRequestDescriptor, userId, assignment.Id);
     }
 
     private async Task<Guid> GetUserId(CancellationToken cancellationToken)

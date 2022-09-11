@@ -202,7 +202,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
     {
         var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context);
-        var commandProcessor = new ShreksCommandProcessor(contextCreator, new ShreksCommandService(_context, _queue));
+        var commandProcessor = new ShreksCommandProcessor(contextCreator, new ShreksCommandService(_context, _queue), repositoryLogger);
         BaseShreksCommandResult result;
 
         try

@@ -1,6 +1,5 @@
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Dto.Github;
-using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Commands.Contexts;
 
@@ -13,9 +12,8 @@ public class PullRequestAndAssignmentContext : BaseContext
     public PullRequestAndAssignmentContext(ICommandSubmissionFactory commandSubmissionFactory,
         GithubPullRequestDescriptor pullRequestDescriptor,
         Guid issuerId,
-        Guid assignmentId,
-        ILogger log)
-        : base(log, issuerId)
+        Guid assignmentId)
+        : base(issuerId)
     {
         PullRequestDescriptor = pullRequestDescriptor;
         AssignmentId = assignmentId;
