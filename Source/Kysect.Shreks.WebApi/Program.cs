@@ -158,6 +158,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     using (var scope = app.Services.CreateScope())
     {
        await SeedAdmins(scope.ServiceProvider, app.Configuration);
+       await scope.ServiceProvider.UseDatabaseContext();
     }
 
     app.Run();
