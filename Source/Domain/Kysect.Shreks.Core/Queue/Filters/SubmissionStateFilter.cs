@@ -14,6 +14,6 @@ public partial class SubmissionStateFilter : SubmissionQueueFilter
 
     public override IQueryable<Submission> Filter(IQueryable<Submission> query)
     {
-        return query.Where(x => x.State.Equals(State));
+        return query.Where(x => State.HasFlag(x.State));
     }
 }
