@@ -1,4 +1,6 @@
 ﻿using CommandLine;
+using Kysect.Shreks.Application.Commands.Contexts;
+using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
@@ -25,5 +27,12 @@ public class HelpCommand : IShreksCommand
 
 - Создание или переоткрытие PR - создаёт сабмишен
 - Добавление нового комита в PR - обновляет дату сабмишена на текущую";
+
+    public string Execute(SubmissionContext context, ILogger logger)
+    {
+        logger.LogDebug($"Handle /help command from {context.IssuerId}");
+
+        return HelpString;
+    }
 
 }

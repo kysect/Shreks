@@ -1,5 +1,8 @@
 using CommandLine;
+using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.Submissions;
+using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
@@ -32,6 +35,34 @@ public class UpdateCommand : IShreksCommand
             throw new InvalidUserInputException($"Cannot parse input date ({DateStr} as date. Ensure that you use correct format.");
 
         return date;
+    }
+
+    public async Task<Submission> Execute(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
+    {
+        logger.LogInformation($"Handle /update command from {context.IssuerId} with arguments: {ToLogLine()}");
+
+        Submission submission = null!;
+
+        if (RatingPercent is not null || ExtraPoints is not null)
+        {
+            submission = await context.SubmissionService.UpdateSubmissionPoints(
+                context.Submission.Id,
+                context.IssuerId,
+                RatingPercent,
+                ExtraPoints,
+                cancellationToken);
+        }
+
+        if (DateStr is not null)
+        {
+            submission = await context.SubmissionService.UpdateSubmissionDate(
+                context.Submission.Id,
+                context.IssuerId,
+                GetDate(),
+                cancellationToken);
+        }
+
+        return submission;
     }
     
     public string ToLogLine()

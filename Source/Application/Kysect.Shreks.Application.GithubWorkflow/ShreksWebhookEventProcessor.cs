@@ -16,7 +16,6 @@ using Microsoft.Extensions.Logging;
 using Kysect.Shreks.Core.Submissions;
 using Microsoft.EntityFrameworkCore;
 using Kysect.Shreks.Core.Models;
-using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
@@ -201,22 +200,20 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
     {
-        var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context);
-        var commandProcessor = new ShreksCommandProcessor(contextCreator, new SubmissionService(_context, _queue), repositoryLogger);
-        BaseShreksCommandResult result;
+        var submissionService = new SubmissionService(_context, _queue);
+        var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, _githubSubmissionFactory, _context, submissionService);
+        var commandProcessor = new ShreksCommandProcessor(contextCreator, repositoryLogger);
 
         try
         {
-            return await commandProcessor.ProcessBaseCommandSafe(command, repositoryLogger, CancellationToken.None);
+            return await commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
         }
         catch (Exception e)
         {
             const string message = $"An internal error occurred while processing command. Contact support for details.";
             repositoryLogger.LogError(e, message);
-            result = new BaseShreksCommandResult(false, message);
+            return new BaseShreksCommandResult(false, message);
         }
-
-        return result;
     }
 
     private async Task<GithubSubmission> GetGithubSubmissionAsync(string organization, string repository, long prNumber)

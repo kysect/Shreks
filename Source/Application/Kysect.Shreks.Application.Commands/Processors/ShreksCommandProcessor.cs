@@ -4,115 +4,92 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Factories;
 using Microsoft.Extensions.Logging;
 using Kysect.Shreks.Core.Submissions;
-using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Application.Commands.Result;
 
 namespace Kysect.Shreks.Application.Commands.Processors;
 
-public class ShreksCommandProcessor : IShreksCommandProcessor
+public class ShreksCommandProcessor
 {
     private readonly ICommandContextFactory _commandContextFactory;
-    private readonly ISubmissionService _submissionService;
     private readonly ILogger _logger;
 
-    public ShreksCommandProcessor(ICommandContextFactory commandContextFactory, ISubmissionService submissionService, ILogger logger)
+    public ShreksCommandProcessor(ICommandContextFactory commandContextFactory, ILogger logger)
     {
         _commandContextFactory = commandContextFactory;
-        _submissionService = submissionService;
         _logger = logger;
     }
 
-    public async Task<SubmissionRateDto> Rate(RateCommand rateCommand, CancellationToken cancellationToken)
+    public async Task<BaseShreksCommandResult> ProcessBaseCommandSafe(IShreksCommand command, CancellationToken cancellationToken)
     {
-        var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-
-        _logger.LogInformation($"Handle /rate command from {context.IssuerId} with arguments: {rateCommand.ToLogLine()}");
-
-        Submission submission = await _submissionService.UpdateSubmissionPoints(
-            context.Submission.Id,
-            context.IssuerId,
-            rateCommand.RatingPercent,
-            rateCommand.ExtraPoints,
-            cancellationToken);
-
-        return SubmissionRateDtoFactory.CreateFromSubmission(submission);
-    }
-
-    public async Task<SubmissionRateDto> Update(UpdateCommand updateCommand, CancellationToken cancellationToken)
-    {
-        var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-
-        _logger.LogInformation($"Handle /update command from {context.IssuerId} with arguments: {updateCommand.ToLogLine()}");
-
-        Submission submission = null!;
-
-        if (updateCommand.RatingPercent is not null || updateCommand.ExtraPoints is not null)
+        try
         {
-            submission = await _submissionService.UpdateSubmissionPoints(
-                context.Submission.Id,
-                context.IssuerId,
-                updateCommand.RatingPercent,
-                updateCommand.ExtraPoints,
-                cancellationToken);
+            return await ProcessBaseCommand(command, cancellationToken);
         }
-
-        if (updateCommand.DateStr is not null)
+        catch (Exception e)
         {
-            submission = await _submissionService.UpdateSubmissionDate(
-                context.Submission.Id,
-                context.IssuerId,
-                updateCommand.GetDate(),
-                cancellationToken);
+            var message = $"An error occurred while processing {command.GetType().Name} command: {e.Message}";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
-
-        return SubmissionRateDtoFactory.CreateFromSubmission(submission);
     }
 
-    public async Task<string> Help(HelpCommand helpCommand, CancellationToken token)
+    private async Task<BaseShreksCommandResult> ProcessBaseCommand(IShreksCommand command, CancellationToken cancellationToken)
     {
-        var context = await _commandContextFactory.CreateSubmissionContext(token);
+        switch (command)
+        {
+            case ActivateCommand activateCommand:
+                {
+                    SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                    await activateCommand.Execute(context, _logger, cancellationToken);
+                    return new BaseShreksCommandResult(true, "Submission activated successfully");
+                }
 
-        _logger.LogDebug($"Handle /help command from {context.IssuerId}");
+            case CreateSubmissionCommand createSubmissionCommand:
+                {
+                    PullRequestAndAssignmentContext context = await _commandContextFactory.CreatePullRequestAndAssignmentContext(cancellationToken);
+                    SubmissionRateDto submission = await createSubmissionCommand.Execute(context, _logger, cancellationToken);
+                    return new BaseShreksCommandResult(true, $"Submission created.\n{submission.ToPullRequestString()}");
+                }
 
-        return HelpCommand.HelpString;
-    }
+            case DeactivateCommand deactivateCommand:
+                {
+                    SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                    await deactivateCommand.Execute(context, _logger, cancellationToken);
+                    return new BaseShreksCommandResult(true, "Submission deactivated successfully");
+                }
 
-    public async Task<Submission> Activate(ActivateCommand activateCommand, CancellationToken cancellationToken)
-    {
-        var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+            case DeleteCommand deleteCommand:
+                {
+                    SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                    await deleteCommand.Execute(context, _logger, cancellationToken);
+                    return new BaseShreksCommandResult(true, "Submission deleted successfully");
+                }
 
-        _logger.LogInformation($"Handle /activate command for submission {context.Submission.Id} from user {context.IssuerId}");
-        Submission submission = await _submissionService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Active, cancellationToken);
-        return submission;
-    }
+            case HelpCommand helpCommand:
+                {
+                    SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                    string result = helpCommand.Execute(context, _logger);
+                    return new BaseShreksCommandResult(true, result);
+                }
 
-    public async Task<Submission> Deactivate(DeactivateCommand deactivateCommand, CancellationToken cancellationToken)
-    {
-        var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+            case RateCommand rateCommand:
+                {
+                    SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                    Submission submission = await rateCommand.Execute(context, _logger, cancellationToken);
+                    SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
+                    return new BaseShreksCommandResult(true, $"Submission rated.\n{submissionDto.ToPullRequestString()}");
+                }
 
-        _logger.LogInformation($"Handle /deactivate command for submission {context.Submission.Id} from user {context.IssuerId}");
-        Submission submission = await _submissionService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Inactive, cancellationToken);
-        return submission;
-    }
+            case UpdateCommand updateCommand:
+                {
+                    SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                    Submission submission = await updateCommand.Execute(context, _logger, cancellationToken);
+                    SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
+                    return new BaseShreksCommandResult(true, $"Submission updated.\n{submissionDto.ToPullRequestString()}");
+                }
 
-    public async Task<SubmissionRateDto> CreateSubmission(CreateSubmissionCommand createSubmissionCommand, CancellationToken cancellationToken)
-    {
-        var context = await _commandContextFactory.CreatePullRequestAndAssignmentContext(cancellationToken);
-
-        _logger.LogInformation($"Handle /create-submission command for pr {context.PullRequestDescriptor.Payload}");
-
-        return await context.CommandSubmissionFactory.CreateSubmission(
-            context.IssuerId,
-            context.AssignmentId,
-            context.PullRequestDescriptor);
-    }
-
-    public async Task<Submission> Delete(DeleteCommand deleteCommand, CancellationToken cancellationToken)
-    {
-        var context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
-        
-        _logger.LogInformation($"Handle /delete command for submission {context.Submission.Id} from user {context.IssuerId}");
-        
-        Submission submission = await _submissionService.UpdateSubmissionState(context.Submission.Id, context.IssuerId, SubmissionState.Deleted, cancellationToken);
-        return submission;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(command));
+        }
     }
 }

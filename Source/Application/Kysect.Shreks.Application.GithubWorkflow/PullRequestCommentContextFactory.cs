@@ -1,6 +1,6 @@
 using Kysect.Shreks.Application.Commands.Contexts;
+using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Dto.Github;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Common.Exceptions;
@@ -8,26 +8,26 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 
 public class PullRequestCommentContextFactory : ICommandContextFactory
 {
-    private readonly ILogger _log;
     private readonly GithubPullRequestDescriptor _pullRequestDescriptor;
     private readonly GithubCommandSubmissionFactory _githubCommandSubmissionFactory;
     private readonly IShreksDatabaseContext _context;
     private readonly GithubSubmissionService _githubSubmissionService;
+    private readonly SubmissionService _submissionService;
 
-    public PullRequestCommentContextFactory(GithubPullRequestDescriptor pullRequestDescriptor,
-        ILogger log,
+    public PullRequestCommentContextFactory(
+        GithubPullRequestDescriptor pullRequestDescriptor,
         GithubSubmissionFactory githubSubmissionFactory,
-        IShreksDatabaseContext context)
+        IShreksDatabaseContext context,
+        SubmissionService submissionService)
     {
         _pullRequestDescriptor = pullRequestDescriptor;
-        _log = log;
         _context = context;
+        _submissionService = submissionService;
         _githubCommandSubmissionFactory = new GithubCommandSubmissionFactory(githubSubmissionFactory);
         _githubSubmissionService = new GithubSubmissionService(_context);
     }
@@ -43,7 +43,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     {
         Guid userId = await GetUserId(cancellationToken);
         Submission submission = await _githubSubmissionService.GetCurrentUnratedSubmissionByPrNumber(_pullRequestDescriptor, cancellationToken);
-        return new SubmissionContext(userId, submission);
+        return new SubmissionContext(userId, submission, _submissionService);
     }
 
     public async Task<PullRequestContext> CreatePullRequestContext(CancellationToken cancellationToken)
