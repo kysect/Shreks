@@ -22,4 +22,4 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}  
     - name: Docker push
       run:
-          docker push --tag ${{ secrets.DOCKER_REGISTRY  }}/${{ secrets.IMAGE_NAME }}:${{ github.run_number }}
+          docker push ${{ secrets.DOCKER_REGISTRY  }}/${{ secrets.IMAGE_NAME }}:${{ github.run_number }}
