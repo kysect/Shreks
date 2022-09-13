@@ -57,18 +57,16 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
         {
             case null:
                 {
-                    command = new RateCommand(100, 0);
+                    command = new RateCommand(ratingPercent: 100, extraPoints: 0);
                     BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
                     message = result.Message;
                     break;
                 }
-                
             case 100:
                 {
                     message = "Review successfully processed, but submission already has 100 points";
                     break;
                 }
-
             default:
                 {
                     message = $"Submission is already rated with {points} points. If you want to change it, please use /update command.";
@@ -78,13 +76,12 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
 
         await _eventNotifier.SendCommentToPullRequest(message);
         _logger.LogInformation("Notify: " + message);
-
     }
 
     public async Task ProcessPullRequestReviewRequestChanges(IShreksCommand? command)
     {
         if (command is null)
-            command = new RateCommand(0, 0);
+            command = new RateCommand(ratingPercent: 0, extraPoints: 0);
 
         BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
         await _eventNotifier.SendCommentToPullRequest(result.Message);
@@ -114,12 +111,12 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
             await ChangeSubmissionState(SubmissionState.Active, prDescriptor);
     }
 
-    public async Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor)
+    public async Task ProcessPullRequestClosed(bool isMerged, GithubPullRequestDescriptor prDescriptor)
     {
-        var state = merged ? SubmissionState.Completed : SubmissionState.Inactive;
+        var state = isMerged ? SubmissionState.Completed : SubmissionState.Inactive;
         var submission = await ChangeSubmissionState(state, prDescriptor);
 
-        if (merged && submission.Points is null)
+        if (isMerged && submission.Points is null)
         {
             string message = $"Warning: pull request was merged, but submission {submission.Code} is not yet rated.";
             await _eventNotifier.SendCommentToPullRequest(message);

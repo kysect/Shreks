@@ -89,11 +89,11 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     public async Task ProcessPullRequestReviewRequestChanges(string? reviewBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
     {
-        string changesComment = reviewBody ?? string.Empty;
+        string reviewComment = reviewBody ?? string.Empty;
         IShreksCommand? requestChangesCommand = null;
 
-        if (changesComment.FirstOrDefault() == '/')
-            requestChangesCommand = _commandParser.Parse(changesComment);
+        if (reviewComment.FirstOrDefault() == '/')
+            requestChangesCommand = _commandParser.Parse(reviewComment);
 
         await _githubSubmissionStateMachineFactory
             .Create(CreateCommandProcessor(prDescriptor, logger), logger, eventNotifier)

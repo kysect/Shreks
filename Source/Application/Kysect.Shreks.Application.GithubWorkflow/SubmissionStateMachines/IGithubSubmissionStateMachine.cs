@@ -9,5 +9,5 @@ public interface IGithubSubmissionStateMachine
     Task ProcessPullRequestReviewRequestChanges(IShreksCommand? command);
     Task ProcessPullRequestReviewComment(IShreksCommand? command);
     Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor);
-    Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor);
+    Task ProcessPullRequestClosed(bool isMerged, GithubPullRequestDescriptor prDescriptor);
 }

@@ -89,9 +89,7 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
 
     private async Task<Guid> GetUserId(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
     {
-        string userGithubUsername = pullRequestDescriptor.Sender;
-        User user = await _context.UserAssociations
-            .GetUserByGithubUsername(userGithubUsername);
+        User user = await _context.UserAssociations.GetUserByGithubUsername(pullRequestDescriptor.Sender);
 
         return user.Id;
     }
