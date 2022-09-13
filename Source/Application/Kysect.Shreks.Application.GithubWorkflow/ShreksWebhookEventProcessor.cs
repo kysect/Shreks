@@ -58,7 +58,7 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         }
         else
         {
-            await eventNotifier.NotifySubmissionUpdate(result.Submission, logger, false, true);
+            await eventNotifier.NotifySubmissionUpdate(result.Submission, logger);
         }
     }
 

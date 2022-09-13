@@ -130,7 +130,7 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
         Submission completedSubmission = await _shreksCommandProcessor.UpdateSubmissionState(submission.Id, user.Id, state, CancellationToken.None);
 
-        await _eventNotifier.NotifySubmissionUpdate(completedSubmission, _logger, true);
+        await _eventNotifier.NotifySubmissionUpdate(completedSubmission, _logger);
         return completedSubmission;
     }
 }
