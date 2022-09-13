@@ -90,11 +90,8 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
     private async Task<Guid> GetUserId(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
     {
         string userGithubUsername = pullRequestDescriptor.Sender;
-        User? user = await _context.UserAssociations
-            .FindUserByGithubUsername(userGithubUsername);
-
-        if (user is null)
-            throw new UserNotFoundByGithubUsernameException(userGithubUsername);
+        User user = await _context.UserAssociations
+            .GetUserByGithubUsername(userGithubUsername);
 
         return user.Id;
     }
@@ -181,9 +178,7 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
         GithubPullRequestDescriptor pullRequestDescriptor,
         CancellationToken cancellationToken)
     {
-        User? user = await _context.UserAssociations.FindUserByGithubUsername(pullRequestDescriptor.Repository);
-        if (user is null)
-            throw new EntityNotFoundException($"Unable to find student by GithubUserAssociation for {pullRequestDescriptor.Repository} repository");
+        User user = await _context.UserAssociations.GetUserByGithubUsername(pullRequestDescriptor.Repository);
 
         return await _context.Students.GetByIdAsync(user.Id, cancellationToken);
     }

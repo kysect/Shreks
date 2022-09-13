@@ -5,6 +5,7 @@ using Kysect.Shreks.Application.Factories;
 using Microsoft.Extensions.Logging;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Application.Commands.Result;
+using Kysect.Shreks.Common.Exceptions;
 
 namespace Kysect.Shreks.Application.Commands.Processors;
 
@@ -25,11 +26,17 @@ public class ShreksCommandProcessor
         {
             return await ProcessBaseCommand(command, cancellationToken);
         }
-        catch (Exception e)
+        catch (DomainInvalidOperationException e)
         {
             var message = $"An error occurred while processing {command.GetType().Name} command: {e.Message}";
             _logger.LogError(e, message);
             return new BaseShreksCommandResult(isSuccess: false, message);
+        }
+        catch (Exception e)
+        {
+            const string message = $"An internal error occurred while processing command. Contact support for details.";
+            _logger.LogError(e, message);
+            return new BaseShreksCommandResult(false, message);
         }
     }
 
