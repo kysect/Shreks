@@ -18,8 +18,9 @@ public class GithubUserProvider : IGithubUserProvider
 
         try
         {
-            await _appClient.User.Get(username);
-            return true;
+            User user = await _appClient.User.Get(username);
+
+            return user.Login.Equals(username, StringComparison.Ordinal);
         }
         catch (NotFoundException)
         {
