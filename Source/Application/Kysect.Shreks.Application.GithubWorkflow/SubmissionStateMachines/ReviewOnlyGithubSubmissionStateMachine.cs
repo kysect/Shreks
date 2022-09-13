@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 
-public class OneStageGithubSubmissionStateMachine : IGithubSubmissionStateMachine
+public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMachine
 {
     private readonly IShreksDatabaseContext _context;
     private readonly GithubSubmissionService _githubSubmissionService;
@@ -22,7 +22,7 @@ public class OneStageGithubSubmissionStateMachine : IGithubSubmissionStateMachin
     private readonly ILogger _logger;
     private readonly IPullRequestEventNotifier _eventNotifier;
 
-    public OneStageGithubSubmissionStateMachine(
+    public ReviewOnlyGithubSubmissionStateMachine(
         IShreksDatabaseContext context,
         SubmissionService shreksCommandProcessor,
         ShreksCommandProcessor commandProcessor,

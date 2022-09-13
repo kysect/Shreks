@@ -18,6 +18,6 @@ public class GithubSubmissionStateMachineFactory
 
     public IGithubSubmissionStateMachine Create(ShreksCommandProcessor commandProcessor, ILogger logger, IPullRequestEventNotifier eventNotifier)
     {
-        return new OneStageGithubSubmissionStateMachine(_context, _shreksCommandProcessor, commandProcessor, logger, eventNotifier);
+        return new ReviewOnlyGithubSubmissionStateMachine(_context, _shreksCommandProcessor, commandProcessor, logger, eventNotifier);
     }
 }
