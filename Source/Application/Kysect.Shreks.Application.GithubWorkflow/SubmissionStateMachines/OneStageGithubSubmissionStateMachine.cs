@@ -18,20 +18,26 @@ public class OneStageGithubSubmissionStateMachine : IGithubSubmissionStateMachin
     private readonly IShreksDatabaseContext _context;
     private readonly GithubSubmissionService _githubSubmissionService;
     private readonly SubmissionService _shreksCommandProcessor;
+    private readonly ShreksCommandProcessor _commandProcessor;
+    private readonly ILogger _logger;
+    private readonly IPullRequestEventNotifier _eventNotifier;
 
-    public OneStageGithubSubmissionStateMachine(IShreksDatabaseContext context, SubmissionService shreksCommandProcessor)
+    public OneStageGithubSubmissionStateMachine(
+        IShreksDatabaseContext context,
+        SubmissionService shreksCommandProcessor,
+        ShreksCommandProcessor commandProcessor,
+        ILogger logger,
+        IPullRequestEventNotifier eventNotifier)
     {
         _githubSubmissionService = new GithubSubmissionService(context);
         _context = context;
         _shreksCommandProcessor = shreksCommandProcessor;
+        _commandProcessor = commandProcessor;
+        _logger = logger;
+        _eventNotifier = eventNotifier;
     }
 
-    public async Task ProcessPullRequestReviewApprove(
-        IShreksCommand? command,
-        ShreksCommandProcessor commandProcessor,
-        GithubPullRequestDescriptor prDescriptor,
-        ILogger logger,
-        IPullRequestEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReviewApprove(IShreksCommand? command, GithubPullRequestDescriptor prDescriptor)
     {
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
 
@@ -39,110 +45,95 @@ public class OneStageGithubSubmissionStateMachine : IGithubSubmissionStateMachin
 
         if (command is not null)
         {
-            BaseShreksCommandResult result = await commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
-            await eventNotifier.SendCommentToPullRequest(result.Message);
-            logger.LogInformation("Notify: " + result.Message);
+            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+            await _eventNotifier.SendCommentToPullRequest(result.Message);
+            _logger.LogInformation("Notify: " + result.Message);
             return;
         }
+
+        string message;
 
         switch (points)
         {
             case null:
                 {
                     command = new RateCommand(100, 0);
-                    BaseShreksCommandResult result = await commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
-                    await eventNotifier.SendCommentToPullRequest(result.Message);
-                    logger.LogInformation("Notify: " + result.Message);
+                    BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+                    message = result.Message;
                     break;
                 }
-
+                
             case 100:
                 {
-                    var message = "Review successfully processed, but submission already has 100 points";
-                    await eventNotifier.SendCommentToPullRequest(message);
-                    logger.LogInformation("Notify: " + message);
+                    message = "Review successfully processed, but submission already has 100 points";
                     break;
                 }
 
             default:
                 {
-                    var message = $"Submission is already rated with {points} points. If you want to change it, please use /update command.";
-                    await eventNotifier.SendCommentToPullRequest(message);
-                    logger.LogInformation("Notify: " + message);
+                    message = $"Submission is already rated with {points} points. If you want to change it, please use /update command.";
                     break;
                 }
         }
+
+        await _eventNotifier.SendCommentToPullRequest(message);
+        _logger.LogInformation("Notify: " + message);
+
     }
 
-    public async Task ProcessPullRequestReviewRequestChanges(
-        IShreksCommand? command,
-        ShreksCommandProcessor commandProcessor,
-        ILogger logger,
-        IPullRequestEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReviewRequestChanges(IShreksCommand? command)
     {
         if (command is null)
             command = new RateCommand(0, 0);
 
-        BaseShreksCommandResult result = await commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
-        await eventNotifier.SendCommentToPullRequest(result.Message);
-        logger.LogInformation("Notify: " + result.Message);
+        BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+        await _eventNotifier.SendCommentToPullRequest(result.Message);
+        _logger.LogInformation("Notify: " + result.Message);
     }
 
-    public async Task ProcessPullRequestReviewComment(
-        IShreksCommand? command,
-        ShreksCommandProcessor commandProcessor,
-        ILogger logger,
-        IPullRequestEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReviewComment(IShreksCommand? command)
     {
         if (command is not null)
         {
-            BaseShreksCommandResult result = await commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
-            await eventNotifier.SendCommentToPullRequest(result.Message);
-            logger.LogInformation("Notify: " + result.Message);
+            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+            await _eventNotifier.SendCommentToPullRequest(result.Message);
+            _logger.LogInformation("Notify: " + result.Message);
         }
 
         if (command is not RateCommand)
         {
             string message = $"Review proceeded, but submission is not yet rated and still will be presented in queue";
-            await eventNotifier.SendCommentToPullRequest(message);
-            logger.LogInformation("Notify: " + message);
+            await _eventNotifier.SendCommentToPullRequest(message);
+            _logger.LogInformation("Notify: " + message);
         }
     }
 
-    public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor)
     {
         if (isMerged.HasValue && isMerged == false)
-            await ChangeSubmissionState(SubmissionState.Active, prDescriptor, logger, eventNotifier);
+            await ChangeSubmissionState(SubmissionState.Active, prDescriptor);
     }
 
-    public async Task ProcessPullRequestClosed(
-        bool merged,
-        GithubPullRequestDescriptor prDescriptor,
-        ILogger logger,
-        IPullRequestCommitEventNotifier eventNotifier)
+    public async Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor)
     {
         var state = merged ? SubmissionState.Completed : SubmissionState.Inactive;
-        var submission = await ChangeSubmissionState(state, prDescriptor, logger, eventNotifier);
+        var submission = await ChangeSubmissionState(state, prDescriptor);
 
         if (merged && submission.Points is null)
         {
             string message = $"Warning: pull request was merged, but submission {submission.Code} is not yet rated.";
-            await eventNotifier.SendCommentToPullRequest(message);
+            await _eventNotifier.SendCommentToPullRequest(message);
         }
     }
 
-    private async Task<Submission> ChangeSubmissionState(
-        SubmissionState state,
-        GithubPullRequestDescriptor githubPullRequestDescriptor,
-        ILogger repositoryLogger,
-        IPullRequestCommitEventNotifier pullRequestCommitEventNotifier)
+    private async Task<Submission> ChangeSubmissionState(SubmissionState state, GithubPullRequestDescriptor githubPullRequestDescriptor)
     {
         User user = await _context.UserAssociations.GetUserByGithubUsername(githubPullRequestDescriptor.Sender);
 
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
         Submission completedSubmission = await _shreksCommandProcessor.UpdateSubmissionState(submission.Id, user.Id, state, CancellationToken.None);
 
-        await pullRequestCommitEventNotifier.NotifySubmissionUpdate(completedSubmission, repositoryLogger, true, false);
+        await _eventNotifier.NotifySubmissionUpdate(completedSubmission, _logger, true);
         return completedSubmission;
     }
 }

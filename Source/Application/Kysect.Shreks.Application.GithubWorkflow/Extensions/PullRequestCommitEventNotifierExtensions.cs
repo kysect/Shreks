@@ -5,8 +5,25 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.GithubWorkflow.Extensions;
 
-public static class GithubEventNotifierExtensions
+public static class PullRequestCommitEventNotifierExtensions
 {
+    public static async Task NotifySubmissionUpdate(
+        this IPullRequestEventNotifier pullRequestCommitEventNotifier,
+        Submission submission,
+        ILogger logger,
+        bool sendComment = false)
+    {
+        string message = $"Submission {submission.Code} was updated." +
+                         $"\nState: {submission.State}" +
+                         $"\nDate: {submission.SubmissionDate}";
+
+        if (sendComment)
+        {
+            logger.LogInformation("Notify comment posted into PR: " + message);
+            await pullRequestCommitEventNotifier.SendCommentToPullRequest(message);
+        }
+    }
+
     public static async Task NotifySubmissionUpdate(
         this IPullRequestCommitEventNotifier pullRequestCommitEventNotifier,
         Submission submission,
