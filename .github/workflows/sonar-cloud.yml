@@ -5,6 +5,8 @@ on:
       - master
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'Source/**'
 jobs:
   build:
     name: Build
@@ -42,6 +44,6 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"kysect_Shreks" /o:"kysect" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"kysect_Shreks" /o:"kysect" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.exclusions="**/Migrations/**"
           dotnet build Source/Kysect.Shreks.sln
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
