@@ -8,6 +8,7 @@ using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Github.Invites;
 using Kysect.Shreks.Integration.Github.Notifiers;
 using Kysect.Shreks.Integration.Github.Processors;
+using Kysect.Shreks.Integration.Github.Providers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -131,6 +132,7 @@ public static class ServiceCollectionExtensions
     {
         return services
             .AddScoped<ISubjectCourseGithubOrganizationInviteSender, SubjectCourseGithubOrganizationInviteSender>()
-            .AddScoped<ISubjectCourseGithubOrganizationRepositoryManager, SubjectCourseGithubOrganizationRepositoryManager>();
+            .AddScoped<ISubjectCourseGithubOrganizationRepositoryManager, SubjectCourseGithubOrganizationRepositoryManager>()
+            .AddScoped<IGithubUserProvider, GithubUserProvider>();
     }
 }

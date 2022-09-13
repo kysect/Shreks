@@ -16,15 +16,18 @@ public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdmin
     private readonly IShreksDatabaseContext _shreksDatabaseContext;
     private readonly IOrganizationDetailsProvider _organizationDetailsProvider;
     private readonly ILogger<SyncGithubAdminWithMentorsHandler> _logger;
+    private readonly IGithubUserProvider _githubUserProvider;
 
     public SyncGithubAdminWithMentorsHandler(
         IShreksDatabaseContext shreksDatabaseContext,
         IOrganizationDetailsProvider organizationDetailsProvider,
-        ILogger<SyncGithubAdminWithMentorsHandler> logger)
+        ILogger<SyncGithubAdminWithMentorsHandler> logger,
+        IGithubUserProvider githubUserProvider)
     {
         _shreksDatabaseContext = shreksDatabaseContext;
         _organizationDetailsProvider = organizationDetailsProvider;
         _logger = logger;
+        _githubUserProvider = githubUserProvider;
     }
 
     public async Task<Unit> Handle(SyncGithubAdminWithMentors.Command request, CancellationToken cancellationToken)
@@ -85,6 +88,11 @@ public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdmin
         }
         else
         {
+            Boolean isGithubUserExists = await _githubUserProvider.IsGithubUserExists(adminUsername);
+
+            if (!isGithubUserExists)
+                throw new DomainInvalidOperationException($"Github user with username {adminUsername} does not exist");
+
             var adminUser = new Core.Users.User(adminUsername, adminUsername, adminUsername);
             var githubUserAssociation = new GithubUserAssociation(adminUser, adminUsername);
 
