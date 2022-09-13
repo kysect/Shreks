@@ -5,11 +5,8 @@ tab_width = 4
 indent_size = 4
 end_of_line = crlf
 
-[*.cs]
-
 dotnet_diagnostic.IDE0001.severity = warning
 dotnet_diagnostic.IDE0002.severity = warning
-
 
 # IDE0003 and IDE0009
 dotnet_diagnostic.IDE0003.severity = warning
@@ -167,7 +164,7 @@ dotnet_diagnostic.IDE0052.severity = warning
 
 # IDE0053
 dotnet_diagnostic.IDE0053.severity = suggestion
-csharp_style_expression_bodied_lambdas = :suggestion
+csharp_style_expression_bodied_lambdas = true:suggestion
 
 # IDE0054 and IDE0074
 dotnet_diagnostic.IDE0054.severity = suggestion
@@ -188,7 +185,7 @@ csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
 csharp_indent_case_contents = true
 csharp_indent_switch_labels = true
-csharp_indent_labels = no_cahnge
+csharp_indent_labels = no_change
 csharp_indent_block_contents = true
 csharp_indent_braces = false
 csharp_indent_case_contents_when_block = false
@@ -527,21 +524,21 @@ dotnet_naming_symbols.public_protected_constant_fields_group.applicable_accessib
 dotnet_naming_symbols.public_protected_constant_fields_group.required_modifiers         = const
 dotnet_naming_symbols.public_protected_constant_fields_group.applicable_kinds           = field
 dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.symbols    = public_protected_constant_fields_group
-dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.style      = pascal_case_style
-dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.severity   = warning
+dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.style = pascal_case_style
+dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.severity = warning
 
 dotnet_naming_symbols.public_protected_static_readonly_fields_group.applicable_accessibilities = public, protected, protected_internal
 dotnet_naming_symbols.public_protected_static_readonly_fields_group.required_modifiers         = static, readonly
 dotnet_naming_symbols.public_protected_static_readonly_fields_group.applicable_kinds           = field
 dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.symbols    = public_protected_static_readonly_fields_group
-dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.style      = pascal_case_style
-dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.severity   = warning
+dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.style = pascal_case_style
+dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.severity = warning
 
 dotnet_naming_symbols.other_public_protected_fields_group.applicable_accessibilities = public, protected, protected_internal
 dotnet_naming_symbols.other_public_protected_fields_group.applicable_kinds           = field
 dotnet_naming_rule.other_public_protected_fields_disallowed_rule.symbols             = other_public_protected_fields_group
-dotnet_naming_rule.other_public_protected_fields_disallowed_rule.style               = disallowed_style
-dotnet_naming_rule.other_public_protected_fields_disallowed_rule.severity            = error
+dotnet_naming_rule.other_public_protected_fields_disallowed_rule.style = disallowed_style
+dotnet_naming_rule.other_public_protected_fields_disallowed_rule.severity = error
 
 # Other
 
