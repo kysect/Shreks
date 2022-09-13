@@ -1,16 +1,16 @@
-using Kysect.Shreks.Application.Dto.Study;
-using MediatR;
-using Microsoft.Extensions.Logging;
+using Kysect.Shreks.Application.Commands.Processors;
 
 namespace Kysect.Shreks.Application.Commands.Contexts;
 
 public class SubmissionContext : BaseContext
 {
-    public SubmissionDto Submission { get; }
+    public Guid SubmissionId { get; set; }
+    public ISubmissionService SubmissionService { get; set; }
 
-    public SubmissionContext(IMediator mediator, ILogger log, Guid issuerId, SubmissionDto submission) 
-        : base(mediator, log, issuerId)
+    public SubmissionContext(Guid issuerId, Guid submissionId, ISubmissionService submissionService) 
+        : base(issuerId)
     {
-        Submission = submission;
+        SubmissionService = submissionService;
+        SubmissionId = submissionId;
     }
 }

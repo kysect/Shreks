@@ -1,18 +1,13 @@
 ﻿using CommandLine;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Application.Commands.Processors;
-using Kysect.Shreks.Application.Commands.Result;
 using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/help")]
-public class HelpCommand : IShreksCommand<BaseContext, string>
+public class HelpCommand : IShreksCommand
 {
-    public Task<string> ExecuteAsync(BaseContext context, CancellationToken cancellationToken)
-    {
-        context.Log.LogDebug($"Handle /help command from {context.IssuerId}");
-        string helpString = @"
+    public const string HelpString = @"
 Команды:
 
 - `/help`
@@ -33,11 +28,11 @@ public class HelpCommand : IShreksCommand<BaseContext, string>
 - Создание или переоткрытие PR - создаёт сабмишен
 - Добавление нового комита в PR - обновляет дату сабмишена на текущую";
 
-        return Task.FromResult(helpString);
+    public string ExecuteAsync(SubmissionContext context, ILogger logger)
+    {
+        logger.LogDebug($"Handle /help command from {context.IssuerId}");
+
+        return HelpString;
     }
 
-    public Task<TResult> AcceptAsync<TResult>(IShreksCommandVisitor<TResult> visitor) where TResult : IShreksCommandResult
-    {
-        return visitor.VisitAsync(this);
-    }
 }

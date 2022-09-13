@@ -4,7 +4,7 @@ using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands.AddGithubSubjectCourseAssociation;
+using static Kysect.Shreks.Application.Abstractions.Github.AddGithubSubjectCourseAssociation;
 namespace Kysect.Shreks.Application.Handlers.Github;
 
 public class AddGithubSubjectCourseAssociationHandler : IRequestHandler<Command, Response>

@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
-using Kysect.Shreks.Application.CommandProcessing;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
+using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Extensions;
@@ -12,31 +12,29 @@ using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Specifications.Submissions;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Kysect.Shreks.Core.Submissions;
 using Microsoft.EntityFrameworkCore;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Application.GithubWorkflow.Models;
+using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 
 public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 {
     private readonly IShreksCommandParser _commandParser;
-    private readonly IMediator _mediator;
     private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _queue;
     private readonly GithubSubmissionFactory _githubSubmissionFactory;
 
     public ShreksWebhookEventProcessor(
         IShreksCommandParser commandParser,
-        IMediator mediator,
         IShreksDatabaseContext context,
         ITableUpdateQueue queue,
         GithubSubmissionFactory githubSubmissionFactory)
     {
         _commandParser = commandParser;
-        _mediator = mediator;
         _context = context;
         _queue = queue;
         _githubSubmissionFactory = githubSubmissionFactory;
@@ -89,8 +87,8 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             githubPullRequestDescriptor.Repository,
             githubPullRequestDescriptor.PrNumber);
 
-        var shreksCommandProcessor = new ShreksCommandHandler(_context, _queue);
-        Submission completedSubmission = await shreksCommandProcessor.UpdateSubmission(submission.Id, user.Id, state, CancellationToken.None);
+        var shreksCommandProcessor = new SubmissionService(_context, _queue);
+        Submission completedSubmission = await shreksCommandProcessor.UpdateSubmissionState(submission.Id, user.Id, state, CancellationToken.None);
 
         var pullRequestCommentEventNotifier = pullRequestCommitEventNotifier;
         await pullRequestCommentEventNotifier.NotifySubmissionUpdate(completedSubmission, repositoryLogger, true, false);
@@ -202,22 +200,20 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     private async Task<BaseShreksCommandResult> ProceedCommandAsync(IShreksCommand command, GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
     {
-        var contextCreator = new PullRequestCommentContextFactory(_mediator, pullRequestDescriptor, repositoryLogger, _githubSubmissionFactory, _context);
-        var processor = new GithubCommandProcessor(contextCreator, repositoryLogger, CancellationToken.None);
-        BaseShreksCommandResult result;
+        var submissionService = new SubmissionService(_context, _queue);
+        var contextCreator = new PullRequestCommentContextFactory(pullRequestDescriptor, _githubSubmissionFactory, _context, submissionService);
+        var commandProcessor = new ShreksCommandProcessor(contextCreator, repositoryLogger);
 
         try
         {
-            result = await command.AcceptAsync(processor);
+            return await commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
         }
         catch (Exception e)
         {
             const string message = $"An internal error occurred while processing command. Contact support for details.";
             repositoryLogger.LogError(e, message);
-            result = new BaseShreksCommandResult(false, message);
+            return new BaseShreksCommandResult(false, message);
         }
-
-        return result;
     }
 
     private async Task<GithubSubmission> GetGithubSubmissionAsync(string organization, string repository, long prNumber)

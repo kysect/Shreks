@@ -14,10 +14,11 @@ using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using Kysect.Shreks.Application.GithubWorkflow.Models;
 
-namespace Kysect.Shreks.Application.GithubWorkflow;
+namespace Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
-public class GithubSubmissionFactory
+public class GithubSubmissionFactory : IGithubSubmissionFactory
 {
     private readonly IShreksDatabaseContext _context;
 
@@ -26,7 +27,9 @@ public class GithubSubmissionFactory
         _context = context;
     }
 
-    public async Task<GithubSubmissionCreationResult> CreateOrUpdateGithubSubmission(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
+    public async Task<GithubSubmissionCreationResult> CreateOrUpdateGithubSubmission(
+        GithubPullRequestDescriptor pullRequestDescriptor,
+        CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(pullRequestDescriptor);
 
@@ -91,7 +94,7 @@ public class GithubSubmissionFactory
             .FindUserByGithubUsername(userGithubUsername);
 
         if (user is null)
-            throw new UserWasNotFoundByGithubUsernameException(userGithubUsername);
+            throw new UserNotFoundByGithubUsernameException(userGithubUsername);
 
         return user.Id;
     }

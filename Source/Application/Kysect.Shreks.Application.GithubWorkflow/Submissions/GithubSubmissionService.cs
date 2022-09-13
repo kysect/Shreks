@@ -8,9 +8,9 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Kysect.Shreks.Application.GithubWorkflow;
+namespace Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
-public class GithubSubmissionService
+public class GithubSubmissionService : IGithubSubmissionService
 {
     private readonly IShreksDatabaseContext _context;
 
@@ -60,5 +60,26 @@ public class GithubSubmissionService
         }
 
         return assignment;
+    }
+
+    public async Task<Submission> GetCurrentUnratedSubmissionByPrNumber(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
+    {
+        var submission = await _context.SubmissionAssociations
+            .OfType<GithubSubmissionAssociation>()
+            .Where(a =>
+                a.Organization == pullRequestDescriptor.Organization
+                && a.Repository == pullRequestDescriptor.Repository
+                && a.PrNumber == pullRequestDescriptor.PrNumber
+                && a.Submission.Rating == null)
+            .OrderByDescending(a => a.Submission.SubmissionDate)
+            .Select(a => a.Submission)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (submission is null)
+        {
+            throw new EntityNotFoundException($"No unrated submission in pr {pullRequestDescriptor.Payload}");
+        }
+
+        return submission;
     }
 }

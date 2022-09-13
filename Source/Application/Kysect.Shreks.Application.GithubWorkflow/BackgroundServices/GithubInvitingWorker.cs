@@ -1,10 +1,9 @@
-﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
-using MediatR;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Kysect.Shreks.Application.GithubWorkflow;
+namespace Kysect.Shreks.Application.GithubWorkflow.BackgroundServices;
 
 public class GithubInvitingWorker : BackgroundService
 {
@@ -25,19 +24,18 @@ public class GithubInvitingWorker : BackgroundService
         _serviceProvider = serviceProvider;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         using var timer = new PeriodicTimer(_delayBetweenInviteIteration);
 
-        while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
+        while (!cancellationToken.IsCancellationRequested && await timer.WaitForNextTickAsync(cancellationToken))
         {
             try
             {
                 using IServiceScope scope = _serviceProvider.CreateScope();
 
-                var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-                var updateOrganizationCommand = new UpdateSubjectCourseOrganizations.Command();
-                await mediator.Send(updateOrganizationCommand, stoppingToken);
+                var subjectCourseGithubOrganizationManager = scope.ServiceProvider.GetRequiredService<ISubjectCourseGithubOrganizationManager>();
+                await subjectCourseGithubOrganizationManager.UpdateOrganizations(cancellationToken);
             }
             catch (Exception ex)
             {

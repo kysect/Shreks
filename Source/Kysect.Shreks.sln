@@ -59,9 +59,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.ApiClientGene
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.DataImport", "Playground\Kysect.Shreks.DataImport\Kysect.Shreks.DataImport.csproj", "{601BCCAB-8895-43CB-BC46-EE2C20F4031F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Application.GithubWorkflow", "Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj", "{DF0C2310-8F92-404C-885E-D495B3F334EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.GithubWorkflow", "Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj", "{DF0C2310-8F92-404C-885E-D495B3F334EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.Application.GithubWorkflow.Abstractions", "Application\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj", "{3B0EB40E-6E3C-4F8D-BBD7-9B7FC5FB7D68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.GithubWorkflow.Abstractions", "Application\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj", "{3B0EB40E-6E3C-4F8D-BBD7-9B7FC5FB7D68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

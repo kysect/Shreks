@@ -1,8 +1,7 @@
 using FluentAssertions;
-using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
-using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.Handlers.Submissions;
+using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Integration.Google;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -15,21 +14,18 @@ public class UpdateSubmissionStateHandlerTest : ApplicationTestBase
     public async Task Handle_Should_UpdateSubmissionState()
     {
         // Arrange
-        const SubmissionStateDto stateDto = SubmissionStateDto.Active;
+        var submissionService = new SubmissionService(Context, new TableUpdateQueue());
+        const SubmissionState stateDto = SubmissionState.Active;
         const SubmissionState state = SubmissionState.Active;
         var submission = await Context.Submissions
             .Where(s => s.State != SubmissionState.Completed)
             .FirstAsync();
 
-        var command = new UpdateSubmissionState.Command(submission.Student.User.Id, submission.Id, stateDto);
-
-        var handler = new UpdateSubmissionStateHandler(Context, Mapper, new TableUpdateQueue());
-
         // Act
-        var response = await handler.Handle(command, CancellationToken.None);
-        
+        Submission response = await submissionService.UpdateSubmissionState(submission.Id, submission.Student.UserId, state, CancellationToken.None);
+
         // Assert
-        response.Submission.State.Should().Be(stateDto);
+        response.State.Should().Be(stateDto);
         submission.State.Should().Be(state);
     }
 }

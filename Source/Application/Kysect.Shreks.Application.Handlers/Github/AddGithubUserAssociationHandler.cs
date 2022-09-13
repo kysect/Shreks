@@ -1,10 +1,9 @@
-using AutoMapper;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands.AddGithubUserAssociation;
+using static Kysect.Shreks.Application.Abstractions.Github.AddGithubUserAssociation;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 
@@ -12,7 +11,7 @@ public class AddGithubUserAssociationHandler : IRequestHandler<Command, Response
 {
     private readonly IShreksDatabaseContext _context;
 
-    public AddGithubUserAssociationHandler(IShreksDatabaseContext context, IMapper mapper)
+    public AddGithubUserAssociationHandler(IShreksDatabaseContext context)
     {
         _context = context;
     }
