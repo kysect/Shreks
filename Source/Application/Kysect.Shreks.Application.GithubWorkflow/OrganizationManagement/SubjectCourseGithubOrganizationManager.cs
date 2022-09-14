@@ -82,10 +82,6 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
             {
                 await repositoryManager.AddAdminPermission(organizationName, newRepositoryName, username);
             }
-            catch (Exception e) when (e.Message == "Invalid Status Code returned. Expected a 204 or a 404")
-            {
-                _logger.LogWarning($"Octokit return wrong error code for {username}.");
-            }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Failed to add user {username} as repo admin.");
