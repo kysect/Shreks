@@ -1,4 +1,5 @@
-﻿using Kysect.Shreks.Core.UserAssociations;
+﻿using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,5 +14,10 @@ public static class UserExtensions
             .Where(u => u.GithubUsername.ToLower() == githubUsername.ToLower())
             .Select(u => u.User)
             .SingleOrDefaultAsync();
+    }
+
+    public static async Task<User> GetUserByGithubUsername(this DbSet<UserAssociation> users, string githubUsername)
+    {
+        return await FindUserByGithubUsername(users, githubUsername) ?? throw new UserNotFoundByGithubUsernameException(githubUsername);
     }
 }
