@@ -34,28 +34,28 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
 
     public async Task<BaseContext> CreateBaseContext(CancellationToken cancellationToken)
     {
-        var userId = await GetUserId(cancellationToken);
+        var userId = await GetUserId();
 
         return new BaseContext(userId);
     }
 
     public async Task<SubmissionContext> CreateSubmissionContext(CancellationToken cancellationToken)
     {
-        Guid userId = await GetUserId(cancellationToken);
+        Guid userId = await GetUserId();
         Submission submission = await _githubSubmissionService.GetCurrentUnratedSubmissionByPrNumber(_pullRequestDescriptor, cancellationToken);
         return new SubmissionContext(userId, submission.Id, _submissionService);
     }
 
     public async Task<PullRequestContext> CreatePullRequestContext(CancellationToken cancellationToken)
     {
-        var userId = await GetUserId(cancellationToken);
+        var userId = await GetUserId();
 
         return new PullRequestContext(userId, _pullRequestDescriptor);
     }
 
     public async Task<PullRequestAndAssignmentContext> CreatePullRequestAndAssignmentContext(CancellationToken cancellationToken)
     {
-        var userId = await GetUserId(cancellationToken);
+        var userId = await GetUserId();
 
         SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
         Assignment assignment = await _githubSubmissionService.GetAssignmentByBranchAndSubjectCourse(subjectCourse.Id, _pullRequestDescriptor, cancellationToken);
@@ -63,10 +63,9 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         return new PullRequestAndAssignmentContext(_githubCommandSubmissionFactory, _pullRequestDescriptor, userId, assignment.Id);
     }
 
-    private async Task<Guid> GetUserId(CancellationToken cancellationToken)
+    private async Task<Guid> GetUserId()
     {
-        User user = await _context.UserAssociations.FindUserByGithubUsername(_pullRequestDescriptor.Sender)
-                                        ?? throw new EntityNotFoundException($"Entity of type User with login {_pullRequestDescriptor.Sender}");
+        User user = await _context.UserAssociations.GetUserByGithubUsername(_pullRequestDescriptor.Sender);
         return user.Id;
     }
 }

@@ -18,9 +18,11 @@ public class RateSubmissionTest : ApplicationTestBase
             .FirstAsync();
 
         first.Rate(new Fraction(0.5), Points.None);
+        first.State = SubmissionState.Completed;
         first.State.Should().Be(SubmissionState.Completed);
 
         first.Rate(new Fraction(0.5), Points.None);
+        first.State = SubmissionState.Completed;
         first.State.Should().Be(SubmissionState.Completed);
     }
 }

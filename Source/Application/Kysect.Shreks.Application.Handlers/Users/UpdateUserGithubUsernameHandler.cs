@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
@@ -15,11 +16,13 @@ public class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
+    private readonly IGithubUserProvider _githubUserProvider;
 
-    public UpdateUserGithubUsernameHandler(IShreksDatabaseContext context, IMapper mapper)
+    public UpdateUserGithubUsernameHandler(IShreksDatabaseContext context, IMapper mapper, IGithubUserProvider githubUserProvider)
     {
         _context = context;
         _mapper = mapper;
+        _githubUserProvider = githubUserProvider;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -33,6 +36,11 @@ public class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response
 
         if (usernameAlreadyExists)
             throw new DomainInvalidOperationException($"Username {request.GithubUsername} already used by other user");
+
+        Boolean isGithubUserExists = await _githubUserProvider.IsGithubUserExists(request.GithubUsername);
+
+        if (!isGithubUserExists)
+            throw new DomainInvalidOperationException($"Github user with username {request.GithubUsername} does not exist");
 
         var association = new GithubUserAssociation(user, request.GithubUsername);
         user.AddAssociation(association);
