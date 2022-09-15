@@ -34,6 +34,9 @@ public class GithubSubmissionStateMachineFactory
             case SubmissionStateWorkflowType.ReviewOnly:
                 return new ReviewOnlyGithubSubmissionStateMachine(_context, _shreksCommandProcessor, commandProcessor, logger, eventNotifier);
 
+            case SubmissionStateWorkflowType.ReviewWithDefense:
+                return new ReviewWithDefenseGithubSubmissionStateMachine(_context, _shreksCommandProcessor, commandProcessor, logger, eventNotifier);
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(subjectCourse.WorkflowType));
         }
