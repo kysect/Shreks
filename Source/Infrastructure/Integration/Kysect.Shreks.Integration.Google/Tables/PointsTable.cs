@@ -26,7 +26,7 @@ public class PointsTable : RowTable<int>, ITableCustomizer
         Label("Сумма"),
         Label("Оценка"),
         Label("Комментарий").WithColumnWidth(350)
-    );
+    ).WithFrozenRows();
 
     public IComponent Customize(IComponent component)
         => component.WithDefaultStyle();

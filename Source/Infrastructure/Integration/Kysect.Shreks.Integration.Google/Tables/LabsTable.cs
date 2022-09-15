@@ -33,7 +33,7 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
             Label("ISU").WithColumnWidth(60),
             Label("ФИО").WithColumnWidth(240),
             Label("Группа"),
-            Label("GitHub").WithColumnWidth(150),
+            Label("GitHub").WithColumnWidth(150).WithFrozenColumns(),
             ForEach(points.Assignments, a => VStack
             (
                 Label(a.ShortName),
@@ -44,7 +44,7 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
                 )
             )).CustomizedWith(g => VStack(Label("Лабораторные"), g)),
             Label("Итог")
-        );
+        ).WithFrozenRows();
 
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
 

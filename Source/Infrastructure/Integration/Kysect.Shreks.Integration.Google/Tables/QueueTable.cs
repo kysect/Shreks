@@ -20,7 +20,7 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
         Label("Дата").WithColumnWidth(150),
         Label("Статус"),
         Label("GitHub").WithColumnWidth(400)
-    );
+    ).WithFrozenRows();
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ICultureInfoProvider _cultureInfoProvider;
