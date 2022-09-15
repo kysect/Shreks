@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -22,7 +23,7 @@ public class CreateSubjectCourseHandler : IRequestHandler<Command, Response>
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
         Subject subject = await _context.Subjects.GetByIdAsync(request.SubjectId, cancellationToken: cancellationToken);
-        var subjectCourse = new SubjectCourse(subject, request.Title);
+        var subjectCourse = new SubjectCourse(subject, request.Title, (SubmissionStateWorkflowType)request.WorkflowType);
         _context.SubjectCourses.Add(subjectCourse);
         await _context.SaveChangesAsync(cancellationToken);
 

@@ -41,9 +41,8 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
-        await _githubSubmissionStateMachineFactory
-            .Create(CreateCommandProcessor(prDescriptor, logger), logger, eventNotifier)
-            .ProcessPullRequestReopen(isMerged, prDescriptor);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+        await githubSubmissionStateMachine.ProcessPullRequestReopen(isMerged, prDescriptor);
     }
 
     public async Task ProcessPullRequestUpdate(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier, CancellationToken cancellationToken)
@@ -64,9 +63,9 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
     public async Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
-        await _githubSubmissionStateMachineFactory
-            .Create(CreateCommandProcessor(prDescriptor, logger), logger, eventNotifier)
-            .ProcessPullRequestClosed(merged, prDescriptor);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+
+        await githubSubmissionStateMachine.ProcessPullRequestClosed(merged, prDescriptor);
     }
 
     public async Task ProcessPullRequestReviewComment(string? comment, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
@@ -82,9 +81,9 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         if (comment.FirstOrDefault() == '/')
             command = _commandParser.Parse(comment);
 
-        await _githubSubmissionStateMachineFactory
-            .Create(CreateCommandProcessor(prDescriptor, logger), logger, eventNotifier)
-            .ProcessPullRequestReviewComment(command);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+
+        await githubSubmissionStateMachine.ProcessPullRequestReviewComment(command);
     }
 
     public async Task ProcessPullRequestReviewRequestChanges(string? reviewBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
@@ -95,9 +94,9 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         if (reviewComment.FirstOrDefault() == '/')
             requestChangesCommand = _commandParser.Parse(reviewComment);
 
-        await _githubSubmissionStateMachineFactory
-            .Create(CreateCommandProcessor(prDescriptor, logger), logger, eventNotifier)
-            .ProcessPullRequestReviewRequestChanges(requestChangesCommand);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+
+        await githubSubmissionStateMachine.ProcessPullRequestReviewRequestChanges(requestChangesCommand);
     }
 
     public async Task ProcessPullRequestReviewApprove(string? commentBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
@@ -108,9 +107,9 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         if (approveComment.FirstOrDefault() == '/')
             command = _commandParser.Parse(approveComment);
 
-        await _githubSubmissionStateMachineFactory
-            .Create(CreateCommandProcessor(prDescriptor, logger), logger, eventNotifier)
-            .ProcessPullRequestReviewApprove(command, prDescriptor);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+
+        await githubSubmissionStateMachine.ProcessPullRequestReviewApprove(command, prDescriptor);
     }
 
     public async Task ProcessIssueCommentCreate(
@@ -129,6 +128,12 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             await eventNotifier.SendCommentToPullRequest(result.Message);
 
         await eventNotifier.ReactToUserComment(result.IsSuccess);
+    }
+
+    private Task<IGithubSubmissionStateMachine> CreateStateMachine(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
+    {
+        return _githubSubmissionStateMachineFactory
+            .Create(CreateCommandProcessor(prDescriptor, logger), prDescriptor, logger, eventNotifier);
     }
 
     private ShreksCommandProcessor CreateCommandProcessor(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)

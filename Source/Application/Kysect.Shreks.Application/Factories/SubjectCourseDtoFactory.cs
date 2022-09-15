@@ -30,6 +30,10 @@ public class SubjectCourseDtoFactory
             }
         }
 
-        return new SubjectCourseDto(subjectCourse.Id, subjectCourse.Subject.Id, subjectCourse.Title, associations);
+        SubmissionStateWorkflowTypeDto? workflowType = subjectCourse.WorkflowType.HasValue
+            ? (SubmissionStateWorkflowTypeDto) subjectCourse.WorkflowType
+            : null;
+
+        return new SubjectCourseDto(subjectCourse.Id, subjectCourse.Subject.Id, subjectCourse.Title, workflowType, associations);
     }
 }

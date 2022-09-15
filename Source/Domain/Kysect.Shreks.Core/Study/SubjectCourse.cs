@@ -1,6 +1,7 @@
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
+using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.Core.Users;
 using RichEntity.Annotations;
 
@@ -14,10 +15,11 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<Mentor> _mentors;
     private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
 
-    public SubjectCourse(Subject subject, string title) : this(Guid.NewGuid())
+    public SubjectCourse(Subject subject, string title, SubmissionStateWorkflowType? workflowType) : this(Guid.NewGuid())
     {
         Subject = subject;
         Title = title;
+        WorkflowType = workflowType;
 
         _groups = new HashSet<SubjectCourseGroup>();
         _assignments = new HashSet<Assignment>();
@@ -28,6 +30,7 @@ public partial class SubjectCourse : IEntity<Guid>
 
     public virtual Subject Subject { get; protected init; }
     public string Title { get; set; }
+    public SubmissionStateWorkflowType? WorkflowType { get; set; }
     public virtual IReadOnlyCollection<SubjectCourseGroup> Groups => _groups;
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
