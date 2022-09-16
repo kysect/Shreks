@@ -82,6 +82,14 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IOrganizationGithubClientProvider, OrganizationGithubClientProvider>();
 
+        services.AddSingleton<IServiceOrganizationGithubClientProvider, ServiceOrganizationGithubClientProvider>(serviceProvider =>
+        {
+            IGitHubClient appClient = serviceProvider.GetRequiredService<IGitHubClient>();
+            IInstallationClientFactory installationClientFactory = serviceProvider.GetRequiredService<IInstallationClientFactory>();
+
+            return new ServiceOrganizationGithubClientProvider(appClient, installationClientFactory, githubIntegrationConfiguration.GithubAppConfiguration.ServiceOrganizationName);
+        });
+
         return services;
     }
 
