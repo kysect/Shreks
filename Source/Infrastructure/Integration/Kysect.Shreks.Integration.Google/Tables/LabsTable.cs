@@ -48,13 +48,8 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
                     Label("Балл").WithLeadingMediumBorder(),
                     Label("Дата").WithTrailingMediumBorder()
                 )
-            )).CustomizedWith(g => VStack
-            (
-                Label("Лабораторные")
-                    .WithSideMediumBorder()
-                    .WithBottomMediumBorder(),
-                g
-            )),
+            )).CustomizedWith(g =>
+                VStack(Label("Лабораторные").WithSideMediumBorder().WithBottomMediumBorder(), g)),
             Label("Итог")
         );
 
