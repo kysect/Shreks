@@ -13,10 +13,10 @@ public static class ConfigureHostBuilderExtensions {
             .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
             .WriteTo
-                .Console(outputTemplate: "[{Timestamp:T} {Level:u3}] ({SourceContext}) {Message}{NewLine}{Exception}")
+                .Console(outputTemplate: "[{Timestamp:T} {Level:u3}] {Message}{NewLine}{Exception}")
             .WriteTo
                 .File(Path.Join(BaseDirectoryName, "AppLogs_.log"),
-                    outputTemplate: "{Timestamp:o} [{Level:u3}] ({SourceContext}) {Message}{NewLine}{Exception}",
+                    outputTemplate: "{Timestamp:o} [{Level:u3}] {Message}{NewLine}{Exception}",
                     rollingInterval: RollingInterval.Day,
                     retainedFileCountLimit: 30
                 )
