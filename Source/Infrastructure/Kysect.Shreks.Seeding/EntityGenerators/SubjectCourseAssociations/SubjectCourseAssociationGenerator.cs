@@ -5,13 +5,13 @@ using Kysect.Shreks.Seeding.Options;
 
 namespace Kysect.Shreks.Seeding.EntityGenerators;
 
-public class SubjectCourseAssociationGenerator : EntityGeneratorBase<SubjectCourseAssociation>
+public class SubjectCourseAssociationGenerator : EntityGeneratorBase<GithubSubjectCourseAssociation>
 {
     private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
     private readonly Faker _faker;
 
     public SubjectCourseAssociationGenerator(
-        EntityGeneratorOptions<SubjectCourseAssociation> options,
+        EntityGeneratorOptions<GithubSubjectCourseAssociation> options,
         IEntityGenerator<SubjectCourse> subjectCourseGenerator,
         Faker faker)
         : base(options)
@@ -20,7 +20,7 @@ public class SubjectCourseAssociationGenerator : EntityGeneratorBase<SubjectCour
         _faker = faker;
     }
 
-    protected override SubjectCourseAssociation Generate(int index)
+    protected override GithubSubjectCourseAssociation Generate(int index)
     {
         var count = _subjectCourseGenerator.GeneratedEntities.Count;
 
