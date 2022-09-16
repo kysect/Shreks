@@ -1,7 +1,6 @@
 ﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
-using Kysect.Shreks.Core.Extensions;
-using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
+using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -36,12 +35,8 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
 
         foreach (GithubSubjectCourseAssociation subjectAssociation in githubSubjectCourseAssociations)
         {
-            List<string> usernames = await _context
-                .SubjectCourseGroups
-                .WithSpecification(new GetSubjectCourseGithubUsers(subjectAssociation.SubjectCourse.Id))
-                .Select(association => association.GithubUsername)
-                .ToListAsync(cancellationToken);
-
+            IReadOnlyCollection<GithubUserAssociation> githubUserAssociations = subjectAssociation.GetAllGithubUsers();
+            List<string> usernames = githubUserAssociations.Select(a => a.GithubUsername).ToList();
             await _inviteSender.Invite(subjectAssociation.GithubOrganizationName, usernames);
             await GenerateRepositories(_repositoryManager, usernames, subjectAssociation.GithubOrganizationName, subjectAssociation.TemplateRepositoryName);
         }
