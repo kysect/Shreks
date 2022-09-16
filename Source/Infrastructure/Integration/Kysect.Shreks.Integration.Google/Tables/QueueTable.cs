@@ -14,13 +14,13 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
 {
     private static readonly IRowComponent Header = Row
     (
-        Label("ФИО").WithColumnWidth(240),
+        Label("ФИО").WithColumnWidth(240).WithFrozenRows(),
         Label("Группа"),
         Label("Лабораторная работа").WithColumnWidth(150),
         Label("Дата").WithColumnWidth(150),
         Label("Статус"),
         Label("GitHub").WithColumnWidth(400)
-    ).WithFrozenRows();
+    );
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ICultureInfoProvider _cultureInfoProvider;

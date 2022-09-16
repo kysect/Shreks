@@ -16,7 +16,7 @@ public class PointsTable : RowTable<int>, ITableCustomizer
 
     private static readonly IRowComponent Header = Row
     (
-        Label("ISU").WithColumnWidth(60),
+        Label("ISU").WithColumnWidth(60).WithFrozenRows(),
         Label("ФИО").WithColumnWidth(240),
         Label("Группа"),
         Label("GitHub").WithColumnWidth(150),
@@ -26,7 +26,7 @@ public class PointsTable : RowTable<int>, ITableCustomizer
         Label("Сумма"),
         Label("Оценка"),
         Label("Комментарий").WithColumnWidth(350)
-    ).WithFrozenRows();
+    );
 
     public IComponent Customize(IComponent component)
         => component.WithDefaultStyle();

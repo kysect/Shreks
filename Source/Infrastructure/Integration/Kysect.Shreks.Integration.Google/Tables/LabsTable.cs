@@ -12,7 +12,13 @@ namespace Kysect.Shreks.Integration.Google.Tables;
 
 public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
 {
-    private static readonly IComponent EmptyAssignmentPointsCell = HStack(Enumerable.Repeat(Label(string.Empty), 2));
+    private static readonly IComponent BlankLabel = Label(string.Empty);
+
+    private static readonly IComponent EmptyAssignmentPointsCell = HStack
+    (
+        BlankLabel.WithLeadingMediumBorder(),
+        BlankLabel.WithTrailingMediumBorder()
+    );
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ICultureInfoProvider _cultureInfoProvider;
@@ -33,18 +39,24 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
             Label("ISU").WithColumnWidth(60),
             Label("ФИО").WithColumnWidth(240),
             Label("Группа"),
-            Label("GitHub").WithColumnWidth(150).WithFrozenColumns(),
+            Label("GitHub").WithColumnWidth(150).Frozen(),
             ForEach(points.Assignments, a => VStack
             (
-                Label(a.ShortName),
+                Label(a.ShortName).WithSideMediumBorder(),
                 HStack
                 (
-                    Label("Балл"),
-                    Label("Дата")
+                    Label("Балл").WithLeadingMediumBorder(),
+                    Label("Дата").WithTrailingMediumBorder()
                 )
-            )).CustomizedWith(g => VStack(Label("Лабораторные"), g)),
+            )).CustomizedWith(g => VStack
+            (
+                Label("Лабораторные")
+                    .WithSideMediumBorder()
+                    .WithBottomMediumBorder(),
+                g
+            )),
             Label("Итог")
-        ).WithFrozenRows();
+        );
 
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
 
@@ -78,8 +90,8 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
 
         return HStack
         (
-            Label(assignmentPoints.Points, formatProvider),
-            Label(assignmentPoints.Date, formatProvider)
+            Label(assignmentPoints.Points, formatProvider).WithLeadingMediumBorder(),
+            Label(assignmentPoints.Date, formatProvider).WithTrailingMediumBorder()
         );
     }
 }
