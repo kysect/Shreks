@@ -17,7 +17,7 @@ public class RateCommand : IShreksCommand
 
     [Value(0, Required = true, MetaName = "RatingPercent")]
     public double RatingPercent { get; }
-    
+
     [Value(1, Required = false, Default = 0.0, MetaName = "ExtraPoints")]
     public double? ExtraPoints { get; }
 
@@ -43,6 +43,4 @@ public class RateCommand : IShreksCommand
     {
         return $"RatingPercent: {{rateCommand.RatingPercent}}, ExtraPoints: {{rateCommand.ExtraPoints}}";
     }
-
-
 }

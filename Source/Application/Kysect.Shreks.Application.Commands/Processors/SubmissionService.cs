@@ -70,7 +70,7 @@ public class SubmissionService : ISubmissionService
 
         _updateQueue.EnqueueCoursePointsUpdate(submission.GetCourseId());
         _updateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
-        
+
         return submission;
     }
 }
