@@ -51,9 +51,7 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
             );
 
             if (submission.State is SubmissionStateDto.Reviewed)
-            {
-                row = row.FilledWith(Color.FromArgb(125, Color.LightGreen));
-            }
+                row = row.FilledWith(125, Color.LightGreen);
 
             yield return row;
         }

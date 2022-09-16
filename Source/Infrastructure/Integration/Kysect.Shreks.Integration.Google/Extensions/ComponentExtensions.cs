@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using FluentSpreadsheets;
+﻿using FluentSpreadsheets;
 using FluentSpreadsheets.Styles;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
@@ -16,9 +15,25 @@ public static class ComponentExtensions
     public static IComponent WithDefaultBorders(this IComponent component)
     {
         return component
-            .WithTrailingBorder(BorderType.Thin, Color.Black)
-            .WithBottomBorder(BorderType.Thin, Color.Black);
+            .WithTrailingBorderType(BorderType.Thin)
+            .WithBottomBorderType(BorderType.Thin);
     }
+
+    public static IComponent WithSideMediumBorder(this IComponent component)
+    {
+        return component
+            .WithLeadingMediumBorder()
+            .WithTrailingMediumBorder();
+    }
+
+    public static IComponent WithLeadingMediumBorder(this IComponent component)
+        => component.WithLeadingBorderType(BorderType.Medium);
+
+    public static IComponent WithTrailingMediumBorder(this IComponent component)
+        => component.WithTrailingBorderType(BorderType.Medium);
+
+    public static IComponent WithBottomMediumBorder(this IComponent component)
+        => component.WithBottomBorderType(BorderType.Medium);
 
     public static IComponent WithCenterAlignment(this IComponent component)
         => component.WithContentAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);

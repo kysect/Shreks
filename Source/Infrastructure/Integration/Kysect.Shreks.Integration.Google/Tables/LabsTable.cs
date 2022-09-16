@@ -5,6 +5,7 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
+using System.Drawing;
 using System.Globalization;
 using static FluentSpreadsheets.ComponentFactory;
 
@@ -50,26 +51,41 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
                 )
             )).CustomizedWith(g =>
                 VStack(Label("Лабораторные").WithSideMediumBorder().WithBottomMediumBorder(), g)),
-            Label("Итог")
+            Label("Итог").WithTrailingMediumBorder()
         );
 
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
 
-        foreach (var (student, assignmentPoints) in points.StudentsPoints)
+        IList<StudentPointsDto> studentPoints = points.StudentsPoints.ToArray();
+
+        for (int i = 0; i < studentPoints.Count; i++)
         {
+            var (student, assignmentPoints) = studentPoints[i];
+
             double totalPoints = assignmentPoints.Sum(p => p.Points);
             double roundedPoints = Math.Round(totalPoints, 2);
 
-            yield return Row
+            var row = Row
             (
                 Label(student.UniversityId),
-                Label(_userFullNameFormatter.GetFullName(student.User)), 
+                Label(_userFullNameFormatter.GetFullName(student.User)),
                 Label(student.GroupName),
                 Label(student.GitHubUsername!),
                 ForEach(points.Assignments, a =>
                     BuildAssignmentPointsCell(a, assignmentPoints, currentCulture)),
-                Label(roundedPoints, currentCulture)
+                Label(roundedPoints, currentCulture).WithTrailingMediumBorder()
             );
+            
+            if (i % 2 is 0)
+                row = row.FilledWith(Color.AliceBlue);
+
+            if (i is 0 || student.GroupName != studentPoints[i - 1].Student.GroupName)
+                row = row.WithTopMediumBorder();
+
+            if (i == studentPoints.Count - 1)
+                row = row.WithBottomMediumBorder();
+
+            yield return row;
         }
     }
 
