@@ -45,5 +45,6 @@ dotnet user-secrets set "GithubIntegrationConfiguration:GithubAuthConfiguration:
 6. Add Webhook secret and save to dotnet secrets as `GithubIntegrationConfiguration:GithubAppConfiguration:GithubAppSecret`
 7. Generate private key (*.pem file) and save to dotnet secrets as `GithubIntegrationConfiguration:GithubAppConfiguration:PrivateKey`
 9. After app creation add App ID into `appsettings.json` as `GithubIntegrationConfiguration:GithubAppConfiguration:AppIntegrationId`
-10. If you need to test Github App in another organization, you need to make your app public in Github App settings
-11. Add App into your test organization (go to https://github.com/apps/your-app-name)
+10. Add `GithubIntegrationConfiguration:GithubAppConfiguration:ServiceOrganizationName` into `appsettings.json` and set this field with the value `kysect`.
+11. If you need to test Github App in another organization, you need to make your app public in Github App settings
+12. Add App into your test organization (go to https://github.com/apps/your-app-name)
