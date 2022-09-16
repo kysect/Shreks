@@ -23,8 +23,8 @@ public partial class Student : IEntity
 
 public static class StudentExtensions
 {
-    public static void AddGithubAssociation(this Student student, string githubUsername)
+    public static GithubUserAssociation AddGithubAssociation(this Student student, string githubUsername)
     {
-        var githubUserAssociation = new GithubUserAssociation(student.User, githubUsername);
+        return new GithubUserAssociation(student.User, githubUsername);
     }
 }

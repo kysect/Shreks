@@ -1,9 +1,8 @@
 ﻿using FluentAssertions;
+using Kysect.Shreks.Application.DatabaseContextExtensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
-using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
-using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -47,10 +46,9 @@ public class GithubSubjectCourseAssociationTest : DataAccessTestBase
 
         // Assert
         IEnumerable<string> organizationUsers = Context
-            .SubjectCourseAssociations
-            .OfType<GithubSubjectCourseAssociation>()
-            .Single(a => a.Id == subjectCourseAssociation.Id)
-            .GetAllGithubUsers()
+            .SubjectCourses
+            .GetAllGithubUsers(subjectCourseAssociation.Id)
+            .Result
             .Select(a => a.GithubUsername);
 
         organizationUsers.Should().Contain(userAssociation);
