@@ -47,7 +47,7 @@ public class GithubSubjectCourseAssociationTest : DataAccessTestBase
         // Assert
         IEnumerable<string> organizationUsers = Context
             .SubjectCourses
-            .GetAllGithubUsers(subjectCourseAssociation.Id)
+            .GetAllGithubUsers(subjectCourseAssociation.SubjectCourse.Id)
             .Result
             .Select(a => a.GithubUsername);
 
