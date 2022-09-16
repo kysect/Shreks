@@ -1,5 +1,4 @@
 using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.UserAssociations;
 using RichEntity.Annotations;
 
 namespace Kysect.Shreks.Core.Users;
@@ -19,12 +18,4 @@ public partial class Student : IEntity
 
     public override string ToString()
         => $"{User.FirstName} {User.LastName} from {Group.Name} ({UserId})";
-}
-
-public static class StudentExtensions
-{
-    public static GithubUserAssociation AddGithubAssociation(this Student student, string githubUsername)
-    {
-        return new GithubUserAssociation(student.User, githubUsername);
-    }
 }
