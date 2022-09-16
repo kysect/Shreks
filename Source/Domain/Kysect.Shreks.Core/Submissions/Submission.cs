@@ -66,10 +66,7 @@ public abstract partial class Submission : IEntity<Guid>
 
     public void Rate(Fraction? rating, Points? extraPoints)
     {
-        if (State
-            is not SubmissionState.Active
-            and not SubmissionState.Reviewed
-            and not SubmissionState.Completed)
+        if (State is not (SubmissionState.Active or SubmissionState.Reviewed or SubmissionState.Completed))
         {
             string message = $"Cannot update submission points. Submission state: {State}.";
             throw new DomainInvalidOperationException(message);
