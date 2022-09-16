@@ -33,7 +33,7 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
         var subjectCount = _subjectGenerator.GeneratedEntities.Count;
 
         var deadlineCount = _faker.Random.Int(0, _deadlinePolicyGenerator.GeneratedEntities.Count);
-        
+
         IEnumerable<DeadlinePolicy> deadlines = Enumerable.Range(0, deadlineCount)
             .Select(_ => _faker.Random.Int(0, _deadlinePolicyGenerator.GeneratedEntities.Count - 1))
             .Select(i => _deadlinePolicyGenerator.GeneratedEntities[i])

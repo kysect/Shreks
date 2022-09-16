@@ -8,13 +8,13 @@ namespace Kysect.Shreks.Tests.DataAccess;
 
 public class SubjectCourseAssociationTest : DataAccessTestBase
 {
-    private readonly IEntityGenerator<SubjectCourseAssociation> _subjectCourseAssociationGenerator;
+    private readonly IEntityGenerator<GithubSubjectCourseAssociation> _subjectCourseAssociationGenerator;
 
     public SubjectCourseAssociationTest()
     {
-        _subjectCourseAssociationGenerator = Provider.GetRequiredService<IEntityGenerator<SubjectCourseAssociation>>();
+        _subjectCourseAssociationGenerator = Provider.GetRequiredService<IEntityGenerator<GithubSubjectCourseAssociation>>();
     }
-    
+
     [Fact]
     public async Task SaveChangesAsync_EntityAdded_NoExceptionThrown()
     {
