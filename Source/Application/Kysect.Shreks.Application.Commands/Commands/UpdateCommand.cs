@@ -3,7 +3,9 @@ using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Tools;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
@@ -32,10 +34,7 @@ public class UpdateCommand : IShreksCommand
 
     public DateOnly GetDate()
     {
-        if (!DateOnly.TryParse(DateStr, out DateOnly date))
-            throw new InvalidUserInputException($"Cannot parse input date ({DateStr} as date. Ensure that you use correct format.");
-
-        return date;
+        return RuCultureDate.Parse(DateStr);
     }
 
     public async Task<Submission> ExecuteAsync(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
