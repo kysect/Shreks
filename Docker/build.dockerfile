@@ -5,6 +5,8 @@ WORKDIR /source
 # copy csproj and restore as distinct layers
 COPY *.sln .
 COPY ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj
+COPY ./Application/Kysect.Shreks.Application.GithubWorkflow/Kysect.Shreks.Application.GithubWorkflow.csproj ./Application/Kysect.Shreks.Application.GithubWorkflow/Kysect.Shreks.Application.GithubWorkflow.csproj
+COPY ./Application/Kysect.Shreks.Application.GithubWorkflow.Abstractions/Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj ./Application/Kysect.Shreks.Application.GithubWorkflow.Abstractions/Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj
 COPY ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj
 COPY ./Application/Kysect.Shreks.Application.Commands/Kysect.Shreks.Application.Commands.csproj ./Application/Kysect.Shreks.Application.Commands/Kysect.Shreks.Application.Commands.csproj
 COPY ./Application/Kysect.Shreks.DataAccess.Abstractions/Kysect.Shreks.DataAccess.Abstractions.csproj ./Application/Kysect.Shreks.DataAccess.Abstractions/Kysect.Shreks.DataAccess.Abstractions.csproj

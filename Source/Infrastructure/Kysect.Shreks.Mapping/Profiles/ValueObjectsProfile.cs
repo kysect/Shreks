@@ -1,6 +1,7 @@
 using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.ValueObject;
 
@@ -31,6 +32,8 @@ public class ValueObjectsProfile : Profile
             .ConstructUsing(x => x == null ? null : new Fraction(x.Value));
 
         CreateMap<SubmissionState, SubmissionStateDto>().ReverseMap();
+
+        CreateMap<SubmissionStateWorkflowType, SubmissionStateWorkflowTypeDto>().ReverseMap();
 
         CreateMap<SpbDateTime, DateTime>()
             .ConstructUsing(x => x.Value)

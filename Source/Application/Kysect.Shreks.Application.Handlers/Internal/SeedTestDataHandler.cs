@@ -3,7 +3,6 @@ using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using MediatR;
 using static Kysect.Shreks.Application.Abstractions.Internal.SeedTestData;
@@ -17,25 +16,22 @@ public class SeedTestDataHandler : IRequestHandler<Query>
     private readonly IShreksDatabaseContext _context;
     private readonly IEntityGenerator<User> _userGenerator;
     private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
-    private readonly TestEnvironmentConfiguration _configuration;
 
     public SeedTestDataHandler(
         IShreksDatabaseContext context,
         IEntityGenerator<User> userGenerator,
-        IEntityGenerator<SubjectCourse> subjectCourseGenerator,
-        TestEnvironmentConfiguration configuration)
+        IEntityGenerator<SubjectCourse> subjectCourseGenerator)
     {
         _context = context;
         _userGenerator = userGenerator;
         _subjectCourseGenerator = subjectCourseGenerator;
-        _configuration = configuration;
     }
 
     public async Task<Unit> Handle(Query request, CancellationToken cancellationToken = default)
     {
         EnsureUserAcknowledgedEnvironment(request);
-        AddUsers();
-        AddGithubUserAssociations();
+        AddUsers(request);
+        AddGithubUserAssociations(request);
 
         await _context.SaveChangesAsync(cancellationToken);
 
@@ -50,24 +46,23 @@ public class SeedTestDataHandler : IRequestHandler<Query>
         }
     }
 
-    private void AddGithubUserAssociations()
+    private void AddGithubUserAssociations(Query request)
     {
         SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[0];
         _context.SubjectCourses.Attach(subjectCourse);
-        _context.SubjectCourseAssociations.Add(
-            new GithubSubjectCourseAssociation(subjectCourse, _configuration.Organization,
-                _configuration.TemplateRepository));
+        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(subjectCourse, request.Organization, request.TemplateRepository);
+        _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
     }
 
-    private void AddUsers()
+    private void AddUsers(Query request)
     {
         IReadOnlyList<User> users = _userGenerator.GeneratedEntities;
         _context.Users.AttachRange(users);
 
-        for (var index = 0; index < _configuration.Users.Count; index++)
+        for (var index = 0; index < request.Users.Count; index++)
         {
             User user = users[index];
-            string login = _configuration.Users[index];
+            string login = request.Users[index];
             _context.UserAssociations.Add(new GithubUserAssociation(user, login));
         }
     }

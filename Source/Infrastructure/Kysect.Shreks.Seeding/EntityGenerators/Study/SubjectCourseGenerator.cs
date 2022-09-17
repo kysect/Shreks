@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.Options;
 
@@ -32,7 +33,7 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
         var subjectCount = _subjectGenerator.GeneratedEntities.Count;
 
         var deadlineCount = _faker.Random.Int(0, _deadlinePolicyGenerator.GeneratedEntities.Count);
-        
+
         IEnumerable<DeadlinePolicy> deadlines = Enumerable.Range(0, deadlineCount)
             .Select(_ => _faker.Random.Int(0, _deadlinePolicyGenerator.GeneratedEntities.Count - 1))
             .Select(i => _deadlinePolicyGenerator.GeneratedEntities[i])
@@ -45,7 +46,7 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 
         var subjectCourseName = _faker.Commerce.ProductName();
 
-        var subjectCourse = new SubjectCourse(subject, subjectCourseName);
+        var subjectCourse = new SubjectCourse(subject, subjectCourseName, SubmissionStateWorkflowType.ReviewOnly);
 
         IEnumerable<User> users = _faker.Random
             .ListItems(_userGenerator.GeneratedEntities.ToList())

@@ -6,7 +6,8 @@ namespace Kysect.Shreks.Core.Queue.Evaluators;
 
 public class AssignmentDeadlineStateEvaluator : ISubmissionEvaluator
 {
-    private const double CurrentAssignmentPriority = 2;
+    private const double CurrentAssignmentPriority = 3;
+    private const double ProperlySubmittedAssignmentPriority = 2;
     private const double ExpiredAssignmentPriority = 1;
     private const double OtherAssignmentPriority = 0;
 
@@ -36,9 +37,15 @@ public class AssignmentDeadlineStateEvaluator : ISubmissionEvaluator
             .SelectMany(x => x.GroupAssignments)
             .Where(x => x.Group.Equals(submission.Student.Group))
             .Select(x => x.Deadline)
-            .Where(x => x > now)
+            .Where(x => x >= now)
             .Min();
 
-        return groupAssignment.Deadline.Equals(closestDeadline) ? CurrentAssignmentPriority : OtherAssignmentPriority;
+        if (groupAssignment.Deadline.Equals(closestDeadline))
+            return CurrentAssignmentPriority;
+
+        if (groupAssignment.Deadline >= submission.SubmissionDateOnly)
+            return ProperlySubmittedAssignmentPriority;
+
+        return OtherAssignmentPriority;
     }
 }

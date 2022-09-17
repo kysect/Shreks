@@ -85,8 +85,6 @@ public abstract partial class Submission : IEntity<Guid>
 
         if (extraPoints is not null)
             ExtraPoints = extraPoints;
-
-        _state = SubmissionState.Completed;
     }
 
     protected void AddAssociation(SubmissionAssociation association)

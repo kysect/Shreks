@@ -6,9 +6,9 @@ namespace Kysect.Shreks.Seeding.DatabaseSeeders;
 
 public class SubjectGroupAssociationSeeder : IDatabaseSeeder
 {
-    private readonly IEntityGenerator<SubjectCourseAssociation> _generator;
+    private readonly IEntityGenerator<GithubSubjectCourseAssociation> _generator;
 
-    public SubjectGroupAssociationSeeder(IEntityGenerator<SubjectCourseAssociation> generator)
+    public SubjectGroupAssociationSeeder(IEntityGenerator<GithubSubjectCourseAssociation> generator)
     {
         _generator = generator;
     }

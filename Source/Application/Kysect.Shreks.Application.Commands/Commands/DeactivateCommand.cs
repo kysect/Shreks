@@ -1,30 +1,22 @@
 using CommandLine;
-using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Application.Commands.Processors;
-using Kysect.Shreks.Application.Commands.Result;
-using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Submissions;
 using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/deactivate")]
-public class DeactivateCommand : IShreksCommand<SubmissionContext, SubmissionDto>
+public class DeactivateCommand : IShreksCommand
 {
-    public async Task<SubmissionDto> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
+    public async Task<Submission> ExecuteAsync(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
     {
-        context.Log.LogInformation($"Handle /deactivate command for submission {context.Submission.Id} from user {context.IssuerId}");
-        var command = new UpdateSubmissionState.Command(
-            context.IssuerId, context.Submission.Id, SubmissionStateDto.Inactive);
+        logger.LogInformation($"Handle /deactivate command for submission {context.SubmissionId} from user {context.IssuerId}");
 
-        var response = await context.Mediator.Send(command, cancellationToken);
-
-        return response.Submission;
-    }
-
-    public Task<TResult> AcceptAsync<TResult>(IShreksCommandVisitor<TResult> visitor)
-        where TResult : IShreksCommandResult
-    {
-        return visitor.VisitAsync(this);
+        return await context.SubmissionService.UpdateSubmissionState(
+            context.SubmissionId,
+            context.IssuerId,
+            SubmissionState.Inactive,
+            cancellationToken);
     }
 }

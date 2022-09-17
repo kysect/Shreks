@@ -1,16 +1,16 @@
 using CommandLine;
-using Kysect.Shreks.Application.Abstractions.Submissions.Commands;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Application.Commands.Processors;
-using Kysect.Shreks.Application.Commands.Result;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Tools;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
 [Verb("/update")]
-public class UpdateCommand : IShreksCommand<SubmissionContext, SubmissionRateDto>
+public class UpdateCommand : IShreksCommand
 {
     public UpdateCommand(int submissionCode, double? ratingPercent, double? extraPoints, string? dateStr)
     {
@@ -31,48 +31,52 @@ public class UpdateCommand : IShreksCommand<SubmissionContext, SubmissionRateDto
     
     [Option(shortName:'d', longName:"date", Group = "update", Required = false)]
     public string? DateStr { get; }
-    
-    public Task<TResult> AcceptAsync<TResult>(IShreksCommandVisitor<TResult> visitor) 
-        where TResult : IShreksCommandResult
+
+    public DateOnly GetDate()
     {
-        return visitor.VisitAsync(this);
+        return RuCultureDate.Parse(DateStr);
     }
 
-    public async Task<SubmissionRateDto> ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
+    public async Task<Submission> ExecuteAsync(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
     {
-        string message = $"Handle /update command from {context.IssuerId} with arguments:" +
-                         $" {{ SubmissionCode : {SubmissionCode}," +
-                         $" RatingPercent: {RatingPercent}" +
-                         $" ExtraPoints: {ExtraPoints}" +
-                         $" DateStr: {DateStr}" +
-                         $" }}";
-        context.Log.LogInformation(message);
+        logger.LogInformation($"Handle /update command from {context.IssuerId} with arguments: {ToLogLine()}");
 
-        SubmissionRateDto submissionRateDto = null!;
-
-        var submissionResponse = context.Submission;
+        Submission submission = null!;
 
         if (RatingPercent is not null || ExtraPoints is not null)
         {
-            context.Log.LogInformation($"Invoke update command for submission {submissionResponse.Id} with arguments:" +
-                                       $"{{ Rating: {RatingPercent}," +
-                                       $" ExtraPoints: {ExtraPoints}}}");
+            submission = await context.SubmissionService.UpdateSubmissionPoints(
+                context.SubmissionId,
+                context.IssuerId,
+                RatingPercent,
+                ExtraPoints,
+                cancellationToken);
 
-            var command = new UpdateSubmissionPoints.Command(submissionResponse.Id, context.IssuerId, RatingPercent, ExtraPoints);
-            var response = await context.Mediator.Send(command, cancellationToken);
-            submissionRateDto = response.SubmissionRate;
+            submission = await context.SubmissionService.UpdateSubmissionState(
+                context.SubmissionId,
+                context.IssuerId,
+                SubmissionState.Completed,
+                cancellationToken);
         }
 
         if (DateStr is not null)
         {
-            if (!DateOnly.TryParse(DateStr, out DateOnly date))
-                throw new InvalidUserInputException($"Cannot parse input date ({DateStr} as date. Ensure that you use correct format.");
-
-            var command = new UpdateSubmissionDate.Command(submissionResponse.Id, context.IssuerId, date.ToDateTime(TimeOnly.MinValue));
-            var response = await context.Mediator.Send(command, cancellationToken);
-            submissionRateDto = response.SubmissionRate;
+            submission = await context.SubmissionService.UpdateSubmissionDate(
+                context.SubmissionId,
+                context.IssuerId,
+                GetDate(),
+                cancellationToken);
         }
 
-        return submissionRateDto;
+        return submission;
+    }
+    
+    public string ToLogLine()
+    {
+        return $" {{ SubmissionCode : {SubmissionCode}," +
+               $" RatingPercent: {RatingPercent}" +
+               $" ExtraPoints: {ExtraPoints}" +
+               $" DateStr: {DateStr}" +
+               $" }}";
     }
 }

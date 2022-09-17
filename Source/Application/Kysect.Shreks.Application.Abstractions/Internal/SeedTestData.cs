@@ -4,7 +4,11 @@ namespace Kysect.Shreks.Application.Abstractions.Internal;
 
 public static class SeedTestData
 {
-    public record Query(string Environment) : IRequest<Unit>;
+    public record Query(
+        string Environment,
+        string Organization,
+        string TemplateRepository,
+        IReadOnlyList<string> Users) : IRequest<Unit>;
 
     public class UserNotAcknowledgedEnvironmentException : InvalidOperationException
     {

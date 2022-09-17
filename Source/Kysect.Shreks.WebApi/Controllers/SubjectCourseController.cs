@@ -1,7 +1,7 @@
-﻿using Kysect.Shreks.Application.Abstractions.Study.Commands;
+﻿using Kysect.Shreks.Application.Abstractions.Github;
+using Kysect.Shreks.Application.Abstractions.Study.Commands;
 using Kysect.Shreks.Application.Abstractions.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Commands;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,9 +22,9 @@ public class SubjectCourseController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<SubjectCourseDto>> Create(Guid subjectId, string name)
+    public async Task<ActionResult<SubjectCourseDto>> Create(Guid subjectId, string name, SubmissionStateWorkflowTypeDto workflowType)
     {
-        CreateSubjectCourse.Response response = await _mediator.Send(new CreateSubjectCourse.Command(subjectId, name));
+        CreateSubjectCourse.Response response = await _mediator.Send(new CreateSubjectCourse.Command(subjectId, name, workflowType));
         return Ok(response.SubjectCourse);
     }
 
