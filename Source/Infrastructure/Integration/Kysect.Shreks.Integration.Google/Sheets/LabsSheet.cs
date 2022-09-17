@@ -35,9 +35,9 @@ public class LabsSheet : ISheet<CoursePointsDto>
         _pointsSheet = pointsSheet;
     }
 
-    public async Task UpdateAsync(string spreadsheetId, CoursePointsDto points, CancellationToken token)
+    public async Task UpdateAsync(string spreadsheetId, CoursePointsDto model, CancellationToken token)
     {
-        CoursePointsDto sortedPoints = SortPoints(points);
+        CoursePointsDto sortedPoints = SortPoints(model);
 
         IComponent sheetData = _pointsTable.Render(sortedPoints);
         var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, Id, Title, sheetData);
@@ -46,7 +46,7 @@ public class LabsSheet : ISheet<CoursePointsDto>
         bool labsSheetExist = await _sheetEditor.CheckIfExists(spreadsheetId, PointsSheet.Title, token);
         if (!labsSheetExist)
         {
-            Application.Dto.Users.StudentDto[] students = points.StudentsPoints
+            Application.Dto.Users.StudentDto[] students = model.StudentsPoints
                 .Select(s => s.Student)
                 .ToArray();
 

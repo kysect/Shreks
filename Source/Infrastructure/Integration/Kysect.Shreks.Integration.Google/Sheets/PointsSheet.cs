@@ -25,11 +25,11 @@ public class PointsSheet : ISheet<CourseStudentsDto>
         _renderer = renderer;
     }
 
-    public async Task UpdateAsync(string spreadsheetId, CourseStudentsDto courseStudents, CancellationToken token)
+    public async Task UpdateAsync(string spreadsheetId, CourseStudentsDto model, CancellationToken token)
     {
         int sheetId = await _sheetEditor.CreateSheetAsync(spreadsheetId, Title, token);
 
-        IComponent sheetData = _pointsTable.Render(courseStudents);
+        IComponent sheetData = _pointsTable.Render(model);
         var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, sheetId, Title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
     }
