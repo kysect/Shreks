@@ -1,14 +1,17 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.GoogleSheets.Extensions;
 using FluentSpreadsheets.Tables;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
+using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Integration.Google.Sheets;
+using Kysect.Shreks.Integration.Google.Tools.Comparers;
 using static FluentSpreadsheets.ComponentFactory;
 using Index = FluentSpreadsheets.Index;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class PointsTable : RowTable<int>, ITableCustomizer
+public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
 {
     private const string ReferenceSheetTitle = LabsSheet.Title;
     private const int ReferenceRowShift = 2;
@@ -25,23 +28,30 @@ public class PointsTable : RowTable<int>, ITableCustomizer
         Label("Экзамен"),
         Label("Сумма"),
         Label("Оценка"),
-        Label("Комментарий").WithColumnWidth(350)
+        Label("Комментарий").WithColumnWidth(350).WithTrailingMediumBorder()
     );
 
     public IComponent Customize(IComponent component)
         => component.WithDefaultStyle();
 
-    protected override IEnumerable<IRowComponent> RenderRows(int studentsCount)
+    protected override IEnumerable<IRowComponent> RenderRows(CourseStudentsDto courseStudents)
     {
         yield return Header;
 
-        foreach (var row in Enumerable.Range(1, studentsCount).Select(GetRowReference))
+        IReadOnlyList<StudentDto> students = courseStudents.Students;
+
+        for (int i = 0; i < students.Count; i++)
         {
+            var row = GetRowReference().WithDefaultStyle(i, students.Count);
+
+            if (StudentComparer.InDifferentGroups(students[i], students.ElementAtOrDefault(i - 1)))
+                row = row.WithTopMediumBorder();
+
             yield return row;
         }
     }
 
-    private static IRowComponent GetRowReference(int row)
+    private static IRowComponent GetRowReference()
     {
         return Row
         (
@@ -54,7 +64,7 @@ public class PointsTable : RowTable<int>, ITableCustomizer
             Empty(),
             Label(GetTotalFunction),
             Label(PointsFormula),
-            Empty()
+            Empty().WithTrailingMediumBorder()
         );
     }
 

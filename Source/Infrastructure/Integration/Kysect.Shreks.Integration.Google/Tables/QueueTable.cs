@@ -19,7 +19,7 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
         Label("Лабораторная работа").WithColumnWidth(150),
         Label("Дата").WithColumnWidth(150),
         Label("Статус"),
-        Label("GitHub").WithColumnWidth(400)
+        Label("GitHub").WithColumnWidth(400).WithTrailingMediumBorder()
     );
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
@@ -38,8 +38,12 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
     {
         yield return Header;
 
-        foreach (var (student, submission) in queue.Submissions)
+        IReadOnlyList<QueueSubmissionDto> submissions = queue.Submissions.ToArray();
+
+        for (int i = 0; i < submissions.Count; i++)
         {
+            var(student, submission) = submissions[i];
+
             var row = Row
             (
                 Label(_userFullNameFormatter.GetFullName(student.User)),
@@ -47,8 +51,8 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
                 Label(submission.AssignmentShortName),
                 Label(submission.SubmissionDate, _cultureInfoProvider.GetCultureInfo()),
                 Label(submission.State.ToString()),
-                Label(submission.Payload)
-            );
+                Label(submission.Payload).WithTrailingMediumBorder()
+            ).WithDefaultStyle(i, submissions.Count);
 
             if (submission.State is SubmissionStateDto.Reviewed)
                 row = row.FilledWith(125, Color.LightGreen);

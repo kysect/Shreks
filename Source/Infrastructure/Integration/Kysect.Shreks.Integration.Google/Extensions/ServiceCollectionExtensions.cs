@@ -5,6 +5,7 @@ using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Integration.Google.Options;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
@@ -27,10 +28,10 @@ public static class ServiceCollectionExtensions
         action.Invoke(options);
 
         return serviceCollection
-            .AddSingleton<ISheet<int>, PointsSheet>()
+            .AddSingleton<ISheet<CourseStudentsDto>, PointsSheet>()
             .AddSingleton<ISheet<CoursePointsDto>, LabsSheet>()
             .AddSingleton<ISheet<SubmissionsQueueDto>, QueueSheet>()
-            .AddSingleton<ITable<int>, PointsTable>()
+            .AddSingleton<ITable<CourseStudentsDto>, PointsTable>()
             .AddSingleton<ITable<CoursePointsDto>, LabsTable>()
             .AddSingleton<ITable<SubmissionsQueueDto>, QueueTable>()
             .AddSingleton<ISheetManagementService, SheetManagementService>()

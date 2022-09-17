@@ -1,12 +1,12 @@
-﻿using FluentSpreadsheets;
+﻿using System.Globalization;
+using FluentSpreadsheets;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
-using System.Drawing;
-using System.Globalization;
+using Kysect.Shreks.Integration.Google.Tools.Comparers;
 using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
@@ -56,7 +56,7 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
 
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
 
-        IList<StudentPointsDto> studentPoints = points.StudentsPoints.ToArray();
+        IReadOnlyList<StudentPointsDto> studentPoints = points.StudentsPoints.ToArray();
 
         for (int i = 0; i < studentPoints.Count; i++)
         {
@@ -74,16 +74,10 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
                 ForEach(points.Assignments, a =>
                     BuildAssignmentPointsCell(a, assignmentPoints, currentCulture)),
                 Label(roundedPoints, currentCulture).WithTrailingMediumBorder()
-            );
-            
-            if (i % 2 is 0)
-                row = row.FilledWith(Color.AliceBlue);
+            ).WithDefaultStyle(i, studentPoints.Count);
 
-            if (i is 0 || student.GroupName != studentPoints[i - 1].Student.GroupName)
+            if (StudentComparer.InDifferentGroups(student, studentPoints.ElementAtOrDefault(i - 1)?.Student))
                 row = row.WithTopMediumBorder();
-
-            if (i == studentPoints.Count - 1)
-                row = row.WithBottomMediumBorder();
 
             yield return row;
         }
