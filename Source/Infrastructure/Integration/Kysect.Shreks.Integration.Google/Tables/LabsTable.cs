@@ -77,10 +77,8 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
                 ForEach(model.Assignments, a =>
                     BuildAssignmentPointsCell(a, assignmentPoints, currentCulture)),
                 Label(roundedPoints, currentCulture).WithTrailingMediumBorder()
-            ).WithDefaultStyle(i, studentPoints.Count);
-
-            if (StudentComparer.ShouldBeSeparated(student, studentPoints.ElementAtOrDefault(i - 1)?.Student))
-                row = row.WithTopMediumBorder();
+            ).WithDefaultStyle(i, studentPoints.Count)
+                .WithGroupSeparators(i, studentPoints);
 
             yield return row;
         }

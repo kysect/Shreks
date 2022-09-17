@@ -1,6 +1,9 @@
 ﻿using System.Drawing;
 using FluentSpreadsheets;
 using FluentSpreadsheets.Styles;
+using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Integration.Google.Tools.Comparers;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
 
@@ -30,6 +33,25 @@ public static class RowComponentExtensions
 
         if (rowNumber == maxRowNumber - 1)
             row = row.WithBottomMediumBorder();
+
+        return row;
+    }
+
+    public static IRowComponent WithGroupSeparators(
+        this IRowComponent row,
+        int rowNumber,
+        IReadOnlyList<StudentPointsDto> studentPoints)
+    {
+        ArgumentNullException.ThrowIfNull(studentPoints);
+
+        if (rowNumber is 0)
+            return row;
+
+        StudentDto student1 = studentPoints[rowNumber].Student;
+        StudentDto student2 = studentPoints[rowNumber - 1].Student;
+
+        if (student1.GroupName != student2.GroupName)
+            row = row.WithTopMediumBorder();
 
         return row;
     }

@@ -46,11 +46,8 @@ public class LabsSheet : ISheet<CoursePointsDto>
         bool labsSheetExist = await _sheetEditor.CheckIfExists(spreadsheetId, PointsSheet.Title, token);
         if (!labsSheetExist)
         {
-            Application.Dto.Users.StudentDto[] students = model.StudentsPoints
-                .Select(s => s.Student)
-                .ToArray();
-
-            await _pointsSheet.UpdateAsync(spreadsheetId, new CourseStudentsDto(students), token);
+            var courseStudents = new CourseStudentsDto(model.StudentsPoints);
+            await _pointsSheet.UpdateAsync(spreadsheetId, courseStudents, token);
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.GoogleSheets.Extensions;
 using FluentSpreadsheets.Tables;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Models;
@@ -40,14 +41,13 @@ public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
     {
         yield return Header;
 
-        IReadOnlyList<StudentDto> students = model.Students;
+        IReadOnlyList<StudentPointsDto> studentPoints = model.StudentsPoints.ToArray();
 
-        for (int i = 0; i < students.Count; i++)
+        for (int i = 0; i < studentPoints.Count; i++)
         {
-            IRowComponent row = GetRowReference().WithDefaultStyle(i, students.Count);
-
-            if (StudentComparer.ShouldBeSeparated(students[i], students.ElementAtOrDefault(i - 1)))
-                row = row.WithTopMediumBorder();
+            IRowComponent row = GetRowReference()
+                .WithDefaultStyle(i, studentPoints.Count)
+                .WithGroupSeparators(i, studentPoints);
 
             yield return row;
         }
