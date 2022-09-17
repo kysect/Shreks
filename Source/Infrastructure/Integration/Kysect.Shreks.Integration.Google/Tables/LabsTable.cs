@@ -79,7 +79,7 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
                 Label(roundedPoints, currentCulture).WithTrailingMediumBorder()
             ).WithDefaultStyle(i, studentPoints.Count);
 
-            if (StudentComparer.InDifferentGroups(student, studentPoints.ElementAtOrDefault(i - 1)?.Student))
+            if (StudentComparer.ShouldBeSeparated(student, studentPoints.ElementAtOrDefault(i - 1)?.Student))
                 row = row.WithTopMediumBorder();
 
             yield return row;

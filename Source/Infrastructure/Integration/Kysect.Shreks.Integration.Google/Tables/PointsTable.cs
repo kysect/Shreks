@@ -46,7 +46,7 @@ public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
         {
             IRowComponent row = GetRowReference().WithDefaultStyle(i, students.Count);
 
-            if (StudentComparer.InDifferentGroups(students[i], students.ElementAtOrDefault(i - 1)))
+            if (StudentComparer.ShouldBeSeparated(students[i], students.ElementAtOrDefault(i - 1)))
                 row = row.WithTopMediumBorder();
 
             yield return row;
@@ -106,6 +106,6 @@ public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
     private static string PointsFormula(Index index)
     {
         string n = GetCellNumber(index.WithColumnShift(-1));
-        return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>= 40,\"FX-E\",\"FX\"))";
+        return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>=40,\"FX-E\",\"FX\"))";
     }
 }
