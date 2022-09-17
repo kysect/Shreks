@@ -1,4 +1,4 @@
-﻿namespace Kysect.Shreks.Integration.Google.Models;
+﻿namespace Kysect.Shreks.Application.TableManagement;
 
 public class ConcurrentHashSet<T>
 {
