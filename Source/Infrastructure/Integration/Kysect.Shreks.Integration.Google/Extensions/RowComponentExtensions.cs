@@ -3,7 +3,6 @@ using FluentSpreadsheets;
 using FluentSpreadsheets.Styles;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.Integration.Google.Tools.Comparers;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
 

@@ -2,11 +2,9 @@
 using FluentSpreadsheets.GoogleSheets.Extensions;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Dto.Tables;
-using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Integration.Google.Sheets;
-using Kysect.Shreks.Integration.Google.Tools.Comparers;
 using static FluentSpreadsheets.ComponentFactory;
 using Index = FluentSpreadsheets.Index;
 
