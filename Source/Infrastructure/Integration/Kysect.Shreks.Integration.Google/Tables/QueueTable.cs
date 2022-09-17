@@ -32,7 +32,9 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
     }
 
     public IComponent Customize(IComponent component)
-        => component.WithDefaultStyle();
+    {
+        return component.WithDefaultStyle();
+    }
 
     protected override IEnumerable<IRowComponent> RenderRows(SubmissionsQueueDto queue)
     {

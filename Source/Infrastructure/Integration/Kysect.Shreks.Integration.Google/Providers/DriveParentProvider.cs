@@ -10,5 +10,7 @@ public class DriveParentProvider : ITablesParentsProvider
     }
 
     public IList<string> GetParents()
-        => _parents;
+    {
+        return _parents;
+    }
 }

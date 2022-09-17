@@ -15,8 +15,12 @@ public class TableUpdateQueue : ITableUpdateQueue
     }
 
     public void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId, Guid studentGroupId)
-        => QueueUpdateSubjectCourseGroupIds.Add((subjectCourseId, studentGroupId));
+    {
+        QueueUpdateSubjectCourseGroupIds.Add((subjectCourseId, studentGroupId));
+    }
 
     public void EnqueueCoursePointsUpdate(Guid subjectCourseId)
-        => PointsUpdateSubjectCourseIds.Add(subjectCourseId);
+    {
+        PointsUpdateSubjectCourseIds.Add(subjectCourseId);
+    }
 }

@@ -79,7 +79,9 @@ public class GoogleTableAccessor : IDisposable
     }
 
     public void Dispose()
-        => _spreadsheetCreationSemaphore.Dispose();
+    {
+        _spreadsheetCreationSemaphore.Dispose();
+    }
 
     private async Task<string> GetSpreadsheetIdAsync(Guid subjectCourseId, CancellationToken token)
     {

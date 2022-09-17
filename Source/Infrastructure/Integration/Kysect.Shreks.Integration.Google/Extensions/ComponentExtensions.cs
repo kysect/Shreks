@@ -27,14 +27,22 @@ public static class ComponentExtensions
     }
 
     public static IComponent WithLeadingMediumBorder(this IComponent component)
-        => component.WithLeadingBorderType(BorderType.Medium);
+    {
+        return component.WithLeadingBorderType(BorderType.Medium);
+    }
 
     public static IComponent WithTrailingMediumBorder(this IComponent component)
-        => component.WithTrailingBorderType(BorderType.Medium);
+    {
+        return component.WithTrailingBorderType(BorderType.Medium);
+    }
 
     public static IComponent WithBottomMediumBorder(this IComponent component)
-        => component.WithBottomBorderType(BorderType.Medium);
+    {
+        return component.WithBottomBorderType(BorderType.Medium);
+    }
 
     public static IComponent WithCenterAlignment(this IComponent component)
-        => component.WithContentAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
+    {
+        return component.WithContentAlignment(HorizontalAlignment.Center, VerticalAlignment.Center);
+    }
 }

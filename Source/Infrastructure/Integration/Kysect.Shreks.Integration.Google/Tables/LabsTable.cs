@@ -31,8 +31,10 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
     }
 
     public IComponent Customize(IComponent component)
-        => component.WithDefaultStyle();
-    
+    {
+        return component.WithDefaultStyle();
+    }
+
     protected override IEnumerable<IRowComponent> RenderRows(CoursePointsDto points)
     {
         yield return Row

@@ -8,13 +8,19 @@ namespace Kysect.Shreks.Integration.Google.Extensions;
 public static class RowComponentExtensions
 {
     public static IRowComponent FilledWith(this IRowComponent row, int alpha, Color baseColor)
-        => row.FilledWith(Color.FromArgb(alpha, baseColor));
+    {
+        return row.FilledWith(Color.FromArgb(alpha, baseColor));
+    }
 
     public static IRowComponent WithTopMediumBorder(this IRowComponent row)
-        => row.WithTopBorderType(BorderType.Medium);
+    {
+        return row.WithTopBorderType(BorderType.Medium);
+    }
 
     public static IRowComponent WithBottomMediumBorder(this IRowComponent row)
-        => row.WithBottomBorderType(BorderType.Medium);
+    {
+        return row.WithBottomBorderType(BorderType.Medium);
+    }
 
     public static IRowComponent WithDefaultStyle(this IRowComponent row, int rowNumber, int maxRowNumber)
     {

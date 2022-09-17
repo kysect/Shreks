@@ -6,13 +6,19 @@ namespace Kysect.Shreks.Integration.Google.Extensions;
 public static class IndexExtensions
 {
     public static string ToGoogleSheetsIndex(this Index index)
-        => $"{GetColumnIndex(index.Column)}{index.Row}";
+    {
+        return $"{GetColumnIndex(index.Column)}{index.Row}";
+    }
 
     public static Index WithRowShift(this Index index, int shift)
-        => index with { Row = index.Row + shift };
+    {
+        return index with { Row = index.Row + shift };
+    }
 
     public static Index WithColumnShift(this Index index, int shift)
-        => index with { Column = index.Column + shift };
+    {
+        return index with { Column = index.Column + shift };
+    }
 
     private static string GetColumnIndex(int value)
     {

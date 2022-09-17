@@ -32,7 +32,9 @@ public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
     );
 
     public IComponent Customize(IComponent component)
-        => component.WithDefaultStyle();
+    {
+        return component.WithDefaultStyle();
+    }
 
     protected override IEnumerable<IRowComponent> RenderRows(CourseStudentsDto courseStudents)
     {
@@ -82,7 +84,9 @@ public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
     }
 
     private static string GetCellsReference(string range)
-        => $"{ReferenceSheetTitle}!{range}";
+    {
+        return $"{ReferenceSheetTitle}!{range}";
+    }
 
     private static string GetTotalFunction(Index index)
     {
