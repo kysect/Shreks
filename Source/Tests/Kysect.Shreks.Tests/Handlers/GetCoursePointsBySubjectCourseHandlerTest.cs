@@ -1,11 +1,12 @@
 ﻿using FluentAssertions;
 using Kysect.Shreks.Application.Handlers.Google;
+using Kysect.Shreks.Tests.Application;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetCoursePointsBySubjectCourse;
 
-namespace Kysect.Shreks.Tests.Application;
+namespace Kysect.Shreks.Tests.Handlers;
 
 public class GetCoursePointsBySubjectCourseHandlerTest : ApplicationTestBase
 {

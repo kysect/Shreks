@@ -1,10 +1,11 @@
 ﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
+using Kysect.Shreks.Tests.Application;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace Kysect.Shreks.Tests.Application;
+namespace Kysect.Shreks.Tests.Handlers;
 
 public class SyncGithubAdminWithMentorsHandlerTest : ApplicationTestBase
 {

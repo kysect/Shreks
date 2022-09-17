@@ -2,9 +2,10 @@ using FluentAssertions;
 using Kysect.Shreks.Application.Abstractions.Students;
 using Kysect.Shreks.Application.Handlers.Students;
 using Kysect.Shreks.Core.Study;
+using Kysect.Shreks.Tests.Application;
 using Xunit;
 
-namespace Kysect.Shreks.Tests.Application;
+namespace Kysect.Shreks.Tests.Handlers;
 
 public class StudentHandlerTest : ApplicationTestBase
 {
