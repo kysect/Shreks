@@ -30,7 +30,7 @@ public class GoogleTableAccessor : IDisposable
         _spreadsheetManagementService = spreadsheetManagementService;
         _mediator = mediator;
         _logger = logger;
-        
+
         _spreadsheetCreationSemaphore = new SemaphoreSlim(1, 1);
     }
 
@@ -87,7 +87,7 @@ public class GoogleTableAccessor : IDisposable
     {
         var getTableInfoQuery = new GetSubjectCourseTableInfoById.Query(subjectCourseId);
 
-        (string _, string? spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
+        (_, string? spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
 
         if (spreadsheetId is not null)
             return spreadsheetId;
