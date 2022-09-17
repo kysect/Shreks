@@ -18,7 +18,7 @@ public class ConcurrentHashSet<T>
     {
         lock (_lock)
         {
-            var values = _hastSet.ToArray();
+            T[] values = _hastSet.ToArray();
             _hastSet.Clear();
             return values;
         }

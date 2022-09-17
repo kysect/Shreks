@@ -46,7 +46,7 @@ public class LabsSheet : ISheet<CoursePointsDto>
         bool labsSheetExist = await _sheetEditor.CheckIfExists(spreadsheetId, PointsSheet.Title, token);
         if (!labsSheetExist)
         {
-            var students = points.StudentsPoints
+            Application.Dto.Users.StudentDto[] students = points.StudentsPoints
                 .Select(s => s.Student)
                 .ToArray();
 

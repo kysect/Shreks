@@ -31,12 +31,12 @@ public class GoogleTableUpdateWorker : BackgroundService
         while (!token.IsCancellationRequested && await timer.WaitForNextTickAsync(token))
         {
             using IServiceScope serviceScope = _serviceProvider.CreateScope();
-            using var googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<GoogleTableAccessor>();
+            using GoogleTableAccessor googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<GoogleTableAccessor>();
 
             _stopwatch.Restart();
 
-            var pointsTableUpdated = await UpdateTablePoints(googleTableAccessor, token);
-            var queueTableUpdated = await UpdateTableQueue(googleTableAccessor, token);
+            bool pointsTableUpdated = await UpdateTablePoints(googleTableAccessor, token);
+            bool queueTableUpdated = await UpdateTableQueue(googleTableAccessor, token);
 
             _stopwatch.Stop();
 

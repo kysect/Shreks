@@ -2,6 +2,7 @@
 using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Extensions;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
@@ -10,7 +11,7 @@ using Kysect.Shreks.Playground.Google;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
-var googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
+GoogleCredential googleCredentials = await GoogleCredential.FromFileAsync("client_secrets.json", default);
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -31,28 +32,28 @@ IServiceProvider services = new ServiceCollection()
 
 await services.EnsureDatabaseSeeded();
 
-var databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
+ShreksDatabaseContext databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
 
-var tableQueue = services.GetRequiredService<ITableUpdateQueue>();
-var tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
+ITableUpdateQueue tableQueue = services.GetRequiredService<ITableUpdateQueue>();
+GoogleTableUpdateWorker tableWorker = services.GetRequiredService<GoogleTableUpdateWorker>();
 
 await tableWorker.StartAsync(default);
 
-var subjectCourse = databaseContext.SubjectCourses.First();
-var group = subjectCourse.Groups.First().StudentGroup;
+SubjectCourse subjectCourse = databaseContext.SubjectCourses.First();
+StudentGroup group = subjectCourse.Groups.First().StudentGroup;
 
 tableQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
 tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, group.Id);
 
-var sameCourseGroup = subjectCourse.Groups.Skip(1).First().StudentGroup;
+StudentGroup sameCourseGroup = subjectCourse.Groups.Skip(1).First().StudentGroup;
 tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, sameCourseGroup.Id);
 
 subjectCourse.Groups.Take(8).ToList().ForEach(g => tableQueue.EnqueueSubmissionsQueueUpdate(g.SubjectCourseId, g.StudentGroupId));
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 
-var anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
-var anotherGroup = anotherSubjectCourse.Groups.First().StudentGroup;
+SubjectCourse anotherSubjectCourse = databaseContext.SubjectCourses.Skip(1).First();
+StudentGroup anotherGroup = anotherSubjectCourse.Groups.First().StudentGroup;
 tableQueue.EnqueueCoursePointsUpdate(anotherSubjectCourse.Id);
 tableQueue.EnqueueSubmissionsQueueUpdate(anotherSubjectCourse.Id, anotherGroup.Id);
 

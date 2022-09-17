@@ -36,17 +36,17 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
         return component.WithDefaultStyle();
     }
 
-    protected override IEnumerable<IRowComponent> RenderRows(SubmissionsQueueDto queue)
+    protected override IEnumerable<IRowComponent> RenderRows(SubmissionsQueueDto model)
     {
         yield return Header;
 
-        IReadOnlyList<QueueSubmissionDto> submissions = queue.Submissions.ToArray();
+        IReadOnlyList<QueueSubmissionDto> submissions = model.Submissions.ToArray();
 
         for (int i = 0; i < submissions.Count; i++)
         {
-            var(student, submission) = submissions[i];
+            (Application.Dto.Users.StudentDto student, SubmissionDto submission) = submissions[i];
 
-            var row = Row
+            IRowComponent row = Row
             (
                 Label(_userFullNameFormatter.GetFullName(student.User)),
                 Label(student.GroupName),

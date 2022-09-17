@@ -41,10 +41,10 @@ public class GoogleTableAccessor : IDisposable
             _logger.LogInformation("Start updating for points sheet of course {SubjectCourseId}.", subjectCourseId);
 
             var query = new GetCoursePointsBySubjectCourse.Query(subjectCourseId);
-            var response = await _mediator.Send(query, token);
+            GetCoursePointsBySubjectCourse.Response response = await _mediator.Send(query, token);
 
-            var points = response.Points;
-            var spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
+            CoursePointsDto points = response.Points;
+            string spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
             await _pointsSheet.UpdateAsync(spreadsheetId, points, token);
 
             _logger.LogInformation("Successfully updated points sheet of course {SubjectCourseId}.", subjectCourseId);
@@ -62,10 +62,10 @@ public class GoogleTableAccessor : IDisposable
             _logger.LogInformation("Start updating for queue sheet of group: {GroupId}, course: {CourseId}.", studentGroupId, subjectCourseId);
 
             var query = new GetSubjectCourseGroupSubmissionQueue.Query(subjectCourseId, studentGroupId);
-            var response = await _mediator.Send(query, token);
+            GetSubjectCourseGroupSubmissionQueue.Response response = await _mediator.Send(query, token);
 
-            var queue = response.Queue;
-            var spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
+            SubmissionsQueueDto queue = response.Queue;
+            string spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
             await _queueSheet.UpdateAsync(spreadsheetId, queue, token);
 
             const string infoMessage = "Successfully updated queue sheet of group: {GroupId}, course: {CourseId}.";
@@ -87,14 +87,14 @@ public class GoogleTableAccessor : IDisposable
     {
         var getTableInfoQuery = new GetSubjectCourseTableInfoById.Query(subjectCourseId);
 
-        var (_, spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
+        (string _, string? spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
 
         if (spreadsheetId is not null)
             return spreadsheetId;
 
         await _spreadsheetCreationSemaphore.WaitAsync(token);
 
-        (var subjectCourseName, spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
+        (string? subjectCourseName, spreadsheetId) = await _mediator.Send(getTableInfoQuery, token);
 
         if (spreadsheetId is not null)
         {

@@ -4,6 +4,7 @@ using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Tools.Comparers;
@@ -35,7 +36,7 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
         return component.WithDefaultStyle();
     }
 
-    protected override IEnumerable<IRowComponent> RenderRows(CoursePointsDto points)
+    protected override IEnumerable<IRowComponent> RenderRows(CoursePointsDto model)
     {
         yield return Row
         (
@@ -43,7 +44,7 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
             Label("ФИО").WithColumnWidth(240),
             Label("Группа"),
             Label("GitHub").WithColumnWidth(150).Frozen(),
-            ForEach(points.Assignments, a => VStack
+            ForEach(model.Assignments, a => VStack
             (
                 Label(a.ShortName).WithSideMediumBorder(),
                 HStack
@@ -58,22 +59,22 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
 
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
 
-        IReadOnlyList<StudentPointsDto> studentPoints = points.StudentsPoints.ToArray();
+        IReadOnlyList<StudentPointsDto> studentPoints = model.StudentsPoints.ToArray();
 
         for (int i = 0; i < studentPoints.Count; i++)
         {
-            var (student, assignmentPoints) = studentPoints[i];
+            (StudentDto student, IReadOnlyCollection<AssignmentPointsDto> assignmentPoints) = studentPoints[i];
 
             double totalPoints = assignmentPoints.Sum(p => p.Points);
             double roundedPoints = Math.Round(totalPoints, 2);
 
-            var row = Row
+            IRowComponent row = Row
             (
                 Label(student.UniversityId),
                 Label(_userFullNameFormatter.GetFullName(student.User)),
                 Label(student.GroupName),
                 Label(student.GitHubUsername!),
-                ForEach(points.Assignments, a =>
+                ForEach(model.Assignments, a =>
                     BuildAssignmentPointsCell(a, assignmentPoints, currentCulture)),
                 Label(roundedPoints, currentCulture).WithTrailingMediumBorder()
             ).WithDefaultStyle(i, studentPoints.Count);
@@ -90,7 +91,7 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
         IEnumerable<AssignmentPointsDto> points,
         IFormatProvider formatProvider)
     {
-        var assignmentPoints = points.FirstOrDefault(p => p.AssignmentId == assignment.Id);
+        AssignmentPointsDto? assignmentPoints = points.FirstOrDefault(p => p.AssignmentId == assignment.Id);
 
         if (assignmentPoints is null)
             return EmptyAssignmentPointsCell;

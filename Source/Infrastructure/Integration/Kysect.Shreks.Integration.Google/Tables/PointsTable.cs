@@ -36,15 +36,15 @@ public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
         return component.WithDefaultStyle();
     }
 
-    protected override IEnumerable<IRowComponent> RenderRows(CourseStudentsDto courseStudents)
+    protected override IEnumerable<IRowComponent> RenderRows(CourseStudentsDto model)
     {
         yield return Header;
 
-        IReadOnlyList<StudentDto> students = courseStudents.Students;
+        IReadOnlyList<StudentDto> students = model.Students;
 
         for (int i = 0; i < students.Count; i++)
         {
-            var row = GetRowReference().WithDefaultStyle(i, students.Count);
+            IRowComponent row = GetRowReference().WithDefaultStyle(i, students.Count);
 
             if (StudentComparer.InDifferentGroups(students[i], students.ElementAtOrDefault(i - 1)))
                 row = row.WithTopMediumBorder();
