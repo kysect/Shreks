@@ -10,7 +10,7 @@ public class StudentGroupGenerator : EntityGeneratorBase<StudentGroup>
     private const int MaxGroupNumber = 100000;
 
     private readonly Faker _faker;
-    
+
     public StudentGroupGenerator(EntityGeneratorOptions<StudentGroup> options, Faker faker) : base(options)
     {
         _faker = faker;

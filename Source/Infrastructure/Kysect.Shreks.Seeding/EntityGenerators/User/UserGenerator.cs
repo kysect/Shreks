@@ -18,8 +18,8 @@ public class UserGenerator : EntityGeneratorBase<User>
     {
         return new User
         (
-            _faker.Name.FirstName(), 
-            _faker.Name.MiddleName(), 
+            _faker.Name.FirstName(),
+            _faker.Name.MiddleName(),
             _faker.Name.LastName()
         );
     }

@@ -14,7 +14,7 @@ public class StudentGroupTest : DataAccessTestBase
     {
         _studentGroupGenerator = Provider.GetRequiredService<IEntityGenerator<StudentGroup>>();
     }
-    
+
     [Fact]
     public async Task SaveChangesAsync_EntityAdded_NoExceptionThrown()
     {
