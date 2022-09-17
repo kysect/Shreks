@@ -1,0 +1,38 @@
+@startuml
+
+BackgroundWorker -> Database : Request organization list
+loop For each organization
+    BackgroundWorker -> Database : Request usernames
+    BackgroundWorker -> GithubInviter : Request adding
+    GithubInviter -> Github : Get organization members
+    GithubInviter -> GithubInviter : Filter already added users
+    GithubInviter -> Github : Get organization invites
+    GithubInviter -> GithubInviter : Filter users with pending invites
+    GithubInviter -> Github : Get organization failed invites
+    GithubInviter -> GithubInviter : Filter users with failed invites
+    loop For each usernames
+        GithubInviter -> Github : Request invite sending
+        alt Failed because of rate limit
+            GithubInviter -> BackgroundWorker : Report invites results
+        end
+    end
+
+    loop For each failed invites
+        GithubInviter -> Github : Retry invite sending
+        alt Failed because of rate limit
+            GithubInviter -> BackgroundWorker : Report invites results
+        end
+    end
+
+    GithubInviter -> BackgroundWorker : Report invites results
+
+    loop For each inviter
+        BackgroundWorker -> Github : Check repo for user
+        Github -> BackgroundWorker : Info about repo
+        alt User does not have repo
+            BackgroundWorker -> Github : Create repo from template
+        end
+    end
+end
+
+@enduml
