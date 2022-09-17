@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.DatabaseContextExtensions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
-using Kysect.Shreks.Tests.Application;
 using Xunit;
 
 namespace Kysect.Shreks.Tests.GithubWorkflow;
@@ -20,12 +19,11 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
         (GithubSubjectCourseAssociation subjectCourseAssociation, Student student) = await TestContextGenerator.Create();
         GithubUserAssociation githubUserAssociation = student.User.Associations.OfType<GithubUserAssociation>().First();
 
-        // Assert
-        IEnumerable<string> organizationUsers = Context
+        IReadOnlyCollection<GithubUserAssociation> githubUserAssociations = await Context
             .SubjectCourses
-            .GetAllGithubUsers(subjectCourseAssociation.SubjectCourse.Id)
-            .Result
-            .Select(a => a.GithubUsername);
+            .GetAllGithubUsers(subjectCourseAssociation.SubjectCourse.Id);
+
+        IEnumerable<string> organizationUsers = githubUserAssociations.Select(a => a.GithubUsername);
 
         organizationUsers.Should().Contain(githubUserAssociation.GithubUsername);
     }

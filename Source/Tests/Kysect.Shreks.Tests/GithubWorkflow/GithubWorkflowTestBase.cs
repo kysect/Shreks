@@ -50,7 +50,5 @@ public class GithubWorkflowTestBase : IDisposable
     {
         Context.Database.EnsureDeleted();
         Context.Dispose();
-
-        GC.SuppressFinalize(this);
     }
 }
