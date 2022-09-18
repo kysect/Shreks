@@ -14,7 +14,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
 {
     private const string ReferenceSheetTitle = LabsSheet.Title;
     private const int ReferenceRowShift = 2;
-    private const string ReferenceHeaderRange = "1:3";
+    private const string ReferenceHeaderRange = "1:1";
 
     private static readonly IRowComponent Header = Row
     (
@@ -59,7 +59,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
             Label(AssignedReference),
             Label(AssignedReference),
             Label(AssignedReference),
-            Label(i => LookUp("\"Итог\"", ReferenceHeaderRange, i.Row)),
+            Label(i => Index("\"Итог\"", ReferenceHeaderRange, i.Row)),
             Empty(),
             Empty(),
             Label(GetTotalFunction),
@@ -74,11 +74,11 @@ public class PointsTable : RowTable<CourseStudentsDto>
         return $"={index.ToGoogleSheetsIndex(ReferenceSheetTitle)}";
     }
 
-    private static string LookUp(string value, string fieldsRange, int row)
+    private static string Index(string value, string fieldsRange, int row)
     {
         row += ReferenceRowShift;
         string rowRange = $"{row}:{row}";
-        return $"=LOOKUP({value},{GetCellsReference(fieldsRange)},{GetCellsReference(rowRange)})";
+        return $"=INDEX({GetCellsReference(rowRange)},1,MATCH({value},{GetCellsReference(fieldsRange)},0))";
     }
 
     private static string GetCellsReference(string range)
