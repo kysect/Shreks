@@ -11,7 +11,7 @@ using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
+public class LabsTable : RowTable<CoursePointsDto>
 {
     private static readonly IComponent BlankLabel = Label(string.Empty);
 
@@ -30,7 +30,7 @@ public class LabsTable : RowTable<CoursePointsDto>, ITableCustomizer
         _cultureInfoProvider = cultureInfoProvider;
     }
 
-    public IComponent Customize(IComponent component)
+    protected override IComponent Customize(IComponent component)
     {
         return component.WithDefaultStyle();
     }

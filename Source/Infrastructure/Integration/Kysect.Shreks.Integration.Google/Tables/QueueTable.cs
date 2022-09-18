@@ -10,7 +10,7 @@ using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
+public class QueueTable : RowTable<SubmissionsQueueDto>
 {
     private static readonly IRowComponent Header = Row
     (
@@ -31,7 +31,7 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
         _cultureInfoProvider = cultureInfoProvider;
     }
 
-    public IComponent Customize(IComponent component)
+    protected override IComponent Customize(IComponent component)
     {
         return component.WithDefaultStyle();
     }
