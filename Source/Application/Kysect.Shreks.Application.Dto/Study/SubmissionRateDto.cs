@@ -15,8 +15,8 @@ public record SubmissionRateDto(
     public string ToPullRequestString()
     {
         var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine($"Submission code: {Code} ({SubmissionDate})");
-        
+        stringBuilder.AppendLine($"Submission code: {Code} ({SubmissionDate.ToString("dd.MM.yyyy")})");
+
         if (Rating is not null)
             stringBuilder.AppendLine($"Rating: {Rating}");
 
