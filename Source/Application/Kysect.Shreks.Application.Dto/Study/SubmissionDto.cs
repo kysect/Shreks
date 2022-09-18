@@ -20,7 +20,7 @@ public record SubmissionDto(
 
         stringBuilder
             .AppendLine($"Submission code: {Code}")
-            .AppendLine($"- Submitted: {SubmissionDate}");
+            .AppendLine($"- Submitted: {SubmissionDate.ToString("dd.MM.yyyy")}");
 
         if (Points.HasValue)
             stringBuilder.AppendLine($"- Point: {Points}");
@@ -28,10 +28,6 @@ public record SubmissionDto(
         if (ExtraPoints.HasValue)
             stringBuilder.AppendLine($"- Extra points: {ExtraPoints}");
 
-
-        return $"Submission code: {Code}" +
-               $"\n- Point: {Points}" +
-               $"\n- Submitted: {SubmissionDate}" +
-               $"\n- Extra points: {ExtraPoints}";
+        return stringBuilder.ToString();
     }
 }

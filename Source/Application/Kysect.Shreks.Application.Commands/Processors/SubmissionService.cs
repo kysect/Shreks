@@ -32,7 +32,7 @@ public class SubmissionService : ISubmissionService
         await _context.SaveChangesAsync(cancellationToken);
 
         _updateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
-        
+
         return submission;
     }
 
@@ -55,7 +55,7 @@ public class SubmissionService : ISubmissionService
 
     public async Task<Submission> UpdateSubmissionPoints(Guid submissionId, Guid userId, double? newRating, double? extraPoints, CancellationToken cancellationToken)
     {
-        var submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
+        Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
         if (!PermissionValidator.IsRepositoryMentor(userId, submission))
             throw new UnauthorizedException("Only mentors can rate submission");
