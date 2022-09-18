@@ -10,7 +10,7 @@ using Index = FluentSpreadsheets.Index;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
+public class PointsTable : RowTable<CourseStudentsDto>
 {
     private const string ReferenceSheetTitle = LabsSheet.Title;
     private const int ReferenceRowShift = 2;
@@ -30,7 +30,7 @@ public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
         Label("Комментарий").WithColumnWidth(350).WithTrailingMediumBorder()
     );
 
-    public IComponent Customize(IComponent component)
+    protected override IComponent Customize(IComponent component)
     {
         return component.WithDefaultStyle();
     }
