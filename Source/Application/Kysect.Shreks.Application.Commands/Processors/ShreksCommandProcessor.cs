@@ -26,7 +26,7 @@ public class ShreksCommandProcessor
         {
             return await ProcessBaseCommand(command, cancellationToken);
         }
-        catch (DomainInvalidOperationException e)
+        catch (ShreksDomainException e)
         {
             var message = $"An error occurred while processing {command.GetType().Name} command: {e.Message}";
             _logger.LogError(e, message);
