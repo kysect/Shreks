@@ -18,7 +18,7 @@ public class QueueTable : RowTable<SubmissionsQueueDto>
         Label("Группа"),
         Label("Лабораторная работа").WithColumnWidth(150),
         Label("Дата").WithColumnWidth(150),
-        Label("Статус"),
+        Label("Статус").WithColumnWidth(150),
         Label("GitHub").WithColumnWidth(400).WithTrailingMediumBorder()
     );
 
