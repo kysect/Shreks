@@ -7,5 +7,7 @@ internal static class StringExtensions
     private static readonly Regex HasCyrillicRegex = new(@"\p{IsCyrillic}", RegexOptions.Compiled);
 
     public static bool HasCyrillic(this string s)
-        => HasCyrillicRegex.IsMatch(s);
+    {
+        return HasCyrillicRegex.IsMatch(s);
+    }
 }

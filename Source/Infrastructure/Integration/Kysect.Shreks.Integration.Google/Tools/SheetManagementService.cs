@@ -38,7 +38,7 @@ public class SheetManagementService : ISheetManagementService
         {
             await ClearSheetAsync(spreadsheetId, sheetId.Value, token);
         }
-        
+
         return sheetId.Value;
     }
 
@@ -57,8 +57,8 @@ public class SheetManagementService : ISheetManagementService
 
         _logger.LogDebug("Create sheet with title {sheetTitle}.", sheetTitle);
 
-        var batchUpdateResponse = await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
-        var addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
+        BatchUpdateSpreadsheetResponse batchUpdateResponse = await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
+        SheetProperties addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
 
         return addedSheetProperties.SheetId!.Value;
     }
@@ -87,9 +87,9 @@ public class SheetManagementService : ISheetManagementService
             .Select((s, i) => (Sheet: s, NewIndex: i + 1))
             .Select(t =>
             {
-                var newProperties = t.Sheet.Properties;
+                SheetProperties newProperties = t.Sheet.Properties;
                 newProperties.Index = t.NewIndex;
-                
+
                 return new Request
                 {
                     UpdateSheetProperties = new UpdateSheetPropertiesRequest

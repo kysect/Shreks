@@ -1,14 +1,16 @@
 ﻿using FluentSpreadsheets;
 using FluentSpreadsheets.GoogleSheets.Extensions;
 using FluentSpreadsheets.Tables;
+using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Extensions;
+using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Integration.Google.Sheets;
 using static FluentSpreadsheets.ComponentFactory;
 using Index = FluentSpreadsheets.Index;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class PointsTable : RowTable<int>, ITableCustomizer
+public class PointsTable : RowTable<CourseStudentsDto>, ITableCustomizer
 {
     private const string ReferenceSheetTitle = LabsSheet.Title;
     private const int ReferenceRowShift = 2;
@@ -16,7 +18,7 @@ public class PointsTable : RowTable<int>, ITableCustomizer
 
     private static readonly IRowComponent Header = Row
     (
-        Label("ISU").WithColumnWidth(60),
+        Label("ISU").WithColumnWidth(60).WithFrozenRows(),
         Label("ФИО").WithColumnWidth(240),
         Label("Группа"),
         Label("GitHub").WithColumnWidth(150),
@@ -25,23 +27,31 @@ public class PointsTable : RowTable<int>, ITableCustomizer
         Label("Экзамен"),
         Label("Сумма"),
         Label("Оценка"),
-        Label("Комментарий").WithColumnWidth(350)
+        Label("Комментарий").WithColumnWidth(350).WithTrailingMediumBorder()
     );
 
     public IComponent Customize(IComponent component)
-        => component.WithDefaultStyle();
+    {
+        return component.WithDefaultStyle();
+    }
 
-    protected override IEnumerable<IRowComponent> RenderRows(int studentsCount)
+    protected override IEnumerable<IRowComponent> RenderRows(CourseStudentsDto model)
     {
         yield return Header;
 
-        foreach (var row in Enumerable.Range(1, studentsCount).Select(GetRowReference))
+        IReadOnlyList<StudentPointsDto> studentPoints = model.StudentsPoints.ToArray();
+
+        for (int i = 0; i < studentPoints.Count; i++)
         {
+            IRowComponent row = GetRowReference()
+                .WithDefaultStyle(i, studentPoints.Count)
+                .WithGroupSeparators(i, studentPoints);
+
             yield return row;
         }
     }
 
-    private static IRowComponent GetRowReference(int row)
+    private static IRowComponent GetRowReference()
     {
         return Row
         (
@@ -54,7 +64,7 @@ public class PointsTable : RowTable<int>, ITableCustomizer
             Empty(),
             Label(GetTotalFunction),
             Label(PointsFormula),
-            Empty()
+            Empty().WithTrailingMediumBorder()
         );
     }
 
@@ -72,7 +82,9 @@ public class PointsTable : RowTable<int>, ITableCustomizer
     }
 
     private static string GetCellsReference(string range)
-        => $"{ReferenceSheetTitle}!{range}";
+    {
+        return $"{ReferenceSheetTitle}!{range}";
+    }
 
     private static string GetTotalFunction(Index index)
     {
@@ -92,6 +104,6 @@ public class PointsTable : RowTable<int>, ITableCustomizer
     private static string PointsFormula(Index index)
     {
         string n = GetCellNumber(index.WithColumnShift(-1));
-        return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>= 40,\"FX-E\",\"FX\"))";
+        return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>=40,\"FX-E\",\"FX\"))";
     }
 }

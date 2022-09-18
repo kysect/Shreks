@@ -5,6 +5,7 @@ using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Integration.Google.Tools;
 
 namespace Kysect.Shreks.Integration.Google.Sheets;
@@ -18,14 +19,14 @@ public class LabsSheet : ISheet<CoursePointsDto>
     private readonly ISheetManagementService _sheetEditor;
     private readonly ITable<CoursePointsDto> _pointsTable;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
-    private readonly ISheet<int> _pointsSheet;
+    private readonly ISheet<CourseStudentsDto> _pointsSheet;
 
     public LabsSheet(
         IUserFullNameFormatter userFullNameFormatter,
         ISheetManagementService sheetEditor,
         ITable<CoursePointsDto> pointsTable,
         IComponentRenderer<GoogleSheetRenderCommand> renderer,
-        ISheet<int> pointsSheet)
+        ISheet<CourseStudentsDto> pointsSheet)
     {
         _userFullNameFormatter = userFullNameFormatter;
         _sheetEditor = sheetEditor;
@@ -34,9 +35,9 @@ public class LabsSheet : ISheet<CoursePointsDto>
         _pointsSheet = pointsSheet;
     }
 
-    public async Task UpdateAsync(string spreadsheetId, CoursePointsDto points, CancellationToken token)
+    public async Task UpdateAsync(string spreadsheetId, CoursePointsDto model, CancellationToken token)
     {
-        CoursePointsDto sortedPoints = SortPoints(points);
+        CoursePointsDto sortedPoints = SortPoints(model);
 
         IComponent sheetData = _pointsTable.Render(sortedPoints);
         var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, Id, Title, sheetData);
@@ -44,7 +45,10 @@ public class LabsSheet : ISheet<CoursePointsDto>
 
         bool labsSheetExist = await _sheetEditor.CheckIfExists(spreadsheetId, PointsSheet.Title, token);
         if (!labsSheetExist)
-            await _pointsSheet.UpdateAsync(spreadsheetId, points.StudentsPoints.Count, token);
+        {
+            var courseStudents = new CourseStudentsDto(model.StudentsPoints);
+            await _pointsSheet.UpdateAsync(spreadsheetId, courseStudents, token);
+        }
     }
 
     private CoursePointsDto SortPoints(CoursePointsDto points)

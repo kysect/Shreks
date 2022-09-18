@@ -23,13 +23,13 @@ public class QueueSheet : ISheet<SubmissionsQueueDto>
         _renderer = renderer;
     }
 
-    public async Task UpdateAsync(string spreadsheetId, SubmissionsQueueDto queue, CancellationToken token)
+    public async Task UpdateAsync(string spreadsheetId, SubmissionsQueueDto model, CancellationToken token)
     {
-        string title = queue.GroupName;
+        string title = model.GroupName;
 
         int sheetId = await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, title, token);
 
-        IComponent sheetData = _queueTable.Render(queue);
+        IComponent sheetData = _queueTable.Render(model);
         var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, sheetId, title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
     }

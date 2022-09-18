@@ -14,12 +14,12 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
 {
     private static readonly IRowComponent Header = Row
     (
-        Label("ФИО").WithColumnWidth(240),
+        Label("ФИО").WithColumnWidth(240).WithFrozenRows(),
         Label("Группа"),
         Label("Лабораторная работа").WithColumnWidth(150),
         Label("Дата").WithColumnWidth(150),
         Label("Статус"),
-        Label("GitHub").WithColumnWidth(400)
+        Label("GitHub").WithColumnWidth(400).WithTrailingMediumBorder()
     );
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
@@ -32,28 +32,32 @@ public class QueueTable : RowTable<SubmissionsQueueDto>, ITableCustomizer
     }
 
     public IComponent Customize(IComponent component)
-        => component.WithDefaultStyle();
+    {
+        return component.WithDefaultStyle();
+    }
 
-    protected override IEnumerable<IRowComponent> RenderRows(SubmissionsQueueDto queue)
+    protected override IEnumerable<IRowComponent> RenderRows(SubmissionsQueueDto model)
     {
         yield return Header;
 
-        foreach (var (student, submission) in queue.Submissions)
+        IReadOnlyList<QueueSubmissionDto> submissions = model.Submissions.ToArray();
+
+        for (int i = 0; i < submissions.Count; i++)
         {
-            var row = Row
+            (Application.Dto.Users.StudentDto student, SubmissionDto submission) = submissions[i];
+
+            IRowComponent row = Row
             (
                 Label(_userFullNameFormatter.GetFullName(student.User)),
                 Label(student.GroupName),
                 Label(submission.AssignmentShortName),
                 Label(submission.SubmissionDate, _cultureInfoProvider.GetCultureInfo()),
                 Label(submission.State.ToString()),
-                Label(submission.Payload)
-            );
+                Label(submission.Payload).WithTrailingMediumBorder()
+            ).WithDefaultStyle(i, submissions.Count);
 
             if (submission.State is SubmissionStateDto.Reviewed)
-            {
-                row = row.FilledWith(Color.FromArgb(125, Color.LightGreen));
-            }
+                row = row.FilledWith(125, Color.LightGreen);
 
             yield return row;
         }

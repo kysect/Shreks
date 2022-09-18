@@ -4,13 +4,13 @@ public class ConcurrentHashSet<T>
 {
     private readonly object _lock = new();
 
-    private readonly HashSet<T> _hastSet = new();
+    private readonly HashSet<T> _hashSet = new();
 
     public void Add(T value)
     {
         lock (_lock)
         {
-            _hastSet.Add(value);
+            _hashSet.Add(value);
         }
     }
 
@@ -18,8 +18,8 @@ public class ConcurrentHashSet<T>
     {
         lock (_lock)
         {
-            var values = _hastSet.ToArray();
-            _hastSet.Clear();
+            T[] values = _hashSet.ToArray();
+            _hashSet.Clear();
             return values;
         }
     }

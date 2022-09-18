@@ -31,7 +31,7 @@ public static class GooglePlaygroundExtensions
 
     public static async Task<IServiceProvider> EnsureDatabaseSeeded(this IServiceProvider services)
     {
-        var databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
+        ShreksDatabaseContext databaseContext = services.GetRequiredService<ShreksDatabaseContext>();
         await databaseContext.Database.EnsureCreatedAsync();
         await databaseContext.SaveChangesAsync();
         await services.UseDatabaseSeeders();
