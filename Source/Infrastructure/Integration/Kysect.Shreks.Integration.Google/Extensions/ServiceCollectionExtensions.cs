@@ -5,6 +5,7 @@ using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Application.TableManagement;
 using Kysect.Shreks.Integration.Google.Options;
 using Kysect.Shreks.Integration.Google.Providers;
 using Kysect.Shreks.Integration.Google.Sheets;
@@ -56,7 +57,7 @@ public static class ServiceCollectionExtensions
         return serviceCollection
             .AddSingleton<TableUpdateQueue>()
             .AddSingleton<ITableUpdateQueue>(p => p.GetRequiredService<TableUpdateQueue>())
-            .AddScoped<GoogleTableAccessor>()
+            .AddScoped<ITableAccessor, GoogleTableAccessor>()
             .AddHostedService<GoogleTableUpdateWorker>();
     }
 

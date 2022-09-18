@@ -1,4 +1,5 @@
-﻿using Kysect.Shreks.Integration.Google;
+﻿using Kysect.Shreks.Application.TableManagement;
+using Kysect.Shreks.Integration.Google;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kysect.Shreks.WebApi.Controllers
