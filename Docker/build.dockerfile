@@ -13,6 +13,7 @@ COPY ./Application/Kysect.Shreks.DataAccess.Abstractions/Kysect.Shreks.DataAcces
 COPY ./Application/Kysect.Shreks.Application.Abstractions/Kysect.Shreks.Application.Abstractions.csproj ./Application/Kysect.Shreks.Application.Abstractions/Kysect.Shreks.Application.Abstractions.csproj
 COPY ./Application/Kysect.Shreks.Application/Kysect.Shreks.Application.csproj ./Application/Kysect.Shreks.Application/Kysect.Shreks.Application.csproj
 COPY ./Application/Kysect.Shreks.Application.Dto/Kysect.Shreks.Application.Dto.csproj ./Application/Kysect.Shreks.Application.Dto/Kysect.Shreks.Application.Dto.csproj
+COPY ./Application/Kysect.Shreks.Application.TableManagement/Kysect.Shreks.Application.TableManagement.csproj ./Application/Kysect.Shreks.Application.TableManagement/Kysect.Shreks.Application.TableManagement.csproj
 COPY ./Infrastructure/Kysect.Shreks.Seeding/Kysect.Shreks.Seeding.csproj ./Infrastructure/Kysect.Shreks.Seeding/Kysect.Shreks.Seeding.csproj
 COPY ./Infrastructure/Integration/Kysect.Shreks.Integration.Github/Kysect.Shreks.Integration.Github.csproj ./Infrastructure/Integration/Kysect.Shreks.Integration.Github/Kysect.Shreks.Integration.Github.csproj
 COPY ./Infrastructure/Integration/Kysect.Shreks.Integration.Google/Kysect.Shreks.Integration.Google.csproj ./Infrastructure/Integration/Kysect.Shreks.Integration.Google/Kysect.Shreks.Integration.Google.csproj

@@ -1,6 +1,7 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google.Commands;
 using Kysect.Shreks.Application.Abstractions.Google.Queries;
 using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Application.TableManagement;
 using Kysect.Shreks.Integration.Google.Sheets;
 using Kysect.Shreks.Integration.Google.Tools;
 using MediatR;
@@ -8,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Integration.Google;
 
-public class GoogleTableAccessor : IDisposable
+public class GoogleTableAccessor : ITableAccessor
 {
     private readonly SemaphoreSlim _spreadsheetCreationSemaphore;
 

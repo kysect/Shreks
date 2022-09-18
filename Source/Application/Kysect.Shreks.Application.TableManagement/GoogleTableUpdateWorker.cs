@@ -1,9 +1,9 @@
-﻿using System.Diagnostics;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
-namespace Kysect.Shreks.Integration.Google;
+namespace Kysect.Shreks.Application.TableManagement;
 
 public class GoogleTableUpdateWorker : BackgroundService
 {
@@ -31,12 +31,12 @@ public class GoogleTableUpdateWorker : BackgroundService
         while (!token.IsCancellationRequested && await timer.WaitForNextTickAsync(token))
         {
             using IServiceScope serviceScope = _serviceProvider.CreateScope();
-            using GoogleTableAccessor googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<GoogleTableAccessor>();
+            using var googleTableAccessor = serviceScope.ServiceProvider.GetRequiredService<ITableAccessor>();
 
             _stopwatch.Restart();
 
-            bool pointsTableUpdated = await UpdateTablePoints(googleTableAccessor, token);
-            bool queueTableUpdated = await UpdateTableQueue(googleTableAccessor, token);
+            var pointsTableUpdated = await UpdateTablePoints(googleTableAccessor, token);
+            var queueTableUpdated = await UpdateTableQueue(googleTableAccessor, token);
 
             _stopwatch.Stop();
 
@@ -45,7 +45,7 @@ public class GoogleTableUpdateWorker : BackgroundService
         }
     }
 
-    private async Task<bool> UpdateTablePoints(GoogleTableAccessor googleTableAccessor, CancellationToken token)
+    private async Task<bool> UpdateTablePoints(ITableAccessor googleTableAccessor, CancellationToken token)
     {
         IReadOnlyCollection<Guid> points = _tableUpdateQueue
             .PointsUpdateSubjectCourseIds
@@ -60,7 +60,7 @@ public class GoogleTableUpdateWorker : BackgroundService
         return points.Any();
     }
 
-    private async Task<bool> UpdateTableQueue(GoogleTableAccessor googleTableAccessor, CancellationToken token)
+    private async Task<bool> UpdateTableQueue(ITableAccessor googleTableAccessor, CancellationToken token)
     {
         IReadOnlyCollection<(Guid, Guid)> queues = _tableUpdateQueue
             .QueueUpdateSubjectCourseGroupIds
