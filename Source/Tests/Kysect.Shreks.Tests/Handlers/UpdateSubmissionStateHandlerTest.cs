@@ -4,10 +4,11 @@ using Kysect.Shreks.Application.TableManagement;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Integration.Google;
+using Kysect.Shreks.Tests.Application;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace Kysect.Shreks.Tests.Application;
+namespace Kysect.Shreks.Tests.Handlers;
 
 public class UpdateSubmissionStateHandlerTest : ApplicationTestBase
 {
