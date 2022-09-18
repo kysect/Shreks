@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 
-namespace Kysect.Shreks.Application.Commands.Processors;
+namespace Kysect.Shreks.Application;
 
 public interface ISubmissionService
 {

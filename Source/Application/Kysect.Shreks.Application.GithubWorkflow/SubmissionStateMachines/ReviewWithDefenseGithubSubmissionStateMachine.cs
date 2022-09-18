@@ -104,7 +104,9 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
                 if (submission.Points is null)
                 {
                     message = "Submission merged by mentor and will be rated with 100.";
-                    await _commandProcessor.ProcessBaseCommandSafe(new RateCommand(100, 0), CancellationToken.None);
+                    BaseShreksCommandResult commandResult = await _commandProcessor.ProcessBaseCommandSafe(new RateCommand(100, 0), CancellationToken.None);
+                    if (!commandResult.IsSuccess)
+                        message = commandResult.Message;
                 }
                 else
                 {

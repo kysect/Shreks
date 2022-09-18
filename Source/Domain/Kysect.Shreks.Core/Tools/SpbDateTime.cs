@@ -6,4 +6,9 @@ public record struct SpbDateTime(DateTime Value)
     {
         return new SpbDateTime(dateOnly.ToDateTime(TimeOnly.MinValue));
     }
+
+    public override string ToString()
+    {
+        return Value.ToString("dd.MM.yyyy");
+    }
 }

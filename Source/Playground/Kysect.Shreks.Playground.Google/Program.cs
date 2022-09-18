@@ -2,6 +2,7 @@
 using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Extensions;
+using Kysect.Shreks.Application.TableManagement;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Integration.Google.Extensions;
