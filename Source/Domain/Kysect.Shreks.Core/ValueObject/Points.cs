@@ -14,6 +14,11 @@ public readonly record struct Points : IComparable<Points>
 
     public static Points None => new Points();
 
+    public static Points Min(Points a, Points b)
+    {
+        return a < b ? a : b;
+    }
+
     public static Points Max(Points a, Points b)
     {
         return a > b ? a : b;
