@@ -14,7 +14,7 @@ public class CappingDeadlinePolicy : DeadlinePolicy
     public Points Cap { get; set; }
 
     public override Points Apply(Points points)
-        => Points.Max(points, Cap);
+        => Points.Min(points, Cap);
 
     public override bool Equals(DeadlinePolicy? other)
     {
