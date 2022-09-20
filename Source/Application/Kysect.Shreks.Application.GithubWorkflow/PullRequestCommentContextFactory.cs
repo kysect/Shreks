@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
-using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
@@ -44,6 +43,15 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         Guid userId = await GetUserId();
         Submission submission = await _githubSubmissionService.GetCurrentUnratedSubmissionByPrNumber(_pullRequestDescriptor, cancellationToken);
         return new SubmissionContext(userId, submission.Id, _submissionService);
+    }
+
+    public async Task<UpdateContext> CreateUpdateContext(CancellationToken cancellationToken)
+    {
+        Guid userId = await GetUserId();
+        SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
+        Assignment assignment = await _githubSubmissionService.GetAssignmentByBranchAndSubjectCourse(subjectCourse.Id, _pullRequestDescriptor, cancellationToken);
+        User student = await _context.UserAssociations.GetUserByGithubUsername(_pullRequestDescriptor.Repository);
+        return new UpdateContext(userId, student, assignment, _submissionService);
     }
 
     public async Task<PullRequestContext> CreatePullRequestContext(CancellationToken cancellationToken)
