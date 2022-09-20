@@ -40,7 +40,7 @@ public class UpdateCommand : IShreksCommand
     {
         logger.LogInformation($"Handle /update command from {context.IssuerId} with arguments: {ToLogLine()}");
 
-        Submission submission = await context.SubmissionService.GetSubmissionByCode(
+        Submission submission = await context.SubmissionService.GetSubmissionByCodeAsync(
             SubmissionCode,
             context.Student.Id,
             context.Assignment.Id,

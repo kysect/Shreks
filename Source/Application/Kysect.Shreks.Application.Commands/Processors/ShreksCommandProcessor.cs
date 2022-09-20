@@ -89,7 +89,7 @@ public class ShreksCommandProcessor
 
             case UpdateCommand updateCommand:
             {
-                UpdateContext context = await _commandContextFactory.CreateUpdateContext(cancellationToken);
+                UpdateContext context = await _commandContextFactory.CreateUpdateContextAsync(cancellationToken);
                 Submission submission = await updateCommand.ExecuteAsync(context, _logger, cancellationToken);
                 SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
                 return BaseShreksCommandResult.Success($"Submission updated.\n{submissionDto.ToPullRequestString()}");
