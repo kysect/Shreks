@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Application.Commands.Processors;
-using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Factories;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;
 

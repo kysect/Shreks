@@ -1,5 +1,5 @@
 ﻿using Kysect.CommonLib;
-using Kysect.Shreks.Application.Dto.Github;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubmissionAssociations;
