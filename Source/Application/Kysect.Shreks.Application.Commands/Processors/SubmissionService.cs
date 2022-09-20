@@ -78,7 +78,7 @@ public class SubmissionService : ISubmissionService
         return submission;
     }
 
-    public async Task<Submission> GetSubmissionByCode(int code, Guid studentId, Guid assignmentId,
+    public async Task<Submission> GetSubmissionByCodeAsync(int code, Guid studentId, Guid assignmentId,
         CancellationToken cancellationToken)
     {
         return await _context.Submissions

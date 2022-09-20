@@ -45,7 +45,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         return new SubmissionContext(userId, submission.Id, _submissionService);
     }
 
-    public async Task<UpdateContext> CreateUpdateContext(CancellationToken cancellationToken)
+    public async Task<UpdateContext> CreateUpdateContextAsync(CancellationToken cancellationToken)
     {
         Guid userId = await GetUserId();
         SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
