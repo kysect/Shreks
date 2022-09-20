@@ -1,21 +1,21 @@
 using Kysect.Shreks.Application.Commands.Processors;
-using Kysect.Shreks.Application.Dto.Github;
 
 namespace Kysect.Shreks.Application.Commands.Contexts;
 
-public class PullRequestAndAssignmentContext : BaseContext
+public class PayloadAndAssignmentContext : BaseContext
 {
-    public GithubPullRequestDescriptor PullRequestDescriptor { get; }
+    public string Payload { get; }
     public Guid AssignmentId { get; }
     public ICommandSubmissionFactory CommandSubmissionFactory { get; }
 
-    public PullRequestAndAssignmentContext(ICommandSubmissionFactory commandSubmissionFactory,
-        GithubPullRequestDescriptor pullRequestDescriptor,
+    public PayloadAndAssignmentContext(
+        ICommandSubmissionFactory commandSubmissionFactory,
+        string payload,
         Guid issuerId,
         Guid assignmentId)
         : base(issuerId)
     {
-        PullRequestDescriptor = pullRequestDescriptor;
+        Payload = payload;
         AssignmentId = assignmentId;
         CommandSubmissionFactory = commandSubmissionFactory;
     }

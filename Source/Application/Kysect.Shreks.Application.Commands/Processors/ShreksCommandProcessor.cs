@@ -53,7 +53,7 @@ public class ShreksCommandProcessor
 
             case CreateSubmissionCommand createSubmissionCommand:
             {
-                PullRequestAndAssignmentContext context = await _commandContextFactory.CreatePullRequestAndAssignmentContext(cancellationToken);
+                PayloadAndAssignmentContext context = await _commandContextFactory.CreatePullRequestAndAssignmentContext(cancellationToken);
                 SubmissionRateDto submission = await createSubmissionCommand.ExecuteAsync(context, _logger, cancellationToken);
                 return BaseShreksCommandResult.Success($"Submission created.\n{submission.ToPullRequestString()}");
             }
