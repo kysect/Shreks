@@ -1,11 +1,11 @@
 ﻿using Kysect.Shreks.Application.Commands.Commands;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Application.Factories;
-using Microsoft.Extensions.Logging;
-using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Application.Commands.Result;
+using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.Submissions;
+using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Commands.Processors;
 
@@ -89,7 +89,7 @@ public class ShreksCommandProcessor
 
             case UpdateCommand updateCommand:
             {
-                SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                UpdateContext context = await _commandContextFactory.CreateUpdateContextAsync(cancellationToken);
                 Submission submission = await updateCommand.ExecuteAsync(context, _logger, cancellationToken);
                 SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
                 return BaseShreksCommandResult.Success($"Submission updated.\n{submissionDto.ToPullRequestString()}");
