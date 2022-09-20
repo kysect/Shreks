@@ -45,13 +45,6 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         return new SubmissionContext(userId, submission.Id, _submissionService);
     }
 
-    public async Task<PullRequestContext> CreatePullRequestContext(CancellationToken cancellationToken)
-    {
-        Guid userId = await GetUserId();
-
-        return new PullRequestContext(userId, _pullRequestDescriptor);
-    }
-
     public async Task<PayloadAndAssignmentContext> CreatePullRequestAndAssignmentContext(CancellationToken cancellationToken)
     {
         Guid userId = await GetUserId();
