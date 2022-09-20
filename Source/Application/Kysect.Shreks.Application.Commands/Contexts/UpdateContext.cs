@@ -8,7 +8,9 @@ public class UpdateContext : BaseContext
     public ISubmissionService SubmissionService { get; set; }
     public Assignment Assignment { get; set; }
     public User Student { get; set; }
-    public UpdateContext(Guid issuerId, User student, Assignment assignment, ISubmissionService submissionService) : base(issuerId)
+
+    public UpdateContext(Guid issuerId, User student, Assignment assignment, ISubmissionService submissionService) :
+        base(issuerId)
     {
         SubmissionService = submissionService;
         Assignment = assignment;
