@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -13,10 +13,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference
-			Include="..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
-		<ProjectReference
-			Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
+		<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
+		<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj" />
 	</ItemGroup>
 
