@@ -8,6 +8,7 @@ using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Application.Commands.Processors;
 
@@ -22,7 +23,8 @@ public class SubmissionService : ISubmissionService
         _updateQueue = updateQueue;
     }
 
-    public async Task<Submission> UpdateSubmissionState(Guid submissionId, Guid userId, SubmissionState state, CancellationToken cancellationToken)
+    public async Task<Submission> UpdateSubmissionState(Guid submissionId, Guid userId, SubmissionState state,
+        CancellationToken cancellationToken)
     {
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
@@ -36,7 +38,8 @@ public class SubmissionService : ISubmissionService
         return submission;
     }
 
-    public async Task<Submission> UpdateSubmissionDate(Guid submissionId, Guid userId, DateOnly newDate, CancellationToken cancellationToken)
+    public async Task<Submission> UpdateSubmissionDate(Guid submissionId, Guid userId, DateOnly newDate,
+        CancellationToken cancellationToken)
     {
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
@@ -53,7 +56,8 @@ public class SubmissionService : ISubmissionService
         return submission;
     }
 
-    public async Task<Submission> UpdateSubmissionPoints(Guid submissionId, Guid userId, double? newRating, double? extraPoints, CancellationToken cancellationToken)
+    public async Task<Submission> UpdateSubmissionPoints(Guid submissionId, Guid userId, double? newRating,
+        double? extraPoints, CancellationToken cancellationToken)
     {
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
@@ -72,5 +76,16 @@ public class SubmissionService : ISubmissionService
         _updateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
 
         return submission;
+    }
+
+    public async Task<Submission> GetSubmissionByCodeAsync(int code, Guid studentId, Guid assignmentId,
+        CancellationToken cancellationToken)
+    {
+        return await _context.Submissions
+                   .Where(s => s.Code == code)
+                   .Where(s => s.Student.UserId == studentId)
+                   .Where(s => s.GroupAssignment.AssignmentId == assignmentId)
+                   .FirstOrDefaultAsync(cancellationToken)
+               ?? throw new EntityNotFoundException($"Couldn't find submission with code ${code}");
     }
 }

@@ -1,11 +1,9 @@
 using CommandLine;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 using Microsoft.Extensions.Logging;
-using System.Globalization;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
@@ -22,14 +20,14 @@ public class UpdateCommand : IShreksCommand
 
     [Value(0, Required = true, MetaName = "SubmissionCode")]
     public int SubmissionCode { get; }
-    
-    [Option(shortName:'r', longName: "rating", Group = "update",  Required = false)]
+
+    [Option(shortName: 'r', longName: "rating", Group = "update", Required = false)]
     public double? RatingPercent { get; }
-    
-    [Option(shortName:'e', longName:"extra", Group = "update", Required = false)]
+
+    [Option(shortName: 'e', longName: "extra", Group = "update", Required = false)]
     public double? ExtraPoints { get; }
-    
-    [Option(shortName:'d', longName:"date", Group = "update", Required = false)]
+
+    [Option(shortName: 'd', longName: "date", Group = "update", Required = false)]
     public string? DateStr { get; }
 
     public DateOnly GetDate()
@@ -37,23 +35,28 @@ public class UpdateCommand : IShreksCommand
         return RuCultureDate.Parse(DateStr);
     }
 
-    public async Task<Submission> ExecuteAsync(SubmissionContext context, ILogger logger, CancellationToken cancellationToken)
+    public async Task<Submission> ExecuteAsync(UpdateContext context, ILogger logger,
+        CancellationToken cancellationToken)
     {
         logger.LogInformation($"Handle /update command from {context.IssuerId} with arguments: {ToLogLine()}");
 
-        Submission submission = null!;
+        Submission submission = await context.SubmissionService.GetSubmissionByCodeAsync(
+            SubmissionCode,
+            context.Student.Id,
+            context.Assignment.Id,
+            cancellationToken);
 
         if (RatingPercent is not null || ExtraPoints is not null)
         {
             submission = await context.SubmissionService.UpdateSubmissionPoints(
-                context.SubmissionId,
+                submission.Id,
                 context.IssuerId,
                 RatingPercent,
                 ExtraPoints,
                 cancellationToken);
 
             submission = await context.SubmissionService.UpdateSubmissionState(
-                context.SubmissionId,
+                submission.Id,
                 context.IssuerId,
                 SubmissionState.Completed,
                 cancellationToken);
@@ -62,7 +65,7 @@ public class UpdateCommand : IShreksCommand
         if (DateStr is not null)
         {
             submission = await context.SubmissionService.UpdateSubmissionDate(
-                context.SubmissionId,
+                submission.Id,
                 context.IssuerId,
                 GetDate(),
                 cancellationToken);
@@ -70,7 +73,7 @@ public class UpdateCommand : IShreksCommand
 
         return submission;
     }
-    
+
     public string ToLogLine()
     {
         return $" {{ SubmissionCode : {SubmissionCode}," +

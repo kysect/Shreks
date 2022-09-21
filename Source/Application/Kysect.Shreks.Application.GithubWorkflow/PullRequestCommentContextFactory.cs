@@ -45,6 +45,15 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         return new SubmissionContext(userId, submission.Id, _submissionService);
     }
 
+    public async Task<UpdateContext> CreateUpdateContextAsync(CancellationToken cancellationToken)
+    {
+        Guid userId = await GetUserId();
+        SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
+        Assignment assignment = await _githubSubmissionService.GetAssignmentByBranchAndSubjectCourse(subjectCourse.Id, _pullRequestDescriptor, cancellationToken);
+        User student = await _context.UserAssociations.GetUserByGithubUsername(_pullRequestDescriptor.Repository);
+        return new UpdateContext(userId, student, assignment, _submissionService);
+    }
+
     public async Task<PayloadAndAssignmentContext> CreatePullRequestAndAssignmentContext(CancellationToken cancellationToken)
     {
         Guid userId = await GetUserId();
