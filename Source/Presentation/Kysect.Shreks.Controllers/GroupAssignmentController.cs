@@ -6,7 +6,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kysect.Shreks.WebApi.Controllers
+namespace Kysect.Shreks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

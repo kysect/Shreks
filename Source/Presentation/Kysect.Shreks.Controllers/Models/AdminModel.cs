@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.WebApi.Models;
+namespace Kysect.Shreks.Controllers.Models;
 
 public class AdminModel
 {

@@ -1,16 +1,15 @@
-﻿using Kysect.Shreks.Application.TableManagement;
-using Kysect.Shreks.Integration.Google;
+﻿using Kysect.Shreks.Application.Abstractions.Google;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kysect.Shreks.WebApi.Controllers
+namespace Kysect.Shreks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class GoogleController : ControllerBase
     {
-        private readonly TableUpdateQueue _tableUpdate;
+        private readonly ITableUpdateQueue _tableUpdate;
 
-        public GoogleController(TableUpdateQueue tableUpdate)
+        public GoogleController(ITableUpdateQueue tableUpdate)
         {
             _tableUpdate = tableUpdate;
         }

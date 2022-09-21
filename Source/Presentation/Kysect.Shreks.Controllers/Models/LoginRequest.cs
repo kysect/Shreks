@@ -1,3 +1,3 @@
-namespace Kysect.Shreks.WebApi.Models;
+namespace Kysect.Shreks.Controllers.Models;
 
 public record LoginRequest(string Username, string Password);

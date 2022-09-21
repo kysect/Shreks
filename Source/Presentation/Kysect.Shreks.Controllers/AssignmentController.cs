@@ -1,13 +1,13 @@
 using Kysect.Shreks.Application.Abstractions.Study.Commands;
 using Kysect.Shreks.Application.Abstractions.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Controllers.Models;
 using Kysect.Shreks.Identity.Entities;
-using Kysect.Shreks.WebApi.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Kysect.Shreks.WebApi.Controllers;
+namespace Kysect.Shreks.Controllers;
 
 [Route("/api/[controller]")]
 [ApiController]
