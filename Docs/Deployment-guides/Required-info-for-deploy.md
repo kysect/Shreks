@@ -11,7 +11,7 @@
 ## Список sensitive info
 
 - SSH от VM
-- User и  password к PostgeSQL
+- User и password к PostgeSQL
 - Логин и пароль от админского аккаунта Shreks
 - Client secret от Google service account
  
