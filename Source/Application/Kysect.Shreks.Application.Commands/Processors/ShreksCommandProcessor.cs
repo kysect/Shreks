@@ -74,7 +74,7 @@ public class ShreksCommandProcessor
 
             case HelpCommand helpCommand:
             {
-                SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                BaseContext context = await _commandContextFactory.CreateBaseContext(cancellationToken);
                 string result = helpCommand.ExecuteAsync(context, _logger);
                 return BaseShreksCommandResult.Success(result);
             }
