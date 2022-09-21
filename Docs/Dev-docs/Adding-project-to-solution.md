@@ -4,7 +4,7 @@
 
 При добавлении нового проекта в солюшен нужно:
 
-- Создать csproj в нужную директорию
+- Создать csproj в нужной директории
 - В csproj добавить `<AnalysisLevel>latest</AnalysisLevel>`
 - В csproj добавить `<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>`
 - В Docker/build.dockerfile добавить копирование нового проекта аналогично
