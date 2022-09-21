@@ -11,7 +11,7 @@ System_Boundary(integrations, "Внешние сервисы") {
     System_Ext(itmoId, "ITMO ID")
 }
 
-System(fas, "СУФ")
+System(fas, "Shreks")
 
 Rel(student, fas, "Предоставляет данные о себе")
 Rel(teacher, fas, "Запускает генерацию отчётов")
