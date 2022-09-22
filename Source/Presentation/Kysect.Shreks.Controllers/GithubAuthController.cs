@@ -1,12 +1,12 @@
-﻿using System.Security.Claims;
-using Kysect.Shreks.Application.Abstractions.Users.Commands;
+﻿using Kysect.Shreks.Application.Abstractions.Users.Commands;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
-namespace Kysect.Shreks.WebApi.Controllers;
+namespace Kysect.Shreks.Controllers;
 
 [ApiController]
 [Route("api/auth/github")]

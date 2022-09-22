@@ -1,7 +1,8 @@
 using Kysect.Shreks.Application.Dto.Identity;
 using Kysect.Shreks.Common.Exceptions;
+using Microsoft.AspNetCore.Http;
 
-namespace Kysect.Shreks.WebApi.Extensions;
+namespace Kysect.Shreks.Controllers.Extensions;
 
 public static class HttpContextExtensions
 {

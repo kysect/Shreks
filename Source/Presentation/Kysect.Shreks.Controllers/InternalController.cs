@@ -1,12 +1,12 @@
-﻿using System.Net;
-using Kysect.Shreks.Identity.Entities;
+﻿using Kysect.Shreks.Identity.Entities;
 using Kysect.Shreks.Integration.Github.Helpers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using static Kysect.Shreks.Application.Abstractions.Internal.SeedTestData;
 
-namespace Kysect.Shreks.WebApi.Controllers;
+namespace Kysect.Shreks.Controllers;
 
 [ApiController]
 [Route("api/internal/")]

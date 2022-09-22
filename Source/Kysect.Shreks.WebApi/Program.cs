@@ -5,6 +5,8 @@ using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Controllers;
+using Kysect.Shreks.Controllers.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Submissions;
@@ -21,7 +23,6 @@ using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi.Extensions;
 using Kysect.Shreks.WebApi.Filters;
-using Kysect.Shreks.WebApi.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -46,7 +47,13 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     {
         webApplicationBuilder.Services.TryAddSingleton(testEnvironmentConfiguration);
     }
-    webApplicationBuilder.Services.AddControllers(x => x.Filters.Add<AuthenticationFilter>()).AddNewtonsoftJson();
+
+    webApplicationBuilder.Services
+        .AddControllers(x => x.Filters.Add<AuthenticationFilter>())
+        .AddNewtonsoftJson()
+        .AddApplicationPart(typeof(IControllersProjectMarker).Assembly)
+        .AddControllersAsServices();
+
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
     webApplicationBuilder.Services.AddSwaggerGen(c =>
     {
