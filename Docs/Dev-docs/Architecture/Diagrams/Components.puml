@@ -1,0 +1,47 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(student, "Студент")
+Person(teacher, "Преподаватель")
+
+System_Ext(github, "Github")
+System_Ext(google, "Google")
+System_Ext(itmoId, "ITMO ID")
+
+System_Boundary(container, "Container") {
+    Container(frontend, "Страница авторизации")
+    ContainerDb(db, "Database", "Microsoft SQL")
+
+    System_Boundary(component, "Component") {
+        Container(presentationLayer, "PresentationLayer")
+        Container(bl, "Логика сервиса")
+
+        Container(googleIntergation, "Google integration")
+        Container(githubIntegration, "Github integration")
+        Container(itmoIntegration, "ITMO integration")
+    
+        Container(DataAccess, "Data access")
+
+        Rel(presentationLayer, bl, "Uses")
+        Rel(bl, DataAccess, "Uses")
+
+        Rel(bl, googleIntergation, "Uses")
+        Rel(bl, githubIntegration, "Uses")
+        Rel(bl, itmoIntegration, "Uses")
+    }
+
+    Rel(frontend, presentationLayer, "Uses")
+    Rel(DataAccess, db, "Uses")
+
+    Rel(githubIntegration, github, "Uses")
+    Rel(googleIntergation, google, "Uses")
+    Rel(itmoIntegration, itmoId, "Uses")
+}
+
+Rel(student, github, "Uses")
+Rel(teacher, github, "Uses")
+
+Rel(student, frontend, "Uses")
+
+@enduml

@@ -1,0 +1,36 @@
+@startuml Subject lesson
+
+actor Student
+actor Teacher
+
+loop 
+    Student --> Github : Создаёт репозиторий
+    Student --> Github : Загружает решение по работе
+    Github --> Shreks : Отправляет информацию о добавлении работы
+    Shreks --> Shreks : Добавляет студента в очередь
+    Shreks --> GoogleTable : Обновляет очередь
+
+    Teacher --> GoogleTable : Смотрит следующего в очереди студента
+    GoogleTable --> Teacher : Данные о последнем студенте в очереди
+
+    Teacher --> Student : Проводит защиту
+
+    alt Нужны правки
+        Teacher --> Github : Оставляет команду выставения баллов
+        Github --> Shreks : Отправляет событие о новой комментарии
+        Shreks --> Shreks : Проставляет баллы студентам
+        Shreks --> GoogleTable : Обновление баллов
+    else
+        Teacher --> Github : Оставляет замечания и текущие баллы
+        Github --> Shreks : Отправляет событие о новой комментарии
+        Shreks --> Shreks : Проставляет баллы студентам
+        Shreks --> GoogleTable : Обновление баллов
+        Student --> Github : Загрузка работы
+        Github --> Shreks : Отправка события о добавлении работы
+        Shreks --> Shreks : Добавляет студента в очередь
+
+        
+    end
+end
+
+@enduml

@@ -1,0 +1,30 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(student, "Студент")
+Person(teacher, "Преподаватель")
+
+System_Ext(github, "Github")
+System_Ext(google, "Google")
+System_Ext(itmoId, "ITMO DI")
+
+System_Boundary(container, "Container") {
+    Container(frontend, "Frontend")
+    Container(backend, "Backend")
+    ContainerDb(db, "Database", "Microsoft SQL")
+
+    Rel(frontend, backend, "Uses")
+    Rel(backend, db, "Uses")
+
+    Rel(backend, github, "Uses")
+    Rel(backend, google, "Uses")
+    Rel(backend, itmoId, "Uses")
+}
+
+Rel(student, github, "Uses")
+Rel(teacher, github, "Uses")
+
+Rel(student, frontend, "Uses")
+
+@enduml

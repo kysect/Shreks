@@ -1,0 +1,31 @@
+@startuml
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+Person(student, "Студент")
+Person(teacher, "Преподаватель")
+
+System_Boundary(integrations, "Внешние сервисы") {
+    System_Ext(github, "Github")
+    System_Ext(google, "Google")
+    System_Ext(itmoId, "ITMO ID")
+}
+
+System(fas, "Shreks")
+
+Rel(student, fas, "Предоставляет данные о себе")
+Rel(teacher, fas, "Запускает генерацию отчётов")
+
+Rel(student, github, "Загружает работы")
+Rel(teacher, github, "Выставляет баллы")
+Rel(teacher, google, "Проверяет баллы, очередь")
+
+
+Rel(fas, itmoId, "Авторизирует студента")
+Rel(fas, github, "Авторизирует студента")
+Rel(fas, google, "Генерация результатов")
+
+Rel(github, fas, "Пересылает команды от преподавателя")
+
+
+@enduml
