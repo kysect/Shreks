@@ -54,10 +54,9 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
 
         try
         {
-            string pullRequestAction1 = action;
             CancellationToken cancellationToken = CancellationToken.None;
 
-            switch (pullRequestAction1)
+            switch (pullRequestAction)
             {
                 case PullRequestActionValue.Synchronize:
                 case PullRequestActionValue.Opened:
@@ -74,8 +73,14 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
                     await _processor.ProcessPullRequestClosed(merged, githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
                     break;
 
+                case PullRequestActionValue.Assigned:
+                case PullRequestActionValue.ReviewRequestRemoved:
+                case PullRequestActionValue.ReviewRequested:
+                    repositoryLogger.LogDebug($"Skip pull request action with type {pullRequestAction}.");
+                    break;
+
                 default:
-                    repositoryLogger.LogWarning($"Unsupported pull request webhook type was received: {pullRequestAction1}");
+                    repositoryLogger.LogWarning($"Unsupported pull request webhook type was received: {pullRequestAction}");
                     break;
             }
         }
