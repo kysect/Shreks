@@ -1,6 +1,6 @@
 using Kysect.Shreks.Application.Commands.Contexts;
 using Kysect.Shreks.Application.Commands.Processors;
-using Kysect.Shreks.Application.Dto.Github;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Core.Study;
@@ -27,13 +27,13 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         _pullRequestDescriptor = pullRequestDescriptor;
         _context = context;
         _submissionService = submissionService;
-        _githubCommandSubmissionFactory = new GithubCommandSubmissionFactory(githubSubmissionFactory);
+        _githubCommandSubmissionFactory = new GithubCommandSubmissionFactory(githubSubmissionFactory, context, pullRequestDescriptor);
         _githubSubmissionService = new GithubSubmissionService(_context);
     }
 
     public async Task<BaseContext> CreateBaseContext(CancellationToken cancellationToken)
     {
-        var userId = await GetUserId();
+        Guid userId = await GetUserId();
 
         return new BaseContext(userId);
     }
@@ -54,21 +54,14 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         return new UpdateContext(userId, student, assignment, _submissionService);
     }
 
-    public async Task<PullRequestContext> CreatePullRequestContext(CancellationToken cancellationToken)
+    public async Task<PayloadAndAssignmentContext> CreatePayloadAndAssignmentContext(CancellationToken cancellationToken)
     {
-        var userId = await GetUserId();
-
-        return new PullRequestContext(userId, _pullRequestDescriptor);
-    }
-
-    public async Task<PullRequestAndAssignmentContext> CreatePullRequestAndAssignmentContext(CancellationToken cancellationToken)
-    {
-        var userId = await GetUserId();
+        Guid userId = await GetUserId();
 
         SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
         Assignment assignment = await _githubSubmissionService.GetAssignmentByBranchAndSubjectCourse(subjectCourse.Id, _pullRequestDescriptor, cancellationToken);
 
-        return new PullRequestAndAssignmentContext(_githubCommandSubmissionFactory, _pullRequestDescriptor, userId, assignment.Id);
+        return new PayloadAndAssignmentContext(userId, _githubCommandSubmissionFactory, assignment.Id, _pullRequestDescriptor.Payload);
     }
 
     private async Task<Guid> GetUserId()

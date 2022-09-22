@@ -1,4 +1,4 @@
-﻿namespace Kysect.Shreks.Application.Dto.Github;
+﻿namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 
 public record GithubPullRequestDescriptor(
     string Sender,

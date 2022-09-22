@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.Dto.Github;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Common.Logging;
 using Microsoft.Extensions.Logging;
 

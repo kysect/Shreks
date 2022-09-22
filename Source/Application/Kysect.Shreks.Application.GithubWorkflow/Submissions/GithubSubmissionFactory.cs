@@ -1,5 +1,4 @@
-﻿using Kysect.Shreks.Application.Dto.Github;
-using Kysect.Shreks.Application.Validators;
+﻿using Kysect.Shreks.Application.Validators;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Models;
@@ -15,6 +14,7 @@ using Kysect.Shreks.Core.Specifications.GroupAssignments;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Models;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 
 namespace Kysect.Shreks.Application.GithubWorkflow.Submissions;
 

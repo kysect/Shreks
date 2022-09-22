@@ -8,13 +8,12 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 [Verb("/create-submission")]
 public class CreateSubmissionCommand : IShreksCommand
 {
-    public async Task<SubmissionRateDto> ExecuteAsync(PullRequestAndAssignmentContext context, ILogger logger, CancellationToken cancellationToken)
+    public async Task<SubmissionRateDto> ExecuteAsync(PayloadAndAssignmentContext context, ILogger logger, CancellationToken cancellationToken)
     {
-        logger.LogInformation($"Handle /create-submission command for pr {context.PullRequestDescriptor.Payload}");
+        logger.LogInformation($"Handle /create-submission command for pr {context.Payload}");
 
         return await context.CommandSubmissionFactory.CreateSubmission(
             context.IssuerId,
-            context.AssignmentId,
-            context.PullRequestDescriptor);
+            context.AssignmentId);
     }
 }

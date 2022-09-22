@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
-using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Kysect.Shreks.Application.GithubWorkflow.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 

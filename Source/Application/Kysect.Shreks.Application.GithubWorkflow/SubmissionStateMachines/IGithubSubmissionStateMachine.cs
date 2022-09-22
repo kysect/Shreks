@@ -1,5 +1,5 @@
 ﻿using Kysect.Shreks.Application.Commands.Commands;
-using Kysect.Shreks.Application.Dto.Github;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 
 namespace Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 

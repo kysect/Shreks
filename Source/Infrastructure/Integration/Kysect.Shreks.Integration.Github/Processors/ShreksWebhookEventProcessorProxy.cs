@@ -1,5 +1,5 @@
-using Kysect.Shreks.Application.Dto.Github;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Integration.Github.Client;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Github.Notifiers;
