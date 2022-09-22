@@ -1,5 +1,5 @@
 ﻿namespace Kysect.Shreks.Controllers;
 
-public interface IControllerProjectMarker
+public interface IControllersProjectMarker
 {
 }

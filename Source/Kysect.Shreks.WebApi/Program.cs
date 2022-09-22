@@ -51,7 +51,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     webApplicationBuilder.Services
         .AddControllers(x => x.Filters.Add<AuthenticationFilter>())
         .AddNewtonsoftJson()
-        .AddApplicationPart(typeof(IControllerProjectMarker).Assembly)
+        .AddApplicationPart(typeof(IControllersProjectMarker).Assembly)
         .AddControllersAsServices();
 
     webApplicationBuilder.Services.AddEndpointsApiExplorer();
