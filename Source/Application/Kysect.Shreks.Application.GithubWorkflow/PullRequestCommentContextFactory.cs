@@ -54,14 +54,14 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         return new UpdateContext(userId, student, assignment, _submissionService);
     }
 
-    public async Task<PayloadAndAssignmentContext> CreatePullRequestAndAssignmentContext(CancellationToken cancellationToken)
+    public async Task<PayloadAndAssignmentContext> CreatePayloadAndAssignmentContext(CancellationToken cancellationToken)
     {
         Guid userId = await GetUserId();
 
         SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(_pullRequestDescriptor.Organization, cancellationToken);
         Assignment assignment = await _githubSubmissionService.GetAssignmentByBranchAndSubjectCourse(subjectCourse.Id, _pullRequestDescriptor, cancellationToken);
 
-        return new PayloadAndAssignmentContext(_githubCommandSubmissionFactory, _pullRequestDescriptor.Payload, userId, assignment.Id);
+        return new PayloadAndAssignmentContext(userId, _githubCommandSubmissionFactory, assignment.Id, _pullRequestDescriptor.Payload);
     }
 
     private async Task<Guid> GetUserId()

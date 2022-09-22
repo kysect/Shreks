@@ -4,19 +4,19 @@ namespace Kysect.Shreks.Application.Commands.Contexts;
 
 public class PayloadAndAssignmentContext : BaseContext
 {
-    public string Payload { get; }
-    public Guid AssignmentId { get; }
     public ICommandSubmissionFactory CommandSubmissionFactory { get; }
+    public Guid AssignmentId { get; }
+    public string Payload { get; }
 
     public PayloadAndAssignmentContext(
-        ICommandSubmissionFactory commandSubmissionFactory,
-        string payload,
         Guid issuerId,
-        Guid assignmentId)
+        ICommandSubmissionFactory commandSubmissionFactory,
+        Guid assignmentId,
+        string payload)
         : base(issuerId)
     {
-        Payload = payload;
-        AssignmentId = assignmentId;
         CommandSubmissionFactory = commandSubmissionFactory;
+        AssignmentId = assignmentId;
+        Payload = payload;
     }
 }
