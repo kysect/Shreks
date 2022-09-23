@@ -6,7 +6,10 @@ using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 using Kysect.Shreks.Application.TableManagement;
+using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
+using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Tests.GithubWorkflow.Tools;
@@ -33,28 +36,37 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
         organizationUsers.Should().Contain(githubUserAssociation.GithubUsername);
     }
 
-    [Fact]
+    [Fact(Skip = "TODO: implement 'open PR' action")]
     public async Task PullRequestCreated_SubmissionShouldBeCreated()
     {
+        var githubSubmissionService = new GithubSubmissionService(Context);
+
         (GithubSubjectCourseAssociation subjectCourseAssociation, Student student) = await TestContextGenerator.Create();
         GithubUserAssociation githubUserAssociation = student.User.Associations.OfType<GithubUserAssociation>().First();
+        Assignment assignment = subjectCourseAssociation.SubjectCourse.Assignments.First();
 
-        IReadOnlyCollection<GithubUserAssociation> githubUserAssociations = await Context
-            .SubjectCourses
-            .GetAllGithubUsers(subjectCourseAssociation.SubjectCourse.Id);
+        var githubPullRequestDescriptor = new GithubPullRequestDescriptor(
+            githubUserAssociation.GithubUsername,
+            string.Empty,
+            subjectCourseAssociation.GithubOrganizationName,
+            githubUserAssociation.GithubUsername,
+            assignment.ShortName,
+            1);
 
-        IEnumerable<string> organizationUsers = githubUserAssociations.Select(a => a.GithubUsername);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = CreateSubmissionStateMachine(githubPullRequestDescriptor);
 
-        organizationUsers.Should().Contain(githubUserAssociation.GithubUsername);
+        await githubSubmissionStateMachine.ProcessPullRequestReopen(false, githubPullRequestDescriptor);
+        Submission lastSubmissionByPr = await githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
+
+        Assert.Equal(SubmissionState.Active, lastSubmissionByPr.State);
     }
 
     public IGithubSubmissionStateMachine CreateSubmissionStateMachine(GithubPullRequestDescriptor githubPullRequestDescriptor)
     {
-        var tableUpdateQueue = new TableUpdateQueue();
         ILogger logger = LogInitialization.GetLogger();
+        SubmissionService shreksCommandProcessor = new SubmissionService(Context, new TableUpdateQueue());
 
         var githubSubmissionFactory = new GithubSubmissionFactory(Context);
-        var shreksCommandProcessor = new SubmissionService(Context, tableUpdateQueue);
         var pullRequestCommentContextFactory = new PullRequestCommentContextFactory(githubPullRequestDescriptor, githubSubmissionFactory, Context, shreksCommandProcessor);
         return new ReviewWithDefenseGithubSubmissionStateMachine(
             Context,

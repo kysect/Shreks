@@ -3,6 +3,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 
@@ -47,11 +48,14 @@ public class GithubApplicationTestContextGenerator
         var subjectCourse = new SubjectCourse(subject, _faker.Commerce.ProductName(), SubmissionStateWorkflowType.ReviewOnly);
         var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(subjectCourse, _faker.Company.CompanyName(), _faker.Commerce.ProductName());
         var subjectCourseGroup = new SubjectCourseGroup(subjectCourse, group);
+        var assignment = new Assignment(_faker.Hacker.Verb(), "task-0", 1, new Points(0), new Points(10), subjectCourse);
+        subjectCourse.AddAssignment(assignment);
 
         _context.SubjectCourses.Add(subjectCourse);
         _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
         _context.SubjectCourseGroups.Add(subjectCourseGroup);
-
+        _context.Assignments.Add(assignment);
+        
         await _context.SaveChangesAsync(CancellationToken.None);
 
         return new GithubApplicationTestContext(githubSubjectCourseAssociation, student);
