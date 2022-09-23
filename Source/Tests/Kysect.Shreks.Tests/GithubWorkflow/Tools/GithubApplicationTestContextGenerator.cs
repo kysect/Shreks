@@ -6,7 +6,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Seeding.EntityGenerators;
 
-namespace Kysect.Shreks.Tests.Tools;
+namespace Kysect.Shreks.Tests.GithubWorkflow.Tools;
 
 public class GithubApplicationTestContextGenerator
 {

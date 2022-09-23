@@ -13,6 +13,7 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.8" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -27,6 +28,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
+      <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
       <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
