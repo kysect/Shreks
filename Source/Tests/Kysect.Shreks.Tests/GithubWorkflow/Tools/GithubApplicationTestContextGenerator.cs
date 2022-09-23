@@ -50,11 +50,13 @@ public class GithubApplicationTestContextGenerator
         var subjectCourseGroup = new SubjectCourseGroup(subjectCourse, group);
         var assignment = new Assignment(_faker.Hacker.Verb(), "task-0", 1, new Points(0), new Points(10), subjectCourse);
         subjectCourse.AddAssignment(assignment);
+        var groupAssignment = new GroupAssignment(group, assignment, DateOnly.FromDateTime(DateTime.Now));
 
         _context.SubjectCourses.Add(subjectCourse);
         _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
         _context.SubjectCourseGroups.Add(subjectCourseGroup);
         _context.Assignments.Add(assignment);
+        _context.GroupAssignments.Add(groupAssignment);
         
         await _context.SaveChangesAsync(CancellationToken.None);
 

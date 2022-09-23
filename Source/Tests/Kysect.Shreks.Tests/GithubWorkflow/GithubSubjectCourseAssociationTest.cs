@@ -1,10 +1,9 @@
 ﻿using FluentAssertions;
-using Kysect.Shreks.Application.Commands.Processors;
+using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.DatabaseContextExtensions;
 using Kysect.Shreks.Application.GithubWorkflow;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
-using Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 using Kysect.Shreks.Application.TableManagement;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
@@ -36,10 +35,13 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
         organizationUsers.Should().Contain(githubUserAssociation.GithubUsername);
     }
 
-    [Fact(Skip = "TODO: implement 'open PR' action")]
+    [Fact]
     public async Task PullRequestCreated_SubmissionShouldBeCreated()
     {
+        ILogger logger = LogInitialization.GetLogger();
+        var pullRequestCommitEventNotifier = new TestEventNotifier();
         var githubSubmissionService = new GithubSubmissionService(Context);
+        ShreksWebhookEventProcessor githubSubmissionStateMachine = CreateEventProcessor();
 
         (GithubSubjectCourseAssociation subjectCourseAssociation, Student student) = await TestContextGenerator.Create();
         GithubUserAssociation githubUserAssociation = student.User.Associations.OfType<GithubUserAssociation>().First();
@@ -53,26 +55,21 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
             assignment.ShortName,
             1);
 
-        IGithubSubmissionStateMachine githubSubmissionStateMachine = CreateSubmissionStateMachine(githubPullRequestDescriptor);
 
-        await githubSubmissionStateMachine.ProcessPullRequestReopen(false, githubPullRequestDescriptor);
+        await githubSubmissionStateMachine.ProcessPullRequestUpdate(githubPullRequestDescriptor, logger, pullRequestCommitEventNotifier, CancellationToken.None);
         Submission lastSubmissionByPr = await githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
 
         Assert.Equal(SubmissionState.Active, lastSubmissionByPr.State);
     }
 
-    public IGithubSubmissionStateMachine CreateSubmissionStateMachine(GithubPullRequestDescriptor githubPullRequestDescriptor)
+    public ShreksWebhookEventProcessor CreateEventProcessor()
     {
-        ILogger logger = LogInitialization.GetLogger();
-        SubmissionService shreksCommandProcessor = new SubmissionService(Context, new TableUpdateQueue());
-
         var githubSubmissionFactory = new GithubSubmissionFactory(Context);
-        var pullRequestCommentContextFactory = new PullRequestCommentContextFactory(githubPullRequestDescriptor, githubSubmissionFactory, Context, shreksCommandProcessor);
-        return new ReviewWithDefenseGithubSubmissionStateMachine(
+
+        return new ShreksWebhookEventProcessor(
+            new ShreksCommandParser(),
             Context,
-            shreksCommandProcessor,
-            new ShreksCommandProcessor(pullRequestCommentContextFactory, logger),
-            logger,
-            new TestEventNotifier());
+            new TableUpdateQueue(),
+            githubSubmissionFactory);
     }
 }

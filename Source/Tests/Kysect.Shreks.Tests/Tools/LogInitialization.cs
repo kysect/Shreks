@@ -16,6 +16,7 @@ public static class LogInitialization
 
     public static ILogger GetLogger()
     {
+        Init();
         return new SerilogLoggerFactory(Log.Logger).CreateLogger("TestLogger");
     }
 }
