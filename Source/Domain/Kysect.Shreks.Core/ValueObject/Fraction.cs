@@ -8,14 +8,14 @@ public readonly record struct Fraction
     {
         if (value is < 0 or > 1)
             throw new UnsupportedOperationException("Value of fraction must be between 0 and 1 (inclusive)");
-        
+
         Value = value;
     }
 
     public static Fraction None => new Fraction(0);
 
     public double Value { get; }
-    
+
     public static implicit operator Fraction(double value)
         => new Fraction(value);
 
