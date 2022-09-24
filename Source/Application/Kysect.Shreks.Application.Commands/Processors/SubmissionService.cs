@@ -43,8 +43,7 @@ public class SubmissionService : ISubmissionService
     {
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
-        if (!PermissionValidator.IsRepositoryMentor(userId, submission))
-            throw new UnauthorizedException("Only mentors can change submission date");
+        PermissionValidator.EnsureMentorAccess(userId, submission);
 
         submission.SubmissionDate = SpbDateTime.FromDateOnly(newDate);
         _context.Submissions.Update(submission);
@@ -61,8 +60,7 @@ public class SubmissionService : ISubmissionService
     {
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
-        if (!PermissionValidator.IsRepositoryMentor(userId, submission))
-            throw new UnauthorizedException("Only mentors can rate submission");
+        PermissionValidator.EnsureMentorAccess(userId, submission);
 
         Fraction? fraction = newRating is null ? null : new Fraction(newRating.Value / 100);
         Points? extraPointsTyped = extraPoints is null ? null : new Points(extraPoints.Value);
