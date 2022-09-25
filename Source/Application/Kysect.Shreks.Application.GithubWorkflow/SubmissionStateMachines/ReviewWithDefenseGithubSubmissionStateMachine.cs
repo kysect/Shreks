@@ -6,6 +6,7 @@ using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Application.Validators;
+using Kysect.Shreks.Common.Resources;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
@@ -50,7 +51,7 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
             return;
         }
 
-        const string message = $"Submission state changed to reviewed. Mentor should merge PR after defense.";
+        string message = UserCommandProcessingMessage.SubmissionMarkAsReviewedAndNeedDefense();
         await _eventNotifier.SendCommentToPullRequest(message);
         _logger.LogInformation("Notify: " + message);
     }
@@ -76,7 +77,7 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
 
         if (command is not RateCommand)
         {
-            string message = $"Review proceeded, but submission is not yet rated and still will be presented in queue";
+            string message = UserCommandProcessingMessage.ReviewWithoutRate();
             await _eventNotifier.SendCommentToPullRequest(message);
             _logger.LogInformation("Notify: " + message);
         }
@@ -103,20 +104,20 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
                 submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
                 if (submission.Points is null)
                 {
-                    message = "Submission merged by mentor and will be rated with 100.";
+                    message = UserCommandProcessingMessage.MentorMergeUnratedSubmission();
                     BaseShreksCommandResult commandResult = await _commandProcessor.ProcessBaseCommandSafe(new RateCommand(100, 0), CancellationToken.None);
                     if (!commandResult.IsSuccess)
                         message = commandResult.Message;
                 }
                 else
                 {
-                    message = $"Submission merged by mentor and mark as Completed.";
+                    message = UserCommandProcessingMessage.MergePullRequestAndMarkAsCompleted();
                 }
             }
             else
             {
                 submission = await ChangeSubmissionState(SubmissionState.Inactive, prDescriptor);
-                message = $"Warning: pull request closed and mark as inactive. Submission {submission.Code} will not be rated.";
+                message = UserCommandProcessingMessage.ClosePullRequestWithUnratedSubmission(submission.Code);
             }
         }
         else
@@ -126,7 +127,7 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
 
             if (isMerged && submission.Points is null)
             {
-                message = $"Warning: pull request must be merged by mentor. Submission {submission.Code} will not be rated.";
+                message = UserCommandProcessingMessage.MergePullRequestWithoutRate(submission.Code);
                 await _eventNotifier.SendCommentToPullRequest(message);
             }
         }

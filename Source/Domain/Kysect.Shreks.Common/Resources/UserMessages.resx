@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AssignmentNotFound" xml:space="preserve">
+    <value>Assignment with branch name '{0}' for subject course '{1}' was not found. Ensure that branch name is correct. Available assignments: {2}.</value>
+  </data>
+  <data name="ClosePullRequestWithUnratedSubmission" xml:space="preserve">
+    <value>Warning: pull request closed and mark as inactive. Submission {0} will not be rated.</value>
+  </data>
   <data name="DoesNotHavePermissionForChangeSubmission" xml:space="preserve">
     <value>User does not have permission for changing submission.</value>
   </data>
@@ -129,6 +135,36 @@
   <data name="InternalExceptionWhileProcessingUserCommand" xml:space="preserve">
     <value>An internal error occurred while processing command. Contact support for details.</value>
   </data>
+  <data name="MentorMergeUnratedSubmission" xml:space="preserve">
+    <value>Submission merged by mentor and will be rated with 100.</value>
+  </data>
+  <data name="MergePullRequestAndMarkAsCompleted" xml:space="preserve">
+    <value>Submission merged by mentor and mark as Completed.</value>
+  </data>
+  <data name="MergePullRequestWithoutRate" xml:space="preserve">
+    <value>Warning: pull request was merged, but submission {0} is not yet rated.</value>
+  </data>
+  <data name="NoSubmissionInPullRequest" xml:space="preserve">
+    <value>No submission in pull request  {0}.</value>
+  </data>
+  <data name="NoUnratedSubmissionInPullRequest" xml:space="preserve">
+    <value>No unrated submission in pull request  {0}.</value>
+  </data>
+  <data name="RepositoryAssignedToAnotherUserClosePullRequest" xml:space="preserve">
+    <value>Repository {0} is assigned to another student. User {1} does not have permission here. Close this PR and open new with correct account.</value>
+  </data>
+  <data name="RepositoryAssignedToAnotherUserSubmissionUpdated" xml:space="preserve">
+    <value>Repository {0} is assigned to another student. Do not use {1} account for this repository. Submission date will be updated.</value>
+  </data>
+  <data name="ReviewRatedSubmission" xml:space="preserve">
+    <value>Submission is already rated with {0} points. If you want to change it, please use /update command.</value>
+  </data>
+  <data name="ReviewWithoutRate" xml:space="preserve">
+    <value>Review proceeded, but submission is not yet rated and still will be presented in queue.</value>
+  </data>
+  <data name="SubjectCourseForOrganizationNotFound" xml:space="preserve">
+    <value>SubjectCourse with organization {0} not found.</value>
+  </data>
   <data name="SubmissionActivatedSuccessfully" xml:space="preserve">
     <value>Submission activated successfully.</value>
   </data>
@@ -140,6 +176,9 @@
   </data>
   <data name="SubmissionDeletedSuccessfully" xml:space="preserve">
     <value>Submission deleted successfully.</value>
+  </data>
+  <data name="SubmissionMarkAsReviewedAndNeedDefense" xml:space="preserve">
+    <value>Submission state changed to reviewed. Mentor should merge PR after defense.</value>
   </data>
   <data name="SubmissionMarkedAsReviewed" xml:space="preserve">
     <value>Submission marked as reviewed.</value>
@@ -158,5 +197,8 @@
   </data>
   <data name="UserNotFoundByGithubUsername" xml:space="preserve">
     <value>Cannot find user with github {0}. All users should be registered before submitting tasks.</value>
+  </data>
+  <data name="UserNotFoundInSubjectCourse" xml:space="preserve">
+    <value>User with id {0} not found or have no permissions to create submission in course {1}.</value>
   </data>
 </root>

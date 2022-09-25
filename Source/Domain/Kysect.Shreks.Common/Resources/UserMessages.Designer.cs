@@ -61,6 +61,24 @@ namespace Kysect.Shreks.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assignment with branch name &apos;{0}&apos; for subject course &apos;{1}&apos; was not found. Ensure that branch name is correct. Available assignments: {2}..
+        /// </summary>
+        internal static string AssignmentNotFound {
+            get {
+                return ResourceManager.GetString("AssignmentNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning: pull request closed and mark as inactive. Submission {0} will not be rated..
+        /// </summary>
+        internal static string ClosePullRequestWithUnratedSubmission {
+            get {
+                return ResourceManager.GetString("ClosePullRequestWithUnratedSubmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User does not have permission for changing submission..
         /// </summary>
         internal static string DoesNotHavePermissionForChangeSubmission {
@@ -97,6 +115,96 @@ namespace Kysect.Shreks.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submission merged by mentor and will be rated with 100..
+        /// </summary>
+        internal static string MentorMergeUnratedSubmission {
+            get {
+                return ResourceManager.GetString("MentorMergeUnratedSubmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submission merged by mentor and mark as Completed..
+        /// </summary>
+        internal static string MergePullRequestAndMarkAsCompleted {
+            get {
+                return ResourceManager.GetString("MergePullRequestAndMarkAsCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning: pull request was merged, but submission {0} is not yet rated..
+        /// </summary>
+        internal static string MergePullRequestWithoutRate {
+            get {
+                return ResourceManager.GetString("MergePullRequestWithoutRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No submission in pull request  {0}..
+        /// </summary>
+        internal static string NoSubmissionInPullRequest {
+            get {
+                return ResourceManager.GetString("NoSubmissionInPullRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No unrated submission in pull request  {0}..
+        /// </summary>
+        internal static string NoUnratedSubmissionInPullRequest {
+            get {
+                return ResourceManager.GetString("NoUnratedSubmissionInPullRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository {0} is assigned to another student. User {1} does not have permission here. Close this PR and open new with correct account..
+        /// </summary>
+        internal static string RepositoryAssignedToAnotherUserClosePullRequest {
+            get {
+                return ResourceManager.GetString("RepositoryAssignedToAnotherUserClosePullRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository {0} is assigned to another student. Do not use {1} account for this repository. Submission date will be updated..
+        /// </summary>
+        internal static string RepositoryAssignedToAnotherUserSubmissionUpdated {
+            get {
+                return ResourceManager.GetString("RepositoryAssignedToAnotherUserSubmissionUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submission is already rated with {0} points. If you want to change it, please use /update command..
+        /// </summary>
+        internal static string ReviewRatedSubmission {
+            get {
+                return ResourceManager.GetString("ReviewRatedSubmission", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Review proceeded, but submission is not yet rated and still will be presented in queue..
+        /// </summary>
+        internal static string ReviewWithoutRate {
+            get {
+                return ResourceManager.GetString("ReviewWithoutRate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SubjectCourse with organization {0} not found..
+        /// </summary>
+        internal static string SubjectCourseForOrganizationNotFound {
+            get {
+                return ResourceManager.GetString("SubjectCourseForOrganizationNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Submission activated successfully..
         /// </summary>
         internal static string SubmissionActivatedSuccessfully {
@@ -129,6 +237,15 @@ namespace Kysect.Shreks.Common.Resources {
         internal static string SubmissionDeletedSuccessfully {
             get {
                 return ResourceManager.GetString("SubmissionDeletedSuccessfully", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submission state changed to reviewed. Mentor should merge PR after defense..
+        /// </summary>
+        internal static string SubmissionMarkAsReviewedAndNeedDefense {
+            get {
+                return ResourceManager.GetString("SubmissionMarkAsReviewedAndNeedDefense", resourceCulture);
             }
         }
         
@@ -183,6 +300,15 @@ namespace Kysect.Shreks.Common.Resources {
         internal static string UserNotFoundByGithubUsername {
             get {
                 return ResourceManager.GetString("UserNotFoundByGithubUsername", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with id {0} not found or have no permissions to create submission in course {1}..
+        /// </summary>
+        internal static string UserNotFoundInSubjectCourse {
+            get {
+                return ResourceManager.GetString("UserNotFoundInSubjectCourse", resourceCulture);
             }
         }
     }

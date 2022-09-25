@@ -54,9 +54,7 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
         {
             if (triggeredByAnotherUser && !triggeredByMentor)
             {
-                var message = $"Repository {pullRequestDescriptor.Repository} is assigned to another student. " +
-                              $"User {pullRequestDescriptor.Sender} does not have permission here. Close this PR and open new with correct account.";
-                throw new DomainInvalidOperationException(message);
+                throw DomainInvalidOperationException.RepositoryAssignedToAnotherUserClosePullRequest(pullRequestDescriptor.Repository, pullRequestDescriptor.Sender);
             }
 
             submission = await CreateGithubSubmissionAsync(
@@ -78,9 +76,7 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
 
             if (triggeredByAnotherUser)
             {
-                var message = $"Repository {pullRequestDescriptor.Repository} is assigned to another student. " +
-                              $"Do not use {pullRequestDescriptor.Sender} account for this repository. Submission date will be updated.";
-                throw new DomainInvalidOperationException(message);
+                throw DomainInvalidOperationException.RepositoryAssignedToAnotherUserSubmissionUpdated(pullRequestDescriptor.Repository, pullRequestDescriptor.Sender);
             }
         }
 
@@ -101,21 +97,18 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
             .FirstOrDefaultAsync(gsc => gsc.GithubOrganizationName == pullRequestDescriptor.Organization, cancellationToken);
 
         if (subjectCourseAssociation is null)
-            throw new EntityNotFoundException($"SubjectCourse with organization {pullRequestDescriptor.Organization} not found");
+            throw EntityNotFoundException.SubjectCourseForOrganizationNotFound(pullRequestDescriptor.Organization);
 
         var assignment = subjectCourseAssociation.SubjectCourse.Assignments.FirstOrDefault(a => a.ShortName == pullRequestDescriptor.BranchName);
 
         if (assignment is null)
         {
-            var branchName = pullRequestDescriptor.BranchName;
             string assignments = subjectCourseAssociation.SubjectCourse
                 .Assignments
                 .OrderBy(a => a.Order)
                 .ToSingleString(a => a.ShortName);
 
-            var message = $"Assignment with branch name '{branchName}' for subject course '{subjectCourseAssociation.SubjectCourse.Title}' was not found." +
-                          $"\nEnsure that branch name is correct. Available assignments: {assignments}";
-            throw new EntityNotFoundException(message);
+            throw EntityNotFoundException.AssignmentWasNotFound(pullRequestDescriptor.BranchName, subjectCourseAssociation.SubjectCourse.Title, assignments);
         }
 
         return assignment.Id;
@@ -127,19 +120,18 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
         GithubPullRequestDescriptor pullRequestDescriptor,
         CancellationToken cancellationToken)
     {
-        var student = await _context.Students.FindAsync(new object[] { userId }, cancellationToken);
+        // TODO: student must be filtered by subject course
+        Student? student = await _context.Students.FindAsync(new object[] { userId }, cancellationToken);
         if (student is null)
         {
             var courseAssociation = await _context.SubjectCourseAssociations
                 .OfType<GithubSubjectCourseAssociation>()
                 .Include(association => association.SubjectCourse)
                 .SingleOrDefaultAsync(x => x.GithubOrganizationName == pullRequestDescriptor.Organization, cancellationToken)
-                ?? throw new EntityNotFoundException(
-                    $"Course association was not found for organization {pullRequestDescriptor.Organization}");
+                ?? throw EntityNotFoundException.SubjectCourseForOrganizationNotFound(pullRequestDescriptor.Organization);
 
             _ = await _context.Mentors.FindAsync(new object[] { userId, courseAssociation.SubjectCourse.Id }, cancellationToken)
-                ?? throw new EntityNotFoundException(
-                    $"User with id {userId} not found or have no permissions to create submission");
+                ?? throw EntityNotFoundException.UserNotFoundInSubjectCourse(userId, courseAssociation.SubjectCourse.Title);
 
             student = await FindStudentByRepositoryName(pullRequestDescriptor, cancellationToken);
         }

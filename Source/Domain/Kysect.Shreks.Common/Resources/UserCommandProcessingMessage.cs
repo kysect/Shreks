@@ -46,4 +46,39 @@ public static class UserCommandProcessingMessage
     {
         return string.Format(UserMessages.SubmissionMarkedAsReviewed);
     }
+
+    public static string ReviewRatedSubmission(double points)
+    {
+        return string.Format(UserMessages.ReviewRatedSubmission, points);
+    }
+
+    public static string ReviewWithoutRate()
+    {
+        return UserMessages.ReviewWithoutRate;
+    }
+
+    public static string MergePullRequestWithoutRate(int submissionCode)
+    {
+        return string.Format(UserMessages.MergePullRequestWithoutRate, submissionCode);
+    }
+
+    public static string SubmissionMarkAsReviewedAndNeedDefense()
+    {
+        return UserMessages.SubmissionMarkAsReviewedAndNeedDefense;
+    }
+
+    public static string ClosePullRequestWithUnratedSubmission(int submissionCode)
+    {
+        return string.Format(UserMessages.ClosePullRequestWithUnratedSubmission, submissionCode);
+    }
+
+    public static string MergePullRequestAndMarkAsCompleted()
+    {
+        return UserMessages.MergePullRequestAndMarkAsCompleted;
+    }
+
+    public static string MentorMergeUnratedSubmission()
+    {
+        return UserMessages.MentorMergeUnratedSubmission;
+    }
 }
