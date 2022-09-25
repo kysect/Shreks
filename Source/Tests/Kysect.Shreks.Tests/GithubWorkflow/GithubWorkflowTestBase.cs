@@ -4,7 +4,7 @@ using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
-using Kysect.Shreks.Tests.Tools;
+using Kysect.Shreks.Tests.GithubWorkflow.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +13,6 @@ namespace Kysect.Shreks.Tests.GithubWorkflow;
 public class GithubWorkflowTestBase : IDisposable
 {
     protected readonly ShreksDatabaseContext Context;
-    protected readonly IMapper Mapper;
     protected readonly IServiceProvider Provider;
     protected readonly GithubApplicationTestContextGenerator TestContextGenerator;
 
@@ -40,7 +39,6 @@ public class GithubWorkflowTestBase : IDisposable
         Context = Provider.GetRequiredService<ShreksDatabaseContext>();
         Context.Database.EnsureCreated();
 
-        Mapper = Provider.GetRequiredService<IMapper>();
         TestContextGenerator = Provider.GetRequiredService<GithubApplicationTestContextGenerator>();
 
         Provider.UseDatabaseSeeders().GetAwaiter().GetResult();

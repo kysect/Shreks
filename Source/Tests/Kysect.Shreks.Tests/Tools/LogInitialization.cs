@@ -1,14 +1,21 @@
 ﻿using Serilog;
+using Serilog.Core;
+using Serilog.Extensions.Logging;
+using Xunit.Abstractions;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Kysect.Shreks.Tests.Tools;
 
 public static class LogInitialization
 {
-    public static void Init()
+    public static ILogger InitTestLogger(ITestOutputHelper output)
     {
-        Log.Logger = new LoggerConfiguration()
+        Logger logger = new LoggerConfiguration()
             .MinimumLevel.Verbose()
-            .WriteTo.Console()
+            .WriteTo.TestOutput(output)
             .CreateLogger();
+
+        Log.Logger = logger;
+        return new SerilogLoggerFactory(logger).CreateLogger("TestLogger");
     }
 }
