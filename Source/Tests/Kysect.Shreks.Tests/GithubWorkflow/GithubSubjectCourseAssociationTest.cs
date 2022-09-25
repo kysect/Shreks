@@ -15,11 +15,19 @@ using Kysect.Shreks.Tests.GithubWorkflow.Tools;
 using Kysect.Shreks.Tests.Tools;
 using Microsoft.Extensions.Logging;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Kysect.Shreks.Tests.GithubWorkflow;
 
 public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
 {
+    private readonly ILogger _logger;
+
+    public GithubSubjectCourseAssociationTest(ITestOutputHelper output)
+    {
+        _logger = LogInitialization.InitTestLogger(output);
+    }
+
     [Fact]
     public async Task GetSubjectCourseGithubUser_StudentAssociationExists_AssociationShouldReturn()
     {
@@ -38,7 +46,6 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
     [Fact]
     public async Task PullRequestCreated_SubmissionShouldBeCreated()
     {
-        ILogger logger = LogInitialization.GetLogger();
         var pullRequestCommitEventNotifier = new TestEventNotifier();
         var githubSubmissionService = new GithubSubmissionService(Context);
         ShreksWebhookEventProcessor githubSubmissionStateMachine = CreateEventProcessor();
@@ -56,7 +63,7 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
             1);
 
 
-        await githubSubmissionStateMachine.ProcessPullRequestUpdate(githubPullRequestDescriptor, logger, pullRequestCommitEventNotifier, CancellationToken.None);
+        await githubSubmissionStateMachine.ProcessPullRequestUpdate(githubPullRequestDescriptor, _logger, pullRequestCommitEventNotifier, CancellationToken.None);
         Submission lastSubmissionByPr = await githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
 
         Assert.Equal(SubmissionState.Active, lastSubmissionByPr.State);
