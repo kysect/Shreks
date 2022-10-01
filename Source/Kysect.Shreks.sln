@@ -72,6 +72,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Controllers",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.WebApi", "Presentation\Kysect.Shreks.WebApi\Kysect.Shreks.WebApi.csproj", "{EBEC3E85-B4EA-4DFD-B66C-5EB0E7D37BD4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DeveloperEnvironment", "DeveloperEnvironment", "{9A989DE7-89B0-4761-83FA-CE8AF8DEEFDB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kysect.Shreks.DeveloperEnvironment", "DeveloperEnvironment\Kysect.Shreks.DeveloperEnvironment\Kysect.Shreks.DeveloperEnvironment.csproj", "{356898AB-4F8A-43C4-945C-670B2757848C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -178,6 +182,10 @@ Global
 		{EBEC3E85-B4EA-4DFD-B66C-5EB0E7D37BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBEC3E85-B4EA-4DFD-B66C-5EB0E7D37BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBEC3E85-B4EA-4DFD-B66C-5EB0E7D37BD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{356898AB-4F8A-43C4-945C-670B2757848C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{356898AB-4F8A-43C4-945C-670B2757848C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{356898AB-4F8A-43C4-945C-670B2757848C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{356898AB-4F8A-43C4-945C-670B2757848C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -209,6 +217,7 @@ Global
 		{A57B6F3D-1DC1-41A7-90CD-99158B4D55DA} = {AE556858-2A9D-481F-9235-3C74F0CDC5A5}
 		{561BAC9C-4E54-414A-BFDA-AFF90B6F5ADF} = {7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}
 		{EBEC3E85-B4EA-4DFD-B66C-5EB0E7D37BD4} = {7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}
+		{356898AB-4F8A-43C4-945C-670B2757848C} = {9A989DE7-89B0-4761-83FA-CE8AF8DEEFDB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD5C67DB-70F8-4C47-A3F4-7C94BECE1657}
