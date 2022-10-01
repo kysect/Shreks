@@ -8,8 +8,38 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Application.Validators;
 
-public static class PermissionValidator
+public interface IPermissionValidator
 {
+    Task<bool> IsOrganizationMentor(Guid senderId, string organizationName);
+}
+
+public static class PermissionValidatorExtensions
+{
+    public static async Task EnsureUserIsOrganizationMentor(this IPermissionValidator permissionValidator, Guid senderId, string organizationName)
+    {
+        if (!await permissionValidator.IsOrganizationMentor(senderId, organizationName))
+            throw new UnauthorizedException();
+    }
+}
+
+public class PermissionValidator : IPermissionValidator
+{
+    private readonly IShreksDatabaseContext _context;
+
+    public PermissionValidator(IShreksDatabaseContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<bool> IsOrganizationMentor(Guid senderId, string organizationName)
+    {
+        Mentor? mentor = await _context.SubjectCourseAssociations
+            .WithSpecification(new FindMentorByUsernameAndOrganization(senderId, organizationName))
+            .FirstOrDefaultAsync();
+
+        return mentor is not null;
+    }
+
     public static void EnsureHasAccessToRepository(Guid userId, Submission submission)
     {
         if (!IsRepositoryOwner(userId, submission)
@@ -46,10 +76,6 @@ public static class PermissionValidator
 
     public static async Task<bool> IsOrganizationMentor(IShreksDatabaseContext context, Guid userId, string organizationName)
     {
-        Mentor? mentor = await context.SubjectCourseAssociations
-            .WithSpecification(new FindMentorByUsernameAndOrganization(userId, organizationName))
-            .FirstOrDefaultAsync();
-
-        return mentor is not null;
+        return await new PermissionValidator(context).IsOrganizationMentor(userId, organizationName);
     }
 }

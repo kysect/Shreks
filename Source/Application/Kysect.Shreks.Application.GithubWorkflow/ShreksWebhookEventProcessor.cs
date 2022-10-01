@@ -15,6 +15,7 @@ using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Common.Resources;
+using Kysect.Shreks.Core.Users;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 
@@ -45,7 +46,8 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
         IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
-        await githubSubmissionStateMachine.ProcessPullRequestReopen(isMerged, prDescriptor);
+        User sender = await GetEventSender(prDescriptor);
+        await githubSubmissionStateMachine.ProcessPullRequestReopen(isMerged, prDescriptor, sender);
     }
 
     public async Task ProcessPullRequestUpdate(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier, CancellationToken cancellationToken)
@@ -68,8 +70,9 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     public async Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
         IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+        User sender = await GetEventSender(prDescriptor);
 
-        await githubSubmissionStateMachine.ProcessPullRequestClosed(merged, prDescriptor);
+        await githubSubmissionStateMachine.ProcessPullRequestClosed(merged, prDescriptor, sender);
     }
 
     public async Task ProcessPullRequestReviewComment(string? comment, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
@@ -112,8 +115,8 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
             command = _commandParser.Parse(approveComment);
 
         IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
-
-        await githubSubmissionStateMachine.ProcessPullRequestReviewApprove(command, prDescriptor);
+        User sender = await GetEventSender(prDescriptor);
+        await githubSubmissionStateMachine.ProcessPullRequestReviewApprove(command, prDescriptor, sender);
     }
 
     public async Task ProcessIssueCommentCreate(
@@ -144,5 +147,10 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     {
         var commentContextFactory = new PullRequestCommentContextFactory(pullRequestDescriptor, _githubSubmissionFactory, _context, _shreksCommandProcessor);
         return new ShreksCommandProcessor(commentContextFactory, repositoryLogger);
+    }
+
+    private async Task<User> GetEventSender(GithubPullRequestDescriptor prDescriptor)
+    {
+        return await _context.UserAssociations.GetUserByGithubUsername(prDescriptor.Sender);
     }
 }

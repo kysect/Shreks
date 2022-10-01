@@ -2,6 +2,8 @@
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
+using Kysect.Shreks.Application.GithubWorkflow.Submissions;
+using Kysect.Shreks.Application.Validators;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -32,10 +34,10 @@ public class GithubSubmissionStateMachineFactory
         {
             case null:
             case SubmissionStateWorkflowType.ReviewOnly:
-                return new ReviewOnlyGithubSubmissionStateMachine(_context, _shreksCommandProcessor, commandProcessor, logger, eventNotifier);
+                return new ReviewOnlyGithubSubmissionStateMachine(_shreksCommandProcessor, commandProcessor, new GithubSubmissionService(_context), logger, eventNotifier);
 
             case SubmissionStateWorkflowType.ReviewWithDefense:
-                return new ReviewWithDefenseGithubSubmissionStateMachine(_context, _shreksCommandProcessor, commandProcessor, logger, eventNotifier);
+                return new ReviewWithDefenseGithubSubmissionStateMachine(_shreksCommandProcessor, commandProcessor, logger, eventNotifier, new GithubSubmissionService(_context), new PermissionValidator(_context));
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(subjectCourse.WorkflowType));
