@@ -81,6 +81,49 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
         Assert.Single(_pullRequestCommitEventNotifier.PullRequestMessages);
     }
 
+    [Fact]
+    public async Task ProcessPullRequestClosed_WithoutMerge_SubmissionShouldBeInactive()
+    {
+        GithubApplicationTestContext context = await TestContextGenerator.Create();
+        GithubPullRequestDescriptor githubPullRequestDescriptor = context.CreateStudentPullRequestDescriptor();
+
+        await _githubSubmissionStateMachine.ProcessPullRequestUpdate(githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier, CancellationToken.None);
+        await _githubSubmissionStateMachine.ProcessPullRequestClosed(merged: false, githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier);
+
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
+
+        Assert.Equal(SubmissionState.Inactive, submission.State);
+    }
+
+    [Fact]
+    public async Task ProcessPullRequestClosed_WithMerge_SubmissionShouldBeCompleted()
+    {
+        GithubApplicationTestContext context = await TestContextGenerator.Create();
+        GithubPullRequestDescriptor githubPullRequestDescriptor = context.CreateStudentPullRequestDescriptor();
+
+        await _githubSubmissionStateMachine.ProcessPullRequestUpdate(githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier, CancellationToken.None);
+        await _githubSubmissionStateMachine.ProcessPullRequestClosed(merged: true, githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier);
+
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
+
+        Assert.Equal(SubmissionState.Completed, submission.State);
+    }
+
+    [Fact]
+    public async Task ProcessPullRequestReopen_AfterClose_SubmissionShouldBeActive()
+    {
+        GithubApplicationTestContext context = await TestContextGenerator.Create();
+        GithubPullRequestDescriptor githubPullRequestDescriptor = context.CreateStudentPullRequestDescriptor();
+
+        await _githubSubmissionStateMachine.ProcessPullRequestUpdate(githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier, CancellationToken.None);
+        await _githubSubmissionStateMachine.ProcessPullRequestClosed(merged: false, githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier);
+        await _githubSubmissionStateMachine.ProcessPullRequestReopen(githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier);
+
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
+
+        Assert.Equal(SubmissionState.Active, submission.State);
+    }
+
     public ShreksWebhookEventProcessor CreateEventProcessor()
     {
         var githubSubmissionFactory = new GithubSubmissionFactory(Context);
