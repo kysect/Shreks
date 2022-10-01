@@ -18,6 +18,7 @@ using Xunit.Abstractions;
 
 namespace Kysect.Shreks.Tests.GithubWorkflow;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>")]
 public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
 {
     private readonly ILogger _logger;
@@ -121,6 +122,21 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
 
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
 
+        Assert.Equal(SubmissionState.Active, submission.State);
+    }
+
+    [Fact]
+    public async Task ProcessPullRequestReviewApprove_ByStudent_ActionShouldBeForbidden()
+    {
+        GithubApplicationTestContext context = await TestContextGenerator.Create();
+        GithubPullRequestDescriptor githubPullRequestDescriptor = context.CreateStudentPullRequestDescriptor();
+
+        await _githubSubmissionStateMachine.ProcessPullRequestUpdate(githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier, CancellationToken.None);
+        await _githubSubmissionStateMachine.ProcessPullRequestReviewApprove(null, githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier);
+
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
+
+        Assert.Null(submission.Rating);
         Assert.Equal(SubmissionState.Active, submission.State);
     }
 

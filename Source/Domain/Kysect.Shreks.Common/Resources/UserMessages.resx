@@ -190,7 +190,7 @@
     <value>Submission updated.\n{0}</value>
   </data>
   <data name="UnauthorizedExceptionMessage" xml:space="preserve">
-    <value>User is not authorized to activate this submission.</value>
+    <value>User is not authorized to do this action.</value>
   </data>
   <data name="UserDoesNotHavePermissionForActivateSubmission" xml:space="preserve">
     <value>User is not authorized to activate this submission.</value>
