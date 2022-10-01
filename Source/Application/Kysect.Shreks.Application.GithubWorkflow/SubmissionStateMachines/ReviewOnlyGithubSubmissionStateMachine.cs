@@ -5,6 +5,7 @@ using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
+using Kysect.Shreks.Common.Resources;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
@@ -43,6 +44,7 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
 
         double? points = submission.Points?.Value;
 
+        // TODO: check case when command is not rate
         if (command is not null)
         {
             BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
@@ -56,22 +58,17 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
         switch (points)
         {
             case null:
-                {
-                    command = new RateCommand(ratingPercent: 100, extraPoints: 0);
-                    BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
-                    message = result.Message;
-                    break;
-                }
-            case 100:
-                {
-                    message = "Review successfully processed, but submission already has 100 points";
-                    break;
-                }
+            {
+                command = new RateCommand(ratingPercent: 100, extraPoints: 0);
+                BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+                message = result.Message;
+                break;
+            }
             default:
-                {
-                    message = $"Submission is already rated with {points} points. If you want to change it, please use /update command.";
-                    break;
-                }
+            {
+                message = UserCommandProcessingMessage.ReviewRatedSubmission(points.Value);
+                break;
+            }
         }
 
         await _eventNotifier.SendCommentToPullRequest(message);
@@ -99,7 +96,7 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
 
         if (command is not RateCommand)
         {
-            string message = $"Review proceeded, but submission is not yet rated and still will be presented in queue";
+            string message = UserCommandProcessingMessage.ReviewWithoutRate();
             await _eventNotifier.SendCommentToPullRequest(message);
             _logger.LogInformation("Notify: " + message);
         }
@@ -117,10 +114,7 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
         var submission = await ChangeSubmissionState(state, prDescriptor);
 
         if (isMerged && submission.Points is null)
-        {
-            string message = $"Warning: pull request was merged, but submission {submission.Code} is not yet rated.";
-            await _eventNotifier.SendCommentToPullRequest(message);
-        }
+            await _eventNotifier.SendCommentToPullRequest(UserCommandProcessingMessage.MergePullRequestWithoutRate(submission.Code));
     }
 
     private async Task<Submission> ChangeSubmissionState(SubmissionState state, GithubPullRequestDescriptor githubPullRequestDescriptor)

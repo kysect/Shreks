@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Commands.Commands;
 
-[Verb("/rate", aliases: new []{"/assess"})]
+[Verb("/rate", aliases: new []{ "/assess" })]
 public class RateCommand : IShreksCommand
 {
     public RateCommand(double ratingPercent, double? extraPoints)
@@ -41,6 +41,6 @@ public class RateCommand : IShreksCommand
 
     public string ToLogLine()
     {
-        return $"RatingPercent: {{rateCommand.RatingPercent}}, ExtraPoints: {{rateCommand.ExtraPoints}}";
+        return $"RatingPercent: {RatingPercent}, ExtraPoints: {ExtraPoints}";
     }
 }

@@ -3,7 +3,9 @@ using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
+using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Extensions;
+using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -12,6 +14,7 @@ using Kysect.Shreks.Application.GithubWorkflow.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
+using Kysect.Shreks.Common.Resources;
 
 namespace Kysect.Shreks.Application.GithubWorkflow;
 
@@ -52,7 +55,8 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
 
         if (result.IsCreated)
         {
-            string message = $"Submission {result.Submission.Code} ({result.Submission.SubmissionDate}) was created.";
+            SubmissionRateDto submissionRateDto = SubmissionRateDtoFactory.CreateFromSubmission(result.Submission);
+            string message = UserCommandProcessingMessage.SubmissionCreated(submissionRateDto.ToPullRequestString());
             await eventNotifier.SendCommentToPullRequest(message);
         }
         else

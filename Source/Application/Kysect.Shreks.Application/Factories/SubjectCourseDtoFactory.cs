@@ -19,7 +19,7 @@ public class SubjectCourseDtoFactory
                     string githubValue = $"Repo: {githubSubjectCourseAssociation.GithubOrganizationName}, Template: {githubSubjectCourseAssociation.TemplateRepositoryName}";
                     associations.Add(new SubjectCourseAssociationDto(nameof(GithubSubjectCourseAssociation), githubValue));
                     break;
-                    
+
                 case GoogleTableSubjectCourseAssociation googleTableSubjectCourseAssociation:
                     string googleValue = $"SpreadsheetId: {googleTableSubjectCourseAssociation.SpreadsheetId}";
                     associations.Add(new SubjectCourseAssociationDto(nameof(GoogleTableSubjectCourseAssociation), googleValue));

@@ -32,10 +32,7 @@ public class GithubSubmissionService : IGithubSubmissionService
             .FirstOrDefaultAsync();
 
         if (submission is null)
-        {
-            var message = $"No submission in pr {pullRequestDescriptor.Payload}";
-            throw new EntityNotFoundException(message);
-        }
+            throw EntityNotFoundException.NoSubmissionInPullRequest(pullRequestDescriptor.Payload);
 
         return submission;
     }
@@ -48,15 +45,12 @@ public class GithubSubmissionService : IGithubSubmissionService
 
         if (assignment is null)
         {
-            var branchName = pullRequestDescriptor.BranchName;
             string assignments = subjectCourse
                 .Assignments
                 .OrderBy(a => a.Order)
                 .ToSingleString(a => a.ShortName);
 
-            var message = $"Assignment with branch name '{branchName}' for subject course '{subjectCourse.Title}' was not found." +
-                          $"\nEnsure that branch name is correct. Available assignments: {assignments}";
-            throw new EntityNotFoundException(message);
+            throw EntityNotFoundException.AssignmentWasNotFound(pullRequestDescriptor.BranchName, subjectCourse.Title, assignments);
         }
 
         return assignment;
@@ -64,7 +58,7 @@ public class GithubSubmissionService : IGithubSubmissionService
 
     public async Task<Submission> GetCurrentUnratedSubmissionByPrNumber(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
     {
-        var submission = await _context.SubmissionAssociations
+        Submission? submission = await _context.SubmissionAssociations
             .OfType<GithubSubmissionAssociation>()
             .Where(a =>
                 a.Organization == pullRequestDescriptor.Organization
@@ -76,9 +70,7 @@ public class GithubSubmissionService : IGithubSubmissionService
             .FirstOrDefaultAsync(cancellationToken);
 
         if (submission is null)
-        {
-            throw new EntityNotFoundException($"No unrated submission in pr {pullRequestDescriptor.Payload}");
-        }
+            throw EntityNotFoundException.NoUnratedSubmissionInPullRequest(pullRequestDescriptor.Payload);
 
         return submission;
     }

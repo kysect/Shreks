@@ -15,9 +15,14 @@ public static class PermissionValidator
         if (!IsRepositoryOwner(userId, submission)
             && !IsRepositoryMentor(userId, submission))
         {
-            const string message = "User is not authorized to activate this submission";
-            throw new UnauthorizedException(message);
+            throw UnauthorizedException.DoesNotHavePermissionForActivateSubmission();
         }
+    }
+
+    public static void EnsureMentorAccess(Guid userId, Submission submission)
+    {
+        if (!IsRepositoryMentor(userId, submission))
+            throw UnauthorizedException.DoesNotHavePermissionForChangeSubmission();
     }
 
     public static bool IsRepositoryOwner(Guid userId, Submission submission)
@@ -39,7 +44,7 @@ public static class PermissionValidator
             .Mentors.Any(x => x.UserId.Equals(userId));
     }
 
-    public static async Task<Boolean> IsOrganizationMentor(IShreksDatabaseContext context, Guid userId, string organizationName)
+    public static async Task<bool> IsOrganizationMentor(IShreksDatabaseContext context, Guid userId, string organizationName)
     {
         Mentor? mentor = await context.SubjectCourseAssociations
             .WithSpecification(new FindMentorByUsernameAndOrganization(userId, organizationName))
