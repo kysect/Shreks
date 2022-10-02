@@ -27,7 +27,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
         _pullRequestDescriptor = pullRequestDescriptor;
         _context = context;
         _submissionService = submissionService;
-        _githubCommandSubmissionFactory = new GithubCommandSubmissionFactory(githubSubmissionFactory, context, pullRequestDescriptor);
+        _githubCommandSubmissionFactory = new GithubCommandSubmissionFactory(githubSubmissionFactory, pullRequestDescriptor);
         _githubSubmissionService = new GithubSubmissionService(_context);
     }
 
