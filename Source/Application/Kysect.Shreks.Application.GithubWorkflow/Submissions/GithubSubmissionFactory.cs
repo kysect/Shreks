@@ -114,7 +114,7 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
         return assignment.Id;
     }
 
-    public async Task<GithubSubmission> CreateGithubSubmissionAsync(
+    private async Task<GithubSubmission> CreateGithubSubmissionAsync(
         Guid userId,
         Guid assignmentId,
         GithubPullRequestDescriptor pullRequestDescriptor,
