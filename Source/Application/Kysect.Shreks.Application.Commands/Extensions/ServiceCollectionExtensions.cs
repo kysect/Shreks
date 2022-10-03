@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddApplicationCommands(this IServiceCollection services)
     {
         services.AddSingleton<IShreksCommandParser, ShreksCommandParser>();
-        
+
         return services;
     }
 }

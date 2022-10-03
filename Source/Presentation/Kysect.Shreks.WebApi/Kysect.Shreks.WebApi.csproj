@@ -25,22 +25,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
-      <ProjectReference Include="..\Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
-      <ProjectReference Include="..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
-      <ProjectReference Include="..\Application\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
-      <ProjectReference Include="..\Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
-      <ProjectReference Include="..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj" />
-      <ProjectReference Include="..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
-      <ProjectReference Include="..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj" />
-      <ProjectReference Include="..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />
-      <ProjectReference Include="..\Presentation\Kysect.Shreks.Controllers\Kysect.Shreks.Controllers.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Remove="Application.db-shm" />
       <None Remove="Application.db" />
       <None Remove="shreks-identity.db-shm" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
+      <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Github\Kysect.Shreks.Integration.Github.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj" />
+      <ProjectReference Include="..\Kysect.Shreks.Controllers\Kysect.Shreks.Controllers.csproj" />
     </ItemGroup>
 
 </Project>
