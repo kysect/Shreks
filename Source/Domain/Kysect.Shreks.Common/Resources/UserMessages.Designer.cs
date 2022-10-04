@@ -280,7 +280,7 @@ namespace Kysect.Shreks.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User is not authorized to activate this submission..
+        ///   Looks up a localized string similar to User is not authorized to do this action..
         /// </summary>
         internal static string UnauthorizedExceptionMessage {
             get {

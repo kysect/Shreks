@@ -42,10 +42,10 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         _githubSubmissionStateMachineFactory = new GithubSubmissionStateMachineFactory(_context, _shreksCommandProcessor);
     }
 
-    public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReopen(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
     {
         IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
-        await githubSubmissionStateMachine.ProcessPullRequestReopen(isMerged, prDescriptor);
+        await githubSubmissionStateMachine.ProcessPullRequestReopen(prDescriptor);
     }
 
     public async Task ProcessPullRequestUpdate(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier, CancellationToken cancellationToken)
