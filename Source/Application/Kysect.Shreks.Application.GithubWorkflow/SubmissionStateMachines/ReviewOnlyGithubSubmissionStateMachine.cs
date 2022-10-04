@@ -99,10 +99,9 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
         }
     }
 
-    public async Task ProcessPullRequestReopen(bool? isMerged, GithubPullRequestDescriptor prDescriptor, User sender)
+    public async Task ProcessPullRequestReopen(GithubPullRequestDescriptor prDescriptor, User sender)
     {
-        if (isMerged.HasValue && isMerged == false)
-            await ChangeSubmissionState(SubmissionState.Active, prDescriptor, sender);
+        await ChangeSubmissionState(SubmissionState.Active, prDescriptor, sender);
     }
 
     public async Task ProcessPullRequestClosed(bool isMerged, GithubPullRequestDescriptor prDescriptor, User sender)

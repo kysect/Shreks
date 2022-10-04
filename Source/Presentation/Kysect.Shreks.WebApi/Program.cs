@@ -14,6 +14,7 @@ using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Configuration;
 using Kysect.Shreks.DataAccess.Extensions;
+using Kysect.Shreks.DeveloperEnvironment;
 using Kysect.Shreks.Identity.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
@@ -133,7 +134,8 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
                 o.ConfigureEntityGenerator<SubjectCourse>(o => o.Count = 1);
                 o.ConfigureEntityGenerator<SubjectCourseAssociation>(o => o.Count = 0);
             })
-            .AddDatabaseSeeders();
+            .AddDatabaseSeeders()
+            .AddDeveloperEnvironmentSeeding();
     }
 }
 

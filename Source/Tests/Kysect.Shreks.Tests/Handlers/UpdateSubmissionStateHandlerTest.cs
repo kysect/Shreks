@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.TableManagement;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
-using Kysect.Shreks.Integration.Google;
 using Kysect.Shreks.Tests.Application;
 using Microsoft.EntityFrameworkCore;
 using Xunit;

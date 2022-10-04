@@ -64,8 +64,7 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
                     break;
 
                 case PullRequestActionValue.Reopened:
-                    bool isMerged = pullRequestEvent.PullRequest.Merged ?? false;
-                    await _processor.ProcessPullRequestReopen(isMerged, githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
+                    await _processor.ProcessPullRequestReopen(githubPullRequestDescriptor, repositoryLogger, pullRequestCommitEventNotifier);
                     break;
 
                 case PullRequestActionValue.Closed:

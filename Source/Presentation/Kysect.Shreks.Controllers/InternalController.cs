@@ -1,10 +1,9 @@
-﻿using Kysect.Shreks.Identity.Entities;
+﻿using Kysect.Shreks.DeveloperEnvironment;
+using Kysect.Shreks.Identity.Entities;
 using Kysect.Shreks.Integration.Github.Helpers;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using static Kysect.Shreks.Application.Abstractions.Internal.SeedTestData;
 
 namespace Kysect.Shreks.Controllers;
 
@@ -13,19 +12,19 @@ namespace Kysect.Shreks.Controllers;
 [Authorize(Roles = ShreksIdentityRole.AdminRoleName)]
 public class InternalController : ControllerBase
 {
-    private readonly IMediator _mediator;
     private readonly TestEnvironmentConfiguration _testEnvironmentConfiguration;
+    private readonly DeveloperEnvironmentSeeder _developerEnvironmentSeeder;
 
-    public InternalController(IMediator mediator, TestEnvironmentConfiguration testEnvironmentConfiguration)
+    public InternalController(DeveloperEnvironmentSeeder developerEnvironmentSeeder, TestEnvironmentConfiguration testEnvironmentConfiguration)
     {
-        _mediator = mediator;
         _testEnvironmentConfiguration = testEnvironmentConfiguration;
+        _developerEnvironmentSeeder = developerEnvironmentSeeder;
     }
 
     [HttpPost("seed-test-data")]
     public async Task<IActionResult> SeedTestData([FromQuery] string environment)
     {
-        var command = new Query(
+        var command = new DeveloperEnvironmentSeedingRequest(
             environment,
             _testEnvironmentConfiguration.Organization,
             _testEnvironmentConfiguration.TemplateRepository,
@@ -33,13 +32,13 @@ public class InternalController : ControllerBase
 
         try
         {
-            await _mediator.Send(command);
+            await _developerEnvironmentSeeder.Handle(command, CancellationToken.None);
         }
         catch (UserNotAcknowledgedEnvironmentException e)
         {
-            return StatusCode((int) HttpStatusCode.BadRequest, new ProblemDetails
+            return StatusCode((int)HttpStatusCode.BadRequest, new ProblemDetails
             {
-                Status = (int) HttpStatusCode.BadRequest,
+                Status = (int)HttpStatusCode.BadRequest,
                 Title = e.Message,
                 Detail = "You must put string 'Testing' into environment field if you have 100% ensured that it is not a production environment"
             });

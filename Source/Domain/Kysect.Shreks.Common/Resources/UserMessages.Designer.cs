@@ -214,7 +214,8 @@ namespace Kysect.Shreks.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submission created.\n{0}.
+        ///   Looks up a localized string similar to Submission created.
+        ///{0}.
         /// </summary>
         internal static string SubmissionCreated {
             get {
@@ -259,7 +260,8 @@ namespace Kysect.Shreks.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submission rated.\n{0}.
+        ///   Looks up a localized string similar to Submission rated.
+        ///{0}.
         /// </summary>
         internal static string SubmissionRated {
             get {
@@ -268,7 +270,8 @@ namespace Kysect.Shreks.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Submission updated.\n{0}.
+        ///   Looks up a localized string similar to Submission updated.
+        ///{0}.
         /// </summary>
         internal static string SubmissionUpdated {
             get {
@@ -277,7 +280,7 @@ namespace Kysect.Shreks.Common.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User is not authorized to activate this submission..
+        ///   Looks up a localized string similar to User is not authorized to do this action..
         /// </summary>
         internal static string UnauthorizedExceptionMessage {
             get {

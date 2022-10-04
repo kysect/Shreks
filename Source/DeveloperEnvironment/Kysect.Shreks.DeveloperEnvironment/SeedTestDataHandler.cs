@@ -4,12 +4,10 @@ using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Seeding.EntityGenerators;
-using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Internal.SeedTestData;
 
-namespace Kysect.Shreks.Application.Handlers.Internal;
+namespace Kysect.Shreks.DeveloperEnvironment;
 
-public class SeedTestDataHandler : IRequestHandler<Query>
+public class DeveloperEnvironmentSeeder
 {
     private const string ExceptedEnvironment = "Testing";
 
@@ -17,7 +15,7 @@ public class SeedTestDataHandler : IRequestHandler<Query>
     private readonly IEntityGenerator<User> _userGenerator;
     private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
 
-    public SeedTestDataHandler(
+    public DeveloperEnvironmentSeeder(
         IShreksDatabaseContext context,
         IEntityGenerator<User> userGenerator,
         IEntityGenerator<SubjectCourse> subjectCourseGenerator)
@@ -27,18 +25,16 @@ public class SeedTestDataHandler : IRequestHandler<Query>
         _subjectCourseGenerator = subjectCourseGenerator;
     }
 
-    public async Task<Unit> Handle(Query request, CancellationToken cancellationToken = default)
+    public async Task Handle(DeveloperEnvironmentSeedingRequest request, CancellationToken cancellationToken = default)
     {
         EnsureUserAcknowledgedEnvironment(request);
         AddUsers(request);
         AddGithubUserAssociations(request);
 
         await _context.SaveChangesAsync(cancellationToken);
-
-        return Unit.Value;
     }
 
-    private static void EnsureUserAcknowledgedEnvironment(Query request)
+    private static void EnsureUserAcknowledgedEnvironment(DeveloperEnvironmentSeedingRequest request)
     {
         if (!request.Environment.Equals(ExceptedEnvironment, StringComparison.OrdinalIgnoreCase))
         {
@@ -46,7 +42,7 @@ public class SeedTestDataHandler : IRequestHandler<Query>
         }
     }
 
-    private void AddGithubUserAssociations(Query request)
+    private void AddGithubUserAssociations(DeveloperEnvironmentSeedingRequest request)
     {
         SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[0];
         _context.SubjectCourses.Attach(subjectCourse);
@@ -54,12 +50,12 @@ public class SeedTestDataHandler : IRequestHandler<Query>
         _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
     }
 
-    private void AddUsers(Query request)
+    private void AddUsers(DeveloperEnvironmentSeedingRequest request)
     {
         IReadOnlyList<User> users = _userGenerator.GeneratedEntities;
         _context.Users.AttachRange(users);
 
-        for (var index = 0; index < request.Users.Count; index++)
+        for (int index = 0; index < request.Users.Count; index++)
         {
             User user = users[index];
             string login = request.Users[index];
