@@ -15,11 +15,15 @@ public class GithubSubmissionStateMachineFactory
 {
     private readonly IShreksDatabaseContext _context;
     private readonly SubmissionService _shreksCommandProcessor;
+    private readonly GithubSubmissionService _githubSubmissionService;
+    private readonly PermissionValidator _permissionValidator;
 
     public GithubSubmissionStateMachineFactory(IShreksDatabaseContext context, SubmissionService shreksCommandProcessor)
     {
         _context = context;
         _shreksCommandProcessor = shreksCommandProcessor;
+        _githubSubmissionService = new GithubSubmissionService(_context);
+        _permissionValidator = new PermissionValidator(_context);
     }
 
     public async Task<IGithubSubmissionStateMachine> Create(
@@ -34,10 +38,10 @@ public class GithubSubmissionStateMachineFactory
         {
             case null:
             case SubmissionStateWorkflowType.ReviewOnly:
-                return new ReviewOnlyGithubSubmissionStateMachine(_shreksCommandProcessor, commandProcessor, new GithubSubmissionService(_context), logger, eventNotifier);
+                return new ReviewOnlyGithubSubmissionStateMachine(_shreksCommandProcessor, commandProcessor, _githubSubmissionService, logger, eventNotifier);
 
             case SubmissionStateWorkflowType.ReviewWithDefense:
-                return new ReviewWithDefenseGithubSubmissionStateMachine(_shreksCommandProcessor, commandProcessor, logger, eventNotifier, new GithubSubmissionService(_context), new PermissionValidator(_context));
+                return new ReviewWithDefenseGithubSubmissionStateMachine(_shreksCommandProcessor, commandProcessor, logger, eventNotifier, _githubSubmissionService, _permissionValidator);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(subjectCourse.WorkflowType));
