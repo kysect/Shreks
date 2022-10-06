@@ -33,11 +33,9 @@ public class PermissionValidator : IPermissionValidator
 
     public async Task<bool> IsOrganizationMentor(Guid senderId, string organizationName)
     {
-        Mentor? mentor = await _context.SubjectCourseAssociations
+        return await _context.SubjectCourseAssociations
             .WithSpecification(new FindMentorByUsernameAndOrganization(senderId, organizationName))
-            .FirstOrDefaultAsync();
-
-        return mentor is not null;
+            .AnyAsync();
     }
 
     public static void EnsureHasAccessToRepository(Guid userId, Submission submission)
