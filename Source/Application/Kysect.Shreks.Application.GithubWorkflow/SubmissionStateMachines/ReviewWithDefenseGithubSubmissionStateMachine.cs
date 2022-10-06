@@ -10,38 +10,40 @@ using Kysect.Shreks.Common.Resources;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
-using Kysect.Shreks.DataAccess.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 
 public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionStateMachine
 {
-    private readonly IShreksDatabaseContext _context;
     private readonly GithubSubmissionService _githubSubmissionService;
     private readonly SubmissionService _shreksCommandProcessor;
     private readonly ShreksCommandProcessor _commandProcessor;
     private readonly ILogger _logger;
     private readonly IPullRequestEventNotifier _eventNotifier;
+    private readonly IPermissionValidator _permissionValidator;
 
     public ReviewWithDefenseGithubSubmissionStateMachine(
-        IShreksDatabaseContext context,
         SubmissionService shreksCommandProcessor,
         ShreksCommandProcessor commandProcessor,
         ILogger logger,
-        IPullRequestEventNotifier eventNotifier)
+        IPullRequestEventNotifier eventNotifier,
+        GithubSubmissionService githubSubmissionService,
+        IPermissionValidator permissionValidator)
     {
-        _githubSubmissionService = new GithubSubmissionService(context);
-        _context = context;
+        _githubSubmissionService = githubSubmissionService;
         _shreksCommandProcessor = shreksCommandProcessor;
         _commandProcessor = commandProcessor;
         _logger = logger;
         _eventNotifier = eventNotifier;
+        _permissionValidator = permissionValidator;
     }
 
-    public async Task ProcessPullRequestReviewApprove(IShreksCommand? command, GithubPullRequestDescriptor prDescriptor)
+    public async Task ProcessPullRequestReviewApprove(IShreksCommand? command, GithubPullRequestDescriptor prDescriptor, User sender)
     {
-        await ChangeSubmissionState(SubmissionState.Reviewed, prDescriptor);
+        await _permissionValidator.EnsureUserIsOrganizationMentor(sender.Id, prDescriptor.Organization);
+
+        await ChangeSubmissionState(SubmissionState.Reviewed, prDescriptor, sender);
 
         if (command is not null)
         {
@@ -83,17 +85,16 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
         }
     }
 
-    public async Task ProcessPullRequestReopen(GithubPullRequestDescriptor prDescriptor)
+    public async Task ProcessPullRequestReopen(GithubPullRequestDescriptor prDescriptor, User sender)
     {
-        await ChangeSubmissionState(SubmissionState.Active, prDescriptor);
+        await ChangeSubmissionState(SubmissionState.Active, prDescriptor, sender);
     }
 
-    public async Task ProcessPullRequestClosed(bool isMerged, GithubPullRequestDescriptor prDescriptor)
+    public async Task ProcessPullRequestClosed(bool isMerged, GithubPullRequestDescriptor prDescriptor, User sender)
     {
         Submission submission;
 
-        User sender = await _context.UserAssociations.GetUserByGithubUsername(prDescriptor.Sender);
-        bool isOrganizationMentor = await PermissionValidator.IsOrganizationMentor(_context, sender.Id, prDescriptor.Organization);
+        bool isOrganizationMentor = await _permissionValidator.IsOrganizationMentor(sender.Id, prDescriptor.Organization);
 
         string? message = null;
         if (isOrganizationMentor)
@@ -115,14 +116,14 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
             }
             else
             {
-                submission = await ChangeSubmissionState(SubmissionState.Inactive, prDescriptor);
+                submission = await ChangeSubmissionState(SubmissionState.Inactive, prDescriptor, sender);
                 message = UserCommandProcessingMessage.ClosePullRequestWithUnratedSubmission(submission.Code);
             }
         }
         else
         {
             SubmissionState state = isMerged ? SubmissionState.Completed : SubmissionState.Inactive;
-            submission = await ChangeSubmissionState(state, prDescriptor);
+            submission = await ChangeSubmissionState(state, prDescriptor, sender);
 
             if (isMerged && submission.Points is null)
             {
@@ -135,12 +136,10 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
             await _eventNotifier.SendCommentToPullRequest(message);
     }
 
-    private async Task<Submission> ChangeSubmissionState(SubmissionState state, GithubPullRequestDescriptor githubPullRequestDescriptor)
+    private async Task<Submission> ChangeSubmissionState(SubmissionState state, GithubPullRequestDescriptor githubPullRequestDescriptor, User sender)
     {
-        User user = await _context.UserAssociations.GetUserByGithubUsername(githubPullRequestDescriptor.Sender);
-
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
-        Submission completedSubmission = await _shreksCommandProcessor.UpdateSubmissionState(submission.Id, user.Id, state, CancellationToken.None);
+        Submission completedSubmission = await _shreksCommandProcessor.UpdateSubmissionState(submission.Id, sender.Id, state, CancellationToken.None);
 
         await _eventNotifier.NotifySubmissionUpdate(completedSubmission, _logger);
         return completedSubmission;
