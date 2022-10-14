@@ -38,7 +38,9 @@ public abstract partial class Submission : IEntity<Guid>
     public int Code { get; protected init; }
 
     public SpbDateTime SubmissionDate { get; set; }
-    public DateOnly SubmissionDateOnly => new DateOnly(SubmissionDate.Value.Year, SubmissionDate.Value.Month, SubmissionDate.Value.Day);
+
+    public DateOnly SubmissionDateOnly
+        => new DateOnly(SubmissionDate.Value.Year, SubmissionDate.Value.Month, SubmissionDate.Value.Day);
 
     public virtual Student Student { get; protected init; }
 
@@ -62,7 +64,10 @@ public abstract partial class Submission : IEntity<Guid>
 
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
 
-    public override string ToString() => $"{Code} ({Id})";
+    public bool IsCompromised { get; set; }
+
+    public override string ToString()
+        => $"{Code} ({Id})";
 
     public void Rate(Fraction? rating, Points? extraPoints)
     {

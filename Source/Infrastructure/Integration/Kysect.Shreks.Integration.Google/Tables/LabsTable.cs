@@ -7,6 +7,7 @@ using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
+using System.Drawing;
 using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
@@ -93,10 +94,15 @@ public class LabsTable : RowTable<CoursePointsDto>
         if (assignmentPoints is null)
             return EmptyAssignmentPointsCell;
 
-        return HStack
+        IComponent stack = HStack
         (
             Label(assignmentPoints.Points, formatProvider).WithLeadingMediumBorder(),
             Label(assignmentPoints.Date, formatProvider).WithTrailingMediumBorder()
         );
+
+        if (assignmentPoints.IsCompromised)
+            stack = stack.FilledWith(Color.Red);
+
+        return stack;
     }
 }

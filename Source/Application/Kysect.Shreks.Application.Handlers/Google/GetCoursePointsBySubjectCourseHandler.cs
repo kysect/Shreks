@@ -22,7 +22,10 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
     private readonly IMapper _mapper;
     private readonly ILogger<GetCoursePointsBySubjectCourseHandler> _logger;
 
-    public GetCoursePointsBySubjectCourseHandler(IShreksDatabaseContext context, IMapper mapper, ILogger<GetCoursePointsBySubjectCourseHandler> logger)
+    public GetCoursePointsBySubjectCourseHandler(
+        IShreksDatabaseContext context,
+        IMapper mapper,
+        ILogger<GetCoursePointsBySubjectCourseHandler> logger)
     {
         _context = context;
         _mapper = mapper;
@@ -75,7 +78,9 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         return new StudentPointsDto(studentDto, assignmentPoints);
     }
 
-    private AssignmentPointsDto? FindAssignmentPoints(GroupAssignment groupAssignment, IEnumerable<Submission> submissions)
+    private AssignmentPointsDto? FindAssignmentPoints(
+        GroupAssignment groupAssignment,
+        IEnumerable<Submission> submissions)
     {
         var deadline = groupAssignment.Deadline;
 
@@ -87,6 +92,10 @@ public class GetCoursePointsBySubjectCourseHandler : IRequestHandler<Query, Resp
         if (points is null)
             return null;
 
-        return new AssignmentPointsDto(groupAssignment.AssignmentId, submission.SubmissionDateOnly, points.Value.Value);
+        return new AssignmentPointsDto(
+            groupAssignment.AssignmentId,
+            submission.SubmissionDateOnly,
+            points.Value.Value,
+            submission.IsCompromised);
     }
 }
