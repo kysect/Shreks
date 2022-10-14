@@ -9,4 +9,5 @@ public interface ISubmissionService
     Task<Submission> UpdateSubmissionDate(Guid submissionId, Guid userId, DateOnly newDate, CancellationToken cancellationToken);
     Task<Submission> UpdateSubmissionPoints(Guid submissionId, Guid userId, double? newRating, double? extraPoints, CancellationToken cancellationToken);
     Task<Submission> GetSubmissionByCodeAsync(int code, Guid studentId, Guid assignmentId, CancellationToken cancellationToken);
+    Task CompromiseSubmissionAsync(Guid submissionId, Guid userId, CancellationToken cancellationToken);
 }

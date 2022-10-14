@@ -103,6 +103,13 @@ public class ShreksCommandProcessor
                 return BaseShreksCommandResult.Success(UserCommandProcessingMessage.SubmissionMarkedAsReviewed());
             }
 
+            case CompromiseSubmissionCommand compromiseSubmissionCommand:
+            {
+                SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
+                await compromiseSubmissionCommand.ExecuteAsync(context, _logger, cancellationToken);
+                return BaseShreksCommandResult.Success(UserCommandProcessingMessage.SubmissionMarkedAsReviewed());
+            }
+
             default:
                 throw new ArgumentOutOfRangeException(nameof(command));
         }
