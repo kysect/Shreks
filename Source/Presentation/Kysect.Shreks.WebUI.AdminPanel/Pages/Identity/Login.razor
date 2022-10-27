@@ -1,0 +1,70 @@
+@page "/adminpanel/identity/login"
+@using Kysect.Shreks.WebUI.AdminPanel.Identity
+@inject IIdentityService IdentityService
+@inject NavigationManager NavigationManager
+
+<div>
+    <Form Class="login-form" Padding="Padding.Is5.FromTop">
+        <Field>
+            <TextEdit Placeholder="Username" @bind-Text="_username"/>
+        </Field>
+
+        <Field>
+            <TextEdit Placeholder="Password" Role="@TextRole.Password" @bind-Text="_password"/>
+        </Field>
+
+        <Div Flex="Flex.JustifyContent.Center">
+            <Button Color="Color.Primary" @onclick="OnLoginButtonClickedAsync">Login</Button>
+        </Div>
+    </Form>
+
+    <Modal @ref="_modal" Closing="@OnModalClosing">
+        <ModalContent Centered>
+            <ModalHeader>
+                Login error occured
+            </ModalHeader>
+            <ModalBody>
+                @_exception?.Message
+                @_exception?.StackTrace
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@CloseModal">Close</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+</div>
+
+@code {
+    private string _username;
+    private string _password;
+
+    private Modal _modal;
+
+    private Exception? _exception;
+
+    private async Task OnLoginButtonClickedAsync()
+    {
+        try
+        {
+            await IdentityService.LoginAsync(_username, _password, default);
+            NavigationManager.NavigateTo("/", true);
+        }
+        catch (Exception e)
+        {
+            _exception = e;
+            await _modal.Show();
+        }
+    }
+
+    private Task OnModalClosing(ModalClosingEventArgs e)
+    {
+        _exception = null;
+        return Task.CompletedTask;
+    }
+
+    private Task CloseModal()
+    {
+        return _modal.Hide();
+    }
+
+}

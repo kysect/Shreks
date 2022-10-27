@@ -1,0 +1,12 @@
+@page "/logout"
+@using Kysect.Shreks.WebUI.AdminPanel.Identity
+@inject IIdentityManager IdentityManager
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await IdentityManager.RemoveIdentityAsync(default);
+        NavigationManager.NavigateTo("/", true);
+    }
+}

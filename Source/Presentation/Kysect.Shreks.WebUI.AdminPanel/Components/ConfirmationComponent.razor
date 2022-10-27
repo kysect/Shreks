@@ -1,0 +1,36 @@
+<Modal @ref="_modal">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>
+                Confirm @(ActionName ?? string.Empty)
+            </ModalTitle>
+            <CloseButton/>
+        </ModalHeader>
+
+        <ModalFooter Flex="Flex.AlignContent.Start">
+            <Button Color="Color.Primary" Clicked="Execute">YES</Button>
+            <Button Color="Color.Secondary" Clicked="Dismiss">No</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+
+    [Parameter]
+    public string? ActionName { get; set; }
+
+    [Parameter]
+    public Func<Task>? Action { get; set; }
+
+    public Task Show()
+        => _modal?.Show() ?? Task.CompletedTask;
+
+    private Modal? _modal;
+
+    private Task Execute()
+        => Action?.Invoke() ?? Task.CompletedTask;
+
+    private Task Dismiss()
+        => _modal?.Hide() ?? Task.CompletedTask;
+
+}

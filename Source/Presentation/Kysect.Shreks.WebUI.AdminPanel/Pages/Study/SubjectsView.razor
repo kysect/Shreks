@@ -1,0 +1,42 @@
+@page "/adminpanel/subjects"
+@using Kysect.Shreks.WebApi.Sdk
+@inject SubjectClient SubjectClient
+
+@if (_subjects is not null)
+{
+    <Heading Size="HeadingSize.Is2">
+        Subjects
+    </Heading>
+    
+    <Div>
+        @foreach (var subject in _subjects.OrderBy(x => x.Title.Length))
+        {
+            <Card Margin="Margin.Is2" Width="Width.Max100">
+                <CardBody>
+                    <CardTitle>
+                        <Heading>
+                            @subject.Title
+                        </Heading>
+                    </CardTitle>
+
+                    <Div Display="Display.Flex" Flex="Flex.JustifyContent.End">
+                        <Anchor To="@($"adminpanel/subjects/{subject.Id}")">
+                            View
+                        </Anchor>
+                    </Div>
+                </CardBody>
+            </Card>
+        }
+    </Div>
+}
+
+
+@code {
+    private ICollection<SubjectDto>? _subjects;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _subjects = await SubjectClient.SubjectGetAsync();
+    }
+
+}

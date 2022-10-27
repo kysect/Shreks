@@ -1,0 +1,52 @@
+@using Kysect.Shreks.WebApi.Sdk
+
+@if (Associations is not null)
+{
+    <Div>
+        @foreach (var association in Associations)
+        {
+            <Text>
+                <Heading Size="HeadingSize.Is6" Display="Display.Inline">
+                    @FormatAssociationType(association.Type)
+                </Heading>
+                :
+                @{
+                    switch (association.Type)
+                    {
+                        case "GithubSubjectCourseAssociation":
+                            <Anchor To="@($"https://github.com/{association.Value}")">
+                                Organization
+                            </Anchor>
+                            break;
+                        case "GoogleTableSubjectCourseAssociation":
+                            <Anchor To="@($"https://docs.google.com/spreadsheets/d/{association.Value}")">
+                                Table
+                            </Anchor>
+                            break;
+                        default:
+                            @association.Value
+                            break;
+                    }
+                }
+                <br/>
+            </Text>
+        }
+    </Div>
+}
+
+@code {
+
+    [Parameter]
+    public ICollection<SubjectCourseAssociationDto>? Associations { get; set; }
+
+    private string FormatAssociationType(string type)
+    {
+        return type switch
+        {
+            "GithubSubjectCourseAssociation" => "Github",
+            "GoogleTableSubjectCourseAssociation" => "Google",
+            _ => type,
+            };
+    }
+
+}

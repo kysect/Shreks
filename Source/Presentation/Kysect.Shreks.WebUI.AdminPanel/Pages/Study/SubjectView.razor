@@ -1,0 +1,33 @@
+@page "/adminpanel/subjects/{subjectId:guid}"
+@using Kysect.Shreks.WebApi.Sdk
+@inject SubjectClient SubjectClient
+
+<Div Display="Display.Flex" Flex="Flex.Column.AlignContent.Start">
+    @if (_courses is not null)
+    {
+        <Heading Size="HeadingSize.Is1">
+            Courses
+        </Heading>
+
+        <CardDeck>
+            @foreach (var course in _courses)
+            {
+                <SubjectCourseView SubjectCourse="course"/>
+            }
+        </CardDeck>
+    }
+</Div>
+
+@code {
+
+    [Parameter]
+    public Guid SubjectId { get; set; }
+
+    private ICollection<SubjectCourseDto>? _courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _courses = await SubjectClient.CoursesAsync(SubjectId);
+    }
+
+}
