@@ -31,7 +31,7 @@ public class UserController : ControllerBase
 
         return Ok();
     }
-    
+
     [HttpGet]
     [ProducesResponseType(200)]
     [ProducesResponseType(204)]

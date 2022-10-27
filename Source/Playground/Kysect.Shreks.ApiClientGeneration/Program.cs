@@ -15,7 +15,7 @@ var settings = new CSharpClientGeneratorSettings
     ClassName = "{controller}Client",
     CSharpGeneratorSettings =
     {
-        Namespace = "Shreks.ApiClient",
+        Namespace = "Kysect.Shreks.WebApi.Sdk",
         TimeSpanType = "System.TimeSpan",
         DateType = "System.DateOnly",
     },

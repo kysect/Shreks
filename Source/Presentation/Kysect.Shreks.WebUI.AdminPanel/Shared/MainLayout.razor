@@ -1,0 +1,44 @@
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<div>
+    <Layout>
+        @if (!IsIdentity)
+        {
+            <LayoutHeader>
+                <NavMenu/>
+            </LayoutHeader>
+        }
+
+        <LayoutContent>
+            <Div Margin="Margin.Is4">
+                @Body
+            </Div>
+        </LayoutContent>
+    </Layout>
+</div>
+
+@code{
+    public string RouteName = "";
+    public bool IsIdentity;
+
+    private void HandleLocationChanged(object? sender, LocationChangedEventArgs args)
+    {
+        RouteName = args.Location;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        RouteName = NavigationManager.Uri;
+        IsIdentity = RouteName.Contains("identity");
+        NavigationManager.LocationChanged += HandleLocationChanged;
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
+
+}

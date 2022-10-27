@@ -7,7 +7,7 @@ public class SubmissionStateEvaluator : ISubmissionEvaluator
 {
     private const double ActiveSubmissionPriority = 2;
     private const double ReviewedSubmissionPriority = 1;
-    
+
     public SubmissionStateEvaluator(SortingOrder sortingOrder)
     {
         SortingOrder = sortingOrder;

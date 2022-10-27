@@ -1,0 +1,96 @@
+@using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.Components
+@using Kysect.Shreks.WebUI.AdminPanel.Components.SubjectCourse
+@inject SubjectCourseClient Client
+
+<Card Margin="Margin.Is2">
+    <CardBody>
+        <CardTitle>
+            <Bar Padding="Padding.Is0"
+                 Mode="BarMode.Horizontal"
+                 Breakpoint="Breakpoint.Desktop"
+                 Background="Background.Transparent">
+
+                <BarBrand>
+                    <Heading Size="HeadingSize.Is2">
+                        @SubjectCourse?.Title
+                    </Heading>
+                </BarBrand>
+
+                <BarMenu>
+                    <BarEnd>
+                        <BarItem Margin="Margin.Is2.FromEnd">
+                            <ForceSyncGoogle SubjectCourseId="SubjectCourse?.Id"/>
+                        </BarItem>
+
+                        @{
+                            var organizationName = GithubOrganizationName;
+                        }
+
+                        @if (organizationName is not null)
+                        {
+                            <BarItem>
+                                <ForceSyncGitHubMentors OrganizationName="@organizationName"/>
+                            </BarItem>
+                        }
+
+                    </BarEnd>
+                </BarMenu>
+            </Bar>
+
+
+        </CardTitle>
+
+        @if (SubjectCourse is not null)
+        {
+            <AssociationsComponent Associations="SubjectCourse.Associations"/>
+        }
+
+        <Divider/>
+
+        <Tabs SelectedTab="@_selectedTab">
+            <Items>
+                <Tab Clicked="() => OnSelectedTabChanged(nameof(_assignments))" Name="@nameof(_assignments)">
+                    Assignments
+                </Tab>
+            </Items>
+
+            <Content>
+                <TabPanel Name="@nameof(_assignments)">
+                    <AssignmentsComponent Assignments="_assignments"/>
+                </TabPanel>
+            </Content>
+        </Tabs>
+
+    </CardBody>
+</Card>
+
+@code
+{
+
+    [Parameter]
+    public SubjectCourseDto? SubjectCourse { get; set; }
+
+    private ICollection<AssignmentDto>? _assignments;
+    private string? _selectedTab;
+
+    private string? GithubOrganizationName => SubjectCourse?
+        .Associations
+        .FirstOrDefault(x => x.Type is "GithubSubjectCourseAssociation")?
+        .Value;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (SubjectCourse is null)
+            return;
+
+        _assignments = await Client.AssignmentsAsync(SubjectCourse.Id);
+    }
+
+    private Task OnSelectedTabChanged(string arg)
+    {
+        _selectedTab = _selectedTab == arg ? null : arg;
+        return Task.CompletedTask;
+    }
+
+}

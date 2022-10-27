@@ -70,4 +70,13 @@ public class SubjectCourseController : ControllerBase
         AddFractionDeadlinePolicy.Response response = await _mediator.Send(command);
         return Ok();
     }
+
+    [HttpGet("{subjectCourseId}/assignments")]
+    public async Task<ActionResult<IReadOnlyCollection<AssignmentDto>>> GetAssignments(Guid subjectCourseId)
+    {
+        var query = new GetAssignmentsBySubjectCourse.Query(subjectCourseId);
+        GetAssignmentsBySubjectCourse.Response response = await _mediator.Send(query);
+
+        return Ok(response.Assignments);
+    }
 }

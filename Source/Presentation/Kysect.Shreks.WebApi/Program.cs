@@ -24,6 +24,7 @@ using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi.Extensions;
 using Kysect.Shreks.WebApi.Filters;
+using Kysect.Shreks.WebUI.AdminPanel.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -32,10 +33,13 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilogForAppLogs();
 
-var googleIntegrationConfiguration = builder.Configuration.GetSection(nameof(GoogleIntegrationConfiguration)).Get<GoogleIntegrationConfiguration>();
+var googleIntegrationConfiguration = builder.Configuration.GetSection(nameof(GoogleIntegrationConfiguration))
+    .Get<GoogleIntegrationConfiguration>();
 var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
-var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration)).Get<GithubIntegrationConfiguration>();
-var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration)).Get<TestEnvironmentConfiguration>();
+var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration))
+    .Get<GithubIntegrationConfiguration>();
+var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration))
+    .Get<TestEnvironmentConfiguration>();
 var postgresConfiguration = builder.Configuration.GetSection(nameof(PostgresConfiguration)).Get<PostgresConfiguration>();
 var dbNames = builder.Configuration.GetSection(nameof(DbNamesConfiguration)).Get<DbNamesConfiguration>();
 
@@ -74,11 +78,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             {
                 new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer",
-                    },
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer", },
                     Scheme = "oauth2",
                     Name = "Bearer",
                     In = ParameterLocation.Header,
@@ -99,7 +99,8 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .UseNpgsql(postgresConfiguration.ToConnectionString(dbNames.ApplicationDbName))
             .UseLazyLoadingProxies());
 
-    webApplicationBuilder.Services.AddIdentityConfiguration(webApplicationBuilder.Configuration.GetSection("Identity").GetSection("IdentityConfiguration"),
+    webApplicationBuilder.Services.AddIdentityConfiguration(
+        webApplicationBuilder.Configuration.GetSection("Identity").GetSection("IdentityConfiguration"),
         x => x.UseNpgsql(postgresConfiguration.ToConnectionString(dbNames.IdentityDbName)));
 
     if (!googleIntegrationConfiguration.EnableGoogleIntegration)
@@ -137,6 +138,19 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .AddDatabaseSeeders()
             .AddDeveloperEnvironmentSeeding();
     }
+
+    #region AdminPanelSetup
+
+    var url = webApplicationBuilder.Configuration
+        .GetSection("urls")
+        .Value
+        .Split(';')
+        .First(x => x.StartsWith("https", StringComparison.InvariantCultureIgnoreCase));
+
+    webApplicationBuilder.Services.AddRazorPages();
+    webApplicationBuilder.Services.AddAdminPanel(url);
+
+    #endregion
 }
 
 async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
@@ -148,8 +162,9 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     if (app.Environment.IsDevelopment())
     {
         //await app.Services.UseDatabaseSeeders();
+        app.UseWebAssemblyDebugging();
     }
-    
+
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseCors(o => o.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
@@ -157,17 +172,23 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     app
         .UseBlazorFrameworkFiles()
         .UseStaticFiles()
-        .UseRouting()
+        .UseRouting();
+
+    app.MapRazorPages();
+
+    app
         .UseAuthentication()
         .UseAuthorization();
+    
+    app.MapFallbackToFile("index.html");
 
     app.MapControllers();
     app.UseGithubIntegration(githubIntegrationConfiguration);
 
     using (var scope = app.Services.CreateScope())
     {
-       await SeedAdmins(scope.ServiceProvider, app.Configuration);
-       await scope.ServiceProvider.UseDatabaseContext();
+        await SeedAdmins(scope.ServiceProvider, app.Configuration);
+        await scope.ServiceProvider.UseDatabaseContext();
     }
 
     app.Run();

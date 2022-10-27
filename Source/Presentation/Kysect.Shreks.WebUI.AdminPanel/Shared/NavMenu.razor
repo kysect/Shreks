@@ -1,0 +1,44 @@
+@using Kysect.Shreks.WebUI.AdminPanel.Identity
+@inject IIdentityManager IdentityManager
+
+<Bar Breakpoint="Breakpoint.Desktop"
+     Background="Background.Light"
+     ThemeContrast="ThemeContrast.Light"
+     Mode="BarMode.Horizontal">
+    <BarMenu>
+        <BarLabel>
+            <Anchor To="/" TextColor="TextColor.Dark">
+                Shreks
+            </Anchor>
+        </BarLabel>
+
+        <BarStart>
+            @if (HasIdentity)
+            {
+                <BarItem>
+                    <BarLink To="adminpanel/subjects">Subjects</BarLink>
+                </BarItem>
+            }
+        </BarStart>
+
+        <BarEnd>
+            @if (HasIdentity)
+            {
+                <BarItem>
+                    <BarLink To="logout">Logout</BarLink>
+                </BarItem>
+            }
+        </BarEnd>
+    </BarMenu>
+</Bar>
+
+@code {
+
+    public bool HasIdentity;
+
+    protected override async Task OnInitializedAsync()
+    {
+        HasIdentity = await IdentityManager.HasIdentityAsync(default);
+    }
+
+}

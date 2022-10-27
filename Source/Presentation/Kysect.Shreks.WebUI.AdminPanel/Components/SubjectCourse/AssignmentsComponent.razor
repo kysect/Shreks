@@ -1,0 +1,28 @@
+@using Kysect.Shreks.WebApi.Sdk
+
+@if (Assignments is not null)
+{
+    @foreach (var assignment in Assignments.OrderBy(x => x.Order))
+    {
+        <Card Margin="Margin.Is3.FromBottom.Is3.FromTop.Is0.FromStart.Is0.FromEnd"
+              Padding="Padding.Is3">
+
+            <Heading Size="HeadingSize.Is4">
+                @assignment.Title
+            </Heading>
+
+            Min Points: @assignment.MinPoints
+
+            <br/>
+
+            Max Points: @assignment.MaxPoints
+        </Card>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public ICollection<AssignmentDto>? Assignments { get; set; }
+
+}

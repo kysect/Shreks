@@ -57,6 +57,7 @@ foreach (var studentInfo in data)
     try
     {
         var user = await userClient.UserAsync(studentInfo.IsuNumber);
+        continue;
         await studentClient.GithubDeleteAsync(user.Id);
         await studentClient.GithubPostAsync(user.Id, studentInfo.GithubUsername);
     }
@@ -69,6 +70,8 @@ foreach (var studentInfo in data)
         await studentClient.GithubPostAsync(student.User.Id, studentInfo.GithubUsername);
     }
 }
+
+return;
 
 var subjectClient = new SubjectClient(baseUrl, client);
 var subjectCourseController = new SubjectCourseClient(baseUrl, client);

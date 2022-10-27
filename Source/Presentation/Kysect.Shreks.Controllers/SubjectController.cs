@@ -47,4 +47,13 @@ public class SubjectController : ControllerBase
         UpdateSubject.Response response = await _mediator.Send(new UpdateSubject.Command(id, name));
         return Ok(response.Subject);
     }
+
+    [HttpGet("{id:guid}/courses")]
+    public async Task<ActionResult<IReadOnlyCollection<SubjectCourseDto>>> GetSubjectCourses(Guid id)
+    {
+        var request = new GetSubjectCoursesBySubjectCourseId.Query(id);
+        GetSubjectCoursesBySubjectCourseId.Response response = await _mediator.Send(request, HttpContext.RequestAborted);
+
+        return Ok(response.Courses);
+    }
 }

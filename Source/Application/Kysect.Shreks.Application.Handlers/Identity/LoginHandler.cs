@@ -59,7 +59,7 @@ public class LoginHandler : IRequestHandler<Query, Response>
         (
             issuer: _configuration.Issuer,
             audience: _configuration.Audience,
-            expires: DateTime.Now.AddHours(_configuration.ExpiresHours),
+            expires: DateTime.UtcNow.AddHours(_configuration.ExpiresHours),
             claims: authClaims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );
