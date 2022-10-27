@@ -14,7 +14,12 @@
         </Field>
 
         <Div Flex="Flex.JustifyContent.Center">
-            <Button Color="Color.Primary" @onclick="OnLoginButtonClickedAsync">Login</Button>
+            <Button Color="Color.Primary" 
+                    Clicked="OnLoginButtonClickedAsync" 
+                    Type="@ButtonType.Submit"
+                    PreventDefaultOnSubmit>
+                Login
+            </Button>
         </Div>
     </Form>
 
@@ -66,5 +71,8 @@
     {
         return _modal.Hide();
     }
+
+    private Task OnPasswordKeyPressed(KeyboardEventArgs arg)
+        => arg.Code is not "Enter" or "NumpadEnter" ? Task.CompletedTask : OnLoginButtonClickedAsync();
 
 }
