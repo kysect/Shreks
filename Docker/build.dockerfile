@@ -7,7 +7,7 @@ COPY *.sln .
 COPY ./Presentation/Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj
 COPY ./Presentation/Kysect.Shreks.Controllers/Kysect.Shreks.Controllers.csproj ./Presentation/Kysect.Shreks.Controllers/Kysect.Shreks.Controllers.csproj
 COPY ./Presentation/Kysect.Shreks.Sdk/Kysect.Shreks.Sdk.csproj ./Presentation/Kysect.Shreks.Sdk/Kysect.Shreks.Sdk.csproj
-COPY ./Presentation/Kysect.Shreks.Sdk/Kysect.Shreks.AdminPanel.csproj ./Presentation/Kysect.Shreks.Sdk/Kysect.Shreks.AdminPanel.csproj
+COPY ./Presentation/Kysect.Shreks.AdminPanel/Kysect.Shreks.AdminPanel.csproj ./Presentation/Kysect.Shreks.AdminPanel/Kysect.Shreks.AdminPanel.csproj
 COPY ./Application/Kysect.Shreks.Application.GithubWorkflow/Kysect.Shreks.Application.GithubWorkflow.csproj ./Application/Kysect.Shreks.Application.GithubWorkflow/Kysect.Shreks.Application.GithubWorkflow.csproj
 COPY ./Application/Kysect.Shreks.Application.GithubWorkflow.Abstractions/Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj ./Application/Kysect.Shreks.Application.GithubWorkflow.Abstractions/Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj
 COPY ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj
