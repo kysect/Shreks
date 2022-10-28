@@ -4,8 +4,10 @@ WORKDIR /source
 
 # copy csproj and restore as distinct layers
 COPY *.sln .
-COPY ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj
+COPY ./Presentation/Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj
 COPY ./Presentation/Kysect.Shreks.Controllers/Kysect.Shreks.Controllers.csproj ./Presentation/Kysect.Shreks.Controllers/Kysect.Shreks.Controllers.csproj
+COPY ./Presentation/Kysect.Shreks.Sdk/Kysect.Shreks.Sdk.csproj ./Presentation/Kysect.Shreks.Sdk/Kysect.Shreks.Sdk.csproj
+COPY ./Presentation/Kysect.Shreks.AdminPanel/Kysect.Shreks.AdminPanel.csproj ./Presentation/Kysect.Shreks.AdminPanel/Kysect.Shreks.AdminPanel.csproj
 COPY ./Application/Kysect.Shreks.Application.GithubWorkflow/Kysect.Shreks.Application.GithubWorkflow.csproj ./Application/Kysect.Shreks.Application.GithubWorkflow/Kysect.Shreks.Application.GithubWorkflow.csproj
 COPY ./Application/Kysect.Shreks.Application.GithubWorkflow.Abstractions/Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj ./Application/Kysect.Shreks.Application.GithubWorkflow.Abstractions/Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj
 COPY ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj
@@ -24,11 +26,11 @@ COPY ./Infrastructure/Kysect.Shreks.DataAccess/Kysect.Shreks.DataAccess.csproj .
 COPY ./Domain/Kysect.Shreks.Core/Kysect.Shreks.Core.csproj ./Domain/Kysect.Shreks.Core/Kysect.Shreks.Core.csproj
 COPY ./Domain/Kysect.Shreks.Common/Kysect.Shreks.Common.csproj ./Domain/Kysect.Shreks.Common/Kysect.Shreks.Common.csproj
 
-RUN dotnet restore Kysect.Shreks.WebApi
+RUN dotnet restore Presentation/Kysect.Shreks.WebApi
 
 # copy everything else and build app
 COPY ./ ./
-RUN dotnet publish -c release -o /app --no-restore Kysect.Shreks.WebApi
+RUN dotnet publish -c release -o /app --no-restore Presentation/Kysect.Shreks.WebApi
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
