@@ -4,10 +4,10 @@ WORKDIR /source
 
 # copy csproj and restore as distinct layers
 COPY *.sln .
-COPY ./Presentation/Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj ./Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj
+COPY ./Presentation/Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj ./Presentation/Kysect.Shreks.WebApi/Kysect.Shreks.WebApi.csproj
 COPY ./Presentation/Kysect.Shreks.Controllers/Kysect.Shreks.Controllers.csproj ./Presentation/Kysect.Shreks.Controllers/Kysect.Shreks.Controllers.csproj
-COPY ./Presentation/Kysect.Shreks.Sdk/Kysect.Shreks.Sdk.csproj ./Presentation/Kysect.Shreks.Sdk/Kysect.Shreks.Sdk.csproj
-COPY ./Presentation/Kysect.Shreks.AdminPanel/Kysect.Shreks.AdminPanel.csproj ./Presentation/Kysect.Shreks.AdminPanel/Kysect.Shreks.AdminPanel.csproj
+COPY ./Presentation/Kysect.Shreks.WebApi.Sdk/Kysect.Shreks.WebApi.Sdk.csproj ./Presentation/Kysect.Shreks.WebApi.Sdk/Kysect.Shreks.WebApi.Sdk.csproj
+COPY ./Presentation/Kysect.Shreks.WebUI.AdminPanel/Kysect.Shreks.WebUI.AdminPanel.csproj ./Presentation/Kysect.Shreks.WebUI.AdminPanel/Kysect.Shreks.WebUI.AdminPanel.csproj
 COPY ./Application/Kysect.Shreks.Application.GithubWorkflow/Kysect.Shreks.Application.GithubWorkflow.csproj ./Application/Kysect.Shreks.Application.GithubWorkflow/Kysect.Shreks.Application.GithubWorkflow.csproj
 COPY ./Application/Kysect.Shreks.Application.GithubWorkflow.Abstractions/Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj ./Application/Kysect.Shreks.Application.GithubWorkflow.Abstractions/Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj
 COPY ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj ./Application/Kysect.Shreks.Application.Handlers/Kysect.Shreks.Application.Handlers.csproj
@@ -25,8 +25,9 @@ COPY ./Infrastructure/Kysect.Shreks.Identity/Kysect.Shreks.Identity.csproj ./Inf
 COPY ./Infrastructure/Kysect.Shreks.DataAccess/Kysect.Shreks.DataAccess.csproj ./Infrastructure/Kysect.Shreks.DataAccess/Kysect.Shreks.DataAccess.csproj
 COPY ./Domain/Kysect.Shreks.Core/Kysect.Shreks.Core.csproj ./Domain/Kysect.Shreks.Core/Kysect.Shreks.Core.csproj
 COPY ./Domain/Kysect.Shreks.Common/Kysect.Shreks.Common.csproj ./Domain/Kysect.Shreks.Common/Kysect.Shreks.Common.csproj
+COPY ./DeveloperEnvironment/Kysect.Shreks.DeveloperEnvironment/Kysect.Shreks.DeveloperEnvironment.csproj ./DeveloperEnvironment/Kysect.Shreks.DeveloperEnvironment/Kysect.Shreks.DeveloperEnvironment.csproj
 
-RUN dotnet restore Presentation/Kysect.Shreks.WebApi
+RUN dotnet restore ./Presentation/Kysect.Shreks.WebApi
 
 # copy everything else and build app
 COPY ./ ./

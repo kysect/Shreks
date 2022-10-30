@@ -139,18 +139,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .AddDeveloperEnvironmentSeeding();
     }
 
-    #region AdminPanelSetup
-
-    var url = webApplicationBuilder.Configuration
-        .GetSection("urls")
-        .Value
-        .Split(';')
-        .First(x => x.StartsWith("https", StringComparison.InvariantCultureIgnoreCase));
-
     webApplicationBuilder.Services.AddRazorPages();
-    webApplicationBuilder.Services.AddAdminPanel(url);
-
-    #endregion
 }
 
 async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
