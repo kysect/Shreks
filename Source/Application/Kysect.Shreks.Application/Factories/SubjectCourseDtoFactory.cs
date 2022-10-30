@@ -1,4 +1,5 @@
 ﻿using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
@@ -9,7 +10,7 @@ public class SubjectCourseDtoFactory
 {
     public static SubjectCourseDto CreateFrom(SubjectCourse subjectCourse)
     {
-        List<SubjectCourseAssociationDto> associations = new List<SubjectCourseAssociationDto>();
+        var associations = new List<SubjectCourseAssociationDto>();
 
         foreach (SubjectCourseAssociation subjectCourseAssociation in subjectCourse.Associations)
         {

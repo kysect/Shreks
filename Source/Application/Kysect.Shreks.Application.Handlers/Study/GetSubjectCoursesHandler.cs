@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
