@@ -10,7 +10,6 @@ public static class SubmissionRateDtoFactory
     {
         ArgumentNullException.ThrowIfNull(submission);
 
-        DateOnly deadline = submission.GroupAssignment.Deadline;
         Points maxRowPoints = submission.GroupAssignment.Assignment.MaxPoints;
 
         double? rating = null;
