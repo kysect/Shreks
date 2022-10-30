@@ -24,7 +24,6 @@ using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi.Extensions;
 using Kysect.Shreks.WebApi.Filters;
-using Kysect.Shreks.WebUI.AdminPanel.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
