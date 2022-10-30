@@ -1,4 +1,5 @@
 using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubmissionAssociations;
@@ -36,13 +37,28 @@ public abstract partial class Submission : IEntity<Guid>
     }
 
     public int Code { get; protected init; }
-
+    public string Payload { get; set; }
+    public Fraction? Rating { get; private set; }
+    public Points? ExtraPoints { get; set; }
     public SpbDateTime SubmissionDate { get; set; }
-    public DateOnly SubmissionDateOnly => new DateOnly(SubmissionDate.Value.Year, SubmissionDate.Value.Month, SubmissionDate.Value.Day);
-
     public virtual Student Student { get; protected init; }
-
     public virtual GroupAssignment GroupAssignment { get; protected init; }
+    public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
+
+    public Points? Points => Rating is null ? default : GroupAssignment.Assignment.MaxPoints * Rating;
+
+    /// <summary>
+    ///     Points with deadline policy applied
+    /// </summary>
+    public Points? EffectivePoints => GetEffectivePoints();
+
+    /// <summary>
+    ///     Points subtracted by deadline policy
+    /// </summary>
+    public Points? PointPenalty => GetPointPenalty();
+
+    public bool IsRated => Rating is not null;
+    public DateOnly SubmissionDateOnly => SubmissionDate.AsDateOnly();
 
     public SubmissionState State
     {
@@ -50,19 +66,8 @@ public abstract partial class Submission : IEntity<Guid>
         set => SetState(value);
     }
 
-    public string Payload { get; set; }
-
-    public Fraction? Rating { get; private set; }
-
-    public Points? ExtraPoints { get; set; }
-
-    public Points? Points => Rating is null ? default : GroupAssignment.Assignment.MaxPoints * Rating;
-
-    public bool IsRated => Rating is not null;
-
-    public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
-
-    public override string ToString() => $"{Code} ({Id})";
+    public override string ToString()
+        => $"{Code} ({Id})";
 
     public void Rate(Fraction? rating, Points? extraPoints)
     {
@@ -104,5 +109,56 @@ public abstract partial class Submission : IEntity<Guid>
             throw new DomainInvalidOperationException($"Submission {this} is already deleted");
 
         _state = state;
+    }
+
+    private Points? GetEffectivePoints()
+    {
+        if (Points is null)
+            return null;
+
+        Points points = Points.Value;
+        DeadlinePolicy? deadlinePolicy = GetEffectiveDeadlinePolicy();
+
+        if (deadlinePolicy is not null)
+            points = deadlinePolicy.Apply(points);
+
+        if (ExtraPoints is not null)
+            points += ExtraPoints.Value;
+
+        return points;
+    }
+
+    private Points? GetPointPenalty()
+    {
+        if (Points is null)
+            return null;
+
+        Points? deadlineAppliedPoints = GetEffectivePoints();
+
+        if (deadlineAppliedPoints is null)
+            return null;
+
+        Points? penaltyPoints = Points - deadlineAppliedPoints;
+
+        return penaltyPoints;
+    }
+
+    private DeadlinePolicy? GetEffectiveDeadlinePolicy()
+    {
+        DateOnly deadline = GroupAssignment.Deadline;
+
+        if (SubmissionDateOnly <= deadline)
+            return null;
+
+        var submissionDeadlineOffset = TimeSpan.FromDays(SubmissionDateOnly.DayNumber - deadline.DayNumber);
+
+        DeadlinePolicy? activeDeadlinePolicy = GroupAssignment
+            .Assignment
+            .SubjectCourse
+            .DeadlinePolicies
+            .Where(dp => dp.SpanBeforeActivation < submissionDeadlineOffset)
+            .MaxBy(dp => dp.SpanBeforeActivation);
+
+        return activeDeadlinePolicy;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.ValueObject;
 
@@ -26,8 +25,8 @@ public static class SubmissionRateDtoFactory
             RawPoints: submission.Points?.Value,
             MaxRawPoints: maxRowPoints.Value,
             ExtraPoints: submission.ExtraPoints?.Value,
-            PenaltyPoints: submission.CalculatePenaltySubmissionPoints(deadline)?.Value,
-            TotalPoints: submission.CalculateTotalSubmissionPoints(deadline)?.Value
+            PenaltyPoints: submission.PointPenalty?.Value,
+            TotalPoints: submission.EffectivePoints?.Value
         );
 
         return dto;
