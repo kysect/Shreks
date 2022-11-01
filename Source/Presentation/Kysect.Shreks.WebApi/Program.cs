@@ -24,7 +24,6 @@ using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi.Extensions;
 using Kysect.Shreks.WebApi.Filters;
-using Kysect.Shreks.WebUI.AdminPanel.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -139,18 +138,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             .AddDeveloperEnvironmentSeeding();
     }
 
-    #region AdminPanelSetup
-
-    var url = webApplicationBuilder.Configuration
-        .GetSection("urls")
-        .Value
-        .Split(';')
-        .First(x => x.StartsWith("https", StringComparison.InvariantCultureIgnoreCase));
-
     webApplicationBuilder.Services.AddRazorPages();
-    webApplicationBuilder.Services.AddAdminPanel(url);
-
-    #endregion
 }
 
 async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)

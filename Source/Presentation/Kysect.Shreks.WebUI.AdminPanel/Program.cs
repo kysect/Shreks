@@ -7,7 +7,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddAdminPanel("https://127.0.0.1:7188");
+builder.Services.AddAdminPanel(builder.HostEnvironment.BaseAddress);
 
 var app = builder.Build();
 
