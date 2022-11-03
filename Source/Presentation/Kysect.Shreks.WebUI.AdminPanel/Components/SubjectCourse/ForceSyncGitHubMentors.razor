@@ -1,7 +1,7 @@
 @using Kysect.Shreks.WebApi.Sdk
 @inject GithubManagementClient Client
 
-<Button Clicked="OnClickedAsync" Color="Color.Secondary">
+<Button Clicked="OnClickedAsync" Color="Color.Secondary" Disabled="@(_component?.Executing ?? false)">
     Sync GitHub Mentors
 </Button>
 
