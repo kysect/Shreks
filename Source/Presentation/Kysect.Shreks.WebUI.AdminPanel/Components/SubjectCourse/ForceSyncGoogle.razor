@@ -1,7 +1,7 @@
 @using Kysect.Shreks.WebApi.Sdk
 @inject GoogleClient GoogleClient
 
-<Button Clicked="OnClickedAsync" Color="Color.Secondary">
+<Button Clicked="OnClickedAsync" Color="Color.Secondary" Disabled="@(_component?.Executing ?? false)">
     Sync Google
 </Button>
 
@@ -15,7 +15,9 @@
     private ConfirmationComponent? _component;
 
     private Task SyncAsync()
-        => SubjectCourseId is null ? Task.CompletedTask : GoogleClient.ForceSyncAsync(SubjectCourseId);
+    {
+        return SubjectCourseId is null ? Task.CompletedTask : GoogleClient.ForceSyncAsync(SubjectCourseId);
+    }
 
     private Task OnClickedAsync()
         => _component?.Show() ?? Task.CompletedTask;

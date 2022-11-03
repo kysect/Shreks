@@ -4,12 +4,12 @@
             <ModalTitle>
                 Confirm @(ActionName ?? string.Empty)
             </ModalTitle>
-            <CloseButton/>
+            <CloseButton Display="@(Executing ? Display.None : Display.InlineBlock)"/>
         </ModalHeader>
 
         <ModalFooter Flex="Flex.AlignContent.Start">
-            <Button Color="Color.Primary" Clicked="Execute">YES</Button>
-            <Button Color="Color.Secondary" Clicked="Dismiss">No</Button>
+            <Button Disabled="@Executing" Color="Color.Primary" Clicked="Execute">YES</Button>
+            <Button Disabled="@Executing" Color="Color.Secondary" Clicked="Dismiss">No</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
@@ -22,13 +22,23 @@
     [Parameter]
     public Func<Task>? Action { get; set; }
 
-    public Task Show()
-        => _modal?.Show() ?? Task.CompletedTask;
+    public bool Executing { get; private set; }
 
     private Modal? _modal;
 
-    private Task Execute()
-        => Action?.Invoke() ?? Task.CompletedTask;
+    public Task Show()
+        => _modal?.Show() ?? Task.CompletedTask;
+
+    private async Task Execute()
+    {
+        Executing = true;
+
+        await (Action?.Invoke() ?? Task.CompletedTask);
+
+        Executing = false;
+
+        await (_modal?.Hide() ?? Task.CompletedTask);
+    }
 
     private Task Dismiss()
         => _modal?.Hide() ?? Task.CompletedTask;
