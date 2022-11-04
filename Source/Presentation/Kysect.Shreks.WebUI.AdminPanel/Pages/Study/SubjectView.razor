@@ -3,9 +3,9 @@
 @using Kysect.Shreks.WebUI.AdminPanel.Components
 @inject SubjectClient SubjectClient
 
-<Div Display="Display.Flex" Flex="Flex.Column.AlignContent.Start">
-    @if (_courses is not null)
-    {
+@if (_courses is not null)
+{
+    <Div Display="Display.Flex" Flex="Flex.Column.AlignContent.Start">
         <Heading Size="HeadingSize.Is1">
             Courses
         </Heading>
@@ -16,12 +16,12 @@
                 <SubjectCourseView SubjectCourse="course"/>
             }
         </CardDeck>
-    }
-    else
-    {
-        <LoaderComponent/>
-    }
-</Div>
+    </Div>
+}
+else
+{
+    <LoaderComponent/>
+}
 
 @code {
 

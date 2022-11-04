@@ -1,0 +1,23 @@
+@using Kysect.Shreks.WebApi.Sdk
+@inject GithubManagementClient Client
+
+<Button Clicked="ButtonClicked" Color="Color.Secondary" Width="Width.Is100">
+    Force GitHub invite
+</Button>
+
+<ConfirmationComponent @ref="_component" Action="SendAsync" ActionName="force GitHub invitations"/>
+
+@code {
+
+    private ConfirmationComponent? _component;
+
+    private Task ButtonClicked()
+    {
+        Console.WriteLine("Button clicked");
+        return _component?.Show() ?? Task.CompletedTask;
+    }
+
+    private Task SendAsync(CancellationToken cancellationToken)
+        => Client.ForceUpdateAsync(cancellationToken);
+
+}
