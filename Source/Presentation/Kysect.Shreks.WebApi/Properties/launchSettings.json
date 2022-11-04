@@ -12,7 +12,7 @@
     "Kysect.Shreks.WebApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "applicationUrl": "https://127.0.0.1:7188;http://0.0.0.0:5069",
       "environmentVariables": {

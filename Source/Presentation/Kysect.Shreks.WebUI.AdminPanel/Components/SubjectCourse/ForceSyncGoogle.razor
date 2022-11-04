@@ -14,9 +14,9 @@
 
     private ConfirmationComponent? _component;
 
-    private Task SyncAsync()
+    private Task SyncAsync(CancellationToken cancellationToken)
     {
-        return SubjectCourseId is null ? Task.CompletedTask : GoogleClient.ForceSyncAsync(SubjectCourseId);
+        return SubjectCourseId is null ? Task.CompletedTask : GoogleClient.ForceSyncAsync(SubjectCourseId, cancellationToken);
     }
 
     private Task OnClickedAsync()
