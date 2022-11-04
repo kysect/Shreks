@@ -1,5 +1,6 @@
 @page "/adminpanel/subjects/{subjectId:guid}"
 @using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.Components
 @inject SubjectClient SubjectClient
 
 <Div Display="Display.Flex" Flex="Flex.Column.AlignContent.Start">
@@ -15,6 +16,10 @@
                 <SubjectCourseView SubjectCourse="course"/>
             }
         </CardDeck>
+    }
+    else
+    {
+        <LoaderComponent/>
     }
 </Div>
 

@@ -14,8 +14,8 @@
 
     private ConfirmationComponent? _component;
 
-    private Task SyncAsync()
-        => OrganizationName is null ? Task.CompletedTask : Client.ForceMentorSyncAsync(OrganizationName);
+    private Task SyncAsync(CancellationToken cancellationToken)
+        => OrganizationName is null ? Task.CompletedTask : Client.ForceMentorSyncAsync(OrganizationName, cancellationToken);
 
     private Task OnClickedAsync()
         => _component?.Show() ?? Task.CompletedTask;

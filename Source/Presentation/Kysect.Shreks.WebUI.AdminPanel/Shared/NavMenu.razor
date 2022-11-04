@@ -3,15 +3,17 @@
 
 <Bar Breakpoint="Breakpoint.Desktop"
      Background="Background.Light"
-     ThemeContrast="ThemeContrast.Light"
-     Mode="BarMode.Horizontal">
-    <BarMenu>
-        <BarLabel>
-            <Anchor To="/" TextColor="TextColor.Dark">
-                Shreks
-            </Anchor>
-        </BarLabel>
+     ThemeContrast="ThemeContrast.Light">
 
+    <BarBrand>
+        <Anchor To="/" TextColor="TextColor.Dark">
+            Shreks
+        </Anchor>
+    </BarBrand>
+
+    <BarToggler/>
+
+    <BarMenu>
         <BarStart>
             @if (HasIdentity)
             {

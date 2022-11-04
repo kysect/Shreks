@@ -7,9 +7,26 @@
             <CloseButton Display="@(Executing ? Display.None : Display.InlineBlock)"/>
         </ModalHeader>
 
+
+        @if (Executing)
+        {
+            <ModalBody>
+                <LoaderComponent/>
+            </ModalBody>
+        }
+
         <ModalFooter Flex="Flex.AlignContent.Start">
-            <Button Disabled="@Executing" Color="Color.Primary" Clicked="Execute">YES</Button>
-            <Button Disabled="@Executing" Color="Color.Secondary" Clicked="Dismiss">No</Button>
+
+            @if (Executing is false)
+            {
+                <Button Color="Color.Primary" Clicked="Execute">YES</Button>
+                <Button Color="Color.Secondary" Clicked="Dismiss">No</Button>
+            }
+            else
+            {
+                <Button Disabled="@Cancelled" Color="Color.Danger" Clicked="Cancel">Cancel</Button>
+            }
+
         </ModalFooter>
     </ModalContent>
 </Modal>
@@ -20,27 +37,49 @@
     public string? ActionName { get; set; }
 
     [Parameter]
-    public Func<Task>? Action { get; set; }
+    public Func<CancellationToken, Task>? Action { get; set; }
 
     public bool Executing { get; private set; }
+    public bool Cancelled { get; private set; }
 
     private Modal? _modal;
+    private CancellationTokenSource _cts = new CancellationTokenSource();
 
     public Task Show()
         => _modal?.Show() ?? Task.CompletedTask;
 
-    private async Task Execute()
-    {
-        Executing = true;
-
-        await (Action?.Invoke() ?? Task.CompletedTask);
-
-        Executing = false;
-
-        await (_modal?.Hide() ?? Task.CompletedTask);
-    }
-
     private Task Dismiss()
         => _modal?.Hide() ?? Task.CompletedTask;
+
+    private async Task Execute()
+    {
+        if (Executing)
+            return;
+
+        Executing = true;
+
+        try
+        {
+            await (Action?.Invoke(_cts.Token) ?? Task.CompletedTask);
+        }
+        catch (OperationCanceledException)
+        {
+            _cts = new CancellationTokenSource();
+        }
+
+        await (_modal?.Hide() ?? Task.CompletedTask);
+
+        Executing = false;
+        Cancelled = false;
+    }
+
+    private void Cancel()
+    {
+        if (Cancelled)
+            return;
+
+        Cancelled = true;
+        _cts.Cancel();
+    }
 
 }
