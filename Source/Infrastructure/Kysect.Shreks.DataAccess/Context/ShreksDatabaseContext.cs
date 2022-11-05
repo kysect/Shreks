@@ -14,7 +14,9 @@ namespace Kysect.Shreks.DataAccess.Context;
 
 public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
 {
-    public ShreksDatabaseContext(DbContextOptions<ShreksDatabaseContext> options) : base(options) { }
+    public ShreksDatabaseContext(DbContextOptions<ShreksDatabaseContext> options) : base(options)
+    {
+    }
 
     public DbSet<User> Users { get; protected init; } = null!;
     public DbSet<Student> Students { get; protected init; } = null!;
@@ -41,6 +43,8 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
             fk.DeleteBehavior = DeleteBehavior.Restrict;
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAssemblyMarker).Assembly);
+
+        modelBuilder.HasPostgresExtension("fuzzystrmatch");
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

@@ -9,11 +9,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FluentChaining" Version="1.0.4" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj" />
+		<ProjectReference Include="..\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
 		<ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj" />
 		<ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
 	</ItemGroup>
