@@ -1,4 +1,5 @@
-﻿using NSwag;
+﻿using NJsonSchema.CodeGeneration;
+using NSwag;
 using NSwag.CodeGeneration.CSharp;
 using NSwag.CodeGeneration.OperationNameGenerators;
 
@@ -18,6 +19,7 @@ var settings = new CSharpClientGeneratorSettings
         Namespace = "Kysect.Shreks.WebApi.Sdk",
         TimeSpanType = "System.TimeSpan",
         DateType = "System.DateOnly",
+        EnumNameGenerator = new DefaultEnumNameGenerator(),
     },
     GenerateClientInterfaces = true,
     ClientClassAccessModifier = "public",

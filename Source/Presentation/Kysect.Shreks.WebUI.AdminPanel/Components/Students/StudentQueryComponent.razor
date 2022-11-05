@@ -1,0 +1,127 @@
+@using Kysect.Shreks.WebApi.Sdk
+@inject StudentClient Client
+
+<Accordion>
+    <Collapse id="@ToggleId" Visible="@_visible" type="button" @onclick="@Toggle">
+        <CollapseHeader>
+            <Div Flex="Flex.JustifyContent.Between">
+                <div @onclick:stopPropagation="true">
+
+                    <Button Clicked="Add"
+                            Color="Color.Primary"
+                            Disabled="@(IsFull || _isExecuting)"
+                            Style="z-index: 1000">
+
+                        Add Filter
+                    </Button>
+
+                </div>
+
+                @if (_isExecuting is false)
+                {
+                    <Button Clicked="ExecuteAsync"
+                            Color="Color.Success">
+                        Execute
+                    </Button>
+                }
+                else
+                {
+                    <Button Clicked="Cancel"
+                            Color="Color.Danger">
+
+                    </Button>
+                }
+            </Div>
+        </CollapseHeader>
+
+        <CollapseBody Padding="Padding.Is2.FromTop.Is0.FromBottom">
+            <div @onclick:stopPropagation="true">
+                @foreach (var parameter in Parameters)
+                {
+                    <StudentQueryParameterComponent Parameter="@parameter" Parent="@this"/>
+                }
+            </div>
+        </CollapseBody>
+    </Collapse>
+</Accordion>
+
+@if (_isExecuting)
+{
+    <LoaderComponent/>
+}
+
+@if (_students is not null)
+{
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>Isu</TableHeaderCell>
+                <TableHeaderCell>Group</TableHeaderCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>GitHub</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+
+            @foreach (var student in _students)
+            {
+                <TableRow>
+                    <TableRowHeader>@(student.UniversityId?.ToString() ?? string.Empty)</TableRowHeader>
+                    <TableRowCell>@student.GroupName</TableRowCell>
+                    <TableRowCell>
+                        @($"{student.User.LastName} {student.User.FirstName} {student.User.MiddleName}")
+                    </TableRowCell>
+
+                    <TableRowCell>
+                        @if (string.IsNullOrEmpty(student.GitHubUsername) is false)
+                        {
+                            <Anchor To="@($"https://github.com/{student.GitHubUsername}")">
+                                @student.GitHubUsername
+                            </Anchor>
+                        }
+                    </TableRowCell>
+
+                </TableRow>
+            }
+
+        </TableBody>
+    </Table>
+}
+
+@code
+{
+        private const string ToggleId = "collapse-toggle";
+
+    private ICollection<StudentDto>? _students;
+    private bool _visible;
+    private bool _isExecuting;
+
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private void Toggle(MouseEventArgs obj)
+    {
+        if (_isExecuting)
+            return;
+
+        _visible = !_visible;
+    }
+
+    private void Cancel()
+    {
+        _cts.Cancel();
+        _cts = new CancellationTokenSource();
+    }
+
+    private async Task ExecuteAsync()
+    {
+        _isExecuting = true;
+
+        try
+        {
+            _students = await Client.QueryAsync(Build(), _cts.Token);
+        }
+        catch (OperationCanceledException) { }
+
+        _isExecuting = false;
+    }
+}

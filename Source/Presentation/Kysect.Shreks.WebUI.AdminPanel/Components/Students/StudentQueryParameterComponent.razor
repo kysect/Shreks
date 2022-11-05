@@ -1,0 +1,62 @@
+@using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.Extensions
+
+@if (Parameter is not null)
+{
+    <Card Padding="Padding.Is2"
+          Flex="Flex.Row.AlignItems.Center.JustifyContent.Start"
+          Margin="Margin.Is2.FromBottom">
+
+        <Addons>
+
+            <Addon AddonType="AddonType.Start">
+                <DropdownList TItem="StudentQueryParameter"
+                              TValue="StudentQueryParameter"
+                              Data="@(Parent?.AvailableParameters ?? Array.Empty<StudentQueryParameter>())"
+                              TextField="x => x.AsString()"
+                              ValueField="x => x"
+                              @bind-SelectedValue="@Parameter.Type"
+                              Color="Color.Primary"
+                              Disabled="@(Parent?.IsFull ?? false)">
+
+                    @Parameter.Type.AsString()
+
+                </DropdownList>
+            </Addon>
+
+            <Addon AddonType="AddonType.Body">
+                <TextEdit @bind-Text="@Parameter.Pattern"
+                          Placeholder="Pattern"
+                          Margin="Margin.Is2.FromEnd"/>
+            </Addon>
+
+            <Addon AddonType="AddonType.End">
+                <Button Color="Color.Danger" Clicked="OnRemoveClicked">
+                    Remove
+                </Button>
+            </Addon>
+
+        </Addons>
+
+    </Card>
+}
+
+@code
+{
+    [Parameter]
+    public StudentQueryParameterQueryParameter? Parameter { get; set; }
+
+    [Parameter]
+    public StudentQueryComponent? Parent { get; set; }
+
+    private Dropdown? _dropdown;
+
+    private void OnRemoveClicked()
+    {
+        if (Parameter is null || Parent is null)
+            return;
+
+        Parent.Remove(Parameter);
+        Parent.Update();
+    }
+}

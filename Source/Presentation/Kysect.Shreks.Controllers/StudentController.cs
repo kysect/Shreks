@@ -1,5 +1,7 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Github;
 using Kysect.Shreks.Application.Abstractions.Students;
+using Kysect.Shreks.Application.Abstractions.Users.Queries;
+using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
@@ -48,7 +50,8 @@ public class StudentController : ControllerBase
     [HttpGet("by-course")]
     public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> GetBySubjectCourseId(Guid subjectCourseId)
     {
-        GetStudentsBySubjectCourseId.Response response = await _mediator.Send(new GetStudentsBySubjectCourseId.Query(subjectCourseId));
+        GetStudentsBySubjectCourseId.Response response =
+            await _mediator.Send(new GetStudentsBySubjectCourseId.Query(subjectCourseId));
         return Ok(response.Students);
     }
 
@@ -73,5 +76,15 @@ public class StudentController : ControllerBase
         RemoveGithubUserAssociation.Response response =
             await _mediator.Send(new RemoveGithubUserAssociation.Command(userId));
         return Ok();
+    }
+
+    [HttpPost("query")]
+    public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> Query(
+        QueryConfiguration<StudentQueryParameter> configuration)
+    {
+        var query = new FindStudentsByQuery.Query(configuration);
+        FindStudentsByQuery.Response response = await _mediator.Send(query);
+
+        return Ok(response.Students);
     }
 }
