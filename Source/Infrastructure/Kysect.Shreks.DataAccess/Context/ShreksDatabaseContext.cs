@@ -43,8 +43,6 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
             fk.DeleteBehavior = DeleteBehavior.Restrict;
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAssemblyMarker).Assembly);
-
-        modelBuilder.HasPostgresExtension("fuzzystrmatch");
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
