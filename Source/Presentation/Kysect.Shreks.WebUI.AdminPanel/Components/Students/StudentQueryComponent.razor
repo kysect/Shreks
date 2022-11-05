@@ -34,14 +34,15 @@
             </Div>
         </CollapseHeader>
 
-        <CollapseBody Padding="Padding.Is2.FromTop.Is0.FromBottom">
-            <div @onclick:stopPropagation="true">
+        <div @onclick:stopPropagation="true">
+            <CollapseBody Padding="Padding.Is2.FromTop.Is0.FromBottom">
                 @foreach (var parameter in Parameters)
                 {
                     <StudentQueryParameterComponent Parameter="@parameter" Parent="@this"/>
                 }
-            </div>
-        </CollapseBody>
+            </CollapseBody>
+        </div>
+
     </Collapse>
 </Accordion>
 
