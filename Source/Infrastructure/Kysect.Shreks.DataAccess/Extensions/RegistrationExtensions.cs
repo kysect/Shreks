@@ -14,7 +14,7 @@ public static class RegistrationExtensions
         Action<DbContextOptionsBuilder> action)
     {
         collection.AddDbContext<IShreksDatabaseContext, ShreksDatabaseContext>(action);
-        collection.AddSingleton(typeof(IPatternMatcher<>), typeof(FuzzyPatternMatcher<>));
+        collection.AddSingleton(typeof(IPatternMatcher<>), typeof(PatternMatcher<>));
 
         return collection;
     }

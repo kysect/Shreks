@@ -5,12 +5,12 @@ using System.Reflection;
 
 namespace Kysect.Shreks.DataAccess.Tools;
 
-public class FuzzyPatternMatcher<T> : IPatternMatcher<T>
+public class PatternMatcher<T> : IPatternMatcher<T>
 {
     private readonly MethodInfo _matchingMethod;
     private readonly Expression _functionsExpression;
 
-    public FuzzyPatternMatcher()
+    public PatternMatcher()
     {
         string methodName = nameof(NpgsqlDbFunctionsExtensions.ILike);
 
