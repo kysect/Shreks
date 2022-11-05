@@ -1,5 +1,9 @@
+@using Kysect.Shreks.WebUI.AdminPanel.Identity
+
 @inherits LayoutComponentBase
+
 @inject NavigationManager NavigationManager
+@inject IIdentityManager IdentityManager
 @implements IDisposable
 
 <div>
@@ -28,12 +32,17 @@
         RouteName = args.Location;
     }
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
+        if (await IdentityManager.HasIdentityAsync(default) is false)
+        {
+            IsIdentity = true;
+            NavigationManager.NavigateTo("adminpanel/identity/login");
+        }
+
         RouteName = NavigationManager.Uri;
         IsIdentity = RouteName.Contains("identity");
         NavigationManager.LocationChanged += HandleLocationChanged;
-        return Task.CompletedTask;
     }
 
     public void Dispose()

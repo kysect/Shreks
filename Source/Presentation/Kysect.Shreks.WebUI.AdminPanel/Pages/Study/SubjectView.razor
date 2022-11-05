@@ -1,6 +1,6 @@
 @page "/adminpanel/subjects/{subjectId:guid}"
 @using Kysect.Shreks.WebApi.Sdk
-@using Kysect.Shreks.WebUI.AdminPanel.Components
+@using Kysect.Shreks.WebUI.AdminPanel.Components.SubjectCourse
 @inject SubjectClient SubjectClient
 
 @if (_courses is not null)
@@ -10,12 +10,12 @@
             Courses
         </Heading>
 
-        <CardDeck>
+        <Div>
             @foreach (var course in _courses)
             {
-                <SubjectCourseView SubjectCourse="course"/>
+                <SubjectCourseComponent SubjectCourse="@course"/>
             }
-        </CardDeck>
+        </Div>
     </Div>
 }
 else

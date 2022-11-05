@@ -1,5 +1,7 @@
+using Kysect.Shreks.Application.Abstractions.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Context;
+using Kysect.Shreks.DataAccess.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,7 @@ public static class RegistrationExtensions
         Action<DbContextOptionsBuilder> action)
     {
         collection.AddDbContext<IShreksDatabaseContext, ShreksDatabaseContext>(action);
+        collection.AddSingleton(typeof(IPatternMatcher<>), typeof(PatternMatcher<>));
 
         return collection;
     }

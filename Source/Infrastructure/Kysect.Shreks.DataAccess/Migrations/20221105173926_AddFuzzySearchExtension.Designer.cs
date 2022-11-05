@@ -3,6 +3,7 @@ using System;
 using Kysect.Shreks.DataAccess.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kysect.Shreks.DataAccess.Migrations
 {
     [DbContext(typeof(ShreksDatabaseContext))]
-    partial class ShreksDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20221105173926_AddFuzzySearchExtension")]
+    partial class AddFuzzySearchExtension
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
