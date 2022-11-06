@@ -17,7 +17,12 @@
 
         <LayoutContent Height="Height.Is100" Width="Width.Is100">
             <Div Padding="Padding.Is4" Height="Height.Is100" Width="Width.Is100">
-                @Body
+
+                @if (_ready)
+                {
+                    @Body
+                }
+
             </Div>
         </LayoutContent>
     </Layout>
@@ -27,6 +32,8 @@
     public string RouteName = "";
     public bool IsIdentity;
 
+    private bool _ready = false;
+
     private void HandleLocationChanged(object? sender, LocationChangedEventArgs args)
     {
         RouteName = args.Location;
@@ -34,6 +41,8 @@
 
     protected override async Task OnInitializedAsync()
     {
+        _ready = false;
+        
         if (await IdentityManager.HasIdentityAsync(default) is false)
         {
             IsIdentity = true;
@@ -43,6 +52,8 @@
         RouteName = NavigationManager.Uri;
         IsIdentity = RouteName.Contains("identity");
         NavigationManager.LocationChanged += HandleLocationChanged;
+
+        _ready = true;
     }
 
     public void Dispose()

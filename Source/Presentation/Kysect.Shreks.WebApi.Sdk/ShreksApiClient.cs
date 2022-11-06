@@ -1352,21 +1352,21 @@ namespace Kysect.Shreks.WebApi.Sdk
     {
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GroupAssignmentDto> GroupAssignmentPostAsync(System.Guid? groupId, System.Guid? assignmentId, System.DateTimeOffset? deadline);
+        System.Threading.Tasks.Task<GroupAssignmentDto> GroupAssignmentPostAsync(System.Guid? groupId, System.Guid? assignmentId, System.DateTime? deadline);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GroupAssignmentDto> GroupAssignmentPostAsync(System.Guid? groupId, System.Guid? assignmentId, System.DateTimeOffset? deadline, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GroupAssignmentDto> GroupAssignmentPostAsync(System.Guid? groupId, System.Guid? assignmentId, System.DateTime? deadline, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GroupAssignmentDto>> GroupAssignmentGetAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GroupAssignmentDto>> GroupAssignmentGetAsync(System.Guid? assignmentId);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GroupAssignmentDto>> GroupAssignmentGetAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GroupAssignmentDto>> GroupAssignmentGetAsync(System.Guid? assignmentId, System.Threading.CancellationToken cancellationToken);
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
@@ -1379,12 +1379,12 @@ namespace Kysect.Shreks.WebApi.Sdk
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GroupAssignmentDto> GroupsPutAsync(System.Guid groupId, System.Guid? assignmentId, System.DateTimeOffset? newDeadline);
+        System.Threading.Tasks.Task<GroupAssignmentDto> GroupsPutAsync(System.Guid groupId, System.Guid assignmentId, System.DateTime? newDeadline);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GroupAssignmentDto> GroupsPutAsync(System.Guid groupId, System.Guid? assignmentId, System.DateTimeOffset? newDeadline, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GroupAssignmentDto> GroupsPutAsync(System.Guid groupId, System.Guid assignmentId, System.DateTime? newDeadline, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -1425,7 +1425,7 @@ namespace Kysect.Shreks.WebApi.Sdk
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<GroupAssignmentDto> GroupAssignmentPostAsync(System.Guid? groupId, System.Guid? assignmentId, System.DateTimeOffset? deadline)
+        public virtual System.Threading.Tasks.Task<GroupAssignmentDto> GroupAssignmentPostAsync(System.Guid? groupId, System.Guid? assignmentId, System.DateTime? deadline)
         {
             return GroupAssignmentPostAsync(groupId, assignmentId, deadline, System.Threading.CancellationToken.None);
         }
@@ -1433,7 +1433,7 @@ namespace Kysect.Shreks.WebApi.Sdk
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GroupAssignmentDto> GroupAssignmentPostAsync(System.Guid? groupId, System.Guid? assignmentId, System.DateTimeOffset? deadline, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GroupAssignmentDto> GroupAssignmentPostAsync(System.Guid? groupId, System.Guid? assignmentId, System.DateTime? deadline, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/GroupAssignment?");
@@ -1513,18 +1513,23 @@ namespace Kysect.Shreks.WebApi.Sdk
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GroupAssignmentDto>> GroupAssignmentGetAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GroupAssignmentDto>> GroupAssignmentGetAsync(System.Guid? assignmentId)
         {
-            return GroupAssignmentGetAsync(System.Threading.CancellationToken.None);
+            return GroupAssignmentGetAsync(assignmentId, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GroupAssignmentDto>> GroupAssignmentGetAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<GroupAssignmentDto>> GroupAssignmentGetAsync(System.Guid? assignmentId, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/GroupAssignment");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/GroupAssignment?");
+            if (assignmentId != null)
+            {
+                urlBuilder_.Append(System.Uri.EscapeDataString("assignmentId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(assignmentId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
+            }
+            urlBuilder_.Length--;
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1665,7 +1670,7 @@ namespace Kysect.Shreks.WebApi.Sdk
 
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<GroupAssignmentDto> GroupsPutAsync(System.Guid groupId, System.Guid? assignmentId, System.DateTimeOffset? newDeadline)
+        public virtual System.Threading.Tasks.Task<GroupAssignmentDto> GroupsPutAsync(System.Guid groupId, System.Guid assignmentId, System.DateTime? newDeadline)
         {
             return GroupsPutAsync(groupId, assignmentId, newDeadline, System.Threading.CancellationToken.None);
         }
@@ -1673,18 +1678,18 @@ namespace Kysect.Shreks.WebApi.Sdk
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GroupAssignmentDto> GroupsPutAsync(System.Guid groupId, System.Guid? assignmentId, System.DateTimeOffset? newDeadline, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GroupAssignmentDto> GroupsPutAsync(System.Guid groupId, System.Guid assignmentId, System.DateTime? newDeadline, System.Threading.CancellationToken cancellationToken)
         {
             if (groupId == null)
                 throw new System.ArgumentNullException("groupId");
 
+            if (assignmentId == null)
+                throw new System.ArgumentNullException("assignmentId");
+
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/GroupAssignment/groups/{groupId}?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/GroupAssignment/assignments/{assignmentId}/groups/{groupId}?");
             urlBuilder_.Replace("{groupId}", System.Uri.EscapeDataString(ConvertToString(groupId, System.Globalization.CultureInfo.InvariantCulture)));
-            if (assignmentId != null)
-            {
-                urlBuilder_.Append(System.Uri.EscapeDataString("assignmentId") + "=").Append(System.Uri.EscapeDataString(ConvertToString(assignmentId, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
-            }
+            urlBuilder_.Replace("{assignmentId}", System.Uri.EscapeDataString(ConvertToString(assignmentId, System.Globalization.CultureInfo.InvariantCulture)));
             if (newDeadline != null)
             {
                 urlBuilder_.Append(System.Uri.EscapeDataString("newDeadline") + "=").Append(System.Uri.EscapeDataString(newDeadline.Value.ToString("s", System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -6161,7 +6166,7 @@ namespace Kysect.Shreks.WebApi.Sdk
         public string AssignmentTitle { get; set; }
 
         [Newtonsoft.Json.JsonProperty("deadline", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public DateOnly Deadline { get; set; }
+        public System.DateTime Deadline { get; set; }
 
     }
 
@@ -6183,7 +6188,7 @@ namespace Kysect.Shreks.WebApi.Sdk
         public string Token { get; set; }
 
         [Newtonsoft.Json.JsonProperty("expires", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset Expires { get; set; }
+        public System.DateTime Expires { get; set; }
 
         [Newtonsoft.Json.JsonProperty("roles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<string> Roles { get; set; }

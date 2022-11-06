@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
         collection.AddClient(x => new GoogleClient(baseUrl, x));
         collection.AddClient(x => new GithubManagementClient(baseUrl, x));
         collection.AddClient(x => new StudentClient(baseUrl, x));
+        collection.AddClient(x => new GroupAssignmentClient(baseUrl, x));
 
         collection.AddScoped<IIdentityManager, IdentityManager>();
         collection.AddScoped<IIdentityService, IdentityService>();

@@ -1,0 +1,35 @@
+@using Kysect.Shreks.WebApi.Sdk
+@inject GroupAssignmentClient Client
+
+@if (_groupAssignments is not null)
+{
+    <Div>
+        @foreach (var group in _groupAssignments.OrderBy(x => x.GroupName))
+        {
+            <GroupAssignmentComponent Assignment="Assignment" Group="group"/>
+        }
+    </Div>
+}
+
+@code {
+
+    [Parameter]
+    public AssignmentDto? Assignment { get; set; }
+
+    private ICollection<GroupAssignmentDto>? _groupAssignments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Assignment is null)
+            return;
+
+        _groupAssignments = await Client.GroupAssignmentGetAsync(Assignment.Id);
+
+        foreach (var group in _groupAssignments)
+        {
+            Console.WriteLine(group.Deadline);
+        }
+    }
+
+    
+}

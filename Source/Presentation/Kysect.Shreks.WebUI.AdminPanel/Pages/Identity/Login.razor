@@ -30,7 +30,6 @@
             </ModalHeader>
             <ModalBody>
                 @_exception?.Message
-                @_exception?.StackTrace
             </ModalBody>
             <ModalFooter>
                 <Button Color="Color.Secondary" Clicked="@CloseModal">Close</Button>
@@ -71,8 +70,5 @@
     {
         return _modal.Hide();
     }
-
-    private Task OnPasswordKeyPressed(KeyboardEventArgs arg)
-        => arg.Code is not "Enter" or "NumpadEnter" ? Task.CompletedTask : OnLoginButtonClickedAsync();
 
 }

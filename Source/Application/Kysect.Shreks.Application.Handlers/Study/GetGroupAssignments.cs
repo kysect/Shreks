@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
-using AutoMapper.QueryableExtensions;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +21,15 @@ public class GetGroupAssignments : IRequestHandler<Query, Response>
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        List<GroupAssignmentDto> subject = await _context
+        List<GroupAssignment> assignments = await _context
             .GroupAssignments
-            .ProjectTo<GroupAssignmentDto>(_mapper.ConfigurationProvider)
+            .Where(x => x.AssignmentId.Equals(request.AssignmentId))
             .ToListAsync(cancellationToken);
 
-        return new Response(subject);
+        GroupAssignmentDto[] dto = assignments
+            .Select(_mapper.Map<GroupAssignmentDto>)
+            .ToArray();
+
+        return new Response(dto);
     }
 }

@@ -10,7 +10,7 @@ public static class StudentQueryParameterExtensions
         {
             StudentQueryParameter._1 => "Name",
             StudentQueryParameter._2 => "Group",
-            StudentQueryParameter._3 => "GitHub username",
+            StudentQueryParameter._3 => "GitHub",
             _ => throw new ArgumentOutOfRangeException(nameof(parameter), parameter, null)
         };
     }

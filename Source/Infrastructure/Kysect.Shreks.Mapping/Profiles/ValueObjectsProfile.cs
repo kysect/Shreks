@@ -39,5 +39,10 @@ public class ValueObjectsProfile : Profile
             .ConstructUsing(x => x.Value)
             .ReverseMap()
             .ConstructUsing(x => new SpbDateTime(x));
+
+        CreateMap<DateTime, DateOnly>()
+            .ConstructUsing(x => DateOnly.FromDateTime(x))
+            .ReverseMap()
+            .ConstructUsing(x => new DateTime(x.Year, x.Month, x.Day));
     }
 }
