@@ -28,9 +28,10 @@ namespace Kysect.Shreks.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyCollection<GroupAssignmentDto>>> Get()
+        public async Task<ActionResult<IReadOnlyCollection<GroupAssignmentDto>>> Get(Guid assignmentId)
         {
-            GetGroupAssignments.Response response = await _mediator.Send(new GetGroupAssignments.Query());
+            var query = new GetGroupAssignments.Query(assignmentId);
+            GetGroupAssignments.Response response = await _mediator.Send(query);
             return Ok(response.GroupAssignments);
         }
 
@@ -41,7 +42,7 @@ namespace Kysect.Shreks.Controllers
             return Ok(response.GroupAssignments);
         }
 
-        [HttpPut("groups/{groupId}")]
+        [HttpPut("assignments/{assignmentId:guid}/groups/{groupId:guid}")]
         public async Task<ActionResult<GroupAssignmentDto>> UpdateById(Guid groupId, Guid assignmentId, DateTime newDeadline)
         {
             UpdateGroupAssignmentDeadline.Response response = await _mediator.Send(new UpdateGroupAssignmentDeadline.Command(groupId, assignmentId, DateOnly.FromDateTime(newDeadline)));

@@ -1,0 +1,54 @@
+@using Kysect.Shreks.WebApi.Sdk
+
+@if (Assignment is not null)
+{
+    <Card Margin="Margin.Is3.FromBottom.Is3.FromTop.Is0.FromStart.Is0.FromEnd"
+          Padding="Padding.Is3"
+          type="button"
+          onclick="@Clicked"
+          Class="btn-light">
+
+        <Heading Size="HeadingSize.Is4">
+            @Assignment.Title
+        </Heading>
+
+        Min Points: @Assignment.MinPoints
+
+        <br/>
+
+        Max Points: @Assignment.MaxPoints
+    </Card>
+
+    <Modal @ref="_modal" @bind-Visible="@_modalVisible">
+        <ModalContent Size="ModalSize.Fullscreen">
+            <ModalHeader>
+                <ModalTitle>@Assignment.Title</ModalTitle>
+                <CloseButton/>
+            </ModalHeader>
+
+            @if (_modalVisible)
+            {
+                <ModalBody>
+                    <AssignmentComponent Assignment="Assignment"/>
+                </ModalBody>
+            }
+
+        </ModalContent>
+    </Modal>
+}
+
+@code {
+
+    [Parameter]
+    public AssignmentDto? Assignment { get; set; }
+
+    private Modal? _modal;
+    private bool _modalVisible;
+
+    private Task Clicked()
+    {
+        _modalVisible = true;
+        return _modal?.Show() ?? Task.CompletedTask;
+    }
+
+}

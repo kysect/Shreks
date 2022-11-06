@@ -17,7 +17,7 @@
 
                 <BarMenu>
                     <BarEnd>
-                        <BarItem Margin="Margin.Is2.FromEnd">
+                        <BarItem Margin="Margin.Is2">
                             <ForceSyncGoogle SubjectCourseId="SubjectCourse?.Id"/>
                         </BarItem>
 
@@ -27,7 +27,7 @@
 
                         @if (organizationName is not null)
                         {
-                            <BarItem>
+                            <BarItem Margin="Margin.Is2">
                                 <ForceSyncGitHubMentors OrganizationName="@organizationName"/>
                             </BarItem>
                         }

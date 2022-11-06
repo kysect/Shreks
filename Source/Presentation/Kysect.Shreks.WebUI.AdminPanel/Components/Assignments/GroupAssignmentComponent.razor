@@ -1,0 +1,69 @@
+@using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.Components
+@inject GroupAssignmentClient Client
+
+@if (Group is not null)
+{
+    <Card Margin="Margin.Is2">
+        <CardHeader>
+            <Heading Size="HeadingSize.Is2">
+                @Group.GroupName
+            </Heading>
+        </CardHeader>
+
+        <CardBody Padding="Padding.Is2">
+            <Addons>
+                <Addon AddonType="AddonType.Start">
+                    <AddonLabel>Deadline</AddonLabel>
+                </Addon>
+
+                <Addon AddonType="AddonType.Body">
+
+                    <DatePicker TValue="DateTime"
+                                InputMode="DateInputMode.Date"
+                                DateChanged="UpdateDeadline"
+                                DisplayFormat="dd/MM/yyy"
+                                Date="Group.Deadline"/>
+
+                </Addon>
+            </Addons>
+        </CardBody>
+    </Card>
+
+    <ConfirmationComponent @ref=@_component
+                           ActionName=@ActionName
+                           Action=@Execute/>
+}
+
+@code {
+
+    [Parameter]
+    public AssignmentDto? Assignment { get; set; }
+
+    [Parameter]
+    public GroupAssignmentDto? Group { get; set; }
+
+    private ConfirmationComponent? _component;
+
+    private string ActionName => $"update {Group?.GroupName} {Assignment?.Title} deadline to {Group?.Deadline}";
+
+    private Task UpdateDeadline(DateTime date)
+    {
+        if (Group is null)
+            return Task.CompletedTask;
+
+        Group.Deadline = date;
+        return _component?.Show() ?? Task.CompletedTask;
+    }
+
+    private Task Execute(CancellationToken cancellationToken)
+    {
+        if (Group is null || Assignment is null)
+        {
+            return Task.CompletedTask;
+        }
+
+        return Client.GroupsPutAsync(Group.GroupId, Assignment.Id, Group.Deadline, cancellationToken);
+    }
+
+}

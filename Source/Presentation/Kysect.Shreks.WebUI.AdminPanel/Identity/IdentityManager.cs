@@ -41,10 +41,8 @@ public class IdentityManager : IIdentityManager
             return false;
 
         var identity = await _storage.GetItemAsync<UserIdentity>(IdentityKey, cancellationToken);
-
         var now = DateTime.UtcNow;
-        Console.WriteLine(identity.ExpirationDateTime);
-        Console.WriteLine(now);
+
         return identity.ExpirationDateTime > now;
     }
 }

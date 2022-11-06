@@ -17,16 +17,8 @@ public class IdentityService : IIdentityService
     public async Task LoginAsync(string username, string password, CancellationToken cancellationToken)
     {
         var request = new LoginRequest { Username = username, Password = password, };
-
-        Console.WriteLine(request);
-
         var response = await _identityClient.LoginAsync(request, cancellationToken);
-
-        Console.WriteLine(response);
-
-        var identity = new UserIdentity(response.Token, response.Expires.DateTime);
-
-        Console.WriteLine(identity);
+        var identity = new UserIdentity(response.Token, response.Expires);
 
         await _identityManager.UpdateIdentityAsync(identity, cancellationToken);
     }

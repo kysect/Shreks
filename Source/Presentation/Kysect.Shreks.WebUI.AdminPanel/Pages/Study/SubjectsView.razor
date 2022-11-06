@@ -1,6 +1,6 @@
 @page "/adminpanel/subjects"
 @using Kysect.Shreks.WebApi.Sdk
-@using Kysect.Shreks.WebUI.AdminPanel.Components
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Subjects
 @inject SubjectClient SubjectClient
 
 @if (_subjects is not null)
@@ -12,17 +12,7 @@
     <Div>
         @foreach (var subject in _subjects.OrderBy(x => x.Title.Length))
         {
-            <Card Margin="Margin.Is2" Width="Width.Max100">
-                <CardBody Flex="Flex.JustifyContent.Between">
-                    <Heading Margin="Margin.Is0.FromBottom">
-                        @subject.Title
-                    </Heading>
-
-                    <Anchor To="@($"adminpanel/subjects/{subject.Id}")" Flex="Flex.AlignItems.Center">
-                        View
-                    </Anchor>
-                </CardBody>
-            </Card>
+            <SubjectInfoComponent Subject=@subject/>
         }
     </Div>
 }
