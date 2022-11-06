@@ -5,6 +5,7 @@ using Blazorise.Icons.FontAwesome;
 using Kysect.Shreks.WebApi.Sdk;
 using Kysect.Shreks.WebUI.AdminPanel.Identity;
 using Kysect.Shreks.WebUI.AdminPanel.Tools;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Extensions;
 
@@ -20,9 +21,22 @@ public static class ServiceCollectionExtensions
             .AddBootstrapProviders()
             .AddFontAwesomeIcons();
 
+        collection.AddScoped<IIdentityManager, LocalStorageIdentityManager>();
+        collection.AddScoped<IIdentityService, IdentityService>();
+
+        collection.AddOptions();
+        collection.AddAuthorizationCore();
+        collection.AddScoped<IdentityStateProvider>();
+        collection.AddScoped<AuthenticationStateProvider>(x => x.GetRequiredService<IdentityStateProvider>());
+
         collection.AddHttpClient(Constants.ClientName).AddHttpMessageHandler(p =>
             new AuthorizationMessageHandlerDecorator(p.GetRequiredService<IIdentityManager>()));
-        
+
+        collection.AddClients(baseUrl);
+    }
+
+    private static void AddClients(this IServiceCollection collection, string baseUrl)
+    {
         collection.AddClient(x => new IdentityClient(baseUrl, x));
         collection.AddClient(x => new SubjectClient(baseUrl, x));
         collection.AddClient(x => new SubjectCourseClient(baseUrl, x));
@@ -30,9 +44,6 @@ public static class ServiceCollectionExtensions
         collection.AddClient(x => new GithubManagementClient(baseUrl, x));
         collection.AddClient(x => new StudentClient(baseUrl, x));
         collection.AddClient(x => new GroupAssignmentClient(baseUrl, x));
-
-        collection.AddScoped<IIdentityManager, IdentityManager>();
-        collection.AddScoped<IIdentityService, IdentityService>();
     }
 
     private static void AddClient<T>(this IServiceCollection collection, Func<HttpClient, T> clientFactory)

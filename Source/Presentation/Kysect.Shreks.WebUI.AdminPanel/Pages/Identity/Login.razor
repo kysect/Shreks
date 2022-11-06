@@ -1,7 +1,9 @@
 @page "/adminpanel/identity/login"
 @using Kysect.Shreks.WebUI.AdminPanel.Identity
-@inject IIdentityService IdentityService
+@layout EmptyLayout
+@inject IdentityStateProvider StateProvider
 @inject NavigationManager NavigationManager
+@attribute [AllowAnonymous]
 
 <Div Flex="Flex.Column.JustifyContent.Center.AlignItems.Center" Height="Height.Is100">
     <Form Padding="Padding.Is5.FromTop" style="width: 30%">
@@ -39,24 +41,28 @@
 </Div>
 
 @code {
-    private string _username;
-    private string _password;
 
-    private Modal _modal;
+    private string? _username;
+    private string? _password;
+
+    private Modal? _modal;
 
     private Exception? _exception;
 
     private async Task OnLoginButtonClickedAsync()
     {
+        if (_username is null || _password is null)
+            return;
+
         try
         {
-            await IdentityService.LoginAsync(_username, _password, default);
+            await StateProvider.LoginAsync(_username, _password, default);
             NavigationManager.NavigateTo("/", true);
         }
         catch (Exception e)
         {
             _exception = e;
-            await _modal.Show();
+            await (_modal?.Show() ?? Task.CompletedTask);
         }
     }
 
@@ -67,8 +73,6 @@
     }
 
     private Task CloseModal()
-    {
-        return _modal.Hide();
-    }
+        => _modal?.Hide() ?? Task.CompletedTask;
 
 }

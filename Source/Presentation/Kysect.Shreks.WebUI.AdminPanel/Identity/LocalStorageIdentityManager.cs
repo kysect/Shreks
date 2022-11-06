@@ -3,12 +3,12 @@ using Kysect.Shreks.WebUI.AdminPanel.Models;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Identity;
 
-public class IdentityManager : IIdentityManager
+public class LocalStorageIdentityManager : IIdentityManager
 {
     private const string IdentityKey = "ShreksIdentity";
     private readonly ILocalStorageService _storage;
 
-    public IdentityManager(ILocalStorageService storage)
+    public LocalStorageIdentityManager(ILocalStorageService storage)
     {
         _storage = storage;
     }

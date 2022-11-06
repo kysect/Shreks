@@ -1,20 +1,12 @@
 @page "/"
-@using Kysect.Shreks.WebUI.AdminPanel.Identity
-@inject IIdentityManager IdentityManager
 @inject NavigationManager NavigationManager
 
 
 @code
 {
-    protected override async Task OnInitializedAsync()
+    protected override Task OnInitializedAsync()
     {
-        if (await IdentityManager.HasIdentityAsync(default))
-        {
-            NavigationManager.NavigateTo("adminpanel/subjects");
-        }
-        else
-        {
-            NavigationManager.NavigateTo("adminpanel/identity/login", true);
-        }
+        NavigationManager.NavigateTo("adminpanel/subjects");
+        return Task.CompletedTask;
     }
 }
