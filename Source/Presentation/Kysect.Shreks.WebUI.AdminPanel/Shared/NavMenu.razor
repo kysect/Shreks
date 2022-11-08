@@ -56,10 +56,4 @@
         HasIdentity = await IdentityManager.HasIdentityAsync(default);
     }
 
-    private async Task Throw()
-    {
-        await using var builder = Executor.Execute(() => throw new Exception("Error"));
-        builder.Title = $"Error {_counter++}";
-    }
-
 }

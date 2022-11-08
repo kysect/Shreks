@@ -10,13 +10,12 @@
          Overflow="Overflow.Scroll"
          Height="Height.Max100"
          Flex="Flex.ReverseColumn"
-         Class="hide-scroll">
+         Class="hide-scroll-bar">
 
         <Div Flex="Flex.Column">
             @foreach (var message in Store.Exceptions)
             {
-                <ExceptionMessageComponent Message="@message"
-                                           Dismiss="Store.Dismiss"/>
+                <ExceptionMessageComponent Message="@message"Dismiss="Store.Dismiss"/>
             }
         </Div>
     </Div>
