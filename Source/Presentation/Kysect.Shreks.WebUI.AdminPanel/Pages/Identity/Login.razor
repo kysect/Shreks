@@ -1,8 +1,10 @@
 @page "/adminpanel/identity/login"
 @using Kysect.Shreks.WebUI.AdminPanel.Identity
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @layout EmptyLayout
 @inject IdentityStateProvider StateProvider
 @inject NavigationManager NavigationManager
+@inject ISafeExecutor SafeExecutor
 @attribute [AllowAnonymous]
 
 <Div Flex="Flex.Column.JustifyContent.Center.AlignItems.Center" Height="Height.Is100">
@@ -24,20 +26,6 @@
             </Button>
         </Div>
     </Form>
-
-    <Modal @ref="_modal" Closing="@OnModalClosing">
-        <ModalContent Centered>
-            <ModalHeader>
-                Login error occured
-            </ModalHeader>
-            <ModalBody>
-                @_exception?.Message
-            </ModalBody>
-            <ModalFooter>
-                <Button Color="Color.Secondary" Clicked="@CloseModal">Close</Button>
-            </ModalFooter>
-        </ModalContent>
-    </Modal>
 </Div>
 
 @code {
@@ -45,34 +33,20 @@
     private string? _username;
     private string? _password;
 
-    private Modal? _modal;
-
-    private Exception? _exception;
-
     private async Task OnLoginButtonClickedAsync()
     {
         if (_username is null || _password is null)
             return;
 
-        try
+        await using var builder = SafeExecutor.Execute(() => StateProvider.LoginAsync(_username, _password, default));
+        
+        builder.Title = "Login failed";
+
+        builder.OnSuccessAsync(() =>
         {
-            await StateProvider.LoginAsync(_username, _password, default);
             NavigationManager.NavigateTo("/", true);
-        }
-        catch (Exception e)
-        {
-            _exception = e;
-            await (_modal?.Show() ?? Task.CompletedTask);
-        }
+            return Task.CompletedTask;
+        });
     }
-
-    private Task OnModalClosing(ModalClosingEventArgs e)
-    {
-        _exception = null;
-        return Task.CompletedTask;
-    }
-
-    private Task CloseModal()
-        => _modal?.Hide() ?? Task.CompletedTask;
 
 }
