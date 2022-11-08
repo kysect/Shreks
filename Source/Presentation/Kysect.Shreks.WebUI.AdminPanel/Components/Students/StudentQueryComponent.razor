@@ -1,5 +1,7 @@
 @using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @inject StudentClient Client
+@inject ISafeExecutor SafeExecutor
 
 <Accordion>
     <Collapse id="@ToggleId" Visible="@_visible" type="button" @onclick="@Toggle">
@@ -117,11 +119,10 @@
     {
         _isExecuting = true;
 
-        try
+        await using (var builder = SafeExecutor.Execute(async () => { _students = await Client.QueryAsync(Build(), _cts.Token); }))
         {
-            _students = await Client.QueryAsync(Build(), _cts.Token);
+            builder.Title = "Failed to execute query";
         }
-        catch (OperationCanceledException) { }
 
         _isExecuting = false;
     }

@@ -2,7 +2,7 @@ using Kysect.Shreks.WebApi.Sdk;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Components.Students;
 
-public partial class StudentQueryComponent
+public partial class StudentQueryComponent : IDisposable
 {
     private readonly List<StudentQueryParameterQueryParameter> _parameters;
 
@@ -45,4 +45,7 @@ public partial class StudentQueryComponent
 
         return new StudentQueryParameterQueryConfiguration { Parameters = parameters, };
     }
+
+    public void Dispose()
+        => _cts.Dispose();
 }

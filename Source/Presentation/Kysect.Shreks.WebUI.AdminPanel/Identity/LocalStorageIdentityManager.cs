@@ -35,12 +35,11 @@ public class LocalStorageIdentityManager : IIdentityManager
 
     public async ValueTask<bool> HasIdentityAsync(CancellationToken cancellationToken)
     {
-        var hasIdentity = await _storage.ContainKeyAsync(IdentityKey, cancellationToken);
-
-        if (!hasIdentity)
-            return false;
-
         var identity = await _storage.GetItemAsync<UserIdentity>(IdentityKey, cancellationToken);
+        
+        if (identity is null)
+            return false;
+        
         var now = DateTime.UtcNow;
 
         return identity.ExpirationDateTime > now;

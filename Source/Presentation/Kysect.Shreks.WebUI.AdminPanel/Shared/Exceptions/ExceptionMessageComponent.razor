@@ -1,0 +1,47 @@
+@using Kysect.Shreks.WebUI.AdminPanel.Models
+
+@if (Message is not null)
+{
+    <Card Background="Background.Danger"
+          Margin="Margin.Is1"
+          Style="width: 300px!important;">
+
+        <CardHeader Flex="Flex.JustifyContent.Between.AlignContent.Center">
+            <Heading Size="HeadingSize.Is4" Margin="Margin.Is0.FromBottom">
+                @Message.Value.Title
+            </Heading>
+
+            <Div Flex="Flex.Column.AlignContent.Center">
+                <CloseButton Clicked="Close"/>
+            </Div>
+
+        </CardHeader>
+
+        @if (Message.Value.Message is not null)
+        {
+            <CardBody>
+                <CardTitle>
+                    @Message.Value.Message
+                </CardTitle>
+            </CardBody>
+        }
+    </Card>
+}
+
+@code {
+
+    [Parameter]
+    public ExceptionMessage? Message { get; set; }
+
+    [Parameter]
+    public Action<ExceptionMessage>? Dismiss { get; set; }
+
+    private void Close()
+    {
+        if (Message is null || Dismiss is null)
+            return;
+
+        Dismiss.Invoke(Message.Value);
+    }
+
+}

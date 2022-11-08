@@ -1,7 +1,12 @@
 @page "/adminpanel/subjects/{subjectId:guid}"
 @using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.Components.SubjectCourse
+@using Kysect.Shreks.WebUI.AdminPanel.Components
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.Models
 @inject SubjectClient SubjectClient
+@inject ISafeExecutor SafeExecutor
+@inject NavigationManager NavigationManager
 
 @if (_courses is not null)
 {
@@ -32,7 +37,15 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _courses = await SubjectClient.CoursesAsync(SubjectId);
+        await using var builder = SafeExecutor.Execute(async () => { _courses = await SubjectClient.CoursesAsync(SubjectId); });
+
+        builder.Title = "Failed to load subject course";
+
+        builder.OnFailAsync<Exception>(_ =>
+        {
+            NavigationManager.NavigateTo("/");
+            return Task.CompletedTask;
+        });
     }
 
 }

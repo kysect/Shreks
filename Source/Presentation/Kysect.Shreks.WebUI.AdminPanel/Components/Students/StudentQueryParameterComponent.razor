@@ -49,8 +49,6 @@
     [Parameter]
     public StudentQueryComponent? Parent { get; set; }
 
-    private Dropdown? _dropdown;
-
     private void OnRemoveClicked()
     {
         if (Parameter is null || Parent is null)

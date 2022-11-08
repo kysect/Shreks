@@ -1,6 +1,9 @@
 @using Kysect.Shreks.WebUI.AdminPanel.Identity
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Global
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.Extensions
 @inject IIdentityManager IdentityManager
+@inject ISafeExecutor Executor
 
 <Bar Breakpoint="Breakpoint.Desktop"
      Background="Background.Light"
@@ -25,7 +28,7 @@
                 <BarItem>
                     <BarLink To="adminpanel/subjects">Subjects</BarLink>
                 </BarItem>
-                
+
                 <BarItem>
                     <BarLink To="adminpanel/students">Students</BarLink>
                 </BarItem>
@@ -46,6 +49,7 @@
 @code {
 
     public bool HasIdentity;
+    private int _counter;
 
     protected override async Task OnInitializedAsync()
     {

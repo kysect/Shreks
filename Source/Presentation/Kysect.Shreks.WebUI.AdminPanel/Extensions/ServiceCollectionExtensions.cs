@@ -3,6 +3,7 @@ using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
 using Kysect.Shreks.WebApi.Sdk;
+using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling;
 using Kysect.Shreks.WebUI.AdminPanel.Identity;
 using Kysect.Shreks.WebUI.AdminPanel.Tools;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -21,8 +22,16 @@ public static class ServiceCollectionExtensions
             .AddBootstrapProviders()
             .AddFontAwesomeIcons();
 
+        var exceptionDisplayConfiguration = new ExceptionDisplayConfiguration(TimeSpan.FromSeconds(6));
+        collection.AddSingleton(exceptionDisplayConfiguration);
+
         collection.AddScoped<IIdentityManager, LocalStorageIdentityManager>();
         collection.AddScoped<IIdentityService, IdentityService>();
+
+        collection.AddSingleton<ExceptionManager>();
+        collection.AddSingleton<IExceptionSink>(x => x.GetRequiredService<ExceptionManager>());
+        collection.AddSingleton<IExceptionStore>(x => x.GetRequiredService<ExceptionManager>());
+        collection.AddSingleton<ISafeExecutor, SafeExecutor>();
 
         collection.AddOptions();
         collection.AddAuthorizationCore();
