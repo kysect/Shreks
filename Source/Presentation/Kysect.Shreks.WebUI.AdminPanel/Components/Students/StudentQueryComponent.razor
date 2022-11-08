@@ -62,6 +62,7 @@
                 <TableHeaderCell>Group</TableHeaderCell>
                 <TableHeaderCell>Name</TableHeaderCell>
                 <TableHeaderCell>GitHub</TableHeaderCell>
+                <TableHeaderCell>Links</TableHeaderCell>
             </TableRow>
         </TableHeader>
         <TableBody>
@@ -76,17 +77,22 @@
                     </TableRowCell>
 
                     <TableRowCell>
+                        @student.GitHubUsername
+
+                    </TableRowCell>
+
+                    <TableRowCell>
                         @if (string.IsNullOrEmpty(student.GitHubUsername) is false)
                         {
                             <Anchor To="@($"https://github.com/{student.GitHubUsername}")">
-                                @student.GitHubUsername
+                                <img class="github-image"
+                                     src="github.png"
+                                     alt="@($"{student.GitHubUsername}'s GitHub")"/>
                             </Anchor>
                         }
                     </TableRowCell>
-
                 </TableRow>
             }
-
         </TableBody>
     </Table>
 }

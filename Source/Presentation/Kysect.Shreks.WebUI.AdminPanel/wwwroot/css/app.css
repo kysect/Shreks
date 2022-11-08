@@ -71,3 +71,10 @@ a, .btn-link {
     width: 0;
     height: 0;
 }
+
+.github-image {
+    -webkit-filter: drop-shadow(0 0 1px black);
+    filter: drop-shadow(0 0 1px black);
+    width: 32px;
+    height: 32px;
+}
