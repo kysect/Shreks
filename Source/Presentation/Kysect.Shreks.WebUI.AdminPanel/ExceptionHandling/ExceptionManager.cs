@@ -17,17 +17,14 @@ public class ExceptionManager : IExceptionSink, IExceptionStore
 
     public IReadOnlyCollection<ExceptionMessage> Exceptions => _exceptions;
 
-    public void Consume(Exception exception, string? title, string? message)
+    public async ValueTask ConsumeAsync(Exception exception, string? title, string? message)
     {
         var value = new ExceptionMessage(title, message, exception);
         _exceptions.Add(value);
         OnExceptionAdded(value);
 
-        Task.Run(async () =>
-        {
-            await Task.Delay(_configuration.PopupLifetime);
-            Dismiss(new ExceptionMessage(title, message, exception));
-        });
+        await Task.Delay(_configuration.PopupLifetime);
+        Dismiss(new ExceptionMessage(title, message, exception));
     }
 
     public void Dismiss(ExceptionMessage exception)

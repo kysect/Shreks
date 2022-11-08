@@ -44,7 +44,7 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
 
             var message = ShowExceptionDetails ? e.Message : null;
 
-            _exceptionSink.Consume(e, Title, message);
+            await _exceptionSink.ConsumeAsync(e, Title, message);
         }
     }
 }
@@ -91,7 +91,7 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
 
             var message = ShowExceptionDetails ? e.Message : null;
 
-            _exceptionSink.Consume(e, Title, message);
+            await _exceptionSink.ConsumeAsync(e, Title, message);
         }
     }
 }
