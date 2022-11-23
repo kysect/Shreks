@@ -38,6 +38,7 @@ public class MappingTest : DataAccessTestBase
     [InlineData(SubmissionStateDto.Inactive, SubmissionState.Inactive)]
     [InlineData(SubmissionStateDto.Completed, SubmissionState.Completed)]
     [InlineData(SubmissionStateDto.Reviewed, SubmissionState.Reviewed)]
+    [InlineData(SubmissionStateDto.Banned, SubmissionState.Banned)]
     public void Map_Should_MapSubmissionStateDtoToSubmissionState(SubmissionStateDto stateDto, SubmissionState state)
     {
         var receivedState = _mapper.Map<SubmissionState>(stateDto);
