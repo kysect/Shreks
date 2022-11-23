@@ -218,5 +218,11 @@ namespace Kysect.Shreks.Common.Resources {
                 return ResourceManager.GetString("StudentGroupAssignmentMismatch", resourceCulture);
             }
         }
+        
+        internal static string SubmissionBanned {
+            get {
+                return ResourceManager.GetString("SubmissionBanned", resourceCulture);
+            }
+        }
     }
 }
