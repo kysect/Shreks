@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;

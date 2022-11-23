@@ -3,6 +3,7 @@ using FluentSpreadsheets;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
@@ -11,7 +12,7 @@ using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
-public class LabsTable : RowTable<CoursePointsDto>
+public class LabsTable : RowTable<SubjectCoursePointsDto>
 {
     private static readonly IComponent BlankLabel = Label(string.Empty);
 
@@ -35,7 +36,7 @@ public class LabsTable : RowTable<CoursePointsDto>
         return component.WithDefaultStyle();
     }
 
-    protected override IEnumerable<IRowComponent> RenderRows(CoursePointsDto model)
+    protected override IEnumerable<IRowComponent> RenderRows(SubjectCoursePointsDto model)
     {
         yield return Row
         (

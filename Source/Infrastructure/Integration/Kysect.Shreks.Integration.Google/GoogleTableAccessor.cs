@@ -1,5 +1,7 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google.Commands;
 using Kysect.Shreks.Application.Abstractions.Google.Queries;
+using Kysect.Shreks.Application.Abstractions.SubjectCourses.Queries;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.TableManagement;
 using Kysect.Shreks.Integration.Google.Sheets;
@@ -13,14 +15,14 @@ public class GoogleTableAccessor : ITableAccessor
 {
     private readonly SemaphoreSlim _spreadsheetCreationSemaphore;
 
-    private readonly ISheet<CoursePointsDto> _pointsSheet;
+    private readonly ISheet<SubjectCoursePointsDto> _pointsSheet;
     private readonly ISheet<SubmissionsQueueDto> _queueSheet;
     private readonly ISpreadsheetManagementService _spreadsheetManagementService;
     private readonly IMediator _mediator;
     private readonly ILogger<GoogleTableAccessor> _logger;
 
     public GoogleTableAccessor(
-        ISheet<CoursePointsDto> pointsSheet,
+        ISheet<SubjectCoursePointsDto> pointsSheet,
         ISheet<SubmissionsQueueDto> queueSheet,
         ISpreadsheetManagementService spreadsheetManagementService,
         IMediator mediator,
@@ -41,10 +43,10 @@ public class GoogleTableAccessor : ITableAccessor
         {
             _logger.LogInformation("Start updating for points sheet of course {SubjectCourseId}.", subjectCourseId);
 
-            var query = new GetCoursePointsBySubjectCourse.Query(subjectCourseId);
-            GetCoursePointsBySubjectCourse.Response response = await _mediator.Send(query, token);
+            var query = new GetSubjectCoursePoints.Query(subjectCourseId);
+            GetSubjectCoursePoints.Response response = await _mediator.Send(query, token);
 
-            CoursePointsDto points = response.Points;
+            SubjectCoursePointsDto points = response.Points;
             string spreadsheetId = await GetSpreadsheetIdAsync(subjectCourseId, token);
             await _pointsSheet.UpdateAsync(spreadsheetId, points, token);
 

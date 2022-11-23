@@ -1,0 +1,50 @@
+using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Core.ValueObject;
+using RichEntity.Annotations;
+
+namespace Kysect.Shreks.Core.Study;
+
+public partial class StudentAssignment : IEntity
+{
+    public StudentAssignment(Student student, GroupAssignment assignment)
+        : this(groupId: assignment.GroupId, assignmentId: assignment.AssignmentId, userId: student.UserId)
+    {
+        if (assignment.Group.Students.Contains(student) is false)
+        {
+            string studentString = student.ToString();
+            string groupString = assignment.Group.ToString();
+            throw StudentAssignmentException.StudentGroupAssignmentMismatch(studentString, groupString);
+        }
+
+        Student = student;
+        Assignment = assignment;
+    }
+
+    [KeyProperty]
+    public Student Student { get; }
+
+    [KeyProperty]
+    public GroupAssignment Assignment { get; }
+
+    public StudentAssignmentPoints? Points => CalculatePoints();
+
+    private StudentAssignmentPoints? CalculatePoints()
+    {
+        IEnumerable<Submission> submissions = Assignment.Submissions
+            .Where(x => x.Student.Equals(Student))
+            .Where(x => x.State is SubmissionState.Completed);
+
+        (Submission submission, Points? points) = submissions
+            .Select(s => (submission: s, points: s.EffectivePoints))
+            .OrderByDescending(x => x.points)
+            .FirstOrDefault();
+
+        if (points is null)
+            return null;
+
+        return new StudentAssignmentPoints(Student, Assignment.Assignment, points.Value, submission.SubmissionDateOnly);
+    }
+}

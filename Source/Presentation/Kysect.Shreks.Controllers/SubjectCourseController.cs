@@ -2,6 +2,7 @@
 using Kysect.Shreks.Application.Abstractions.Study.Commands;
 using Kysect.Shreks.Application.Abstractions.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

@@ -2,7 +2,6 @@
 using Kysect.Shreks.Core.Extensions;
 using Kysect.Shreks.Core.Specifications.Github;
 using Kysect.Shreks.Core.Submissions;
-using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 

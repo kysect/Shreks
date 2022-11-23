@@ -204,4 +204,7 @@
   <data name="UserNotFoundInSubjectCourse" xml:space="preserve">
     <value>User with id {0} not found or have no permissions to create submission in course {1}.</value>
   </data>
+  <data name="StudentGroupAssignmentMismatch" xml:space="preserve">
+    <value>Student {0} is not a member of a group {1}.</value>
+  </data>
 </root>

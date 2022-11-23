@@ -1,3 +1,3 @@
-namespace Kysect.Shreks.Application.Dto.Study;
+namespace Kysect.Shreks.Application.Dto.SubjectCourses;
 
 public record SubjectCourseAssociationDto(string Type, string Value);

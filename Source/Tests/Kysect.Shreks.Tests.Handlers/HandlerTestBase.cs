@@ -1,21 +1,21 @@
+using AutoMapper;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
-using Kysect.Shreks.Tests.GithubWorkflow.Tools;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kysect.Shreks.Tests.GithubWorkflow;
+namespace Kysect.Shreks.Tests.Handlers;
 
-public class GithubWorkflowTestBase : IDisposable
+public class HandlerTestBase : IDisposable
 {
     protected readonly ShreksDatabaseContext Context;
+    protected readonly IMapper Mapper;
     protected readonly IServiceProvider Provider;
-    protected readonly GithubApplicationTestContextGenerator TestContextGenerator;
 
-    protected GithubWorkflowTestBase()
+    protected HandlerTestBase()
     {
         var collection = new ServiceCollection();
         var id = Guid.NewGuid();
@@ -31,14 +31,13 @@ public class GithubWorkflowTestBase : IDisposable
         });
         collection.AddDatabaseSeeders();
         collection.AddMappingConfiguration();
-        collection.AddScoped<GithubApplicationTestContextGenerator>();
 
         Provider = collection.BuildServiceProvider();
 
         Context = Provider.GetRequiredService<ShreksDatabaseContext>();
         Context.Database.EnsureCreated();
 
-        TestContextGenerator = Provider.GetRequiredService<GithubApplicationTestContextGenerator>();
+        Mapper = Provider.GetRequiredService<IMapper>();
 
         Provider.UseDatabaseSeeders().GetAwaiter().GetResult();
     }
@@ -47,5 +46,7 @@ public class GithubWorkflowTestBase : IDisposable
     {
         Context.Database.EnsureDeleted();
         Context.Dispose();
+
+        GC.SuppressFinalize(this);
     }
 }
