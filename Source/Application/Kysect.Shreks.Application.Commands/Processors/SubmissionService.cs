@@ -93,6 +93,7 @@ public class SubmissionService : ISubmissionService
         PermissionValidator.EnsureMentorAccess(userId, submission);
 
         submission.Ban();
+        _updateQueue.EnqueueCoursePointsUpdate(submission.GroupAssignment.Assignment.SubjectCourse.Id);
 
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
