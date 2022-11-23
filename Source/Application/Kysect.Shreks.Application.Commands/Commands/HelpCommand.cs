@@ -22,6 +22,7 @@ public class HelpCommand : IShreksCommand
 - `/update [Submission number] {-r RatingPercent} {-e ExtraPoints} {-d Date}`. Например:
   - `/update 1 -d 27.09.2022` обновит сабмишен с номером 1 и поставит ему дату 27.09
   - `/update 2 -r 100 -e 5` обновит сабмишен с номером 2 и поставит ему 100% рейта и 5 дополнительных баллов
+- `/ban [Submission number]` - забанить сабмишен. Сабмишен будет помечен как забаненный, но не удален из базы данных.
 
 Обрабатываемые ивенты:
 
