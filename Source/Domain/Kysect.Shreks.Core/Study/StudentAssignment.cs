@@ -35,7 +35,7 @@ public partial class StudentAssignment : IEntity
     {
         IEnumerable<Submission> submissions = Assignment.Submissions
             .Where(x => x.Student.Equals(Student))
-            .Where(x => x.State is SubmissionState.Completed);
+            .Where(x => x.State is SubmissionState.Completed or SubmissionState.Banned);
 
         (Submission submission, Points? points, bool isBanned) = submissions
             .Select(s => (submission: s, points: s.EffectivePoints, isBanned: s.State is SubmissionState.Banned))
