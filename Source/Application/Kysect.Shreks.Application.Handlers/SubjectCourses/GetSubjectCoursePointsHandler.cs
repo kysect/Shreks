@@ -65,7 +65,7 @@ public class GetSubjectCoursePointsHandler : IRequestHandler<Query, Response>
         StudentDto studentDto = _mapper.Map<StudentDto>(grouping.Key);
 
         AssignmentPointsDto[] points = grouping
-            .Select(x => new AssignmentPointsDto(x.Assignment.Id, x.SubmissionDate, x.Points.Value))
+            .Select(x => new AssignmentPointsDto(x.Assignment.Id, x.SubmissionDate, x.IsBanned, x.Points.Value))
             .ToArray();
 
         return new StudentPointsDto(studentDto, points);

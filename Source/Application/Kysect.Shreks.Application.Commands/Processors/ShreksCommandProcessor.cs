@@ -21,7 +21,9 @@ public class ShreksCommandProcessor
         _logger = logger;
     }
 
-    public async Task<BaseShreksCommandResult> ProcessBaseCommandSafe(IShreksCommand command, CancellationToken cancellationToken)
+    public async Task<BaseShreksCommandResult> ProcessBaseCommandSafe(
+        IShreksCommand command,
+        CancellationToken cancellationToken)
     {
         try
         {
@@ -29,7 +31,10 @@ public class ShreksCommandProcessor
         }
         catch (ShreksDomainException e)
         {
-            string message = $"{UserCommandProcessingMessage.DomainExceptionWhileProcessingUserCommand(command.GetType().Name)} {e.Message}";
+            string commandName = command.GetType().Name;
+            string title = UserCommandProcessingMessage.DomainExceptionWhileProcessingUserCommand(commandName);
+            string message = $"{title} {e.Message}";
+
             _logger.LogError(e, message);
             return BaseShreksCommandResult.Fail(message);
         }
@@ -41,7 +46,9 @@ public class ShreksCommandProcessor
         }
     }
 
-    private async Task<BaseShreksCommandResult> ProcessBaseCommand(IShreksCommand command, CancellationToken cancellationToken)
+    private async Task<BaseShreksCommandResult> ProcessBaseCommand(
+        IShreksCommand command,
+        CancellationToken cancellationToken)
     {
         switch (command)
         {
@@ -54,9 +61,15 @@ public class ShreksCommandProcessor
 
             case CreateSubmissionCommand createSubmissionCommand:
             {
-                PayloadAndAssignmentContext context = await _commandContextFactory.CreatePayloadAndAssignmentContext(cancellationToken);
-                SubmissionRateDto submission = await createSubmissionCommand.ExecuteAsync(context, _logger, cancellationToken);
-                return BaseShreksCommandResult.Success(UserCommandProcessingMessage.SubmissionCreated(submission.ToPullRequestString()));
+                PayloadAndAssignmentContext context = await _commandContextFactory
+                    .CreatePayloadAndAssignmentContext(cancellationToken);
+
+                SubmissionRateDto submission = await createSubmissionCommand
+                    .ExecuteAsync(context, _logger, cancellationToken);
+
+                string message = UserCommandProcessingMessage.SubmissionCreated(submission.ToPullRequestString());
+
+                return BaseShreksCommandResult.Success(message);
             }
 
             case DeactivateCommand deactivateCommand:
@@ -85,7 +98,10 @@ public class ShreksCommandProcessor
                 SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
                 Submission submission = await rateCommand.ExecuteAsync(context, _logger, cancellationToken);
                 SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
-                return BaseShreksCommandResult.Success(UserCommandProcessingMessage.SubmissionRated(submissionDto.ToPullRequestString()));
+
+                string message = UserCommandProcessingMessage.SubmissionRated(submissionDto.ToPullRequestString());
+
+                return BaseShreksCommandResult.Success(message);
             }
 
             case UpdateCommand updateCommand:
@@ -93,7 +109,10 @@ public class ShreksCommandProcessor
                 UpdateContext context = await _commandContextFactory.CreateUpdateContextAsync(cancellationToken);
                 Submission submission = await updateCommand.ExecuteAsync(context, _logger, cancellationToken);
                 SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
-                return BaseShreksCommandResult.Success(UserCommandProcessingMessage.SubmissionUpdated(submissionDto.ToPullRequestString()));
+
+                string message = UserCommandProcessingMessage.SubmissionUpdated(submissionDto.ToPullRequestString());
+
+                return BaseShreksCommandResult.Success(message);
             }
 
             case MarkReviewedCommand markReviewedCommand:
@@ -101,6 +120,13 @@ public class ShreksCommandProcessor
                 SubmissionContext context = await _commandContextFactory.CreateSubmissionContext(cancellationToken);
                 await markReviewedCommand.ExecuteAsync(context, cancellationToken);
                 return BaseShreksCommandResult.Success(UserCommandProcessingMessage.SubmissionMarkedAsReviewed());
+            }
+
+            case BanCommand banCommand:
+            {
+                UpdateContext context = await _commandContextFactory.CreateUpdateContextAsync(cancellationToken);
+                Submission submission = await banCommand.ExecuteAsync(context, _logger, cancellationToken);
+                return BaseShreksCommandResult.Success(UserCommandProcessingMessage.SubmissionBanned(submission.Id));
             }
 
             default:

@@ -86,4 +86,17 @@ public class SubmissionService : ISubmissionService
                    .FirstOrDefaultAsync(cancellationToken)
                ?? throw new EntityNotFoundException($"Couldn't find submission with code ${code}");
     }
+
+    public async Task<Submission> BanSubmissionAsync(Guid submissionId, Guid userId, CancellationToken cancellationToken)
+    {
+        Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
+        PermissionValidator.EnsureMentorAccess(userId, submission);
+
+        submission.Ban();
+
+        _context.Submissions.Update(submission);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return submission;
+    }
 }
