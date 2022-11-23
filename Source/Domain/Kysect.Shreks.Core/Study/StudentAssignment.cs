@@ -37,14 +37,23 @@ public partial class StudentAssignment : IEntity
             .Where(x => x.Student.Equals(Student))
             .Where(x => x.State is SubmissionState.Completed);
 
-        (Submission submission, Points? points) = submissions
-            .Select(s => (submission: s, points: s.EffectivePoints))
-            .OrderByDescending(x => x.points)
+        (Submission submission, Points? points, bool isBanned) = submissions
+            .Select(s => (submission: s, points: s.EffectivePoints, isBanned: s.State is SubmissionState.Banned))
+            .OrderByDescending(x => x.isBanned)
+            .ThenByDescending(x => x.points)
             .FirstOrDefault();
 
-        if (points is null)
+        if (points is null && isBanned is false)
             return null;
 
-        return new StudentAssignmentPoints(Student, Assignment.Assignment, points.Value, submission.SubmissionDateOnly);
+        if (isBanned)
+            points = null;
+
+        return new StudentAssignmentPoints(
+            Student,
+            Assignment.Assignment,
+            isBanned,
+            points ?? ValueObject.Points.None,
+            submission.SubmissionDateOnly);
     }
 }

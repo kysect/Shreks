@@ -71,6 +71,12 @@ public abstract partial class Submission : IEntity<Guid>
 
     public void Rate(Fraction? rating, Points? extraPoints)
     {
+        if (State is SubmissionState.Banned)
+        {
+            string message = $"Submission {this} is banned and cannot be rated";
+            throw new DomainInvalidOperationException(message);
+        }
+
         if (State is not (SubmissionState.Active or SubmissionState.Reviewed or SubmissionState.Completed))
         {
             string message = $"Cannot update submission points. Submission state: {State}.";
@@ -90,6 +96,17 @@ public abstract partial class Submission : IEntity<Guid>
 
         if (extraPoints is not null)
             ExtraPoints = extraPoints;
+    }
+
+    public void Ban()
+    {
+        if (State is SubmissionState.Banned)
+        {
+            string message = $"Submission {this} is already banned";
+            throw new DomainInvalidOperationException(message);
+        }
+
+        State = SubmissionState.Banned;
     }
 
     protected void AddAssociation(SubmissionAssociation association)
