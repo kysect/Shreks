@@ -207,4 +207,7 @@
   <data name="StudentGroupAssignmentMismatch" xml:space="preserve">
     <value>Student {0} is not a member of a group {1}.</value>
   </data>
+  <data name="SubmissionBanned" xml:space="preserve">
+    <value>Submission {0} successfully banned.</value>
+  </data>
 </root>

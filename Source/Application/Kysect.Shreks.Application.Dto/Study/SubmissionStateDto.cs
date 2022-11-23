@@ -7,4 +7,5 @@ public enum SubmissionStateDto
     Deleted,
     Completed,
     Reviewed,
+    Banned,
 }

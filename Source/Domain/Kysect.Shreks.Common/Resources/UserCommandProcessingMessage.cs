@@ -81,4 +81,9 @@ public static class UserCommandProcessingMessage
     {
         return UserMessages.MentorMergeUnratedSubmission;
     }
+
+    public static string SubmissionBanned(Guid submissionId)
+    {
+        return string.Format(UserMessages.SubmissionBanned, submissionId);
+    }
 }
