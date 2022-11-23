@@ -23,7 +23,10 @@ public class SubmissionService : ISubmissionService
         _updateQueue = updateQueue;
     }
 
-    public async Task<Submission> UpdateSubmissionState(Guid submissionId, Guid userId, SubmissionState state,
+    public async Task<Submission> UpdateSubmissionState(
+        Guid submissionId,
+        Guid userId,
+        SubmissionState state,
         CancellationToken cancellationToken)
     {
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
@@ -38,7 +41,10 @@ public class SubmissionService : ISubmissionService
         return submission;
     }
 
-    public async Task<Submission> UpdateSubmissionDate(Guid submissionId, Guid userId, DateOnly newDate,
+    public async Task<Submission> UpdateSubmissionDate(
+        Guid submissionId,
+        Guid userId,
+        DateOnly newDate,
         CancellationToken cancellationToken)
     {
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
@@ -55,8 +61,12 @@ public class SubmissionService : ISubmissionService
         return submission;
     }
 
-    public async Task<Submission> UpdateSubmissionPoints(Guid submissionId, Guid userId, double? newRating,
-        double? extraPoints, CancellationToken cancellationToken)
+    public async Task<Submission> UpdateSubmissionPoints(
+        Guid submissionId,
+        Guid userId,
+        double? newRating,
+        double? extraPoints,
+        CancellationToken cancellationToken)
     {
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
@@ -76,7 +86,10 @@ public class SubmissionService : ISubmissionService
         return submission;
     }
 
-    public async Task<Submission> GetSubmissionByCodeAsync(int code, Guid studentId, Guid assignmentId,
+    public async Task<Submission> GetSubmissionByCodeAsync(
+        int code,
+        Guid studentId,
+        Guid assignmentId,
         CancellationToken cancellationToken)
     {
         return await _context.Submissions
@@ -93,10 +106,11 @@ public class SubmissionService : ISubmissionService
         PermissionValidator.EnsureMentorAccess(userId, submission);
 
         submission.Ban();
-        _updateQueue.EnqueueCoursePointsUpdate(submission.GroupAssignment.Assignment.SubjectCourse.Id);
 
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
+
+        _updateQueue.EnqueueCoursePointsUpdate(submission.GroupAssignment.Assignment.SubjectCourse.Id);
 
         return submission;
     }
