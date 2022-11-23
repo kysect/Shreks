@@ -119,10 +119,10 @@ public abstract partial class Submission : IEntity<Guid>
 
     private void SetState(SubmissionState state)
     {
-        if (_state is SubmissionState.Completed && state != SubmissionState.Completed)
+        if (_state is SubmissionState.Completed && state is not (SubmissionState.Completed or SubmissionState.Banned))
             throw new DomainInvalidOperationException($"Submission {this} is already completed");
 
-        if (_state is SubmissionState.Deleted)
+        if (_state is SubmissionState.Deleted && state is not SubmissionState.Banned)
             throw new DomainInvalidOperationException($"Submission {this} is already deleted");
 
         _state = state;
