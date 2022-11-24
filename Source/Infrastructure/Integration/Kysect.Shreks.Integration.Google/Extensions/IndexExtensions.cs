@@ -24,7 +24,7 @@ public static class IndexExtensions
     {
         if (value is 0)
             return string.Empty;
-        
+
         var stringBuilder = new StringBuilder();
 
         while (value > 0)

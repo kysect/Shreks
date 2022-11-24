@@ -41,10 +41,10 @@ public class LabsTable : RowTable<SubjectCoursePointsDto>
     {
         yield return Row
         (
-            Label("ISU").WithColumnWidth(60),
-            Label("ФИО").WithColumnWidth(240),
+            Label("ISU").WithColumnWidth(0.8),
+            Label("ФИО").WithColumnWidth(2),
             Label("Группа"),
-            Label("GitHub").WithColumnWidth(150).Frozen(),
+            Label("GitHub").WithColumnWidth(1.2).Frozen(),
             ForEach(model.Assignments, a => VStack
             (
                 Label(a.ShortName).WithSideMediumBorder(),

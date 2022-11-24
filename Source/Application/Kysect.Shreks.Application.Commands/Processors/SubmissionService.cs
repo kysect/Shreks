@@ -110,7 +110,10 @@ public class SubmissionService : ISubmissionService
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _updateQueue.EnqueueCoursePointsUpdate(submission.GroupAssignment.Assignment.SubjectCourse.Id);
+        Guid subjectCourseId = submission.GroupAssignment.Assignment.SubjectCourse.Id;
+
+        _updateQueue.EnqueueCoursePointsUpdate(subjectCourseId);
+        _updateQueue.EnqueueSubmissionsQueueUpdate(subjectCourseId, submission.Student.Group.Id);
 
         return submission;
     }
