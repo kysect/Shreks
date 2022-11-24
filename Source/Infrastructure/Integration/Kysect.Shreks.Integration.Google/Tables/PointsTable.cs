@@ -18,16 +18,16 @@ public class PointsTable : RowTable<CourseStudentsDto>
 
     private static readonly IRowComponent Header = Row
     (
-        Label("ISU").WithColumnWidth(60).WithFrozenRows(),
-        Label("ФИО").WithColumnWidth(240),
+        Label("ISU").WithColumnWidth(0.8).WithFrozenRows(),
+        Label("ФИО").WithColumnWidth(2),
         Label("Группа"),
-        Label("GitHub").WithColumnWidth(150),
-        Label("Лабораторные").WithColumnWidth(110),
+        Label("GitHub").WithColumnWidth(1.2),
+        Label("Лабораторные").WithColumnWidth(1.1),
         Label("Karma"),
         Label("Экзамен"),
         Label("Сумма"),
         Label("Оценка"),
-        Label("Комментарий").WithColumnWidth(350).WithTrailingMediumBorder()
+        Label("Комментарий").WithColumnWidth(2.7).WithTrailingMediumBorder()
     );
 
     protected override IComponent Customize(IComponent component)
