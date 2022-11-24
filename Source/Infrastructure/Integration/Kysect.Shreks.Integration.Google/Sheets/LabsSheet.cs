@@ -39,9 +39,10 @@ public class LabsSheet : ISheet<SubjectCoursePointsDto>
     public async Task UpdateAsync(string spreadsheetId, SubjectCoursePointsDto model, CancellationToken token)
     {
         SubjectCoursePointsDto sortedPoints = SortPoints(model);
+        int sheetId = await _sheetEditor.CreateOrClearSheetAsync(spreadsheetId, Title, token);
 
         IComponent sheetData = _pointsTable.Render(sortedPoints);
-        var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, Id, Title, sheetData);
+        var renderCommand = new GoogleSheetRenderCommand(spreadsheetId, sheetId, Title, sheetData);
         await _renderer.RenderAsync(renderCommand, token);
 
         bool labsSheetExist = await _sheetEditor.CheckIfExists(spreadsheetId, PointsSheet.Title, token);

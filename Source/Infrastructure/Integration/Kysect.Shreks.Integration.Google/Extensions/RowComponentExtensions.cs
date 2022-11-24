@@ -57,9 +57,10 @@ public static class RowComponentExtensions
 
     private static IRowComponent WithAlternatingColor(this IRowComponent row, int rowNumber)
     {
-        if (rowNumber % 2 is 0)
-            row = row.FilledWith(Color.AliceBlue);
-
-        return row;
+        return (rowNumber % 2) switch
+        {
+            0 => row.FilledWith(Color.AliceBlue),
+            _ => row.FilledWith(Color.Transparent),
+        };
     }
 }
