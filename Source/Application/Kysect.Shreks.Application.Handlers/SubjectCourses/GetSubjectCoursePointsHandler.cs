@@ -39,11 +39,9 @@ public class GetSubjectCoursePointsHandler : IRequestHandler<Query, Response>
         SubjectCourse subjectCourse = await _context.SubjectCourses
             .GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
-        IEnumerable<StudentAssignmentPoints> studentAssignmentPoints = subjectCourse.Assignments
+        IEnumerable<StudentAssignment> studentAssignmentPoints = subjectCourse.Assignments
             .SelectMany(x => x.GroupAssignments)
-            .SelectMany(ga => ga.Group.Students.Select(s => new StudentAssignment(s, ga)))
-            .Select(x => x.Points)
-            .WhereNotNull();
+            .SelectMany(ga => ga.Group.Students.Select(s => new StudentAssignment(s, ga)));
 
         StudentPointsDto[] studentPoints = studentAssignmentPoints
             .GroupBy(x => x.Student)
@@ -60,14 +58,16 @@ public class GetSubjectCoursePointsHandler : IRequestHandler<Query, Response>
         return new Response(points);
     }
 
-    private StudentPointsDto MapToStudentPoints(IGrouping<Student, StudentAssignmentPoints> grouping)
+    private StudentPointsDto MapToStudentPoints(IGrouping<Student, StudentAssignment> grouping)
     {
         StudentDto studentDto = _mapper.Map<StudentDto>(grouping.Key);
 
-        AssignmentPointsDto[] points = grouping
+        AssignmentPointsDto[] pointsDto = grouping
+            .Select(x => x.Points)
+            .WhereNotNull()
             .Select(x => new AssignmentPointsDto(x.Assignment.Id, x.SubmissionDate, x.IsBanned, x.Points.Value))
             .ToArray();
 
-        return new StudentPointsDto(studentDto, points);
+        return new StudentPointsDto(studentDto, pointsDto);
     }
 }
