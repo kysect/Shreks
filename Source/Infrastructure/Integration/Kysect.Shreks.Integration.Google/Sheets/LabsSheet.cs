@@ -54,11 +54,11 @@ public class LabsSheet : ISheet<SubjectCoursePointsDto>
 
     private SubjectCoursePointsDto SortPoints(SubjectCoursePointsDto points)
     {
-        List<AssignmentDto> sortedAssignments = points.Assignments
+        var sortedAssignments = points.Assignments
             .OrderBy(a => a.Order)
             .ToList();
 
-        List<StudentPointsDto> sortedStudentPoints = points.StudentsPoints
+        var sortedStudentPoints = points.StudentsPoints
             .OrderBy(p => p.Student.GroupName)
             .ThenBy(p => _userFullNameFormatter.GetFullName(p.Student.User))
             .ToList();
