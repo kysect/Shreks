@@ -3,7 +3,7 @@ using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Google.Commands.UpdateSubjectGroupQueueSheet;
+using static Kysect.Shreks.Application.Contracts.Google.Commands.UpdateSubjectGroupQueueSheet;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 

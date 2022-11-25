@@ -1,6 +1,6 @@
-﻿using Kysect.Shreks.Application.Abstractions.Google.Commands;
-using Kysect.Shreks.Application.Abstractions.Google.Queries;
-using Kysect.Shreks.Application.Abstractions.SubjectCourses.Queries;
+﻿using Kysect.Shreks.Application.Contracts.Google.Commands;
+using Kysect.Shreks.Application.Contracts.Google.Queries;
+using Kysect.Shreks.Application.Contracts.SubjectCourses.Queries;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.TableManagement;

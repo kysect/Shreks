@@ -3,7 +3,7 @@ using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Study.Queries.GetSubjectCourses;
+using static Kysect.Shreks.Application.Contracts.Study.Queries.GetSubjectCourses;
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 

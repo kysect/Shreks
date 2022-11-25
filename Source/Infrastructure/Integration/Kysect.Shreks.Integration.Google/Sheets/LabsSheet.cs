@@ -3,9 +3,7 @@ using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
-using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Integration.Google.Tools;
 

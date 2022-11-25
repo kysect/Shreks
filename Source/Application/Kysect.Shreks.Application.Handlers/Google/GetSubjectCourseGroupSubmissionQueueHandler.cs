@@ -7,7 +7,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Google.Queries.GetSubjectCourseGroupSubmissionQueue;
+using static Kysect.Shreks.Application.Contracts.Google.Queries.GetSubjectCourseGroupSubmissionQueue;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 

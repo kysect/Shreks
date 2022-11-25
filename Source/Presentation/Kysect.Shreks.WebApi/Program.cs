@@ -1,7 +1,6 @@
 using Google.Apis.Auth.OAuth2;
-using Kysect.Shreks.Application.Abstractions.Identity.Commands;
-using Kysect.Shreks.Application.Abstractions.Tools;
 using Kysect.Shreks.Application.Commands.Extensions;
+using Kysect.Shreks.Application.Contracts.Identity.Commands;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;

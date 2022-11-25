@@ -3,7 +3,7 @@ using Kysect.Shreks.Identity.Entities;
 using Kysect.Shreks.Identity.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using static Kysect.Shreks.Application.Abstractions.Identity.Commands.PromoteToAdmin;
+using static Kysect.Shreks.Application.Contracts.Identity.Commands.PromoteToAdmin;
 
 namespace Kysect.Shreks.Application.Handlers.Identity;
 

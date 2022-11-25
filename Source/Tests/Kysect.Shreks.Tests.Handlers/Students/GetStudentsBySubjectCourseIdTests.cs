@@ -1,5 +1,5 @@
 using FluentAssertions;
-using Kysect.Shreks.Application.Abstractions.Students;
+using Kysect.Shreks.Application.Contracts.Students.Queries;
 using Kysect.Shreks.Application.Handlers.Students;
 using Kysect.Shreks.Core.Study;
 using Xunit;

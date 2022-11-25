@@ -5,7 +5,7 @@ using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Study.Commands.CreateSubjectCourse;
+using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateSubjectCourse;
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 

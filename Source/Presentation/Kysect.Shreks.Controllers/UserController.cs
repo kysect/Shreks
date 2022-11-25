@@ -1,6 +1,6 @@
-using Kysect.Shreks.Application.Abstractions.Students;
-using Kysect.Shreks.Application.Abstractions.Users.Commands;
-using Kysect.Shreks.Application.Abstractions.Users.Queries;
+using Kysect.Shreks.Application.Contracts.Students.Commands;
+using Kysect.Shreks.Application.Contracts.Users.Commands;
+using Kysect.Shreks.Application.Contracts.Users.Queries;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Controllers.Extensions;
 using Kysect.Shreks.Identity.Entities;

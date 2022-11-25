@@ -1,5 +1,3 @@
-using Kysect.Shreks.Application.Commands.Processors;
-
 namespace Kysect.Shreks.Application.Commands.Contexts;
 
 public class SubmissionContext : BaseContext

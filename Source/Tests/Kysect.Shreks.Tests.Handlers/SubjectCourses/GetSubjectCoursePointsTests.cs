@@ -3,7 +3,7 @@ using Kysect.Shreks.Application.Handlers.SubjectCourses;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
-using static Kysect.Shreks.Application.Abstractions.SubjectCourses.Queries.GetSubjectCoursePoints;
+using static Kysect.Shreks.Application.Contracts.SubjectCourses.Queries.GetSubjectCoursePoints;
 
 namespace Kysect.Shreks.Tests.Handlers.SubjectCourses;
 

@@ -8,7 +8,7 @@ using Kysect.Shreks.Identity.Tools;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using static Kysect.Shreks.Application.Abstractions.Identity.Queries.GetIdentityUserByToken;
+using static Kysect.Shreks.Application.Contracts.Identity.Queries.GetIdentityUserByToken;
 
 namespace Kysect.Shreks.Application.Handlers.Identity;
 

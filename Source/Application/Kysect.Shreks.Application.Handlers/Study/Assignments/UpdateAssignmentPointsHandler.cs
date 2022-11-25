@@ -5,7 +5,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 
-using static Kysect.Shreks.Application.Abstractions.Study.Commands.UpdateAssignmentPoints;
+using static Kysect.Shreks.Application.Contracts.Study.Commands.UpdateAssignmentPoints;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
 

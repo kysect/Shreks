@@ -3,7 +3,7 @@ using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Study.Commands.DeleteSubjectCourseGroup;
+using static Kysect.Shreks.Application.Contracts.Study.Commands.DeleteSubjectCourseGroup;
 
 namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroup;
 

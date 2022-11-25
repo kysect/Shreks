@@ -5,7 +5,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Users.Queries.FindStudentsByQuery;
+using static Kysect.Shreks.Application.Contracts.Users.Queries.FindStudentsByQuery;
 
 namespace Kysect.Shreks.Application.Handlers.Users;
 

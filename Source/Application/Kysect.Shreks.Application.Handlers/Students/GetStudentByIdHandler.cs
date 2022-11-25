@@ -4,7 +4,7 @@ using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Students.GetStudentById;
+using static Kysect.Shreks.Application.Contracts.Students.Queries.GetStudentById;
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 

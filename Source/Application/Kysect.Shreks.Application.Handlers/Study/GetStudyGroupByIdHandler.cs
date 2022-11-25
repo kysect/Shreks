@@ -4,7 +4,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Study.Queries.GetStudyGroupById;
+using static Kysect.Shreks.Application.Contracts.Study.Queries.GetStudyGroupById;
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 

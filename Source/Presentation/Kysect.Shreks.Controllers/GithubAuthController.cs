@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.Abstractions.Users.Commands;
+﻿using Kysect.Shreks.Application.Contracts.Users.Commands;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;

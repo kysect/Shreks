@@ -3,7 +3,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 
-using static Kysect.Shreks.Application.Abstractions.Google.Commands.UpdateSubjectCourseTable;
+using static Kysect.Shreks.Application.Contracts.Google.Commands.UpdateSubjectCourseTable;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 

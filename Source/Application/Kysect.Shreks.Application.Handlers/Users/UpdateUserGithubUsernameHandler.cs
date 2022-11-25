@@ -8,7 +8,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Users.Commands.UpdateUserGithubUsername;
+using static Kysect.Shreks.Application.Contracts.Users.Commands.UpdateUserGithubUsername;
 
 namespace Kysect.Shreks.Application.Handlers.Users;
 
