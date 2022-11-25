@@ -4,7 +4,7 @@ using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Students.GetStudentsBySubjectCourseId;
+using static Kysect.Shreks.Application.Contracts.Students.Queries.GetStudentsBySubjectCourseId;
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 

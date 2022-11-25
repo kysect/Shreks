@@ -4,7 +4,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Study.Queries.GetGroupAssignments;
+using static Kysect.Shreks.Application.Contracts.Study.Queries.GetGroupAssignments;
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 

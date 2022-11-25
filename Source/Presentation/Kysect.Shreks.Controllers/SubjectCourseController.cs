@@ -1,6 +1,6 @@
-﻿using Kysect.Shreks.Application.Abstractions.Github;
-using Kysect.Shreks.Application.Abstractions.Study.Commands;
-using Kysect.Shreks.Application.Abstractions.Study.Queries;
+﻿using Kysect.Shreks.Application.Contracts.Github.Commands;
+using Kysect.Shreks.Application.Contracts.Study.Commands;
+using Kysect.Shreks.Application.Contracts.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Identity.Entities;

@@ -5,7 +5,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Abstractions.Github.RemoveGithubSubjectCourseAssociation;
+using static Kysect.Shreks.Application.Contracts.Github.Commands.RemoveGithubSubjectCourseAssociation;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

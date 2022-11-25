@@ -5,7 +5,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Students.CreateStudent;
+using static Kysect.Shreks.Application.Contracts.Students.Commands.CreateStudent;
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 

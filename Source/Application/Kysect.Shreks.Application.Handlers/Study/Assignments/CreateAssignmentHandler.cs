@@ -6,7 +6,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 
-using static Kysect.Shreks.Application.Abstractions.Study.Commands.CreateAssignment;
+using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateAssignment;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
 

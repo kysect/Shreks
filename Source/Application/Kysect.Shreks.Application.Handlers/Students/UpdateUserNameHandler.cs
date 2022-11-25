@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Students.UpdateUserName;
+using static Kysect.Shreks.Application.Contracts.Students.Commands.UpdateUserName;
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 

@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Github.RemoveGithubUserAssociation;
+using static Kysect.Shreks.Application.Contracts.Github.Commands.RemoveGithubUserAssociation;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Abstractions.Identity.Queries;
+using Kysect.Shreks.Application.Contracts.Identity.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Filters;
 

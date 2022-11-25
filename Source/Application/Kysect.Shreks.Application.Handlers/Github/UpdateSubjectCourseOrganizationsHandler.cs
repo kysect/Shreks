@@ -1,6 +1,6 @@
 ﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Github.UpdateSubjectCourseOrganizations;
+using static Kysect.Shreks.Application.Contracts.Github.Commands.UpdateSubjectCourseOrganizations;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 

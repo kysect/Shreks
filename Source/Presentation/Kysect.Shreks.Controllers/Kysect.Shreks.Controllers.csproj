@@ -14,6 +14,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
+		<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Contracts\Kysect.Shreks.Application.Contracts.csproj" />
 		<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
 		<ProjectReference Include="..\..\DeveloperEnvironment\Kysect.Shreks.DeveloperEnvironment\Kysect.Shreks.DeveloperEnvironment.csproj" />
 		<ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj" />

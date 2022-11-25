@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Users.Commands.UpdateUserUniversityId;
+using static Kysect.Shreks.Application.Contracts.Users.Commands.UpdateUserUniversityId;
 
 namespace Kysect.Shreks.Application.Handlers.Users;
 

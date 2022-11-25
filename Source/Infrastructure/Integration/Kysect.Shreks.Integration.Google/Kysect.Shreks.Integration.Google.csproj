@@ -18,6 +18,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
+		<ProjectReference Include="..\..\..\Application\Kysect.Shreks.Application.Contracts\Kysect.Shreks.Application.Contracts.csproj" />
 		<ProjectReference Include="..\..\..\Application\Kysect.Shreks.Application.TableManagement\Kysect.Shreks.Application.TableManagement.csproj" />
 	</ItemGroup>
 

@@ -1,5 +1,5 @@
-using Kysect.Shreks.Application.Abstractions.Identity.Commands;
-using Kysect.Shreks.Application.Abstractions.Identity.Queries;
+using Kysect.Shreks.Application.Contracts.Identity.Commands;
+using Kysect.Shreks.Application.Contracts.Identity.Queries;
 using Kysect.Shreks.Controllers.Models;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;

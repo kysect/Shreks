@@ -2,7 +2,7 @@ using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Identity.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using static Kysect.Shreks.Application.Abstractions.Identity.Commands.Register;
+using static Kysect.Shreks.Application.Contracts.Identity.Commands.Register;
 
 namespace Kysect.Shreks.Application.Handlers.Identity;
 

@@ -2,7 +2,7 @@
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Google.Commands.AddGoogleTableSubjectCourseAssociation;
+using static Kysect.Shreks.Application.Contracts.Google.Commands.AddGoogleTableSubjectCourseAssociation;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 

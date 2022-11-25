@@ -3,7 +3,7 @@ using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Abstractions.Study.Commands.CreateSubjectCourseGroup;
+using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateSubjectCourseGroup;
 
 namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroup;
 
