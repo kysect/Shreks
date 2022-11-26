@@ -2,6 +2,7 @@
 using FluentSpreadsheets.GoogleSheets.Rendering;
 using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.Tables;
+using Kysect.Shreks.Application.Abstractions.Google.Sheets;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Integration.Google.Tools;
 

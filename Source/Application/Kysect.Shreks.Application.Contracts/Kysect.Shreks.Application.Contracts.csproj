@@ -5,18 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
     <ItemGroup>
-      <Folder Include="Google" />
-      <Folder Include="Identity" />
+        <ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
+        <PackageReference Include="MediatR.Contracts" Version="1.0.1"/>
     </ItemGroup>
 
 </Project>

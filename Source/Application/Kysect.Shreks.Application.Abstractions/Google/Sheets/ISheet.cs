@@ -1,4 +1,4 @@
-﻿namespace Kysect.Shreks.Integration.Google.Sheets;
+﻿namespace Kysect.Shreks.Application.Abstractions.Google.Sheets;
 
 public interface ISheet<in TModel>
 {

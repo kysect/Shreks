@@ -66,7 +66,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.TableManagement", "Application\Kysect.Shreks.Application.TableManagement\Kysect.Shreks.Application.TableManagement.csproj", "{A57B6F3D-1DC1-41A7-90CD-99158B4D55DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.Google", "Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj", "{A57B6F3D-1DC1-41A7-90CD-99158B4D55DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Controllers", "Presentation\Kysect.Shreks.Controllers\Kysect.Shreks.Controllers.csproj", "{561BAC9C-4E54-414A-BFDA-AFF90B6F5ADF}"
 EndProject

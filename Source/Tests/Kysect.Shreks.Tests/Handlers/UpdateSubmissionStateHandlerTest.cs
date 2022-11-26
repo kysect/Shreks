@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Kysect.Shreks.Application.Commands.Processors;
-using Kysect.Shreks.Application.TableManagement;
+using Kysect.Shreks.Application.Google.Services;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Tests.Application;

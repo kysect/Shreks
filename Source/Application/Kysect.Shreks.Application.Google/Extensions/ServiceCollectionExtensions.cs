@@ -4,9 +4,11 @@ using FluentSpreadsheets.Rendering;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Abstractions.Google.Sheets;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Application.Dto.Tables;
-using Kysect.Shreks.Application.TableManagement;
+using Kysect.Shreks.Application.Google.Services;
+using Kysect.Shreks.Application.Google.Workers;
 using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Integration.Google.Options;
 using Kysect.Shreks.Integration.Google.Providers;
@@ -16,7 +18,7 @@ using Kysect.Shreks.Integration.Google.Tools;
 using Kysect.Shreks.Integration.Google.Tools.Comparers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Kysect.Shreks.Integration.Google.Extensions;
+namespace Kysect.Shreks.Application.Google.Extensions;
 
 public static class ServiceCollectionExtensions
 {
@@ -59,7 +61,6 @@ public static class ServiceCollectionExtensions
         return serviceCollection
             .AddSingleton<TableUpdateQueue>()
             .AddSingleton<ITableUpdateQueue>(p => p.GetRequiredService<TableUpdateQueue>())
-            .AddScoped<ITableAccessor, GoogleTableAccessor>()
             .AddHostedService<GoogleTableUpdateWorker>();
     }
 

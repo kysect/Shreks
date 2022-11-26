@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.Integration.Github.Helpers;
+namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 
 public class TestEnvironmentConfiguration
 {
