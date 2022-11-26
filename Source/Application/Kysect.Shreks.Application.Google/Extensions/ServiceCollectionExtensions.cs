@@ -42,6 +42,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<ISpreadsheetManagementService, SpreadsheetManagementService>()
             .AddSingleton<IRenderCommandFactory, RenderCommandFactory>()
             .AddSingleton<ISheetTitleComparer, SheetTitleComparer>()
+            .AddScoped<ISubjectCourseTableService, SubjectCourseTableService>()
             .AddSingleton<IComponentRenderer<GoogleSheetRenderCommand>, GoogleSheetComponentRenderer>()
             .AddGoogleTableUpdateWorker()
             .AddGoogleFormatter();
