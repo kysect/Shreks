@@ -54,6 +54,7 @@ public class SubjectCourseTableService : ISubjectCourseTableService
             await _context.SaveChangesAsync(cancellationToken);
             _logger.LogInformation("Successfully created spreadsheet of course {SubjectCourseId}.", subjectCourseId);
 
+            _tableIdCache.TryRemove(id, out _);
             return spreadsheetId;
         });
     }
