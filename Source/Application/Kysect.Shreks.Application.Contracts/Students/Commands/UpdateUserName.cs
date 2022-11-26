@@ -2,7 +2,7 @@
 
 namespace Kysect.Shreks.Application.Contracts.Students.Commands;
 
-public static class UpdateUserName
+internal static class UpdateUserName
 {
     public record Command(Guid UserId, string FirstName, string MiddleName, string LastName) : IRequest<Response>;
 

@@ -8,7 +8,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Commands.UpdateSubjectCou
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 
-public class UpdateSubjectCourseHandler : IRequestHandler<Command, Response>
+internal class UpdateSubjectCourseHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

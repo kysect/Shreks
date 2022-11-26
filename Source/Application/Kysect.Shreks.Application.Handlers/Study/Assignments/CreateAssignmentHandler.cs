@@ -10,7 +10,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateAssignment
 
 namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
 
-public class CreateAssignmentHandler : IRequestHandler<Command, Response>
+internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

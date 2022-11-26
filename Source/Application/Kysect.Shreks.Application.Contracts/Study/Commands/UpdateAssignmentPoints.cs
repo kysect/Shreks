@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.Commands;
 
-public static class UpdateAssignmentPoints
+internal static class UpdateAssignmentPoints
 {
     public record Command(Guid AssignmentId, double MinPoints, double MaxPoints) : IRequest<Response>;
 

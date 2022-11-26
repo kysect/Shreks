@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 
-public class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectCoursePointsUpdatedNotification>
+internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectCoursePointsUpdatedNotification>
 {
     private readonly ISubjectCourseTableService _subjectCourseTableService;
     private readonly ILogger<SubjectCoursePointsUpdatedHandler> _logger;

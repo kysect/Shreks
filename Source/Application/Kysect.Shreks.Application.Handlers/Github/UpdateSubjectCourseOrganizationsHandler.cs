@@ -4,7 +4,7 @@ using static Kysect.Shreks.Application.Contracts.Github.Commands.UpdateSubjectCo
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-public class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command, Response>
+internal class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command, Response>
 {
     private readonly ISubjectCourseGithubOrganizationManager _subjectCourseGithubOrganizationManager;
 

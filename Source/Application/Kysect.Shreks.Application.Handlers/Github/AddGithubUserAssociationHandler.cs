@@ -9,7 +9,7 @@ using static Kysect.Shreks.Application.Contracts.Github.Commands.AddGithubUserAs
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-public class AddGithubUserAssociationHandler : IRequestHandler<Command, Response>
+internal class AddGithubUserAssociationHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IGithubUserProvider _githubUserProvider;

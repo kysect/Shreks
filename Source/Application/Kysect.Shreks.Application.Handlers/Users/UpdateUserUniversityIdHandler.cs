@@ -1,5 +1,6 @@
 using Kysect.Shreks.Application.Abstractions.Identity;
 using Kysect.Shreks.Core.UserAssociations;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -7,7 +8,7 @@ using static Kysect.Shreks.Application.Contracts.Users.Commands.UpdateUserUniver
 
 namespace Kysect.Shreks.Application.Handlers.Users;
 
-public class UpdateUserUniversityIdHandler : IRequestHandler<Command>
+internal class UpdateUserUniversityIdHandler : IRequestHandler<Command>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IAuthorizationService _authorizationService;
@@ -22,8 +23,8 @@ public class UpdateUserUniversityIdHandler : IRequestHandler<Command>
     {
         await _authorizationService.AuthorizeAdminAsync(request.CallerUsername, cancellationToken);
 
-        var user = await _context.Users.GetByIdAsync(request.UserId, cancellationToken);
-        var association = user.FindAssociation<IsuUserAssociation>();
+        User user = await _context.Users.GetByIdAsync(request.UserId, cancellationToken);
+        IsuUserAssociation? association = user.FindAssociation<IsuUserAssociation>();
 
         if (association is null)
         {
@@ -45,7 +46,7 @@ public class UpdateUserUniversityIdHandler : IRequestHandler<Command>
             Console.WriteLine(e);
             throw;
         }
-        
+
         return Unit.Value;
     }
 }

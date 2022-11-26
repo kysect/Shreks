@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.Commands;
 
-public static class UpdateSubjectCourse
+internal static class UpdateSubjectCourse
 {
     public record Command(Guid Id, string NewTitle) : IRequest<Response>;
 

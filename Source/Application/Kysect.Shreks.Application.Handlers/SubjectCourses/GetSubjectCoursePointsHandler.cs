@@ -14,7 +14,7 @@ using static Kysect.Shreks.Application.Contracts.SubjectCourses.Queries.GetSubje
 
 namespace Kysect.Shreks.Application.Handlers.SubjectCourses;
 
-public class GetSubjectCoursePointsHandler : IRequestHandler<Query, Response>
+internal class GetSubjectCoursePointsHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

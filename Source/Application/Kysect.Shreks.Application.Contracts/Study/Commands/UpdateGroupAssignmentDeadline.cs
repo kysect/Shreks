@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.Commands;
 
-public static class UpdateGroupAssignmentDeadline
+internal static class UpdateGroupAssignmentDeadline
 {
     public record Command(Guid GroupId, Guid AssignmentId, DateOnly NewDeadline) : IRequest<Response>;
 

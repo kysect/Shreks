@@ -2,7 +2,7 @@
 
 namespace Kysect.Shreks.Application.Contracts.Github.Commands;
 
-public static class UpdateSubjectCourseOrganizations
+internal static class UpdateSubjectCourseOrganizations
 {
     public record Command() : IRequest<Response>;
     public record Response();

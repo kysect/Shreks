@@ -7,7 +7,7 @@ using MediatR;
 using static Kysect.Shreks.Application.Contracts.Github.Commands.AddGithubSubjectCourseAssociation;
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-public class AddGithubSubjectCourseAssociationHandler : IRequestHandler<Command, Response>
+internal class AddGithubSubjectCourseAssociationHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
 

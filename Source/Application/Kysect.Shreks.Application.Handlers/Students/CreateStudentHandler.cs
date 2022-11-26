@@ -9,7 +9,7 @@ using static Kysect.Shreks.Application.Contracts.Students.Commands.CreateStudent
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 
-public class CreateStudentHandler : IRequestHandler<Command, Response>
+internal class CreateStudentHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

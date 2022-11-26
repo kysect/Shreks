@@ -8,7 +8,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Queries.GetGroupAssignmen
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 
-public class GetGroupAssignments : IRequestHandler<Query, Response>
+internal class GetGroupAssignments : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

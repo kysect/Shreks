@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.Commands;
 
-public static class CreateSubjectCourse
+internal static class CreateSubjectCourse
 {
     public record Command(Guid SubjectId, string Title, SubmissionStateWorkflowTypeDto WorkflowType) : IRequest<Response>;
 

@@ -8,7 +8,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateGroupAssig
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 
-public class CreateGroupAssignmentHandler : IRequestHandler<Command, Response>
+internal class CreateGroupAssignmentHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

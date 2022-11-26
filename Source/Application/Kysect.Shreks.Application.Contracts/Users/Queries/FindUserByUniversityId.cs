@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Users.Queries;
 
-public static class FindUserByUniversityId
+internal static class FindUserByUniversityId
 {
     public record Query(int UniversityId) : IRequest<Response>;
 

@@ -15,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Handlers.Google;
 
-public class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<SubjectCourseGroupQueueUpdatedNotification>
+internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<SubjectCourseGroupQueueUpdatedNotification>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IQueryExecutor _queryExecutor;

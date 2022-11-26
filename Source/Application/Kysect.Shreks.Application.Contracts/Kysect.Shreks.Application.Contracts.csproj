@@ -13,5 +13,12 @@
     <ItemGroup>
         <PackageReference Include="MediatR.Contracts" Version="1.0.1"/>
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="Kysect.Shreks.Controllers"/>
+        <InternalsVisibleTo Include="Kysect.Shreks.WebApi"/>
+        <InternalsVisibleTo Include="Kysect.Shreks.Application.Handlers"/>
+        <InternalsVisibleTo Include="Kysect.Shreks.Tests.Handlers"/>
+    </ItemGroup>
 
 </Project>
