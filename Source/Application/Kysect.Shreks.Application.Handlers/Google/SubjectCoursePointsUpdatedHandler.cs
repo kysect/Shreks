@@ -68,8 +68,8 @@ internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectC
 
             foreach ((StudentPointsDto student, AssignmentPointsDto studentPoints, AssignmentDto assignment) in table)
             {
-                _logger.LogTrace("\t{StudentId} - {Assignment}: {Points}, banned: {Banned}",
-                    student.Student.UniversityId, assignment.Title, studentPoints.Points, studentPoints.IsBanned);
+                _logger.LogTrace("\t{Student} - {Assignment}: {Points}, banned: {Banned}",
+                    student.Student.GitHubUsername, assignment.Title, studentPoints.Points, studentPoints.IsBanned);
             }
         }
 
