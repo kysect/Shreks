@@ -78,8 +78,7 @@ public class LabsTable : RowTable<SubjectCoursePointsDto>
                 ForEach(model.Assignments, a =>
                     BuildAssignmentPointsCell(a, assignmentPoints, currentCulture)),
                 Label(roundedPoints, currentCulture).WithTrailingMediumBorder()
-            ).WithDefaultStyle(i, studentPoints.Count)
-                .WithGroupSeparators(i, studentPoints);
+            ).WithDefaultStyle(i, studentPoints.Count).WithGroupSeparators(i, studentPoints);
 
             yield return row;
         }
