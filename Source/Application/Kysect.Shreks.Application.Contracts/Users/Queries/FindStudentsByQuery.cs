@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Users.Queries;
 
-public static class FindStudentsByQuery
+internal static class FindStudentsByQuery
 {
     public record Query(QueryConfiguration<StudentQueryParameter> Configuration) : IRequest<Response>;
 

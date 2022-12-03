@@ -12,7 +12,7 @@ using static Kysect.Shreks.Application.Contracts.Users.Commands.UpdateUserGithub
 
 namespace Kysect.Shreks.Application.Handlers.Users;
 
-public class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response>
+internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
@@ -37,7 +37,7 @@ public class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response
         if (usernameAlreadyExists)
             throw new DomainInvalidOperationException($"Username {request.GithubUsername} already used by other user");
 
-        Boolean isGithubUserExists = await _githubUserProvider.IsGithubUserExists(request.GithubUsername);
+        bool isGithubUserExists = await _githubUserProvider.IsGithubUserExists(request.GithubUsername);
 
         if (!isGithubUserExists)
             throw new DomainInvalidOperationException($"Github user with username {request.GithubUsername} does not exist");
@@ -49,7 +49,7 @@ public class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response
         await _context.SaveChangesAsync(cancellationToken);
 
 
-        var dto = _mapper.Map<UserDto>(user);
+        UserDto? dto = _mapper.Map<UserDto>(user);
 
         return new Response(dto);
     }

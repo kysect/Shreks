@@ -5,7 +5,7 @@ using Kysect.Shreks.Application.GithubWorkflow;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
-using Kysect.Shreks.Application.TableManagement;
+using Kysect.Shreks.Application.Google.Services;
 using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;

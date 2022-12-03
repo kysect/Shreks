@@ -8,7 +8,7 @@ using static Kysect.Shreks.Application.Contracts.Students.Queries.GetStudentsByS
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 
-public class GetStudentsBySubjectCourseIdHandler : IRequestHandler<Query, Response>
+internal class GetStudentsBySubjectCourseIdHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

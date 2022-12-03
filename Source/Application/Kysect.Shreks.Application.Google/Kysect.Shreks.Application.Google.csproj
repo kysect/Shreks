@@ -14,7 +14,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Domain\Kysect.Shreks.Common\Kysect.Shreks.Common.csproj" />
+		<ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj" />
 		<ProjectReference Include="..\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
+		<ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

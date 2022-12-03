@@ -1,9 +1,10 @@
 using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Extensions;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.Application.Google.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
-using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Playground.Github.TestEnv;
 using Serilog;

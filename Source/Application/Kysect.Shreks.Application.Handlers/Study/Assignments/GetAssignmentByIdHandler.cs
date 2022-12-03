@@ -9,7 +9,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Queries.GetAssignmentById
 namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
 
 
-public class GetAssignmentByIdHandler : IRequestHandler<Query, Response>
+internal class GetAssignmentByIdHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

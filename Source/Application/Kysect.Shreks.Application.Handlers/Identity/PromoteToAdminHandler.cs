@@ -7,7 +7,7 @@ using static Kysect.Shreks.Application.Contracts.Identity.Commands.PromoteToAdmi
 
 namespace Kysect.Shreks.Application.Handlers.Identity;
 
-public class PromoteToAdminHandler : IRequestHandler<Command>
+internal class PromoteToAdminHandler : IRequestHandler<Command>
 {
     private readonly UserManager<ShreksIdentityUser> _userManager;
     private readonly RoleManager<ShreksIdentityRole> _roleManager;

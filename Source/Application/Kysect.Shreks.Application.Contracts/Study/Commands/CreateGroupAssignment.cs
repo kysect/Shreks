@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.Commands;
 
-public static class CreateGroupAssignment
+internal static class CreateGroupAssignment
 {
     public record Command(Guid GroupId, Guid AssignmentId, DateOnly Deadline) : IRequest<Response>;
 

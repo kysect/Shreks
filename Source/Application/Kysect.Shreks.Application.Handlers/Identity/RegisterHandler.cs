@@ -6,7 +6,7 @@ using static Kysect.Shreks.Application.Contracts.Identity.Commands.Register;
 
 namespace Kysect.Shreks.Application.Handlers.Identity;
 
-public class RegisterHandler : IRequestHandler<Command>
+internal class RegisterHandler : IRequestHandler<Command>
 {
     private readonly UserManager<ShreksIdentityUser> _userManager;
 

@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Submissions;
@@ -5,7 +6,6 @@ using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Extensions;
-using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Kysect.Shreks.Seeding.Extensions;
 using Microsoft.EntityFrameworkCore;

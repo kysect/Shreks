@@ -8,7 +8,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Commands.UpdateGroupAssig
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 
-public class UpdateGroupAssignmentDeadlineHandler : IRequestHandler<Command, Response>
+internal class UpdateGroupAssignmentDeadlineHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

@@ -5,7 +5,7 @@ using static Kysect.Shreks.Application.Contracts.Students.Commands.UpdateUserNam
 
 namespace Kysect.Shreks.Application.Handlers.Students;
 
-public class UpdateUserNameHandler : IRequestHandler<Command, Response>
+internal class UpdateUserNameHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
 

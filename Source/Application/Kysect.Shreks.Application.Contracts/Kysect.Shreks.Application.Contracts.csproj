@@ -5,18 +5,20 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
     <ItemGroup>
-      <Folder Include="Google" />
-      <Folder Include="Identity" />
+        <ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj" />
+        <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
     </ItemGroup>
-
+    
     <ItemGroup>
-      <PackageReference Include="MediatR.Contracts" Version="1.0.1" />
+        <InternalsVisibleTo Include="Kysect.Shreks.Controllers" />
+        <InternalsVisibleTo Include="Kysect.Shreks.WebApi" />
+        <InternalsVisibleTo Include="Kysect.Shreks.Application.Handlers" />
+        <InternalsVisibleTo Include="Kysect.Shreks.Tests.Handlers" />
     </ItemGroup>
 
 </Project>

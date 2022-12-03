@@ -3,9 +3,9 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.Queries;
 
-public static class GetSubjectCourses
+internal static class GetSubjectCourses
 {
-    public record Query() : IRequest<Response>;
+    public record Query : IRequest<Response>;
 
     public record Response(IReadOnlyCollection<SubjectCourseDto> Subjects);
 }

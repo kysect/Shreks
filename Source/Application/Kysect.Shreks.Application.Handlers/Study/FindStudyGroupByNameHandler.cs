@@ -8,7 +8,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Queries.FindStudyGroupByN
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 
-public class FindStudyGroupByNameHandler : IRequestHandler<Query, Response>
+internal class FindStudyGroupByNameHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

@@ -12,7 +12,7 @@ using static Kysect.Shreks.Application.Contracts.Identity.Queries.GetIdentityUse
 
 namespace Kysect.Shreks.Application.Handlers.Identity;
 
-public class GetIdentityUserByTokenHandler : IRequestHandler<Query, Response>
+internal class GetIdentityUserByTokenHandler : IRequestHandler<Query, Response>
 {
     private readonly UserManager<ShreksIdentityUser> _userManager;
     private readonly IdentityConfiguration _configuration;

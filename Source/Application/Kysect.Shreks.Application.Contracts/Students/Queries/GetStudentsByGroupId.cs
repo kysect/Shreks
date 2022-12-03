@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Students.Queries;
 
-public static class GetStudentsByGroupId
+internal static class GetStudentsByGroupId
 {
     public record Query(Guid GroupId) : IRequest<Response>;
 

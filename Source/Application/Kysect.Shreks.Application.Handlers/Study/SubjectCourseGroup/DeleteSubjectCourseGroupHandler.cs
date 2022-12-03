@@ -7,7 +7,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Commands.DeleteSubjectCou
 
 namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroup;
 
-public class DeleteSubjectCourseGroupHandler : IRequestHandler<Command>
+internal class DeleteSubjectCourseGroupHandler : IRequestHandler<Command>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;

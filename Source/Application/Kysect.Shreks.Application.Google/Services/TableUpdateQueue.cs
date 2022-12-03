@@ -1,6 +1,7 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Google.Tools;
 
-namespace Kysect.Shreks.Application.TableManagement;
+namespace Kysect.Shreks.Application.Google.Services;
 
 public class TableUpdateQueue : ITableUpdateQueue
 {

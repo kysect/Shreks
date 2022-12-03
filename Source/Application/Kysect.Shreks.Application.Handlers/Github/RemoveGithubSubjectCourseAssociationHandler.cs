@@ -9,7 +9,7 @@ using static Kysect.Shreks.Application.Contracts.Github.Commands.RemoveGithubSub
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-public class RemoveGithubSubjectCourseAssociationHandler : IRequestHandler<Command, Response>
+internal class RemoveGithubSubjectCourseAssociationHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
 

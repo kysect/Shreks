@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-public class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdminWithMentors.Command>
+internal class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdminWithMentors.Command>
 {
     private readonly IShreksDatabaseContext _shreksDatabaseContext;
     private readonly IOrganizationDetailsProvider _organizationDetailsProvider;

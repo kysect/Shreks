@@ -8,7 +8,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Commands.AddFractionDeadl
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 
-public class AddFractionDeadlinePolicyHandling : IRequestHandler<Command, Response>
+internal class AddFractionDeadlinePolicyHandling : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
 

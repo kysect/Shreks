@@ -1,6 +1,6 @@
-﻿using Kysect.Shreks.DeveloperEnvironment;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.DeveloperEnvironment;
 using Kysect.Shreks.Identity.Entities;
-using Kysect.Shreks.Integration.Github.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

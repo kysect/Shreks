@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Identity.Queries;
 
-public static class GetIdentityUserByToken
+internal static class GetIdentityUserByToken
 {
     public record Query(string Token) : IRequest<Response>;
 

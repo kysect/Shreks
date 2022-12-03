@@ -12,7 +12,7 @@ using static Kysect.Shreks.Application.Contracts.Identity.Queries.Login;
 
 namespace Kysect.Shreks.Application.Handlers.Identity;
 
-public class LoginHandler : IRequestHandler<Query, Response>
+internal class LoginHandler : IRequestHandler<Query, Response>
 {
     private readonly UserManager<ShreksIdentityUser> _userManager;
     private readonly IdentityConfiguration _configuration;
