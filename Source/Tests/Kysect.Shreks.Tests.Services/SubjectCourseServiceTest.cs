@@ -23,7 +23,7 @@ public class SubjectCourseServiceTest : ServicesTestsBase
                 .SelectMany(xx => xx.GroupAssignments)
                 .SelectMany(xx => xx.Submissions)
                 .Any())
-            .LastAsync();
+            .FirstAsync();
 
         var points = await _service.CalculatePointsAsync(course.Id, default);
 
