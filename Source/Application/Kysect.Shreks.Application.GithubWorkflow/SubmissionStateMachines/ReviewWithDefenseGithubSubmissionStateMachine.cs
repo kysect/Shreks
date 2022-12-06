@@ -3,11 +3,9 @@ using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.Commands.Result;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
-using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Application.Validators;
 using Kysect.Shreks.Common.Resources;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Microsoft.Extensions.Logging;
@@ -17,14 +15,14 @@ namespace Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionStateMachine
 {
     private readonly GithubSubmissionService _githubSubmissionService;
-    private readonly SubmissionService _shreksCommandProcessor;
+    private readonly ISubmissionService _shreksCommandProcessor;
     private readonly ShreksCommandProcessor _commandProcessor;
     private readonly ILogger _logger;
     private readonly IPullRequestEventNotifier _eventNotifier;
     private readonly IPermissionValidator _permissionValidator;
 
     public ReviewWithDefenseGithubSubmissionStateMachine(
-        SubmissionService shreksCommandProcessor,
+        ISubmissionService shreksCommandProcessor,
         ShreksCommandProcessor commandProcessor,
         ILogger logger,
         IPullRequestEventNotifier eventNotifier,
@@ -39,17 +37,22 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
         _permissionValidator = permissionValidator;
     }
 
-    public async Task ProcessPullRequestReviewApprove(IShreksCommand? command, GithubPullRequestDescriptor prDescriptor, User sender)
+    public async Task ProcessPullRequestReviewApprove(
+        IShreksCommand? command,
+        GithubPullRequestDescriptor prDescriptor,
+        User sender)
     {
         await _permissionValidator.EnsureUserIsOrganizationMentor(sender.Id, prDescriptor.Organization);
 
-        await ChangeSubmissionState(SubmissionState.Reviewed, prDescriptor, sender);
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
+        await _shreksCommandProcessor.ReviewSubmissionAsync(submission.Id, sender.Id, default);
 
         if (command is not null)
         {
-            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, default);
             await _eventNotifier.SendCommentToPullRequest(result.Message);
             _logger.LogInformation("Notify: " + result.Message);
+
             return;
         }
 
@@ -72,7 +75,8 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
     {
         if (command is not null)
         {
-            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, default);
+
             await _eventNotifier.SendCommentToPullRequest(result.Message);
             _logger.LogInformation("Notify: " + result.Message);
         }
@@ -87,61 +91,81 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
 
     public async Task ProcessPullRequestReopen(GithubPullRequestDescriptor prDescriptor, User sender)
     {
-        await ChangeSubmissionState(SubmissionState.Active, prDescriptor, sender);
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
+        await _shreksCommandProcessor.ActivateSubmissionAsync(submission.Id, sender.Id, default);
     }
 
     public async Task ProcessPullRequestClosed(bool isMerged, GithubPullRequestDescriptor prDescriptor, User sender)
     {
-        Submission submission;
+        bool isOrganizationMentor = await _permissionValidator.IsOrganizationMentor(
+            sender.Id, prDescriptor.Organization);
 
-        bool isOrganizationMentor = await _permissionValidator.IsOrganizationMentor(sender.Id, prDescriptor.Organization);
-
-        string? message = null;
-        if (isOrganizationMentor)
-        {
-            if (isMerged)
-            {
-                submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
-                if (submission.Points is null)
-                {
-                    message = UserCommandProcessingMessage.MentorMergeUnratedSubmission();
-                    BaseShreksCommandResult commandResult = await _commandProcessor.ProcessBaseCommandSafe(new RateCommand(100, 0), CancellationToken.None);
-                    if (!commandResult.IsSuccess)
-                        message = commandResult.Message;
-                }
-                else
-                {
-                    message = UserCommandProcessingMessage.MergePullRequestAndMarkAsCompleted();
-                }
-            }
-            else
-            {
-                submission = await ChangeSubmissionState(SubmissionState.Inactive, prDescriptor, sender);
-                message = UserCommandProcessingMessage.ClosePullRequestWithUnratedSubmission(submission.Code);
-            }
-        }
-        else
-        {
-            SubmissionState state = isMerged ? SubmissionState.Completed : SubmissionState.Inactive;
-            submission = await ChangeSubmissionState(state, prDescriptor, sender);
-
-            if (isMerged && submission.Points is null)
-            {
-                message = UserCommandProcessingMessage.MergePullRequestWithoutRate(submission.Code);
-                await _eventNotifier.SendCommentToPullRequest(message);
-            }
-        }
+        string? message = isOrganizationMentor
+            ? await ProcessClosedByOrganizationMember(isMerged, prDescriptor, sender)
+            : await ProcessClosedByNotOrganizationMember(isMerged, prDescriptor, sender);
 
         if (message is not null)
             await _eventNotifier.SendCommentToPullRequest(message);
     }
 
-    private async Task<Submission> ChangeSubmissionState(SubmissionState state, GithubPullRequestDescriptor githubPullRequestDescriptor, User sender)
+    private async Task<string> ProcessClosedByOrganizationMember(
+        bool isMerged,
+        GithubPullRequestDescriptor prDescriptor,
+        User sender)
     {
-        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
-        Submission completedSubmission = await _shreksCommandProcessor.UpdateSubmissionState(submission.Id, sender.Id, state, CancellationToken.None);
+        return isMerged
+            ? await ProcessClosedMergedByOrganizationMember(prDescriptor)
+            : await ProcessClosedNotMergedByOrganizationMember(prDescriptor, sender);
+    }
 
-        await _eventNotifier.NotifySubmissionUpdate(completedSubmission, _logger);
-        return completedSubmission;
+    private async Task<string> ProcessClosedMergedByOrganizationMember(GithubPullRequestDescriptor prDescriptor)
+    {
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
+
+        if (submission.Points is not null)
+            return UserCommandProcessingMessage.MergePullRequestAndMarkAsCompleted();
+
+        var command = new RateCommand(100, 0);
+
+        BaseShreksCommandResult commandResult = await _commandProcessor.ProcessBaseCommandSafe(command, default);
+
+        return commandResult.IsSuccess
+            ? UserCommandProcessingMessage.MentorMergeUnratedSubmission()
+            : commandResult.Message;
+    }
+
+    private async Task<string> ProcessClosedNotMergedByOrganizationMember(
+        GithubPullRequestDescriptor prDescriptor,
+        User sender)
+    {
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
+        submission = await _shreksCommandProcessor.DeactivateSubmissionAsync(submission.Id, sender.Id, default);
+
+        return UserCommandProcessingMessage.ClosePullRequestWithUnratedSubmission(submission.Code);
+    }
+
+    private async Task<string?> ProcessClosedByNotOrganizationMember(
+        bool isMerged,
+        GithubPullRequestDescriptor prDescriptor,
+        User sender)
+    {
+        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
+
+        if (isMerged)
+        {
+            await _shreksCommandProcessor.CompleteSubmissionAsync(submission.Id, sender.Id, default);
+        }
+        else
+        {
+            await _shreksCommandProcessor.DeactivateSubmissionAsync(submission.Id, sender.Id, default);
+        }
+
+        if (isMerged is false || submission.Points is not null)
+            return null;
+
+        string message = UserCommandProcessingMessage.MergePullRequestWithoutRate(submission.Code);
+        await _eventNotifier.SendCommentToPullRequest(message);
+
+        return message;
     }
 }

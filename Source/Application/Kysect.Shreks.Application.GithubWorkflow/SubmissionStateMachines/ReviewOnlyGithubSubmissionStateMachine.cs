@@ -6,7 +6,6 @@ using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
 using Kysect.Shreks.Common.Resources;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Users;
 using Microsoft.Extensions.Logging;
@@ -16,13 +15,13 @@ namespace Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMachine
 {
     private readonly GithubSubmissionService _githubSubmissionService;
-    private readonly SubmissionService _shreksCommandProcessor;
+    private readonly ISubmissionService _shreksCommandProcessor;
     private readonly ShreksCommandProcessor _commandProcessor;
     private readonly ILogger _logger;
     private readonly IPullRequestEventNotifier _eventNotifier;
 
     public ReviewOnlyGithubSubmissionStateMachine(
-        SubmissionService shreksCommandProcessor,
+        ISubmissionService shreksCommandProcessor,
         ShreksCommandProcessor commandProcessor,
         GithubSubmissionService githubSubmissionService,
         ILogger logger,
@@ -35,7 +34,10 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
         _eventNotifier = eventNotifier;
     }
 
-    public async Task ProcessPullRequestReviewApprove(IShreksCommand? command, GithubPullRequestDescriptor prDescriptor, User sender)
+    public async Task ProcessPullRequestReviewApprove(
+        IShreksCommand? command,
+        GithubPullRequestDescriptor prDescriptor,
+        User sender)
     {
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
 
@@ -44,7 +46,7 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
         // TODO: check case when command is not rate
         if (command is not null)
         {
-            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, default);
             await _eventNotifier.SendCommentToPullRequest(result.Message);
             _logger.LogInformation("Notify: " + result.Message);
             return;
@@ -57,7 +59,7 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
             case null:
             {
                 command = new RateCommand(ratingPercent: 100, extraPoints: 0);
-                BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+                BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, default);
                 message = result.Message;
                 break;
             }
@@ -86,7 +88,7 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
     {
         if (command is not null)
         {
-            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+            BaseShreksCommandResult result = await _commandProcessor.ProcessBaseCommandSafe(command, default);
             await _eventNotifier.SendCommentToPullRequest(result.Message);
             _logger.LogInformation("Notify: " + result.Message);
         }
@@ -101,24 +103,29 @@ public class ReviewOnlyGithubSubmissionStateMachine : IGithubSubmissionStateMach
 
     public async Task ProcessPullRequestReopen(GithubPullRequestDescriptor prDescriptor, User sender)
     {
-        await ChangeSubmissionState(SubmissionState.Active, prDescriptor, sender);
+        Submission submission = await GetSubmission(prDescriptor);
+        submission = await _shreksCommandProcessor.ActivateSubmissionAsync(submission.Id, sender.Id, default);
+        await _eventNotifier.NotifySubmissionUpdate(submission, _logger);
     }
 
     public async Task ProcessPullRequestClosed(bool isMerged, GithubPullRequestDescriptor prDescriptor, User sender)
     {
-        var state = isMerged ? SubmissionState.Completed : SubmissionState.Inactive;
-        var submission = await ChangeSubmissionState(state, prDescriptor, sender);
+        Submission submission = await GetSubmission(prDescriptor);
 
-        if (isMerged && submission.Points is null)
-            await _eventNotifier.SendCommentToPullRequest(UserCommandProcessingMessage.MergePullRequestWithoutRate(submission.Code));
+        submission = isMerged
+            ? await _shreksCommandProcessor.CompleteSubmissionAsync(submission.Id, sender.Id, default)
+            : await _shreksCommandProcessor.DeactivateSubmissionAsync(submission.Id, sender.Id, default);
+
+        if (!isMerged || submission.Points is not null)
+            return;
+
+        string message = UserCommandProcessingMessage.MergePullRequestWithoutRate(submission.Code);
+        await _eventNotifier.SendCommentToPullRequest(message);
+        await _eventNotifier.NotifySubmissionUpdate(submission, _logger);
     }
 
-    private async Task<Submission> ChangeSubmissionState(SubmissionState state, GithubPullRequestDescriptor githubPullRequestDescriptor, User sender)
+    private Task<Submission> GetSubmission(GithubPullRequestDescriptor githubPullRequestDescriptor)
     {
-        Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
-        Submission completedSubmission = await _shreksCommandProcessor.UpdateSubmissionState(submission.Id, sender.Id, state, CancellationToken.None);
-
-        await _eventNotifier.NotifySubmissionUpdate(completedSubmission, _logger);
-        return completedSubmission;
+        return _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
     }
 }

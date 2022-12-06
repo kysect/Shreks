@@ -1,6 +1,5 @@
 using CommandLine;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Microsoft.Extensions.Logging;
 
@@ -25,17 +24,11 @@ public class RateCommand : IShreksCommand
     {
         logger.LogInformation($"Handle /rate command from {context.IssuerId} with arguments: {ToLogLine()}");
 
-        await context.SubmissionService.UpdateSubmissionPoints(
+        return await context.SubmissionService.UpdateSubmissionPoints(
             context.SubmissionId,
             context.IssuerId,
             RatingPercent,
             ExtraPoints,
-            cancellationToken);
-
-        return await context.SubmissionService.UpdateSubmissionState(
-            context.SubmissionId,
-            context.IssuerId,
-            SubmissionState.Completed,
             cancellationToken);
     }
 

@@ -43,9 +43,9 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
             pullRequestDescriptor.Repository,
             pullRequestDescriptor.PrNumber);
 
-        var submission = await _context.SubmissionAssociations
+        GithubSubmission? submission = await _context.SubmissionAssociations
             .WithSpecification(submissionSpec)
-            .Where(x => x.State != SubmissionState.Completed)
+            .Where(x => !x.State.Equals(SubmissionStateKind.Completed))
             .FirstOrDefaultAsync(cancellationToken);
 
         bool isCreated = false;
@@ -69,7 +69,7 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
         }
         else if (!triggeredByMentor)
         {
-            submission.SubmissionDate = Calendar.CurrentDateTime;
+            submission.UpdateDate(Calendar.CurrentDateTime);
 
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync(cancellationToken);
