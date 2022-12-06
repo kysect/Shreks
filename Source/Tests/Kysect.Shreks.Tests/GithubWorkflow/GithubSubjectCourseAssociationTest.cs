@@ -59,7 +59,7 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
         await _githubSubmissionStateMachine.ProcessPullRequestUpdate(githubPullRequestDescriptor, _logger, _pullRequestCommitEventNotifier, CancellationToken.None);
         Submission lastSubmissionByPr = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
 
-        Assert.Equal(SubmissionState.Active, lastSubmissionByPr.State);
+        Assert.Equal(SubmissionStateKind.Active, lastSubmissionByPr.State.Kind);
         Assert.Single(_pullRequestCommitEventNotifier.PullRequestMessages);
     }
 
@@ -93,7 +93,7 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
 
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
 
-        Assert.Equal(SubmissionState.Inactive, submission.State);
+        Assert.Equal(SubmissionStateKind.Inactive, submission.State.Kind);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
 
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
 
-        Assert.Equal(SubmissionState.Completed, submission.State);
+        Assert.Equal(SubmissionStateKind.Completed, submission.State.Kind);
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
 
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
 
-        Assert.Equal(SubmissionState.Active, submission.State);
+        Assert.Equal(SubmissionStateKind.Active, submission.State.Kind);
     }
 
     [Fact]
@@ -137,7 +137,7 @@ public class GithubSubjectCourseAssociationTest : GithubWorkflowTestBase
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(githubPullRequestDescriptor);
 
         Assert.Null(submission.Rating);
-        Assert.Equal(SubmissionState.Active, submission.State);
+        Assert.Equal(SubmissionStateKind.Active, submission.State.Kind);
     }
 
     public ShreksWebhookEventProcessor CreateEventProcessor()
