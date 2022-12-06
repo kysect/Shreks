@@ -31,7 +31,7 @@ public class ValueObjectsProfile : Profile
             .ReverseMap()
             .ConstructUsing(x => x == null ? null : new Fraction(x.Value));
 
-        CreateMap<SubmissionState, SubmissionStateDto>().ReverseMap();
+        CreateMap<SubmissionStateKind, SubmissionStateDto>().ReverseMap();
 
         CreateMap<SubmissionStateWorkflowType, SubmissionStateWorkflowTypeDto>().ReverseMap();
 

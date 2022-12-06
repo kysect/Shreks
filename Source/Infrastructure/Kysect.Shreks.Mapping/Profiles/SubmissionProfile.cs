@@ -16,7 +16,8 @@ public class SubmissionProfile : Profile
             .ForCtorParam(
                 nameof(SubmissionDto.AssignmentShortName),
                 opt => opt.MapFrom(src => src.GroupAssignment.Assignment.ShortName))
-            .ForCtorParam(nameof(SubmissionDto.StudentId), opt => opt.MapFrom(src => src.Student.UserId));
+            .ForCtorParam(nameof(SubmissionDto.StudentId), opt => opt.MapFrom(src => src.Student.UserId))
+            .ForCtorParam(nameof(SubmissionDto.State), opt => opt.MapFrom(x => x.State.Kind));
 
         CreateMap<Submission, QueueSubmissionDto>()
             .ForCtorParam(nameof(QueueSubmissionDto.Submission),
