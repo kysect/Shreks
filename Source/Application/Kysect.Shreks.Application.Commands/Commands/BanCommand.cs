@@ -8,7 +8,7 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 [Verb("/ban")]
 public class BanCommand : IShreksCommand
 {
-    public BanCommand(int submissionCode)
+    public BanCommand(int? submissionCode)
     {
         SubmissionCode = submissionCode;
     }
