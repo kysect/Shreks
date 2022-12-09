@@ -33,15 +33,15 @@ public class MappingTest : DataAccessTestBase
     }
 
     [Theory]
-    [InlineData(SubmissionStateDto.Active, SubmissionState.Active)]
-    [InlineData(SubmissionStateDto.Deleted, SubmissionState.Deleted)]
-    [InlineData(SubmissionStateDto.Inactive, SubmissionState.Inactive)]
-    [InlineData(SubmissionStateDto.Completed, SubmissionState.Completed)]
-    [InlineData(SubmissionStateDto.Reviewed, SubmissionState.Reviewed)]
-    [InlineData(SubmissionStateDto.Banned, SubmissionState.Banned)]
-    public void Map_Should_MapSubmissionStateDtoToSubmissionState(SubmissionStateDto stateDto, SubmissionState state)
+    [InlineData(SubmissionStateDto.Active, SubmissionStateKind.Active)]
+    [InlineData(SubmissionStateDto.Deleted, SubmissionStateKind.Deleted)]
+    [InlineData(SubmissionStateDto.Inactive, SubmissionStateKind.Inactive)]
+    [InlineData(SubmissionStateDto.Completed, SubmissionStateKind.Completed)]
+    [InlineData(SubmissionStateDto.Reviewed, SubmissionStateKind.Reviewed)]
+    [InlineData(SubmissionStateDto.Banned, SubmissionStateKind.Banned)]
+    public void Map_Should_MapSubmissionStateDtoToSubmissionState(SubmissionStateDto stateDto, SubmissionStateKind state)
     {
-        var receivedState = _mapper.Map<SubmissionState>(stateDto);
+        var receivedState = _mapper.Map<SubmissionStateKind>(stateDto);
 
         receivedState.Should().Be(state);
     }

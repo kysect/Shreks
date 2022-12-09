@@ -1,8 +1,8 @@
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.DeadlinePolicies;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubmissionAssociations;
+using Kysect.Shreks.Core.Submissions.States;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Core.ValueObject;
@@ -13,7 +13,6 @@ namespace Kysect.Shreks.Core.Submissions;
 public abstract partial class Submission : IEntity<Guid>
 {
     private readonly HashSet<SubmissionAssociation> _associations;
-    private SubmissionState _state;
 
     protected Submission(
         int code,
@@ -33,14 +32,14 @@ public abstract partial class Submission : IEntity<Guid>
         ExtraPoints = default;
 
         _associations = new HashSet<SubmissionAssociation>();
-        _state = SubmissionState.Active;
+        State = new ActiveSubmissionState();
     }
 
     public int Code { get; protected init; }
     public string Payload { get; set; }
     public Fraction? Rating { get; private set; }
     public Points? ExtraPoints { get; set; }
-    public SpbDateTime SubmissionDate { get; set; }
+    public SpbDateTime SubmissionDate { get; private set; }
     public virtual Student Student { get; protected init; }
     public virtual GroupAssignment GroupAssignment { get; protected init; }
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
@@ -60,29 +59,13 @@ public abstract partial class Submission : IEntity<Guid>
     public bool IsRated => Rating is not null;
     public DateOnly SubmissionDateOnly => SubmissionDate.AsDateOnly();
 
-    public SubmissionState State
-    {
-        get => _state;
-        set => SetState(value);
-    }
+    public ISubmissionState State { get; private set; }
 
     public override string ToString()
         => $"{Code} ({Id})";
 
     public void Rate(Fraction? rating, Points? extraPoints)
     {
-        if (State is SubmissionState.Banned)
-        {
-            string message = $"Submission {this} is banned and cannot be rated";
-            throw new DomainInvalidOperationException(message);
-        }
-
-        if (State is not (SubmissionState.Active or SubmissionState.Reviewed or SubmissionState.Completed))
-        {
-            string message = $"Cannot update submission points. Submission state: {State}.";
-            throw new DomainInvalidOperationException(message);
-        }
-
         if (rating is null && extraPoints is null)
         {
             const string ratingName = nameof(rating);
@@ -91,6 +74,8 @@ public abstract partial class Submission : IEntity<Guid>
             throw new DomainInvalidOperationException(message);
         }
 
+        State = State.MoveToRated(rating, extraPoints);
+
         if (rating is not null)
             Rating = rating;
 
@@ -98,15 +83,59 @@ public abstract partial class Submission : IEntity<Guid>
             ExtraPoints = extraPoints;
     }
 
-    public void Ban()
+    public void UpdatePoints(Fraction? rating, Points? extraPoints)
     {
-        if (State is SubmissionState.Banned)
+        if (rating is null && extraPoints is null)
         {
-            string message = $"Submission {this} is already banned";
+            const string ratingName = nameof(rating);
+            const string extraPointsName = nameof(extraPoints);
+            const string message = $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
             throw new DomainInvalidOperationException(message);
         }
 
-        State = SubmissionState.Banned;
+        State = State.MoveToPointsUpdated(rating, extraPoints);
+
+        if (rating is not null)
+            Rating = rating;
+
+        if (extraPoints is not null)
+            ExtraPoints = extraPoints;
+    }
+
+    public void UpdateDate(SpbDateTime newDate)
+    {
+        State = State.MoveToDateUpdated(newDate);
+        SubmissionDate = newDate;
+    }
+
+    public void Activate()
+    {
+        State = State.MoveToActivated();
+    }
+
+    public void Deactivate()
+    {
+        State = State.MoveToDeactivated();
+    }
+
+    public void Ban()
+    {
+        State = State.MoveToBanned();
+    }
+
+    public void Delete()
+    {
+        State = State.MoveToDeleted();
+    }
+
+    public void Complete()
+    {
+        State = State.MoveToCompleted();
+    }
+
+    public void MarkAsReviewed()
+    {
+        State = State.MoveToReviewed();
     }
 
     protected void AddAssociation(SubmissionAssociation association)
@@ -115,17 +144,6 @@ public abstract partial class Submission : IEntity<Guid>
 
         if (!_associations.Add(association))
             throw new DomainInvalidOperationException($"Submission {this} already has association {association}");
-    }
-
-    private void SetState(SubmissionState state)
-    {
-        if (_state is SubmissionState.Completed && state is not (SubmissionState.Completed or SubmissionState.Banned))
-            throw new DomainInvalidOperationException($"Submission {this} is already completed");
-
-        if (_state is SubmissionState.Deleted && state is not SubmissionState.Banned)
-            throw new DomainInvalidOperationException($"Submission {this} is already deleted");
-
-        _state = state;
     }
 
     private Points? GetEffectivePoints()

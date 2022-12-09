@@ -19,10 +19,10 @@ public class SubmissionStateEvaluator : ISubmissionEvaluator
     {
         ArgumentNullException.ThrowIfNull(submission);
 
-        return submission.State switch
+        return submission.State.Kind switch
         {
-            SubmissionState.Active => ActiveSubmissionPriority,
-            SubmissionState.Reviewed => ReviewedSubmissionPriority,
+            SubmissionStateKind.Active => ActiveSubmissionPriority,
+            SubmissionStateKind.Reviewed => ReviewedSubmissionPriority,
             _ => 0,
         };
     }

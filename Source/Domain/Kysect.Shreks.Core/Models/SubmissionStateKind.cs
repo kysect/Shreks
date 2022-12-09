@@ -1,6 +1,6 @@
 namespace Kysect.Shreks.Core.Models;
 
-public enum SubmissionState
+public enum SubmissionStateKind
 {
     Active,
     Inactive,

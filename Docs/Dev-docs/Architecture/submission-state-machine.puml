@@ -1,0 +1,28 @@
+@startuml Submission state machine
+
+[*] --> Active
+
+Active --> Inactive
+Active --> Deleted
+Active --> Completed
+Active -> Reviewed
+Active --> Banned
+
+Inactive --> Active
+Inactive --> Deleted
+Inactive --> Banned
+
+Deleted --> Banned
+
+Completed --> Deleted
+Completed --> Banned
+Completed --> [*]
+
+Reviewed --> Deleted
+Reviewed --> Completed
+Reviewed --> Banned
+
+Banned --> [*]
+
+
+@enduml 

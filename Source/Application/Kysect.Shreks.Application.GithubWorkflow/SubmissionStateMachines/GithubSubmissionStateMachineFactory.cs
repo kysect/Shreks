@@ -14,11 +14,11 @@ namespace Kysect.Shreks.Application.GithubWorkflow.SubmissionStateMachines;
 public class GithubSubmissionStateMachineFactory
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly SubmissionService _shreksCommandProcessor;
+    private readonly ISubmissionService _shreksCommandProcessor;
     private readonly GithubSubmissionService _githubSubmissionService;
     private readonly PermissionValidator _permissionValidator;
 
-    public GithubSubmissionStateMachineFactory(IShreksDatabaseContext context, SubmissionService shreksCommandProcessor)
+    public GithubSubmissionStateMachineFactory(IShreksDatabaseContext context, ISubmissionService shreksCommandProcessor)
     {
         _context = context;
         _shreksCommandProcessor = shreksCommandProcessor;
@@ -32,19 +32,40 @@ public class GithubSubmissionStateMachineFactory
         ILogger logger,
         IPullRequestEventNotifier eventNotifier)
     {
-        SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(prDescriptor.Organization, CancellationToken.None);
+        SubjectCourse subjectCourse = await _context.SubjectCourseAssociations.GetSubjectCourseByOrganization(
+            prDescriptor.Organization, CancellationToken.None);
 
-        switch (subjectCourse.WorkflowType)
+        return subjectCourse.WorkflowType switch
         {
-            case null:
-            case SubmissionStateWorkflowType.ReviewOnly:
-                return new ReviewOnlyGithubSubmissionStateMachine(_shreksCommandProcessor, commandProcessor, _githubSubmissionService, logger, eventNotifier);
+            null => new ReviewOnlyGithubSubmissionStateMachine
+            (
+                _shreksCommandProcessor,
+                commandProcessor,
+                _githubSubmissionService,
+                logger,
+                eventNotifier
+            ),
 
-            case SubmissionStateWorkflowType.ReviewWithDefense:
-                return new ReviewWithDefenseGithubSubmissionStateMachine(_shreksCommandProcessor, commandProcessor, logger, eventNotifier, _githubSubmissionService, _permissionValidator);
+            SubmissionStateWorkflowType.ReviewOnly => new ReviewOnlyGithubSubmissionStateMachine
+            (
+                _shreksCommandProcessor,
+                commandProcessor,
+                _githubSubmissionService,
+                logger,
+                eventNotifier
+            ),
 
-            default:
-                throw new ArgumentOutOfRangeException(nameof(subjectCourse.WorkflowType));
-        }
+            SubmissionStateWorkflowType.ReviewWithDefense => new ReviewWithDefenseGithubSubmissionStateMachine
+            (
+                _shreksCommandProcessor,
+                commandProcessor,
+                logger,
+                eventNotifier,
+                _githubSubmissionService,
+                _permissionValidator
+            ),
+
+            _ => throw new ArgumentOutOfRangeException(nameof(subjectCourse.WorkflowType))
+        };
     }
 }

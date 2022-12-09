@@ -1,6 +1,5 @@
 using CommandLine;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Microsoft.Extensions.Logging;
 
@@ -13,10 +12,9 @@ public class DeleteCommand : IShreksCommand
     {
         logger.LogInformation($"Handle /delete command for submission {context.SubmissionId} from user {context.IssuerId}");
 
-        return await context.SubmissionService.UpdateSubmissionState(
+        return await context.SubmissionService.DeleteSubmissionAsync(
             context.SubmissionId,
             context.IssuerId,
-            SubmissionState.Deleted,
             cancellationToken);
     }
 }

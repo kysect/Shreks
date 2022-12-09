@@ -1,6 +1,5 @@
 using CommandLine;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 using Microsoft.Extensions.Logging;
@@ -53,12 +52,6 @@ public class UpdateCommand : IShreksCommand
                 context.IssuerId,
                 RatingPercent,
                 ExtraPoints,
-                cancellationToken);
-
-            submission = await context.SubmissionService.UpdateSubmissionState(
-                submission.Id,
-                context.IssuerId,
-                SubmissionState.Completed,
                 cancellationToken);
         }
 

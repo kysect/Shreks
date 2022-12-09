@@ -35,10 +35,13 @@ public partial class StudentAssignment : IEntity
     {
         IEnumerable<Submission> submissions = Assignment.Submissions
             .Where(x => x.Student.Equals(Student))
-            .Where(x => x.State is SubmissionState.Completed or SubmissionState.Banned);
+            .Where(x => x.State.IsTerminalEffectiveState);
 
         (Submission submission, Points? points, bool isBanned) = submissions
-            .Select(s => (submission: s, points: s.EffectivePoints, isBanned: s.State is SubmissionState.Banned))
+            .Select(s =>
+            (
+                submission: s, points: s.EffectivePoints, isBanned: s.State.Kind is SubmissionStateKind.Banned
+            ))
             .OrderByDescending(x => x.isBanned)
             .ThenByDescending(x => x.points)
             .FirstOrDefault();

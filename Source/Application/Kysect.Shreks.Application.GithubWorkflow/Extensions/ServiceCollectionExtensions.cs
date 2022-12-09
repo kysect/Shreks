@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.BackgroundServices;
 using Kysect.Shreks.Application.GithubWorkflow.OrganizationManagement;
@@ -14,6 +15,7 @@ public static class ServiceCollectionExtensions
             .AddScoped<ISubjectCourseGithubOrganizationManager, SubjectCourseGithubOrganizationManager>()
             .AddScoped<GithubSubmissionFactory>()
             .AddScoped<IShreksWebhookEventProcessor, ShreksWebhookEventProcessor>()
+            .AddScoped<ISubmissionService, SubmissionService>()
             .AddHostedService<GithubInvitingWorker>();
     }
 }

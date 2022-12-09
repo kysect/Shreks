@@ -1,6 +1,5 @@
 using CommandLine;
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Submissions;
 using Microsoft.Extensions.Logging;
 
@@ -13,10 +12,9 @@ public class DeactivateCommand : IShreksCommand
     {
         logger.LogInformation($"Handle /deactivate command for submission {context.SubmissionId} from user {context.IssuerId}");
 
-        return await context.SubmissionService.UpdateSubmissionState(
+        return await context.SubmissionService.DeactivateSubmissionAsync(
             context.SubmissionId,
             context.IssuerId,
-            SubmissionState.Inactive,
             cancellationToken);
     }
 }

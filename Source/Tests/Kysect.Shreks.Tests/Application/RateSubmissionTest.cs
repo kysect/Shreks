@@ -10,7 +10,7 @@ namespace Kysect.Shreks.Tests.Application;
 public class RateSubmissionTest : ApplicationTestBase
 {
     [Fact]
-    public async Task RateSubmissionTwice_Should_NoThrow()
+    public async Task UpdateSubmission_Should_NoThrow()
     {
         Submission first = await Context
             .Submissions
@@ -18,11 +18,9 @@ public class RateSubmissionTest : ApplicationTestBase
             .FirstAsync();
 
         first.Rate(new Fraction(0.5), Points.None);
-        first.State = SubmissionState.Completed;
-        first.State.Should().Be(SubmissionState.Completed);
+        first.State.Kind.Should().Be(SubmissionStateKind.Completed);
 
-        first.Rate(new Fraction(0.5), Points.None);
-        first.State = SubmissionState.Completed;
-        first.State.Should().Be(SubmissionState.Completed);
+        first.UpdatePoints(new Fraction(0.5), Points.None);
+        first.State.Kind.Should().Be(SubmissionStateKind.Completed);
     }
 }
