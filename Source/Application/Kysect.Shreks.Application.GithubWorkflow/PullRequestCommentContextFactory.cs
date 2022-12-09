@@ -92,7 +92,7 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
 
     private Func<Task<Submission>> GetDefaultSubmissionFactory()
     {
-        return async () => await _githubSubmissionService.GetCurrentUnratedSubmissionByPrNumber(
-            _pullRequestDescriptor, default);
+        return async () => await _githubSubmissionService.GetLastSubmissionByPr(
+            _pullRequestDescriptor);
     }
 }
