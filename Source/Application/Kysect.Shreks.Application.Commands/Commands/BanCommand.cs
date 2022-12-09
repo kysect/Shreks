@@ -8,13 +8,13 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 [Verb("/ban")]
 public class BanCommand : IShreksCommand
 {
-    public BanCommand(int submissionCode)
+    public BanCommand(int? submissionCode)
     {
         SubmissionCode = submissionCode;
     }
 
-    [Value(0, Required = true, MetaName = "SubmissionCode")]
-    public int SubmissionCode { get; }
+    [Value(0, Required = false, MetaName = "SubmissionCode")]
+    public int? SubmissionCode { get; }
 
     public async Task<Submission> ExecuteAsync(
         UpdateContext context,
@@ -23,11 +23,13 @@ public class BanCommand : IShreksCommand
     {
         logger.LogInformation($"Handle /ban command for submission with code {SubmissionCode}");
 
-        Submission submission = await context.SubmissionService.GetSubmissionByCodeAsync(
-            SubmissionCode,
-            context.Student.Id,
-            context.Assignment.Id,
-            cancellationToken);
+        Submission submission = SubmissionCode is null
+            ? await context.GetDefaultSubmissionAsync()
+            : await context.SubmissionService.GetSubmissionByCodeAsync(
+                SubmissionCode.Value,
+                context.Student.Id,
+                context.Assignment.Id,
+                cancellationToken);
 
         return await context.SubmissionService.BanSubmissionAsync(
             submission.Id,

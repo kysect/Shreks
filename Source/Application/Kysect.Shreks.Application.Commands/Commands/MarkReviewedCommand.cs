@@ -7,7 +7,7 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 public class MarkReviewedCommand : IShreksCommand
 {
     public Task ExecuteAsync(SubmissionContext context, CancellationToken cancellationToken)
-    { 
+    {
         return context.SubmissionService.ReviewSubmissionAsync(
             context.SubmissionId,
             context.IssuerId,

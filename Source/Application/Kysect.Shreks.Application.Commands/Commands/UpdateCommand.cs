@@ -9,7 +9,7 @@ namespace Kysect.Shreks.Application.Commands.Commands;
 [Verb("/update")]
 public class UpdateCommand : IShreksCommand
 {
-    public UpdateCommand(int submissionCode, double? ratingPercent, double? extraPoints, string? dateStr)
+    public UpdateCommand(int? submissionCode, double? ratingPercent, double? extraPoints, string? dateStr)
     {
         SubmissionCode = submissionCode;
         RatingPercent = ratingPercent;
@@ -17,8 +17,8 @@ public class UpdateCommand : IShreksCommand
         DateStr = dateStr;
     }
 
-    [Value(0, Required = true, MetaName = "SubmissionCode")]
-    public int SubmissionCode { get; }
+    [Value(0, Required = false, MetaName = "SubmissionCode")]
+    public int? SubmissionCode { get; }
 
     [Option(shortName: 'r', longName: "rating", Group = "update", Required = false)]
     public double? RatingPercent { get; }
@@ -34,16 +34,20 @@ public class UpdateCommand : IShreksCommand
         return RuCultureDate.Parse(DateStr);
     }
 
-    public async Task<Submission> ExecuteAsync(UpdateContext context, ILogger logger,
+    public async Task<Submission> ExecuteAsync(
+        UpdateContext context,
+        ILogger logger,
         CancellationToken cancellationToken)
     {
         logger.LogInformation($"Handle /update command from {context.IssuerId} with arguments: {ToLogLine()}");
 
-        Submission submission = await context.SubmissionService.GetSubmissionByCodeAsync(
-            SubmissionCode,
-            context.Student.Id,
-            context.Assignment.Id,
-            cancellationToken);
+        Submission submission = SubmissionCode is null
+            ? await context.GetDefaultSubmissionAsync()
+            : await context.SubmissionService.GetSubmissionByCodeAsync(
+                SubmissionCode.Value,
+                context.Student.Id,
+                context.Assignment.Id,
+                cancellationToken);
 
         if (RatingPercent is not null || ExtraPoints is not null)
         {
