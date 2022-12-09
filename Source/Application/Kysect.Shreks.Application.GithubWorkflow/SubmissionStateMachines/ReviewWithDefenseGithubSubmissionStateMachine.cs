@@ -93,6 +93,7 @@ public class ReviewWithDefenseGithubSubmissionStateMachine : IGithubSubmissionSt
     {
         Submission submission = await _githubSubmissionService.GetLastSubmissionByPr(prDescriptor);
         await _shreksCommandProcessor.ActivateSubmissionAsync(submission.Id, sender.Id, default);
+        await _eventNotifier.SendCommentToPullRequest(UserCommandProcessingMessage.SubmissionActivatedSuccessfully());
     }
 
     public async Task ProcessPullRequestClosed(bool isMerged, GithubPullRequestDescriptor prDescriptor, User sender)
