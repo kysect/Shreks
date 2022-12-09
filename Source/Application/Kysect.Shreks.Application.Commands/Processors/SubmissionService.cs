@@ -64,7 +64,7 @@ public class SubmissionService : ISubmissionService
             Fraction? fraction = newRating is null ? null : new Fraction(newRating.Value / 100);
             Points? extraPointsTyped = extraPoints is null ? null : new Points(extraPoints.Value);
 
-            x.Rate(fraction, extraPointsTyped);
+            x.UpdatePoints(fraction, extraPointsTyped);
         });
     }
 
