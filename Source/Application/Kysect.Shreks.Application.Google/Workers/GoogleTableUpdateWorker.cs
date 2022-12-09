@@ -16,18 +16,15 @@ public class GoogleTableUpdateWorker : BackgroundService
     private readonly IServiceScopeFactory _serviceProvider;
     private readonly ILogger<GoogleTableUpdateWorker> _logger;
     private readonly Stopwatch _stopwatch;
-    private readonly IPublisher _publisher;
 
     public GoogleTableUpdateWorker(
         TableUpdateQueue tableUpdateQueue,
         IServiceScopeFactory serviceProvider,
-        ILogger<GoogleTableUpdateWorker> logger,
-        IPublisher publisher)
+        ILogger<GoogleTableUpdateWorker> logger)
     {
         _tableUpdateQueue = tableUpdateQueue;
         _serviceProvider = serviceProvider;
         _logger = logger;
-        _publisher = publisher;
 
         _stopwatch = new Stopwatch();
     }
@@ -41,11 +38,12 @@ public class GoogleTableUpdateWorker : BackgroundService
         while (stoppingToken.IsCancellationRequested is false && await timer.WaitForNextTickAsync(stoppingToken))
         {
             using IServiceScope serviceScope = _serviceProvider.CreateScope();
+            IPublisher publisher = serviceScope.ServiceProvider.GetRequiredService<IPublisher>();
 
             _stopwatch.Restart();
 
-            bool pointsTableUpdated = await UpdateTablePoints(stoppingToken);
-            bool queueTableUpdated = await UpdateTableQueue(stoppingToken);
+            bool pointsTableUpdated = await UpdateTablePoints(publisher, stoppingToken);
+            bool queueTableUpdated = await UpdateTableQueue(publisher, stoppingToken);
 
             _stopwatch.Stop();
 
@@ -54,7 +52,7 @@ public class GoogleTableUpdateWorker : BackgroundService
         }
     }
 
-    private async Task<bool> UpdateTablePoints(CancellationToken cancellationToken)
+    private async Task<bool> UpdateTablePoints(IPublisher publisher, CancellationToken cancellationToken)
     {
         IReadOnlyCollection<Guid> subjectCourses = _tableUpdateQueue.PointsUpdateSubjectCourseIds
             .GetAndClearValues();
@@ -65,13 +63,13 @@ public class GoogleTableUpdateWorker : BackgroundService
         foreach (Guid subjectCourseId in subjectCourses)
         {
             var notification = new SubjectCoursePointsUpdatedNotification(subjectCourseId);
-            await _publisher.Publish(notification, cancellationToken);
+            await publisher.Publish(notification, cancellationToken);
         }
 
         return subjectCourses.Any();
     }
 
-    private async Task<bool> UpdateTableQueue(CancellationToken cancellationToken)
+    private async Task<bool> UpdateTableQueue(IPublisher publisher, CancellationToken cancellationToken)
     {
         IReadOnlyCollection<(Guid, Guid)> queues = _tableUpdateQueue
             .QueueUpdateSubjectCourseGroupIds
@@ -83,7 +81,7 @@ public class GoogleTableUpdateWorker : BackgroundService
         foreach ((Guid courseId, Guid groupId) in queues)
         {
             var notification = new SubjectCourseGroupQueueUpdatedNotification(courseId, groupId);
-            await _publisher.Publish(notification, cancellationToken);
+            await publisher.Publish(notification, cancellationToken);
         }
 
         return queues.Any();
