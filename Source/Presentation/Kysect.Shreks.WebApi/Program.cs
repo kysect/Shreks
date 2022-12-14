@@ -32,7 +32,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.UseSerilogForAppLogs();
+builder.Host.UseSerilogForAppLogs(builder.Configuration);
 
 var googleIntegrationConfiguration = builder.Configuration.GetSection(nameof(GoogleIntegrationConfiguration))
     .Get<GoogleIntegrationConfiguration>();
