@@ -4,6 +4,13 @@ namespace Kysect.Shreks.Application;
 
 public interface ISubmissionService
 {
+    Task<Submission> RateSubmissionAsync(
+        Guid submissionId,
+        Guid userId,
+        double? newRating,
+        double? extraPoints,
+        CancellationToken cancellationToken);
+
     Task<Submission> GetSubmissionByCodeAsync(
         int code,
         Guid studentId,
