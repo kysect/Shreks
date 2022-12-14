@@ -24,7 +24,7 @@ public class RateCommand : IShreksCommand
     {
         logger.LogInformation($"Handle /rate command from {context.IssuerId} with arguments: {ToLogLine()}");
 
-        return await context.SubmissionService.UpdateSubmissionPoints(
+        return await context.SubmissionService.RateSubmissionAsync(
             context.SubmissionId,
             context.IssuerId,
             RatingPercent,

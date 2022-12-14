@@ -22,6 +22,19 @@ public class SubmissionService : ISubmissionService
         _updateQueue = updateQueue;
     }
 
+    public Task<Submission> RateSubmissionAsync(
+        Guid submissionId,
+        Guid userId,
+        double? newRating,
+        double? extraPoints,
+        CancellationToken cancellationToken)
+    {
+        return ExecuteSubmissionCommandAsync(userId, submissionId, cancellationToken, x =>
+        {
+            x.Rate(newRating, extraPoints is null ? null : new Points(extraPoints.Value));
+        });
+    }
+
     public async Task<Submission> GetSubmissionByCodeAsync(
         int code,
         Guid studentId,
