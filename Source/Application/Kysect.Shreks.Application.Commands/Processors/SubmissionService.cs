@@ -31,7 +31,10 @@ public class SubmissionService : ISubmissionService
     {
         return ExecuteSubmissionCommandAsync(userId, submissionId, cancellationToken, x =>
         {
-            x.Rate(newRating, extraPoints is null ? null : new Points(extraPoints.Value));
+            Fraction? rating = newRating is null ? null : new Fraction(newRating.Value / 100);
+            Points? extraPointsTyped = extraPoints is null ? null : new Points(extraPoints.Value);
+
+            x.Rate(rating, extraPointsTyped);
         });
     }
 
