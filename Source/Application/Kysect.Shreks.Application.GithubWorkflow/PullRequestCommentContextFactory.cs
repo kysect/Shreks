@@ -1,5 +1,4 @@
 using Kysect.Shreks.Application.Commands.Contexts;
-using Kysect.Shreks.Application.Commands.Processors;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Submissions;
@@ -16,13 +15,13 @@ public class PullRequestCommentContextFactory : ICommandContextFactory
     private readonly GithubCommandSubmissionFactory _githubCommandSubmissionFactory;
     private readonly IShreksDatabaseContext _context;
     private readonly GithubSubmissionService _githubSubmissionService;
-    private readonly SubmissionService _submissionService;
+    private readonly ISubmissionService _submissionService;
 
     public PullRequestCommentContextFactory(
         GithubPullRequestDescriptor pullRequestDescriptor,
         GithubSubmissionFactory githubSubmissionFactory,
         IShreksDatabaseContext context,
-        SubmissionService submissionService)
+        ISubmissionService submissionService)
     {
         _pullRequestDescriptor = pullRequestDescriptor;
         _context = context;

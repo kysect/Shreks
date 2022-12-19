@@ -67,7 +67,7 @@ public class ShreksCommandProcessor
                 SubmissionRateDto submission = await createSubmissionCommand
                     .ExecuteAsync(context, _logger, cancellationToken);
 
-                string message = UserCommandProcessingMessage.SubmissionCreated(submission.ToPullRequestString());
+                string message = UserCommandProcessingMessage.SubmissionCreated(submission.ToDisplayString());
 
                 return BaseShreksCommandResult.Success(message);
             }
@@ -99,7 +99,7 @@ public class ShreksCommandProcessor
                 Submission submission = await rateCommand.ExecuteAsync(context, _logger, cancellationToken);
                 SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 
-                string message = UserCommandProcessingMessage.SubmissionRated(submissionDto.ToPullRequestString());
+                string message = UserCommandProcessingMessage.SubmissionRated(submissionDto.ToDisplayString());
 
                 return BaseShreksCommandResult.Success(message);
             }
@@ -110,7 +110,7 @@ public class ShreksCommandProcessor
                 Submission submission = await updateCommand.ExecuteAsync(context, _logger, cancellationToken);
                 SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 
-                string message = UserCommandProcessingMessage.SubmissionUpdated(submissionDto.ToPullRequestString());
+                string message = UserCommandProcessingMessage.SubmissionUpdated(submissionDto.ToDisplayString());
 
                 return BaseShreksCommandResult.Success(message);
             }
