@@ -12,7 +12,7 @@ public record SubmissionRateDto(
     double? PenaltyPoints,
     double? TotalPoints)
 {
-    public string ToPullRequestString()
+    public string ToDisplayString()
     {
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine($"Submission code: {Code} ({SubmissionDate.ToString("dd.MM.yyyy")})");

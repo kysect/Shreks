@@ -12,7 +12,7 @@ public static class PullRequestCommitEventNotifierExtensions
         ILogger logger)
     {
         string message = $"Submission {submission.Code} was updated." +
-                         $"\nState: {submission.State}" +
+                         $"\nState: {submission.State.Kind}" +
                          $"\nDate: {submission.SubmissionDate}";
 
         logger.LogInformation("Notify comment posted into PR: " + message);
@@ -25,7 +25,7 @@ public static class PullRequestCommitEventNotifierExtensions
         ILogger logger)
     {
         string message = $"Submission {submission.Code} was updated." +
-                         $"\nState: {submission.State}" +
+                         $"\nState: {submission.State.Kind}" +
                          $"\nDate: {submission.SubmissionDate}";
 
         logger.LogInformation("Notify posted as commit comment: " + message);

@@ -86,4 +86,9 @@ public static class UserCommandProcessingMessage
     {
         return string.Format(UserMessages.SubmissionBanned, submissionId);
     }
+
+    public static string SubmissionMarkAsNotAccepted(int submissionCode)
+    {
+        return string.Format(UserMessages.SubmissionNotAccepted, submissionCode);
+    }
 }

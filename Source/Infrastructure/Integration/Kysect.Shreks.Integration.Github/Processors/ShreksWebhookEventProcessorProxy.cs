@@ -85,9 +85,8 @@ public sealed class ShreksWebhookEventProcessorProxy : WebhookEventProcessor
         }
         catch (Exception e)
         {
-
             string message = $"Failed to handle {pullRequestAction}";
-            repositoryLogger.LogError(e, $"{nameof(ProcessPullRequestWebhookAsync)}: {message}");
+            repositoryLogger.LogError(e, "{MethodName}: {Message}", nameof(ProcessPullRequestWebhookAsync), message);
             await pullRequestCommitEventNotifier.SendExceptionMessageSafe(e, repositoryLogger);
         }
     }
