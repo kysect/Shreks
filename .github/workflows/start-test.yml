@@ -1,0 +1,19 @@
+name: Start Test
+
+on:
+  push:
+    branches: [ dev ]
+    
+jobs:
+  deploy:
+    name: Deploy Test
+    runs-on: [ self-hosted, shreks-vm ]
+    
+    steps:
+      - name: Docker Prune
+        run: docker builder prune -f
+        
+      - uses: actions/checkout@v2
+        
+      - name: Run deploy script
+        run: YaCloud/start_test.py
