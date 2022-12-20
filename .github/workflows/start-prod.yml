@@ -1,21 +1,21 @@
-name: Start Test
+name: Start Prod
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ master ]
     paths:
       - 'Source/**'
-    
+
 jobs:
   deploy:
-    name: Deploy Test
+    name: Deploy Prod
     runs-on: [ self-hosted, shreks-vm ]
     
     steps:
       - name: Docker Prune
         run: echo "Pruning docker builder cache" && docker builder prune -f
-        
+
       - uses: actions/checkout@v2
-        
+
       - name: Run deploy script
-        run: YaCloud/start_test.py
+        run: YaCloud/start_prod.py
