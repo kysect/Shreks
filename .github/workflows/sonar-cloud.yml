@@ -2,9 +2,12 @@ name: Build
 on:
   push:
     branches: [ master, dev ]
+    paths:
+      - 'Source/**'
+
   pull_request:
     branches: [ master, dev ]
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
     paths:
       - 'Source/**'
 jobs:
