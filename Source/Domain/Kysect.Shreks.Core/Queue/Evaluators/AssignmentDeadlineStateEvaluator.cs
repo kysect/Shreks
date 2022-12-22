@@ -1,4 +1,5 @@
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
 
@@ -22,14 +23,14 @@ public class AssignmentDeadlineStateEvaluator : ISubmissionEvaluator
     {
         ArgumentNullException.ThrowIfNull(submission);
 
-        var groupAssignment = submission.GroupAssignment;
+        GroupAssignment groupAssignment = submission.GroupAssignment;
 
         if (groupAssignment.Deadline < submission.SubmissionDateOnly)
             return ExpiredAssignmentPriority;
 
-        var now = Calendar.CurrentDate;
+        DateOnly now = Calendar.CurrentDate;
 
-        var closestDeadline = submission
+        DateOnly closestDeadline = submission
             .GroupAssignment
             .Assignment
             .SubjectCourse
@@ -38,7 +39,8 @@ public class AssignmentDeadlineStateEvaluator : ISubmissionEvaluator
             .Where(x => x.Group.Equals(submission.Student.Group))
             .Select(x => x.Deadline)
             .Where(x => x >= now)
-            .Min();
+            .OrderBy(x => x)
+            .FirstOrDefault();
 
         if (groupAssignment.Deadline.Equals(closestDeadline))
             return CurrentAssignmentPriority;

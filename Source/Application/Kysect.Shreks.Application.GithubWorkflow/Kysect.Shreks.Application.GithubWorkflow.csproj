@@ -4,8 +4,6 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<AnalysisLevel>latest</AnalysisLevel>
-		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,8 +13,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
-		<ProjectReference
-			Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
+		<ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
 		<ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
 		<ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
 	</ItemGroup>

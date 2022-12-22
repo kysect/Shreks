@@ -16,14 +16,13 @@ public readonly record struct Points : IComparable<Points>
     public static Points None => new Points();
 
     public static Points Min(Points a, Points b)
-    {
-        return a < b ? a : b;
-    }
+        => a < b ? a : b;
 
     public static Points Max(Points a, Points b)
-    {
-        return a > b ? a : b;
-    }
+        => a > b ? a : b;
+
+    public static implicit operator Points(double value)
+        => new Points(value);
 
     public static Points operator +(Points a, Points b)
         => new Points(a.Value + b.Value);

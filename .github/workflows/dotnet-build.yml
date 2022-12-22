@@ -2,9 +2,12 @@ name: .NET Core
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, dev ]
+    paths:
+      - 'Source/**'
+
   pull_request:
-    branches: [ master ]
+    branches: [ master, dev ]
     paths:
       - 'Source/**'
 jobs:
@@ -13,14 +16,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET 6
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
-    - name: Install dependencies
-      run: dotnet restore Source/Kysect.Shreks.sln
-    - name: Build
-      run: dotnet build Source/Kysect.Shreks.sln --configuration Release --no-restore
-    - name: Test
-      run: dotnet test Source/Kysect.Shreks.sln --no-restore --verbosity normal
+      - uses: actions/checkout@v2
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+      - name: Install dependencies
+        run: dotnet restore Source/Kysect.Shreks.sln
+      - name: Build
+        run: dotnet build Source/Kysect.Shreks.sln --configuration Release --no-restore
+      - name: Test
+        run: dotnet test Source/Kysect.Shreks.sln --no-restore --verbosity normal

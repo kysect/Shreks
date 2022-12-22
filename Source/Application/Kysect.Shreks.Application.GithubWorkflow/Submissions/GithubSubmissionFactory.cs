@@ -8,6 +8,7 @@ using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Kysect.CommonLib;
+using Kysect.Shreks.Application.Abstractions.Permissions;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.Specifications.GroupAssignments;
@@ -15,16 +16,19 @@ using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
+using Kysect.Shreks.Core.Study;
 
 namespace Kysect.Shreks.Application.GithubWorkflow.Submissions;
 
 public class GithubSubmissionFactory : IGithubSubmissionFactory
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly IPermissionValidator _permissionValidator;
 
-    public GithubSubmissionFactory(IShreksDatabaseContext context)
+    public GithubSubmissionFactory(IShreksDatabaseContext context, IPermissionValidator permissionValidator)
     {
         _context = context;
+        _permissionValidator = permissionValidator;
     }
 
     public async Task<GithubSubmissionCreationResult> CreateOrUpdateGithubSubmission(
@@ -35,8 +39,12 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
 
         Guid userId = await GetUserId(pullRequestDescriptor, cancellationToken);
         Guid assignmentId = await GetAssignmentId(pullRequestDescriptor, cancellationToken);
-        bool triggeredByMentor = await PermissionValidator.IsOrganizationMentor(_context, userId, pullRequestDescriptor.Organization);
-        bool triggeredByAnotherUser = !PermissionValidator.IsRepositoryOwner(pullRequestDescriptor.Sender, pullRequestDescriptor.Repository);
+
+        bool triggeredByMentor = await _permissionValidator.IsOrganizationMentor(
+            userId, pullRequestDescriptor.Organization);
+
+        bool triggeredByAnotherUser = !PermissionValidator.IsRepositoryOwner(
+            pullRequestDescriptor.Sender, pullRequestDescriptor.Repository);
 
         var submissionSpec = new FindLatestGithubSubmission(
             pullRequestDescriptor.Organization,
@@ -54,7 +62,8 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
         {
             if (triggeredByAnotherUser && !triggeredByMentor)
             {
-                throw DomainInvalidOperationException.RepositoryAssignedToAnotherUserClosePullRequest(pullRequestDescriptor.Repository, pullRequestDescriptor.Sender);
+                throw DomainInvalidOperationException.RepositoryAssignedToAnotherUserClosePullRequest(
+                    pullRequestDescriptor.Repository, pullRequestDescriptor.Sender);
             }
 
             submission = await CreateGithubSubmissionAsync(
@@ -76,30 +85,37 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
 
             if (triggeredByAnotherUser)
             {
-                throw DomainInvalidOperationException.RepositoryAssignedToAnotherUserSubmissionUpdated(pullRequestDescriptor.Repository, pullRequestDescriptor.Sender);
+                throw DomainInvalidOperationException.RepositoryAssignedToAnotherUserSubmissionUpdated(
+                    pullRequestDescriptor.Repository, pullRequestDescriptor.Sender);
             }
         }
 
         return new GithubSubmissionCreationResult(submission, isCreated);
     }
 
-    private async Task<Guid> GetUserId(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
+    private async Task<Guid> GetUserId(
+        GithubPullRequestDescriptor pullRequestDescriptor,
+        CancellationToken cancellationToken)
     {
         User user = await _context.UserAssociations.GetUserByGithubUsername(pullRequestDescriptor.Sender);
 
         return user.Id;
     }
 
-    private async Task<Guid> GetAssignmentId(GithubPullRequestDescriptor pullRequestDescriptor, CancellationToken cancellationToken)
+    private async Task<Guid> GetAssignmentId(
+        GithubPullRequestDescriptor pullRequestDescriptor,
+        CancellationToken cancellationToken)
     {
-        var subjectCourseAssociation = await _context.SubjectCourseAssociations
+        GithubSubjectCourseAssociation? subjectCourseAssociation = await _context.SubjectCourseAssociations
             .OfType<GithubSubjectCourseAssociation>()
-            .FirstOrDefaultAsync(gsc => gsc.GithubOrganizationName == pullRequestDescriptor.Organization, cancellationToken);
+            .FirstOrDefaultAsync(gsc => gsc.GithubOrganizationName == pullRequestDescriptor.Organization,
+                cancellationToken);
 
         if (subjectCourseAssociation is null)
             throw EntityNotFoundException.SubjectCourseForOrganizationNotFound(pullRequestDescriptor.Organization);
 
-        var assignment = subjectCourseAssociation.SubjectCourse.Assignments.FirstOrDefault(a => a.ShortName == pullRequestDescriptor.BranchName);
+        Assignment? assignment = subjectCourseAssociation.SubjectCourse.Assignments.FirstOrDefault(
+            a => a.ShortName == pullRequestDescriptor.BranchName);
 
         if (assignment is null)
         {
@@ -108,7 +124,8 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
                 .OrderBy(a => a.Order)
                 .ToSingleString(a => a.ShortName);
 
-            throw EntityNotFoundException.AssignmentWasNotFound(pullRequestDescriptor.BranchName, subjectCourseAssociation.SubjectCourse.Title, assignments);
+            throw EntityNotFoundException.AssignmentWasNotFound(pullRequestDescriptor.BranchName,
+                subjectCourseAssociation.SubjectCourse.Title, assignments);
         }
 
         return assignment.Id;
@@ -122,30 +139,37 @@ public class GithubSubmissionFactory : IGithubSubmissionFactory
     {
         // TODO: student must be filtered by subject course
         Student? student = await _context.Students.FindAsync(new object[] { userId }, cancellationToken);
+
         if (student is null)
         {
-            var courseAssociation = await _context.SubjectCourseAssociations
+            GithubSubjectCourseAssociation? courseAssociation = await _context.SubjectCourseAssociations
                 .OfType<GithubSubjectCourseAssociation>()
                 .Include(association => association.SubjectCourse)
-                .SingleOrDefaultAsync(x => x.GithubOrganizationName == pullRequestDescriptor.Organization, cancellationToken)
-                ?? throw EntityNotFoundException.SubjectCourseForOrganizationNotFound(pullRequestDescriptor.Organization);
+                .SingleOrDefaultAsync(
+                    x => x.GithubOrganizationName == pullRequestDescriptor.Organization,
+                    cancellationToken);
 
-            _ = await _context.Mentors.FindAsync(new object[] { userId, courseAssociation.SubjectCourse.Id }, cancellationToken)
-                ?? throw EntityNotFoundException.UserNotFoundInSubjectCourse(userId, courseAssociation.SubjectCourse.Title);
+            if (courseAssociation is null)
+                throw EntityNotFoundException.SubjectCourseForOrganizationNotFound(pullRequestDescriptor.Organization);
+
+            _ = await _context.Mentors.FindAsync(new object[] { userId, courseAssociation.SubjectCourse.Id },
+                    cancellationToken)
+                ?? throw EntityNotFoundException.UserNotFoundInSubjectCourse(userId,
+                    courseAssociation.SubjectCourse.Title);
 
             student = await FindStudentByRepositoryName(pullRequestDescriptor, cancellationToken);
         }
 
         var groupAssignmentSpec = new GetStudentGroupAssignment(student.UserId, assignmentId);
 
-        var groupAssignment = await _context.GroupAssignments
+        GroupAssignment groupAssignment = await _context.GroupAssignments
             .WithSpecification(groupAssignmentSpec)
             .SingleAsync(cancellationToken);
 
         var studentAssignmentSubmissionsSpec = new GetStudentAssignmentSubmissions(
             student.UserId, assignmentId);
 
-        var count = await _context.Submissions
+        int count = await _context.Submissions
             .WithSpecification(studentAssignmentSubmissionsSpec)
             .CountAsync(cancellationToken);
 

@@ -1,6 +1,6 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Abstractions.Permissions;
 using Kysect.Shreks.Application.Extensions;
-using Kysect.Shreks.Application.Validators;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
@@ -15,11 +15,16 @@ public class SubmissionService : ISubmissionService
 {
     private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _updateQueue;
+    private readonly IPermissionValidator _permissionValidator;
 
-    public SubmissionService(IShreksDatabaseContext context, ITableUpdateQueue updateQueue)
+    public SubmissionService(
+        IShreksDatabaseContext context,
+        ITableUpdateQueue updateQueue,
+        IPermissionValidator permissionValidator)
     {
         _context = context;
         _updateQueue = updateQueue;
+        _permissionValidator = permissionValidator;
     }
 
     public Task<Submission> RateSubmissionAsync(
@@ -127,7 +132,7 @@ public class SubmissionService : ISubmissionService
         Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
 
         if (mustHaveMentorAccess)
-            PermissionValidator.EnsureMentorAccess(userId, submission);
+            await _permissionValidator.EnsureSubmissionMentorAsync(userId, submissionId, default);
 
         action(submission);
 

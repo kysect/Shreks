@@ -21,4 +21,7 @@ public readonly record struct Fraction
 
     public static implicit operator double(Fraction fraction)
         => fraction.Value;
+
+    public static Fraction FromDenormalizedValue(double value)
+        => new Fraction(value / 100);
 }

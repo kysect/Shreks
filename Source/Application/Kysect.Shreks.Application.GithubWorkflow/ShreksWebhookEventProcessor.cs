@@ -1,4 +1,5 @@
 ﻿using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Abstractions.Submissions;
 using Kysect.Shreks.Application.Commands.Commands;
 using Kysect.Shreks.Application.Commands.Parsers;
 using Kysect.Shreks.Application.Commands.Processors;
@@ -25,40 +26,54 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
     private readonly IShreksDatabaseContext _context;
     private readonly ITableUpdateQueue _queue;
     private readonly GithubSubmissionFactory _githubSubmissionFactory;
-    private readonly SubmissionService _shreksCommandProcessor;
+    private readonly ISubmissionService _shreksCommandProcessor;
     private readonly GithubSubmissionStateMachineFactory _githubSubmissionStateMachineFactory;
 
     public ShreksWebhookEventProcessor(
         IShreksCommandParser commandParser,
         IShreksDatabaseContext context,
         ITableUpdateQueue queue,
-        GithubSubmissionFactory githubSubmissionFactory)
+        GithubSubmissionFactory githubSubmissionFactory,
+        ISubmissionWorkflowService submissionWorkflowService,
+        ISubmissionService submissionService)
     {
         _commandParser = commandParser;
         _context = context;
         _queue = queue;
         _githubSubmissionFactory = githubSubmissionFactory;
+        _shreksCommandProcessor = submissionService;
 
-        _shreksCommandProcessor = new SubmissionService(_context, _queue);
-        _githubSubmissionStateMachineFactory = new GithubSubmissionStateMachineFactory(_context, _shreksCommandProcessor);
+        _githubSubmissionStateMachineFactory = new GithubSubmissionStateMachineFactory(
+            _context, submissionWorkflowService);
     }
 
-    public async Task ProcessPullRequestReopen(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReopen(
+        GithubPullRequestDescriptor prDescriptor,
+        ILogger logger,
+        IPullRequestCommitEventNotifier eventNotifier)
     {
-        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(
+            prDescriptor, logger, eventNotifier);
+
         User sender = await GetEventSender(prDescriptor);
         await githubSubmissionStateMachine.ProcessPullRequestReopen(prDescriptor, sender);
     }
 
-    public async Task ProcessPullRequestUpdate(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier, CancellationToken cancellationToken)
+    public async Task ProcessPullRequestUpdate(
+        GithubPullRequestDescriptor prDescriptor,
+        ILogger logger,
+        IPullRequestCommitEventNotifier eventNotifier,
+        CancellationToken cancellationToken)
     {
-        GithubSubmissionCreationResult result = await _githubSubmissionFactory.CreateOrUpdateGithubSubmission(prDescriptor, cancellationToken);
+        GithubSubmissionCreationResult result = await _githubSubmissionFactory.CreateOrUpdateGithubSubmission(
+            prDescriptor, cancellationToken);
+
         _queue.EnqueueSubmissionsQueueUpdate(result.Submission.GetCourseId(), result.Submission.GetGroupId());
 
         if (result.IsCreated)
         {
             SubmissionRateDto submissionRateDto = SubmissionRateDtoFactory.CreateFromSubmission(result.Submission);
-            string message = UserCommandProcessingMessage.SubmissionCreated(submissionRateDto.ToPullRequestString());
+            string message = UserCommandProcessingMessage.SubmissionCreated(submissionRateDto.ToDisplayString());
             await eventNotifier.SendCommentToPullRequest(message);
         }
         else
@@ -67,15 +82,25 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         }
     }
 
-    public async Task ProcessPullRequestClosed(bool merged, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestCommitEventNotifier eventNotifier)
+    public async Task ProcessPullRequestClosed(
+        bool merged,
+        GithubPullRequestDescriptor prDescriptor,
+        ILogger logger,
+        IPullRequestCommitEventNotifier eventNotifier)
     {
-        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(
+            prDescriptor, logger, eventNotifier);
+
         User sender = await GetEventSender(prDescriptor);
 
         await githubSubmissionStateMachine.ProcessPullRequestClosed(merged, prDescriptor, sender);
     }
 
-    public async Task ProcessPullRequestReviewComment(string? comment, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReviewComment(
+        string? comment,
+        GithubPullRequestDescriptor prDescriptor,
+        ILogger logger,
+        IPullRequestEventNotifier eventNotifier)
     {
         if (comment is null)
         {
@@ -88,12 +113,17 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         if (comment.FirstOrDefault() == '/')
             command = _commandParser.Parse(comment);
 
-        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(
+            prDescriptor, logger, eventNotifier);
 
         await githubSubmissionStateMachine.ProcessPullRequestReviewComment(command);
     }
 
-    public async Task ProcessPullRequestReviewRequestChanges(string? reviewBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReviewRequestChanges(
+        string? reviewBody,
+        GithubPullRequestDescriptor prDescriptor,
+        ILogger logger,
+        IPullRequestEventNotifier eventNotifier)
     {
         string reviewComment = reviewBody ?? string.Empty;
         IShreksCommand? requestChangesCommand = null;
@@ -101,12 +131,20 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         if (reviewComment.FirstOrDefault() == '/')
             requestChangesCommand = _commandParser.Parse(reviewComment);
 
-        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(
+            prDescriptor, logger, eventNotifier);
 
-        await githubSubmissionStateMachine.ProcessPullRequestReviewRequestChanges(requestChangesCommand);
+        User sender = await GetEventSender(prDescriptor);
+
+        await githubSubmissionStateMachine.ProcessPullRequestReviewRequestChanges(
+            requestChangesCommand, prDescriptor, sender);
     }
 
-    public async Task ProcessPullRequestReviewApprove(string? commentBody, GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
+    public async Task ProcessPullRequestReviewApprove(
+        string? commentBody,
+        GithubPullRequestDescriptor prDescriptor,
+        ILogger logger,
+        IPullRequestEventNotifier eventNotifier)
     {
         string approveComment = commentBody ?? string.Empty;
         IShreksCommand? command = null;
@@ -114,7 +152,9 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         if (approveComment.FirstOrDefault() == '/')
             command = _commandParser.Parse(approveComment);
 
-        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(prDescriptor, logger, eventNotifier);
+        IGithubSubmissionStateMachine githubSubmissionStateMachine = await CreateStateMachine(
+            prDescriptor, logger, eventNotifier);
+
         User sender = await GetEventSender(prDescriptor);
         await githubSubmissionStateMachine.ProcessPullRequestReviewApprove(command, prDescriptor, sender);
     }
@@ -131,21 +171,29 @@ public class ShreksWebhookEventProcessor : IShreksWebhookEventProcessor
         IShreksCommand command = _commandParser.Parse(issueCommentBody);
         ShreksCommandProcessor commandProcessor = CreateCommandProcessor(prDescriptor, logger);
         BaseShreksCommandResult result = await commandProcessor.ProcessBaseCommandSafe(command, CancellationToken.None);
+
         if (!string.IsNullOrEmpty(result.Message))
             await eventNotifier.SendCommentToPullRequest(result.Message);
 
         await eventNotifier.ReactToUserComment(result.IsSuccess);
     }
 
-    private Task<IGithubSubmissionStateMachine> CreateStateMachine(GithubPullRequestDescriptor prDescriptor, ILogger logger, IPullRequestEventNotifier eventNotifier)
+    private Task<IGithubSubmissionStateMachine> CreateStateMachine(
+        GithubPullRequestDescriptor prDescriptor,
+        ILogger logger,
+        IPullRequestEventNotifier eventNotifier)
     {
-        return _githubSubmissionStateMachineFactory
-            .Create(CreateCommandProcessor(prDescriptor, logger), prDescriptor, logger, eventNotifier);
+        return _githubSubmissionStateMachineFactory.Create(
+            CreateCommandProcessor(prDescriptor, logger), prDescriptor, logger, eventNotifier);
     }
 
-    private ShreksCommandProcessor CreateCommandProcessor(GithubPullRequestDescriptor pullRequestDescriptor, ILogger repositoryLogger)
+    private ShreksCommandProcessor CreateCommandProcessor(
+        GithubPullRequestDescriptor pullRequestDescriptor,
+        ILogger repositoryLogger)
     {
-        var commentContextFactory = new PullRequestCommentContextFactory(pullRequestDescriptor, _githubSubmissionFactory, _context, _shreksCommandProcessor);
+        var commentContextFactory = new PullRequestCommentContextFactory(
+            pullRequestDescriptor, _githubSubmissionFactory, _context, _shreksCommandProcessor);
+
         return new ShreksCommandProcessor(commentContextFactory, repositoryLogger);
     }
 

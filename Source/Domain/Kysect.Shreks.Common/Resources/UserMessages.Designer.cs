@@ -224,5 +224,11 @@ namespace Kysect.Shreks.Common.Resources {
                 return ResourceManager.GetString("SubmissionBanned", resourceCulture);
             }
         }
+        
+        internal static string SubmissionNotAccepted {
+            get {
+                return ResourceManager.GetString("SubmissionNotAccepted", resourceCulture);
+            }
+        }
     }
 }
