@@ -37,28 +37,28 @@ public class GoogleTableUpdateWorker : BackgroundService
 
         while (stoppingToken.IsCancellationRequested is false && await timer.WaitForNextTickAsync(stoppingToken))
         {
-            using IServiceScope serviceScope = _serviceProvider.CreateScope();
-            IPublisher publisher = serviceScope.ServiceProvider.GetRequiredService<IPublisher>();
-
             _stopwatch.Restart();
 
-            bool pointsTableUpdated = await UpdateTablePoints(publisher, stoppingToken);
-            bool queueTableUpdated = await UpdateTableQueue(publisher, stoppingToken);
+            bool pointsTableUpdated = await UpdateTablePoints(stoppingToken);
+            bool queueTableUpdated = await UpdateTableQueue(stoppingToken);
 
             _stopwatch.Stop();
 
             if (pointsTableUpdated || queueTableUpdated)
-                _logger.LogInformation("Update tasks finished within {time} ms", _stopwatch.Elapsed.TotalMilliseconds);
+                _logger.LogInformation("Update tasks finished within {Time} ms", _stopwatch.Elapsed.TotalMilliseconds);
         }
     }
 
-    private async Task<bool> UpdateTablePoints(IPublisher publisher, CancellationToken cancellationToken)
+    private async Task<bool> UpdateTablePoints(CancellationToken cancellationToken)
     {
+        using IServiceScope serviceScope = _serviceProvider.CreateScope();
+        IPublisher publisher = serviceScope.ServiceProvider.GetRequiredService<IPublisher>();
+
         IReadOnlyCollection<Guid> subjectCourses = _tableUpdateQueue.PointsUpdateSubjectCourseIds
             .GetAndClearValues();
 
         if (subjectCourses.Any())
-            _logger.LogInformation("Going to update {count} subject courses points", subjectCourses.Count);
+            _logger.LogInformation("Going to update {Count} subject courses points", subjectCourses.Count);
 
         foreach (Guid subjectCourseId in subjectCourses)
         {
@@ -69,14 +69,16 @@ public class GoogleTableUpdateWorker : BackgroundService
         return subjectCourses.Any();
     }
 
-    private async Task<bool> UpdateTableQueue(IPublisher publisher, CancellationToken cancellationToken)
+    private async Task<bool> UpdateTableQueue(CancellationToken cancellationToken)
     {
-        IReadOnlyCollection<(Guid, Guid)> queues = _tableUpdateQueue
-            .QueueUpdateSubjectCourseGroupIds
+        using IServiceScope serviceScope = _serviceProvider.CreateScope();
+        IPublisher publisher = serviceScope.ServiceProvider.GetRequiredService<IPublisher>();
+
+        IReadOnlyCollection<(Guid, Guid)> queues = _tableUpdateQueue.QueueUpdateSubjectCourseGroupIds
             .GetAndClearValues();
 
         if (queues.Any())
-            _logger.LogInformation("Going to update {count} group queues", queues.Count);
+            _logger.LogInformation("Going to update {Count} group queues", queues.Count);
 
         foreach ((Guid courseId, Guid groupId) in queues)
         {

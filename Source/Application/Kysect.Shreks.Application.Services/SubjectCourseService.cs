@@ -34,6 +34,7 @@ public class SubjectCourseService : ISubjectCourseService
             .Include(x => x.GroupAssignments)
             .ThenInclude(x => x.Submissions)
             .Where(x => x.SubjectCourse.Id.Equals(subjectCourseId))
+            .AsNoTrackingWithIdentityResolution()
             .ToListAsync(cancellationToken);
 
         IEnumerable<StudentAssignment> studentAssignmentPoints = assignments
