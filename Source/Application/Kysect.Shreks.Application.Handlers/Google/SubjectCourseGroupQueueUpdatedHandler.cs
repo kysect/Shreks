@@ -62,8 +62,8 @@ internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<Subj
         StudentGroup group = await _context.StudentGroups.GetByIdAsync(notification.GroupId, cancellationToken);
         SubmissionQueue queue = new DefaultQueueBuilder(group, notification.SubjectCourseId).Build();
 
-        IQueryable<Submission> query = _context.Submissions.AsNoTrackingWithIdentityResolution();
-        IEnumerable<Submission> submissions = await queue.UpdateSubmissions(query, _queryExecutor, cancellationToken);
+        IEnumerable<Submission> submissions = await queue.UpdateSubmissions(
+            _context.Submissions, _queryExecutor, cancellationToken);
 
         QueueSubmissionDto[] submissionsDto = submissions
             .Select(_mapper.Map<QueueSubmissionDto>)

@@ -31,10 +31,12 @@ public class SubjectCourseService : ISubjectCourseService
             .Include(x => x.GroupAssignments)
             .ThenInclude(x => x.Group)
             .ThenInclude(x => x.Students)
+            .ThenInclude(x => x.User)
+            .ThenInclude(x => x.Associations)
             .Include(x => x.GroupAssignments)
             .ThenInclude(x => x.Submissions)
+            .AsSplitQuery()
             .Where(x => x.SubjectCourse.Id.Equals(subjectCourseId))
-            .AsNoTrackingWithIdentityResolution()
             .ToListAsync(cancellationToken);
 
         IEnumerable<StudentAssignment> studentAssignmentPoints = assignments
