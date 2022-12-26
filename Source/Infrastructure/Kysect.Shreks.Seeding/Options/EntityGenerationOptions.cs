@@ -6,7 +6,7 @@ namespace Kysect.Shreks.Seeding.Options;
 public class EntityGenerationOptions
 {
     private readonly IServiceCollection _collection;
-    
+
     public EntityGenerationOptions(IServiceCollection collection)
     {
         _collection = collection;
@@ -16,7 +16,7 @@ public class EntityGenerationOptions
     {
         var instance = new EntityGeneratorOptions<TEntity>();
         action(instance);
-        
+
         _collection.AddSingleton(instance);
         return this;
     }
