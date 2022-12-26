@@ -1,6 +1,7 @@
 ﻿using Kysect.Shreks.Application.Contracts.Github.Commands;
 using Kysect.Shreks.Application.Contracts.Students.Commands;
 using Kysect.Shreks.Application.Contracts.Students.Queries;
+using Kysect.Shreks.Application.Contracts.Users.Commands;
 using Kysect.Shreks.Application.Contracts.Users.Queries;
 using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Users;
@@ -61,6 +62,15 @@ public class StudentController : ControllerBase
     {
         GetStudentById.Response response = await _mediator.Send(new GetStudentById.Query(id));
         return Ok(response.Student);
+    }
+
+    [HttpPut("{id:guid}/dismiss")]
+    public async Task<ActionResult> DismissFromGroup(Guid id)
+    {
+        var command = new DismissStudentFromGroup.Command(id);
+        await _mediator.Send(command);
+
+        return Ok();
     }
 
     [HttpPost("association/github")]

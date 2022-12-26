@@ -12,10 +12,7 @@
     private ConfirmationComponent? _component;
 
     private Task ButtonClicked()
-    {
-        Console.WriteLine("Button clicked");
-        return _component?.Show() ?? Task.CompletedTask;
-    }
+        => _component?.Show() ?? Task.CompletedTask;
 
     private Task SendAsync(CancellationToken cancellationToken)
         => Client.ForceUpdateAsync(cancellationToken);

@@ -72,7 +72,7 @@ public class SubjectCourseController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{subjectCourseId}/assignments")]
+    [HttpGet("{subjectCourseId:guid}/assignments")]
     public async Task<ActionResult<IReadOnlyCollection<AssignmentDto>>> GetAssignments(Guid subjectCourseId)
     {
         var query = new GetAssignmentsBySubjectCourse.Query(subjectCourseId);

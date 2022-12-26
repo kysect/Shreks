@@ -1,0 +1,47 @@
+@using Kysect.Shreks.WebUI.AdminPanel.Models
+@using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Groups
+@inject IStudyGroupClient StudyGroupClient
+
+@if (_groups is not null)
+{
+    <Div>
+        @foreach (var group in _groups.OrderBy(x => x.Group.Name))
+        {
+            <StudyGroupInfoComponent Group="@group.Group"/>
+        }
+    </Div>
+}
+else
+{
+    <LoaderComponent/>
+}
+
+@code {
+
+    private ICollection<ExtendedSubjectCourseGroupDto>? _groups;
+
+    [Parameter]
+    public ICollection<SubjectCourseGroupDto>? SubjectCourseGroups { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (SubjectCourseGroups is null)
+            return;
+
+
+        IEnumerable<Task<(SubjectCourseGroupDto x, StudyGroupDto group)>> groupTasks = SubjectCourseGroups
+            .Select(async x =>
+            {
+                var group = await StudyGroupClient.StudyGroupGetAsync(x.StudentGroupId);
+                return (x, group);
+            });
+
+        (SubjectCourseGroupDto x, StudyGroupDto group)[] groups = await Task.WhenAll(groupTasks);
+
+        _groups = groups
+            .Select(x => new ExtendedSubjectCourseGroupDto(x.x, x.group))
+            .ToArray();
+    }
+
+}

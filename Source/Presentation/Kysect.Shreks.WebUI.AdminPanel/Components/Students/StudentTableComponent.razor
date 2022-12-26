@@ -1,0 +1,52 @@
+@using Kysect.Shreks.WebApi.Sdk
+
+@if (Students is not null)
+{
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>Isu</TableHeaderCell>
+                <TableHeaderCell>Group</TableHeaderCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>GitHub</TableHeaderCell>
+                <TableHeaderCell>Links</TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+
+            @foreach (var student in Students)
+            {
+                <TableRow>
+                    <TableRowHeader>@(student.UniversityId?.ToString() ?? string.Empty)</TableRowHeader>
+                    <TableRowCell>@student.GroupName</TableRowCell>
+                    <TableRowCell>
+                        @($"{student.User.LastName} {student.User.FirstName} {student.User.MiddleName}")
+                    </TableRowCell>
+
+                    <TableRowCell>
+                        @student.GitHubUsername
+
+                    </TableRowCell>
+
+                    <TableRowCell>
+                        @if (string.IsNullOrEmpty(student.GitHubUsername) is false)
+                        {
+                            <Anchor To="@($"https://github.com/{student.GitHubUsername}")">
+                                <img class="github-image"
+                                     src="github.png"
+                                     alt="@($"{student.GitHubUsername}'s GitHub")"/>
+                            </Anchor>
+                        }
+                    </TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+}
+
+@code {
+
+    [Parameter]
+    public ICollection<StudentDto>? Students { get; set; }
+
+}

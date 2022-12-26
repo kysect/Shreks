@@ -1,0 +1,33 @@
+@page "/adminpanel/groups"
+@using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Groups
+@using Kysect.Shreks.WebUI.AdminPanel.Components
+@inject IStudyGroupClient StudyGroupClient
+
+@if (_groups is not null)
+{
+    <Heading Size="HeadingSize.Is2">
+        Subjects
+    </Heading>
+
+    <Div>
+        @foreach (var group in _groups.OrderBy(x => x.Name))
+        {
+            <StudyGroupInfoComponent Group="group"/>
+        }
+    </Div>
+}
+else
+{
+    <LoaderComponent/>
+}
+
+@code {
+    private ICollection<StudyGroupDto>? _groups;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _groups = await StudyGroupClient.StudyGroupGetAsync();
+    }
+
+}
