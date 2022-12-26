@@ -1,6 +1,7 @@
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Abstractions.Permissions;
 using Kysect.Shreks.Application.Abstractions.Submissions;
+using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Submissions;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Factories;
@@ -74,16 +75,14 @@ public class ReviewWithDefenceSubmissionWorkflow : ISubmissionWorkflow
     {
         await _permissionValidator.EnsureSubmissionMentorAsync(issuerId, submissionId, cancellationToken);
 
-        var submission = await ExecuteSubmissionCommandAsync(submissionId, cancellationToken, static x =>
+        Submission submission = await ExecuteSubmissionCommandAsync(submissionId, cancellationToken, static x =>
         {
             if (x.Points is null)
                 x.Rate(Fraction.FromDenormalizedValue(100), 0);
         });
 
-        var submissionRateDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
-        string message = UserCommandProcessingMessage.SubmissionMarkAsNotAccepted(submission.Code);
-
-        message = $"{message}\n{submissionRateDto.ToDisplayString()}";
+        SubmissionRateDto submissionRateDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
+        string message = UserCommandProcessingMessage.SubmissionRated(submissionRateDto.ToDisplayString());
 
         return new SubmissionActionMessageDto(message);
     }
