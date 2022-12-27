@@ -1,0 +1,65 @@
+@using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Students
+@inject IStudentClient StudentClient
+@inject IStudyGroupClient GroupClient
+
+@if (Group is not null)
+{
+    <Div>
+
+        <Div Flex="Flex.Column">
+
+            <Fields>
+                <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <TextEdit @bind-Text="Group.Name"/>
+                </Field>
+            </Fields>
+
+            <Button Color="Color.Primary"
+                    Clicked="ButtonClicked"
+                    Type="@ButtonType.Submit"
+                    PreventDefaultOnSubmit>
+                Update
+            </Button>
+        </Div>
+
+        <StudyGroupStudentsComponent Students="_students" Parent="this"/>
+    </Div>
+
+    <ConfirmationComponent @ref="_component"
+                           Action="SendAsync"
+                           ActionName="@($"change group name to {Group?.Name ?? string.Empty}")"/>
+}
+
+@code {
+
+    private ICollection<StudentDto>? _students;
+    private ConfirmationComponent? _component;
+
+    [Parameter]
+    public StudyGroupDto? Group { get; set; }
+
+    protected override Task OnInitializedAsync()
+        => ReloadStudents(false);
+
+    public async Task ReloadStudents(bool notify = true)
+    {
+        if (Group is null)
+            return;
+
+        _students = await StudentClient.ByGroupAsync(Group.Id);
+
+        if (notify)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private Task ButtonClicked()
+        => _component?.Show() ?? Task.CompletedTask;
+
+    private Task SendAsync(CancellationToken cancellationToken)
+        => Group is null ? Task.CompletedTask : GroupClient.StudyGroupPutAsync(Group.Id, Group.Name, cancellationToken);
+
+}

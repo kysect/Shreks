@@ -39,7 +39,6 @@ public class GithubApplicationTestContextGenerator
         User user = _userGenerator.Generate();
         var student = new Student(user, group);
         student.AddGithubAssociation(userAssociation);
-        group.AddStudent(student);
 
         _context.Students.Add(student);
         _context.StudentGroups.Add(group);

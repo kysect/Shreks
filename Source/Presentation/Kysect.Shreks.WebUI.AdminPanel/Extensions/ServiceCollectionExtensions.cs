@@ -51,8 +51,10 @@ public static class ServiceCollectionExtensions
         collection.AddClient(x => new SubjectCourseClient(baseUrl, x));
         collection.AddClient(x => new GoogleClient(baseUrl, x));
         collection.AddClient(x => new GithubManagementClient(baseUrl, x));
-        collection.AddClient(x => new StudentClient(baseUrl, x));
+        collection.AddClient<IStudentClient>(x => new StudentClient(baseUrl, x));
         collection.AddClient(x => new GroupAssignmentClient(baseUrl, x));
+        collection.AddClient<IStudyGroupClient>(x => new StudyGroupClient(baseUrl, x));
+        collection.AddClient<ISubjectCourseGroupClient>(x => new SubjectCourseGroupClient(baseUrl, x));
     }
 
     private static void AddClient<T>(this IServiceCollection collection, Func<HttpClient, T> clientFactory)

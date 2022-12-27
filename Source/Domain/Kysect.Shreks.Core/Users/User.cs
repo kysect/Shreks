@@ -8,8 +8,7 @@ public partial class User : IEntity<Guid>
 {
     private readonly HashSet<UserAssociation> _associations;
 
-    public User(string firstName, string middleName, string lastName)
-        : this(Guid.NewGuid())
+    public User(string firstName, string middleName, string lastName) : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(firstName);
         ArgumentNullException.ThrowIfNull(middleName);
@@ -27,7 +26,7 @@ public partial class User : IEntity<Guid>
     public string LastName { get; set; }
 
     public virtual IReadOnlyCollection<UserAssociation> Associations => _associations;
-    
+
     public override string ToString()
         => $"{FirstName} {MiddleName} {LastName}";
 
@@ -50,7 +49,7 @@ public partial class User : IEntity<Guid>
         if (!_associations.Remove(association))
             throw new DomainInvalidOperationException($"User {this} could not remove association {association}");
     }
-    
+
     public bool HasAssociation<T>() where T : UserAssociation
         => Associations.Any(a => a is T);
 

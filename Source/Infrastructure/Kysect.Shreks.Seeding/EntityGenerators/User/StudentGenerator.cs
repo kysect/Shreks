@@ -26,18 +26,16 @@ public class StudentGenerator : EntityGeneratorBase<Student>
     {
         if (index >= _userGenerator.GeneratedEntities.Count)
             throw new IndexOutOfRangeException("Student count is greater than count of users.");
-        
-        var groupCount = _studentGroupGenerator.GeneratedEntities.Count;
-        var groupNumber = index % groupCount;
 
-        StudentGroup group = _studentGroupGenerator.GeneratedEntities[groupNumber];
+        User user = _userGenerator.GeneratedEntities[index];
 
-        var user = _userGenerator.GeneratedEntities[index];
+        StudentGroup[] groups = _studentGroupGenerator.GeneratedEntities
+            .Where(x => x.Students.Any(student => student.User.Equals(user)) is false)
+            .ToArray();
 
-        var student = new Student(user, group);
+        int groupNumber = index % groups.Length;
+        StudentGroup group = groups[groupNumber];
 
-        group.AddStudent(student);
-
-        return student;
+        return new Student(user, group);
     }
 }
