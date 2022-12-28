@@ -71,7 +71,7 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
     public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
         => _errorHandlers.Add(new ExceptionHandler<TException>(action));
 
-    public void SuccessAsync(Func<T, Task> action)
+    public void OnSuccessAsync(Func<T, Task> action)
         => _successHandlers.Add(action);
 
     public async ValueTask DisposeAsync()

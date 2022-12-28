@@ -1,6 +1,8 @@
 @using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @inject SubjectCourseClient Client
 @inject ISubjectCourseGroupClient SubjectCourseGroupClient
+@inject ISafeExecutor SafeExecutor
 
 <Card Margin="Margin.Is2">
     <CardBody>
@@ -103,7 +105,10 @@
         if (SubjectCourse is null || _assignments is not null)
             return;
 
-        _assignments = await Client.AssignmentsAsync(SubjectCourse.Id);
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            _assignments = await Client.AssignmentsAsync(SubjectCourse.Id);
+        });
     }
 
     private async Task ProcessSubjectCourseGroupsSelected()
@@ -111,7 +116,10 @@
         if (SubjectCourse is null || _subjectCourseGroups is not null)
             return;
 
-        _subjectCourseGroups = await SubjectCourseGroupClient.BySubjectCourseIdAsync(SubjectCourse.Id);
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            _subjectCourseGroups = await SubjectCourseGroupClient.BySubjectCourseIdAsync(SubjectCourse.Id);
+        });
     }
 
 }

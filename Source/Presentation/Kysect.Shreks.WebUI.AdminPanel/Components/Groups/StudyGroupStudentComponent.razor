@@ -5,10 +5,13 @@
 {
     <TableRow>
         <TableRowHeader>@(Student.UniversityId?.ToString() ?? string.Empty)</TableRowHeader>
-        <TableRowCell>@FullName</TableRowCell>
 
         <TableRowCell>
-            <Div Flex="Flex.Row.JustifyContent.Between">
+            @FullName
+        </TableRowCell>
+
+        <TableRowCell>
+            <Div Flex="Flex.Row.JustifyContent.Center">
                 <Button Color="Color.Danger" Clicked="ButtonClicked">Remove</Button>
             </Div>
         </TableRowCell>
@@ -38,7 +41,7 @@
     {
         if (Student is null)
             return;
-        
+
         await StudentClient.DismissAsync(Student.User.Id, cancellationToken);
 
         await (GroupComponent?.ReloadStudents() ?? Task.CompletedTask);
