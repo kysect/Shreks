@@ -4,18 +4,20 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kysect.Shreks.DataAccess.ValueConverters;
 
-public class SubmissionStateValueConverter : ValueConverter<ISubmissionState, SubmissionStateKind>
+public class SubmissionStateValueConverter : ValueConverter<ISubmissionState, int>
 {
     public SubmissionStateValueConverter()
         : base(x => ConvertTo(x), x => ConvertFrom(x)) { }
 
-    private static SubmissionStateKind ConvertTo(ISubmissionState state)
+    private static int ConvertTo(ISubmissionState state)
     {
-        return state.Kind;
+        return (int)state.Kind;
     }
 
-    private static ISubmissionState ConvertFrom(SubmissionStateKind kind)
+    private static ISubmissionState ConvertFrom(int kindValue)
     {
+        var kind = (SubmissionStateKind)kindValue;
+
         return kind switch
         {
             SubmissionStateKind.Active => new ActiveSubmissionState(),

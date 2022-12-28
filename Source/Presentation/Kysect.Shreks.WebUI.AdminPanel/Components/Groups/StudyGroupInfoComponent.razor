@@ -1,0 +1,47 @@
+@using Kysect.Shreks.WebApi.Sdk
+
+@if (Group is not null)
+{
+    <Card Margin="Margin.Is3.FromBottom.Is3.FromTop.Is0.FromStart.Is0.FromEnd"
+          Padding="Padding.Is3"
+          type="button"
+          onclick="@Clicked"
+          Class="btn-light">
+
+        <Heading Size="HeadingSize.Is4">
+            @Group.Name
+        </Heading>
+    </Card>
+
+    <Modal @ref="_modal" @bind-Visible="@_modalVisible">
+        <ModalContent Size="ModalSize.Fullscreen">
+            <ModalHeader>
+                <CloseButton/>
+            </ModalHeader>
+
+            @if (_modalVisible)
+            {
+                <ModalBody>
+                    <StudyGroupComponent Group="Group"/>
+                </ModalBody>
+            }
+
+        </ModalContent>
+    </Modal>
+}
+
+@code {
+
+    [Parameter]
+    public StudyGroupDto? Group { get; set; }
+
+    private Modal? _modal;
+    private bool _modalVisible;
+
+    private Task Clicked()
+    {
+        _modalVisible = true;
+        return _modal?.Show() ?? Task.CompletedTask;
+    }
+
+}

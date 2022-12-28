@@ -1,0 +1,31 @@
+@using Kysect.Shreks.WebApi.Sdk
+
+@if (Students is not null)
+{
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell>Isu</TableHeaderCell>
+                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell/>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+
+            @foreach (var student in Students)
+            {
+                <StudyGroupStudentComponent Student="student" GroupComponent="Parent"/>
+            }
+        </TableBody>
+    </Table>
+}
+
+@code {
+
+    [Parameter]
+    public ICollection<StudentDto>? Students { get; set; }
+    
+    [Parameter]
+    public StudyGroupComponent? Parent { get; set; }
+
+}

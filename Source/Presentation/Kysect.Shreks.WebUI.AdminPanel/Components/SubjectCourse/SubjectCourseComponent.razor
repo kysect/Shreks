@@ -1,5 +1,6 @@
 @using Kysect.Shreks.WebApi.Sdk
 @inject SubjectCourseClient Client
+@inject ISubjectCourseGroupClient SubjectCourseGroupClient
 
 <Card Margin="Margin.Is2">
     <CardBody>
@@ -35,8 +36,6 @@
                     </BarEnd>
                 </BarMenu>
             </Bar>
-
-
         </CardTitle>
 
         @if (SubjectCourse is not null)
@@ -51,11 +50,19 @@
                 <Tab Clicked="() => OnSelectedTabChanged(nameof(_assignments))" Name="@nameof(_assignments)">
                     Assignments
                 </Tab>
+
+                <Tab Clicked="() => OnSelectedTabChanged(nameof(_subjectCourseGroups))" Name="@nameof(_subjectCourseGroups)">
+                    Groups
+                </Tab>
             </Items>
 
             <Content>
                 <TabPanel Name="@nameof(_assignments)">
                     <AssignmentsComponent Assignments="_assignments"/>
+                </TabPanel>
+
+                <TabPanel Name="@nameof(_subjectCourseGroups)">
+                    <SubjectCourseGroupsComponent SubjectCourseGroups="_subjectCourseGroups"/>
                 </TabPanel>
             </Content>
         </Tabs>
@@ -70,6 +77,8 @@
     public SubjectCourseDto? SubjectCourse { get; set; }
 
     private ICollection<AssignmentDto>? _assignments;
+    private ICollection<SubjectCourseGroupDto>? _subjectCourseGroups;
+
     private string? _selectedTab;
 
     private string? GithubOrganizationName => SubjectCourse?
@@ -77,18 +86,32 @@
         .FirstOrDefault(x => x.Type is "GithubSubjectCourseAssociation")?
         .Value;
 
-    protected override async Task OnInitializedAsync()
+    private Task OnSelectedTabChanged(string arg)
     {
-        if (SubjectCourse is null)
+        _selectedTab = _selectedTab == arg ? null : arg;
+
+        return _selectedTab switch
+        {
+            nameof(_assignments) => ProcessAssignmentsSelected(),
+            nameof(_subjectCourseGroups) => ProcessSubjectCourseGroupsSelected(),
+            _ => Task.CompletedTask,
+            };
+    }
+
+    private async Task ProcessAssignmentsSelected()
+    {
+        if (SubjectCourse is null || _assignments is not null)
             return;
 
         _assignments = await Client.AssignmentsAsync(SubjectCourse.Id);
     }
 
-    private Task OnSelectedTabChanged(string arg)
+    private async Task ProcessSubjectCourseGroupsSelected()
     {
-        _selectedTab = _selectedTab == arg ? null : arg;
-        return Task.CompletedTask;
+        if (SubjectCourse is null || _subjectCourseGroups is not null)
+            return;
+
+        _subjectCourseGroups = await SubjectCourseGroupClient.BySubjectCourseIdAsync(SubjectCourse.Id);
     }
 
 }

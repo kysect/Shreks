@@ -34,6 +34,10 @@
                 <BarItem>
                     <BarLink @ref="_studentsLink" To="@StudentsPath">Students</BarLink>
                 </BarItem>
+                
+                <BarItem>
+                    <BarLink @ref="_groupsLink" To="@GroupsPath">Groups</BarLink>
+                </BarItem>
             }
         </BarStart>
 
@@ -53,6 +57,7 @@
         private const string GlobalPath = "adminpanel/global";
         private const string SubjectsPath = "adminpanel/subjects";
         private const string StudentsPath = "adminpanel/students";
+        private const string GroupsPath = "adminpanel/groups";
 
     public bool HasIdentity;
     private int _counter;
@@ -60,6 +65,7 @@
     private BarLink? _globalLink;
     private BarLink? _subjectsLink;
     private BarLink? _studentsLink;
+    private BarLink? _groupsLink;
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,6 +84,7 @@
             GlobalPath => _globalLink,
             SubjectsPath => _subjectsLink,
             StudentsPath => _studentsLink,
+            GroupsPath => _groupsLink,
             _ => null,
             };
 

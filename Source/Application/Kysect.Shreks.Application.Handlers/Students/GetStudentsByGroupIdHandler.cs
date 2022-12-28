@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Kysect.Shreks.Application.Dto.Users;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +21,12 @@ internal class GetStudentsByGroupIdHandler : IRequestHandler<Query, Response>
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        List<StudentDto> students = await _context.Students
-            .Where(s => s.Group.Id == request.GroupId)
-            .ProjectTo<StudentDto>(_mapper.ConfigurationProvider)
+        List<Student> students = await _context.Students
+            .Where(s => s.Group != null && s.Group.Id.Equals(request.GroupId))
             .ToListAsync(cancellationToken);
 
-        return new Response(students);
+        StudentDto[] dto = students.Select(_mapper.Map<StudentDto>).ToArray();
+
+        return new Response(dto);
     }
 }
