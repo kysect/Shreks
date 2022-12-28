@@ -2,7 +2,9 @@
 @using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Groups
 @using Kysect.Shreks.WebUI.AdminPanel.Components
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @inject IStudyGroupClient StudyGroupClient
+@inject ISafeExecutor SafeExecutor
 
 @if (_groups is not null)
 {
@@ -27,7 +29,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _groups = await StudyGroupClient.StudyGroupGetAsync();
+        await using var builder = SafeExecutor.Execute(async () => _groups = await StudyGroupClient.StudyGroupGetAsync());
     }
 
 }
