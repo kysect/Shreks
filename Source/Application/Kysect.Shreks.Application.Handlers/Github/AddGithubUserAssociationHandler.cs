@@ -9,7 +9,7 @@ using static Kysect.Shreks.Application.Contracts.Github.Commands.AddGithubUserAs
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-internal class AddGithubUserAssociationHandler : IRequestHandler<Command, Response>
+internal class AddGithubUserAssociationHandler : IRequestHandler<Command>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IGithubUserProvider _githubUserProvider;
@@ -20,12 +20,15 @@ internal class AddGithubUserAssociationHandler : IRequestHandler<Command, Respon
         _githubUserProvider = githubUserProvider;
     }
 
-    public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
-        Boolean isGithubUserExists = await _githubUserProvider.IsGithubUserExists(request.GithubUsername);
+        bool isGithubUserExists = await _githubUserProvider.IsGithubUserExists(request.GithubUsername);
 
         if (!isGithubUserExists)
-            throw new DomainInvalidOperationException($"Github user with username {request.GithubUsername} does not exist");
+        {
+            string message = $"Github user with username {request.GithubUsername} does not exist";
+            throw new DomainInvalidOperationException(message);
+        }
 
         Student student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
 
@@ -34,7 +37,7 @@ internal class AddGithubUserAssociationHandler : IRequestHandler<Command, Respon
         _context.Users.Update(student.User);
 
         await _context.SaveChangesAsync(cancellationToken);
-        
-        return new Response();
+
+        return Unit.Value;
     }
 }

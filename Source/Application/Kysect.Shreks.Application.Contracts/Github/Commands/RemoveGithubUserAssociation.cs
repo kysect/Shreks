@@ -4,7 +4,5 @@ namespace Kysect.Shreks.Application.Contracts.Github.Commands;
 
 internal class RemoveGithubUserAssociation
 {
-    public record Command(Guid UserId) : IRequest<Response>;
-
-    public record Response();
+    public record Command(Guid UserId) : IRequest;
 }

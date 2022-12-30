@@ -4,6 +4,5 @@ namespace Kysect.Shreks.Application.Contracts.Study.Commands;
 
 internal class AddFractionDeadlinePolicy
 {
-    public record Command(Guid SubjectCourseId, TimeSpan SpanBeforeActivation, double Fraction) : IRequest<Response>;
-    public record Response;
+    public record Command(Guid SubjectCourseId, TimeSpan SpanBeforeActivation, double Fraction) : IRequest;
 }

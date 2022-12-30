@@ -21,8 +21,7 @@ internal class GetStudyGroupByIdHandler : IRequestHandler<Query, Response>
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        StudentGroup studentGroup = await _context
-            .StudentGroups
+        StudentGroup studentGroup = await _context.StudentGroups
             .GetByIdAsync(request.Id, cancellationToken: cancellationToken);
 
         return new Response(_mapper.Map<StudyGroupDto>(studentGroup));
