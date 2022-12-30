@@ -1,15 +1,15 @@
-using Kysect.Shreks.WebUI.AdminPanel.Identity;
+using Kysect.Shreks.WebApi.Sdk.Models;
 using System.Net.Http.Headers;
 
-namespace Kysect.Shreks.WebUI.AdminPanel.Tools;
+namespace Kysect.Shreks.WebApi.Sdk.Identity;
 
 public class AuthorizationMessageHandlerDecorator : DelegatingHandler
 {
-    private readonly IIdentityManager _manager;
+    private readonly IIdentityProvider _identityProvider;
 
-    public AuthorizationMessageHandlerDecorator(IIdentityManager manager)
+    public AuthorizationMessageHandlerDecorator(IIdentityProvider identityProvider)
     {
-        _manager = manager;
+        _identityProvider = identityProvider;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
@@ -18,7 +18,7 @@ public class AuthorizationMessageHandlerDecorator : DelegatingHandler
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        var identity = await _manager.FindIdentityAsync(cancellationToken);
+        UserIdentity? identity = await _identityProvider.FindIdentityAsync(cancellationToken);
 
         if (identity is not null)
         {
