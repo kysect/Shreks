@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
@@ -21,11 +22,14 @@ internal class UpdateGroupAssignmentDeadlineHandler : IRequestHandler<Command, R
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        GroupAssignment groupAssignment = await _context
+        GroupAssignment? groupAssignment = await _context
             .GroupAssignments
             .Where(groupAssignment => groupAssignment.GroupId.Equals(request.GroupId))
             .Where(groupAssignment => groupAssignment.AssignmentId.Equals(request.AssignmentId))
-            .FirstAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (groupAssignment is null)
+            throw new EntityNotFoundException("GroupAssignment not found");
 
         groupAssignment.Deadline = request.NewDeadline;
         await _context.SaveChangesAsync(cancellationToken);

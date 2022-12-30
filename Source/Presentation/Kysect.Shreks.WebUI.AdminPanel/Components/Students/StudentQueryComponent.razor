@@ -1,5 +1,6 @@
 @using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.Application.Dto.Users
 @inject IStudentClient Client
 @inject ISafeExecutor SafeExecutor
 
@@ -59,7 +60,7 @@
 {
         private const string ToggleId = "collapse-toggle";
 
-    private ICollection<StudentDto>? _students;
+    private IReadOnlyCollection<StudentDto>? _students;
     private bool _visible;
     private bool _isExecuting;
 

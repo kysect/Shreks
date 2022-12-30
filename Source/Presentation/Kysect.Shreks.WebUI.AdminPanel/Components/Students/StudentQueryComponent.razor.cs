@@ -1,17 +1,19 @@
+using Kysect.Shreks.Application.Dto.Querying;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.WebApi.Sdk;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Components.Students;
 
 public partial class StudentQueryComponent : IDisposable
 {
-    private readonly List<StudentQueryParameterQueryParameter> _parameters;
+    private readonly List<QueryParameter<StudentQueryParameter>> _parameters;
 
     public StudentQueryComponent()
     {
-        _parameters = new List<StudentQueryParameterQueryParameter>();
+        _parameters = new List<QueryParameter<StudentQueryParameter>>();
     }
 
-    public IReadOnlyCollection<StudentQueryParameterQueryParameter> Parameters => _parameters;
+    public IReadOnlyCollection<QueryParameter<StudentQueryParameter>> Parameters => _parameters;
 
     public IEnumerable<StudentQueryParameter> AvailableParameters => Enum
         .GetValues<StudentQueryParameter>()
@@ -23,13 +25,13 @@ public partial class StudentQueryComponent : IDisposable
     {
         var type = AvailableParameters.First();
 
-        var parameter = new StudentQueryParameterQueryParameter { Type = type, Pattern = string.Empty, };
+        var parameter = new QueryParameter<StudentQueryParameter>(type, string.Empty);
         _parameters.Add(parameter);
 
         _visible = true;
     }
 
-    public void Remove(StudentQueryParameterQueryParameter parameter)
+    public void Remove(QueryParameter<StudentQueryParameter> parameter)
     {
         _parameters.Remove(parameter);
     }
@@ -37,13 +39,13 @@ public partial class StudentQueryComponent : IDisposable
     public void Update()
         => StateHasChanged();
 
-    public StudentQueryParameterQueryConfiguration Build()
+    public QueryConfiguration<StudentQueryParameter> Build()
     {
-        var parameters = _parameters
+        QueryParameter<StudentQueryParameter>[] parameters = _parameters
             .Where(x => string.IsNullOrEmpty(x.Pattern) is false)
             .ToArray();
 
-        return new StudentQueryParameterQueryConfiguration { Parameters = parameters, };
+        return new QueryConfiguration<StudentQueryParameter>(parameters);
     }
 
     public void Dispose()

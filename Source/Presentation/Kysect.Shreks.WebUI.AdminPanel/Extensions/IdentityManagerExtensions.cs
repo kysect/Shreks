@@ -1,6 +1,6 @@
-using Kysect.Shreks.WebUI.AdminPanel.Exceptions;
+using Kysect.Shreks.WebApi.Sdk.Exceptions;
+using Kysect.Shreks.WebApi.Sdk.Models;
 using Kysect.Shreks.WebUI.AdminPanel.Identity;
-using Kysect.Shreks.WebUI.AdminPanel.Models;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Extensions;
 

@@ -1,18 +1,36 @@
 @using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.Application.Dto.Users
 
 @if (Students is not null)
 {
     <Table>
         <TableHeader>
             <TableRow>
-                <TableHeaderCell>Isu</TableHeaderCell>
-                <TableHeaderCell>Name</TableHeaderCell>
+                <TableHeaderCell>
+                    <Div Flex="Flex.Row.AlignItems.Center.JustifyContent.Start">
+                        <Text Margin="Margin.Is3.FromEnd">
+                            Isu
+                        </Text>
+
+                        <TextEdit @bind-Text="@_isuNumberSearch" Placeholder="Search..."/>
+                    </Div>
+                </TableHeaderCell>
+
+                <TableHeaderCell>
+                    <Div Flex="Flex.Row.AlignItems.Center.JustifyContent.Start">
+                        <Text Margin="Margin.Is3.FromEnd">
+                            Name
+                        </Text>
+
+                        <TextEdit @bind-Text="@_nameSearch" Placeholder="Search..."/>
+                    </Div>
+                </TableHeaderCell>
                 <TableHeaderCell/>
             </TableRow>
         </TableHeader>
         <TableBody>
 
-            @foreach (var student in Students)
+            @foreach (var student in GetStudents())
             {
                 <StudyGroupStudentComponent Student="student" GroupComponent="Parent"/>
             }
@@ -23,9 +41,35 @@
 @code {
 
     [Parameter]
-    public ICollection<StudentDto>? Students { get; set; }
-    
+    public IReadOnlyCollection<StudentDto>? Students { get; set; }
+
     [Parameter]
     public StudyGroupComponent? Parent { get; set; }
+
+    private string _isuNumberSearch = string.Empty;
+    private string _nameSearch = string.Empty;
+
+    private IEnumerable<StudentDto> GetStudents()
+    {
+        if (Students is null)
+            return Enumerable.Empty<StudentDto>();
+
+        IEnumerable<StudentDto> students = Students.OrderBy(x => x.User.LastName.FirstOrDefault());
+
+        if (string.IsNullOrEmpty(_isuNumberSearch) is false)
+        {
+            students = students.Where(x => x.UniversityId?.ToString().StartsWith(_isuNumberSearch) ?? false);
+        }
+
+        if (string.IsNullOrEmpty(_nameSearch) is false)
+        {
+            students = students.Where(x =>
+                x.User.FirstName.Contains(_nameSearch) ||
+                x.User.LastName.Contains(_nameSearch) ||
+                x.User.MiddleName.Contains(_nameSearch));
+        }
+
+        return students;
+    }
 
 }

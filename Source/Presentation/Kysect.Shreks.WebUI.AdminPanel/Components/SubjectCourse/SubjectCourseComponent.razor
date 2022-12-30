@@ -1,6 +1,9 @@
 @using Kysect.Shreks.WebApi.Sdk
-@inject SubjectCourseClient Client
-@inject ISubjectCourseGroupClient SubjectCourseGroupClient
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.Application.Dto.SubjectCourses
+@using Kysect.Shreks.Application.Dto.Study
+@inject ISubjectCourseClient Client
+@inject ISafeExecutor SafeExecutor
 
 <Card Margin="Margin.Is2">
     <CardBody>
@@ -76,8 +79,8 @@
     [Parameter]
     public SubjectCourseDto? SubjectCourse { get; set; }
 
-    private ICollection<AssignmentDto>? _assignments;
-    private ICollection<SubjectCourseGroupDto>? _subjectCourseGroups;
+    private IReadOnlyCollection<AssignmentDto>? _assignments;
+    private IReadOnlyCollection<SubjectCourseGroupDto>? _subjectCourseGroups;
 
     private string? _selectedTab;
 
@@ -103,7 +106,10 @@
         if (SubjectCourse is null || _assignments is not null)
             return;
 
-        _assignments = await Client.AssignmentsAsync(SubjectCourse.Id);
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            _assignments = await Client.GetAssignmentsAsync(SubjectCourse.Id);
+        });
     }
 
     private async Task ProcessSubjectCourseGroupsSelected()
@@ -111,7 +117,10 @@
         if (SubjectCourse is null || _subjectCourseGroups is not null)
             return;
 
-        _subjectCourseGroups = await SubjectCourseGroupClient.BySubjectCourseIdAsync(SubjectCourse.Id);
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            _subjectCourseGroups = await Client.GetGroupsAsync(SubjectCourse.Id);
+        });
     }
 
 }

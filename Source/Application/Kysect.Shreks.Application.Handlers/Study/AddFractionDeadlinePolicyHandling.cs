@@ -1,6 +1,5 @@
 ﻿using Kysect.Shreks.Core.DeadlinePolicies;
 using Kysect.Shreks.Core.Study;
-using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +7,7 @@ using static Kysect.Shreks.Application.Contracts.Study.Commands.AddFractionDeadl
 
 namespace Kysect.Shreks.Application.Handlers.Study;
 
-internal class AddFractionDeadlinePolicyHandling : IRequestHandler<Command, Response>
+internal class AddFractionDeadlinePolicyHandling : IRequestHandler<Command>
 {
     private readonly IShreksDatabaseContext _context;
 
@@ -17,14 +16,18 @@ internal class AddFractionDeadlinePolicyHandling : IRequestHandler<Command, Resp
         _context = context;
     }
 
-    public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
         SubjectCourse subjectCourse = await _context.SubjectCourses
             .Include(x => x.DeadlinePolicies)
             .SingleAsync(x => x.Id.Equals(request.SubjectCourseId), cancellationToken);
 
-        subjectCourse.AddDeadlinePolicy(new FractionDeadlinePolicy(request.SpanBeforeActivation, new Fraction(request.Fraction)));
+        var deadlinePolicy = new FractionDeadlinePolicy(request.SpanBeforeActivation, request.Fraction);
+        subjectCourse.AddDeadlinePolicy(deadlinePolicy);
+
+        _context.SubjectCourses.Update(subjectCourse);
         await _context.SaveChangesAsync(cancellationToken);
-        return new Response();
+
+        return Unit.Value;
     }
 }

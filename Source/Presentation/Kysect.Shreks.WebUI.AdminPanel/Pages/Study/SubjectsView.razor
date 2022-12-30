@@ -1,8 +1,10 @@
 @page "/adminpanel/subjects"
-@using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Subjects
 @using Kysect.Shreks.WebUI.AdminPanel.Components
-@inject SubjectClient SubjectClient
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.Application.Dto.Study
+@inject ISubjectClient SubjectClient
+@inject ISafeExecutor SafeExecutor
 
 @if (_subjects is not null)
 {
@@ -24,11 +26,13 @@ else
 
 
 @code {
-    private ICollection<SubjectDto>? _subjects;
+    private IReadOnlyCollection<SubjectDto>? _subjects;
 
     protected override async Task OnInitializedAsync()
     {
-        _subjects = await SubjectClient.SubjectGetAsync();
+        await using var builder = SafeExecutor.Execute(async () => _subjects = await SubjectClient.GetAsync());
+        builder.Title = "Failed to load subjects";
+        builder.ShowExceptionDetails = true;
     }
 
 }

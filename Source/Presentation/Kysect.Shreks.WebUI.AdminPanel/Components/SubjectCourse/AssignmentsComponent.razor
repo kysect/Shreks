@@ -1,5 +1,6 @@
 @using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Assignments
+@using Kysect.Shreks.Application.Dto.Study
 
 @if (Assignments is not null)
 {
@@ -16,6 +17,6 @@ else
 @code {
 
     [Parameter]
-    public ICollection<AssignmentDto>? Assignments { get; set; }
+    public IReadOnlyCollection<AssignmentDto>? Assignments { get; set; }
 
 }

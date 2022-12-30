@@ -14,7 +14,7 @@ public interface ISafeExecutionBuilder<out T> : IAsyncDisposable
     string? Title { get; set; }
 
     bool ShowExceptionDetails { get; set; }
-    
+
     void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception;
-    void SuccessAsync(Func<T, Task> action);
+    void OnSuccessAsync(Func<T, Task> action);
 }

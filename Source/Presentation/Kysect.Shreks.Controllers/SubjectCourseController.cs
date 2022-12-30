@@ -1,9 +1,12 @@
 ﻿using Kysect.Shreks.Application.Contracts.Github.Commands;
+using Kysect.Shreks.Application.Contracts.Students.Queries;
 using Kysect.Shreks.Application.Contracts.Study.Commands;
 using Kysect.Shreks.Application.Contracts.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.WebApi.Abstractions.Models.SubjectCourses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,61 +26,100 @@ public class SubjectCourseController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<SubjectCourseDto>> Create(Guid subjectId, string name, SubmissionStateWorkflowTypeDto workflowType)
+    public async Task<ActionResult<SubjectCourseDto>> Create(CreateSubjectCourseRequest request)
     {
-        CreateSubjectCourse.Response response = await _mediator.Send(new CreateSubjectCourse.Command(subjectId, name, workflowType));
+        (Guid subjectId, string name, SubmissionStateWorkflowTypeDto workflowType) = request;
+
+        var command = new CreateSubjectCourse.Command(subjectId, name, workflowType);
+        CreateSubjectCourse.Response response = await _mediator.Send(command);
+
         return Ok(response.SubjectCourse);
     }
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyCollection<SubjectCourseDto>>> Get()
     {
-        GetSubjectCourses.Response response = await _mediator.Send(new GetSubjectCourses.Query());
+        var query = new GetSubjectCourses.Query();
+        GetSubjectCourses.Response response = await _mediator.Send(query);
+
         return Ok(response.Subjects);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<SubjectCourseDto>> GetById(Guid id)
     {
-        GetSubjectCourseById.Response response = await _mediator.Send(new GetSubjectCourseById.Query(id));
+        var query = new GetSubjectCourseById.Query(id);
+        GetSubjectCourseById.Response response = await _mediator.Send(query);
+
         return Ok(response.SubjectCourse);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<SubjectCourseDto>> Update(Guid id, string name)
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<SubjectCourseDto>> Update(Guid id, UpdateSubjectCourseRequest request)
     {
-        UpdateSubjectCourse.Response response = await _mediator.Send(new UpdateSubjectCourse.Command(id, name));
+        var command = new UpdateSubjectCourse.Command(id, request.Name);
+        UpdateSubjectCourse.Response response = await _mediator.Send(command);
+
         return Ok(response.SubjectCourse);
     }
 
-    [HttpPost("association/github")]
-    public async Task<ActionResult<SubjectCourseDto>> AddGithubAssociation(Guid subjectCourseId, string organization, string templateRepository)
+    [HttpGet("{id:guid}/students")]
+    public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> GetStudentsAsync(Guid id)
     {
-        AddGithubSubjectCourseAssociation.Response response = await _mediator.Send(new AddGithubSubjectCourseAssociation.Command(subjectCourseId, organization, templateRepository));
-        return Ok(response.SubjectCourse);
+        var query = new GetStudentsBySubjectCourseId.Query(id);
+        GetStudentsBySubjectCourseId.Response response = await _mediator.Send(query);
+
+        return Ok(response.Students);
     }
 
-    [HttpDelete("association/github")]
-    public async Task<ActionResult<SubjectCourseDto>> RemoveGithubAssociation(Guid subjectCourseId)
+    [HttpGet("{id:guid}/assignments")]
+    public async Task<ActionResult<IReadOnlyCollection<AssignmentDto>>> GetAssignmentsBySubjectCourseId(Guid id)
     {
-        RemoveGithubSubjectCourseAssociation.Response response = await _mediator.Send(new RemoveGithubSubjectCourseAssociation.Command(subjectCourseId));
-        return Ok(response.SubjectCourse);
-    }
-
-    [HttpPost("deadline/fraction")]
-    public async Task<ActionResult> AddDeadline(Guid subjectCourseId, TimeSpan spanBeforeActivation, double fraction)
-    {
-        var command = new AddFractionDeadlinePolicy.Command(subjectCourseId, spanBeforeActivation, fraction);
-        AddFractionDeadlinePolicy.Response response = await _mediator.Send(command);
-        return Ok();
-    }
-
-    [HttpGet("{subjectCourseId:guid}/assignments")]
-    public async Task<ActionResult<IReadOnlyCollection<AssignmentDto>>> GetAssignments(Guid subjectCourseId)
-    {
-        var query = new GetAssignmentsBySubjectCourse.Query(subjectCourseId);
+        var query = new GetAssignmentsBySubjectCourse.Query(id);
         GetAssignmentsBySubjectCourse.Response response = await _mediator.Send(query);
 
         return Ok(response.Assignments);
+    }
+
+    [HttpGet("{id:guid}/groups")]
+    public async Task<ActionResult<IReadOnlyCollection<SubjectCourseGroupDto>>> GetSubjectCourseGroups(Guid id)
+    {
+        var query = new GetSubjectCourseGroupsBySubjectCourseId.Query(id);
+        GetSubjectCourseGroupsBySubjectCourseId.Response result = await _mediator.Send(query);
+
+        return Ok(result.Groups);
+    }
+
+    [HttpPost("{id:guid}/association/github")]
+    public async Task<ActionResult<SubjectCourseDto>> AddGithubAssociation(
+        Guid id,
+        AddSubjectCourseGithubAssociationRequest request)
+    {
+        (string organizationName, string templateRepositoryName) = request;
+
+        var command = new AddGithubSubjectCourseAssociation.Command(id, organizationName, templateRepositoryName);
+        AddGithubSubjectCourseAssociation.Response response = await _mediator.Send(command);
+
+        return Ok(response.SubjectCourse);
+    }
+
+    [HttpDelete("{id:guid}/association/github")]
+    public async Task<ActionResult<SubjectCourseDto>> RemoveGithubAssociation(Guid id)
+    {
+        var command = new RemoveGithubSubjectCourseAssociation.Command(id);
+        RemoveGithubSubjectCourseAssociation.Response response = await _mediator.Send(command);
+
+        return Ok(response.SubjectCourse);
+    }
+
+    [HttpPost("{id:guid}/deadline/fraction")]
+    public async Task<ActionResult> AddDeadline(Guid id, AddFractionPolicyRequest request)
+    {
+        (TimeSpan spanBeforeActivation, double fraction) = request;
+
+        var command = new AddFractionDeadlinePolicy.Command(id, spanBeforeActivation, fraction);
+        await _mediator.Send(command);
+
+        return Ok();
     }
 }

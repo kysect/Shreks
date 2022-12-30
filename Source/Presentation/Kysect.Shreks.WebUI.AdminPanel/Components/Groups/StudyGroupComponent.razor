@@ -1,5 +1,9 @@
 @using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Students
+@using Microsoft.AspNetCore.Components
+@using Kysect.Shreks.Application.Dto.Users
+@using Kysect.Shreks.Application.Dto.Study
+@using Kysect.Shreks.WebApi.Abstractions.Models.StudyGroups
 @inject IStudentClient StudentClient
 @inject IStudyGroupClient GroupClient
 
@@ -34,7 +38,7 @@
 
 @code {
 
-    private ICollection<StudentDto>? _students;
+    private IReadOnlyCollection<StudentDto>? _students;
     private ConfirmationComponent? _component;
 
     [Parameter]
@@ -48,7 +52,7 @@
         if (Group is null)
             return;
 
-        _students = await StudentClient.ByGroupAsync(Group.Id);
+        _students = await GroupClient.GetStudentsAsync(Group.Id);
 
         if (notify)
         {
@@ -60,6 +64,12 @@
         => _component?.Show() ?? Task.CompletedTask;
 
     private Task SendAsync(CancellationToken cancellationToken)
-        => Group is null ? Task.CompletedTask : GroupClient.StudyGroupPutAsync(Group.Id, Group.Name, cancellationToken);
+    {
+        if (Group is null)
+            return Task.CompletedTask;
+
+        var request = new UpdateStudyGroupRequest(Group.Name);
+        return GroupClient.UpdateAsync(Group.Id, request, cancellationToken);
+    }
 
 }
