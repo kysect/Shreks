@@ -1,7 +1,7 @@
 using Kysect.Shreks.Application.Contracts.Identity.Commands;
 using Kysect.Shreks.Application.Contracts.Identity.Queries;
-using Kysect.Shreks.Controllers.Models;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.WebApi.Abstractions.Models.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ public class IdentityController : ControllerBase
     public async Task<ActionResult<LoginResponse>> LoginAsync([FromBody] LoginRequest request)
     {
         var query = new Login.Query(request.Username, request.Password);
-        var response = await _mediator.Send(query, HttpContext.RequestAborted);
+        Login.Response response = await _mediator.Send(query, HttpContext.RequestAborted);
 
         var loginResponse = new LoginResponse(response.Token, response.Expires, response.Roles);
         return Ok(loginResponse);
@@ -41,11 +41,15 @@ public class IdentityController : ControllerBase
 
     [HttpPost("register")]
     [Authorize(Roles = ShreksIdentityRole.AdminRoleName)]
-    public async Task<IActionResult> RegisterAsync([FromBody] RegisterUserRequest request)
+    public async Task<ActionResult<LoginResponse>> RegisterAsync([FromBody] RegisterUserRequest request)
     {
-        var command = new Register.Command(request.Username, request.Password);
-        await _mediator.Send(command);
+        var registerCommand = new Register.Command(request.Username, request.Password);
+        await _mediator.Send(registerCommand);
 
-        return Ok();
+        var loginCommand = new Login.Query(request.Username, request.Password);
+        Login.Response loginResponse = await _mediator.Send(loginCommand, HttpContext.RequestAborted);
+
+        var credentials = new LoginResponse(loginResponse.Token, loginResponse.Expires, loginResponse.Roles);
+        return Ok(credentials);
     }
 }

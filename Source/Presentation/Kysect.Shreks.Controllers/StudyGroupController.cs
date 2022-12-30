@@ -1,7 +1,10 @@
-﻿using Kysect.Shreks.Application.Contracts.Study.Commands;
+﻿using Kysect.Shreks.Application.Contracts.Students.Queries;
+using Kysect.Shreks.Application.Contracts.Study.Commands;
 using Kysect.Shreks.Application.Contracts.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.WebApi.Abstractions.Models.StudyGroups;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,37 +24,74 @@ public class StudyGroupController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<StudyGroupDto>> Create(string name)
+    public async Task<ActionResult<StudyGroupDto>> Create(CreateStudyGroupRequest request)
     {
-        CreateStudyGroup.Response response = await _mediator.Send(new CreateStudyGroup.Command(name));
+        var command = new CreateStudyGroup.Command(request.Name);
+        CreateStudyGroup.Response response = await _mediator.Send(command);
+
         return Ok(response.Group);
     }
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyCollection<StudyGroupDto>>> Get()
     {
-        GetStudyGroups.Response response = await _mediator.Send(new GetStudyGroups.Query());
+        var query = new GetStudyGroups.Query();
+        GetStudyGroups.Response response = await _mediator.Send(query);
+
         return Ok(response.Groups);
     }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<StudyGroupDto>> GetById(Guid id)
     {
-        GetStudyGroupById.Response response = await _mediator.Send(new GetStudyGroupById.Query(id));
+        var query = new GetStudyGroupById.Query(id);
+        GetStudyGroupById.Response response = await _mediator.Send(query);
+
         return Ok(response.Group);
     }
 
-    [HttpGet("search")]
-    public async Task<ActionResult<StudyGroupDto>> FindByName(string name)
+    [HttpGet("bulk")]
+    public async Task<ActionResult<IReadOnlyCollection<StudyGroupDto>>> GetByIdsAsync(
+        [FromQuery] IReadOnlyCollection<Guid> ids)
     {
-        FindStudyGroupByName.Response response = await _mediator.Send(new FindStudyGroupByName.Query(name));
+        var query = new BulkGetStudyGroups.Query(ids);
+        BulkGetStudyGroups.Response response = await _mediator.Send(query);
+
+        return Ok(response.Groups);
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<StudyGroupDto>> Update(Guid id, UpdateStudyGroupRequest request)
+    {
+        var command = new UpdateStudyGroup.Command(id, request.Name);
+        UpdateStudyGroup.Response response = await _mediator.Send(command);
+
         return Ok(response.Group);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<StudyGroupDto>> Update(Guid id, string name)
+    [HttpGet("{id:guid}/students")]
+    public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> GetStudentAsync(Guid id)
     {
-        UpdateStudyGroup.Response response = await _mediator.Send(new UpdateStudyGroup.Command(id, name));
+        var query = new GetStudentsByGroupId.Query(id);
+        GetStudentsByGroupId.Response response = await _mediator.Send(query);
+
+        return Ok(response.Students);
+    }
+
+    [HttpGet("{groupId:guid}/assignments")]
+    public async Task<ActionResult<GroupAssignmentDto>> GetAssignmentsAsync(Guid groupId)
+    {
+        GetGroupAssignmentsByStudyGroupId.Response response =
+            await _mediator.Send(new GetGroupAssignmentsByStudyGroupId.Query(groupId));
+        return Ok(response.GroupAssignments);
+    }
+
+    [HttpGet("find")]
+    public async Task<ActionResult<StudyGroupDto?>> FindByName(string name)
+    {
+        var query = new FindStudyGroupByName.Query(name);
+        FindStudyGroupByName.Response response = await _mediator.Send(query);
+
         return Ok(response.Group);
     }
 }

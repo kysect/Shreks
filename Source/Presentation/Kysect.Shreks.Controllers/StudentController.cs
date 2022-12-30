@@ -6,6 +6,7 @@ using Kysect.Shreks.Application.Contracts.Users.Queries;
 using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.WebApi.Abstractions.Models.Students;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,12 +26,10 @@ public class StudentController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<StudentDto>> Create(
-        string? firstName,
-        string? middleName,
-        string? lastName,
-        Guid groupId)
+    public async Task<ActionResult<StudentDto>> Create(CreateStudentRequest request)
     {
+        (string? firstName, string? middleName, string? lastName, Guid groupId) = request;
+
         var command = new CreateStudent.Command
         (
             firstName ?? string.Empty,
@@ -42,22 +41,7 @@ public class StudentController : ControllerBase
         return Ok(response.Student);
     }
 
-    [HttpGet("by-group")]
-    public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> GetByGroupId(Guid groupId)
-    {
-        GetStudentsByGroupId.Response response = await _mediator.Send(new GetStudentsByGroupId.Query(groupId));
-        return Ok(response.Students);
-    }
-
-    [HttpGet("by-course")]
-    public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> GetBySubjectCourseId(Guid subjectCourseId)
-    {
-        GetStudentsBySubjectCourseId.Response response =
-            await _mediator.Send(new GetStudentsBySubjectCourseId.Query(subjectCourseId));
-        return Ok(response.Students);
-    }
-
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<StudentDto>> GetById(Guid id)
     {
         GetStudentById.Response response = await _mediator.Send(new GetStudentById.Query(id));
@@ -73,19 +57,21 @@ public class StudentController : ControllerBase
         return Ok();
     }
 
-    [HttpPost("association/github")]
-    public async Task<ActionResult> AddGithubAssociation(Guid userId, string githubUsername)
+    [HttpPost("{id:guid}/association/github")]
+    public async Task<ActionResult> AddGithubAssociation(Guid id, string githubUsername)
     {
-        AddGithubUserAssociation.Response response =
-            await _mediator.Send(new AddGithubUserAssociation.Command(userId, githubUsername));
+        var command = new AddGithubUserAssociation.Command(id, githubUsername);
+        await _mediator.Send(command);
+
         return Ok();
     }
 
-    [HttpDelete("association/github")]
-    public async Task<ActionResult> RemoveGithubAssociation(Guid userId)
+    [HttpDelete("{id:guid}/association/github")]
+    public async Task<ActionResult> RemoveGithubAssociation(Guid id)
     {
-        RemoveGithubUserAssociation.Response response =
-            await _mediator.Send(new RemoveGithubUserAssociation.Command(userId));
+        var command = new RemoveGithubUserAssociation.Command(id);
+        await _mediator.Send(command);
+
         return Ok();
     }
 

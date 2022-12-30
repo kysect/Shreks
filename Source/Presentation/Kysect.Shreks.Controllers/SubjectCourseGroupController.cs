@@ -1,9 +1,10 @@
 using Kysect.Shreks.Application.Contracts.Study.Commands;
-using Kysect.Shreks.Application.Contracts.Study.Queries;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.WebApi.Abstractions.Models.SubjectCourseGroups;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Kysect.Shreks.Controllers;
@@ -20,31 +21,27 @@ public class SubjectCourseGroupController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("by-subject-course-id")]
-    public async Task<ActionResult<IReadOnlyCollection<SubjectCourseGroupDto>>> GetSubjectCourseGroupById(Guid id)
-    {
-        var query = new GetSubjectCourseGroupsBySubjectCourseId.Query(id);
-
-        var result = await _mediator.Send(query);
-
-        return Ok(result.Groups);
-    }
-
     [HttpPost]
-    public async Task<ActionResult<SubjectCourseGroupDto>> CreateSubjectCourseGroup(Guid subjectCourseId, Guid studentsGroupId)
+    public async Task<ActionResult<SubjectCourseGroupDto>> CreateSubjectCourseGroup(
+        CreateSubjectCourseGroupRequest request)
     {
-        var command = new CreateSubjectCourseGroup.Command(subjectCourseId, studentsGroupId);
+        (Guid subjectCourseId, Guid groupId) = request;
 
-        var result = await _mediator.Send(command);
+        var command = new CreateSubjectCourseGroup.Command(subjectCourseId, groupId);
+        CreateSubjectCourseGroup.Response result = await _mediator.Send(command);
+
         return Ok(result);
     }
 
     [HttpDelete]
-    public async Task<IActionResult> DeleteSubjectCourseGroup(Guid subjectCourseId, Guid studentsGroupId)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteSubjectCourseGroup(DeleteSubjectCourseGroupRequest request)
     {
-        var command = new DeleteSubjectCourseGroup.Command(subjectCourseId, studentsGroupId);
+        (Guid subjectCourseId, Guid groupId) = request;
 
+        var command = new DeleteSubjectCourseGroup.Command(subjectCourseId, groupId);
         await _mediator.Send(command);
-        return Ok();
+
+        return NoContent();
     }
 }

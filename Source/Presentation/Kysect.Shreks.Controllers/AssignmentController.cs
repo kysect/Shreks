@@ -1,8 +1,9 @@
 using Kysect.Shreks.Application.Contracts.Study.Commands;
 using Kysect.Shreks.Application.Contracts.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Controllers.Models;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.WebApi.Abstractions.Models;
+using Kysect.Shreks.WebApi.Abstractions.Models.GroupAssignments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -56,13 +57,26 @@ public class AssignmentsController : ControllerBase
         return Ok(response.Assignment);
     }
 
-    [HttpGet("by-subject-course")]
-    public async Task<ActionResult<AssignmentDto>> GetAssignmentBySubjectCourseId(Guid id)
+    [HttpGet("{assignmentId:guid}/groups")]
+    public async Task<ActionResult<IReadOnlyCollection<GroupAssignmentDto>>> Get(Guid assignmentId)
     {
-        var query = new GetAssignmentsBySubjectCourse.Query(id);
+        var query = new GetGroupAssignments.Query(assignmentId);
+        GetGroupAssignments.Response response = await _mediator.Send(query);
 
-        var response = await _mediator.Send(query);
+        return Ok(response.GroupAssignments);
+    }
 
-        return Ok(response.Assignments);
+    [HttpPut("{assignmentId:guid}/groups/{groupId:guid}")]
+    public async Task<ActionResult<GroupAssignmentDto>> UpdateById(
+        Guid assignmentId,
+        Guid groupId,
+        UpdateGroupAssignmentRequest request)
+    {
+        var deadline = DateOnly.FromDateTime(request.Deadline);
+        var command = new UpdateGroupAssignmentDeadline.Command(groupId, assignmentId, deadline);
+
+        UpdateGroupAssignmentDeadline.Response response = await _mediator.Send(command);
+
+        return Ok(response.GroupAssignment);
     }
 }
