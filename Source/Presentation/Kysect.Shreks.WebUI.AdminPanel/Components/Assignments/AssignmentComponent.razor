@@ -1,5 +1,8 @@
 @using Kysect.Shreks.WebApi.Sdk
-@inject GroupAssignmentClient Client
+@using Kysect.Shreks.Application.Dto.Study
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@inject IAssignmentClient Client
+@inject ISafeExecutor SafeExecutor
 
 @if (_groupAssignments is not null)
 {
@@ -16,20 +19,16 @@
     [Parameter]
     public AssignmentDto? Assignment { get; set; }
 
-    private ICollection<GroupAssignmentDto>? _groupAssignments;
+    private IReadOnlyCollection<GroupAssignmentDto>? _groupAssignments;
 
     protected override async Task OnInitializedAsync()
     {
         if (Assignment is null)
             return;
 
-        _groupAssignments = await Client.GroupAssignmentGetAsync(Assignment.Id);
-
-        foreach (var group in _groupAssignments)
-        {
-            Console.WriteLine(group.Deadline);
-        }
+        await using var builder = SafeExecutor.Execute(async () => _groupAssignments = await Client.GetGroupAssignmentsAsync(Assignment.Id));
+        builder.Title = "Failed to load group assignments";
     }
 
-    
+
 }

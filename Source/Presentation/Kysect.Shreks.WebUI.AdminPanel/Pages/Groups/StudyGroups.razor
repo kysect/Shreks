@@ -1,15 +1,15 @@
 @page "/adminpanel/groups"
-@using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Groups
 @using Kysect.Shreks.WebUI.AdminPanel.Components
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.Application.Dto.Study
 @inject IStudyGroupClient StudyGroupClient
 @inject ISafeExecutor SafeExecutor
 
 @if (_groups is not null)
 {
     <Heading Size="HeadingSize.Is2">
-        Subjects
+        Groups
     </Heading>
 
     <Div>
@@ -25,11 +25,11 @@ else
 }
 
 @code {
-    private ICollection<StudyGroupDto>? _groups;
+    private IReadOnlyCollection<StudyGroupDto>? _groups;
 
     protected override async Task OnInitializedAsync()
     {
-        await using var builder = SafeExecutor.Execute(async () => _groups = await StudyGroupClient.StudyGroupGetAsync());
+        await using var builder = SafeExecutor.Execute(async () => _groups = await StudyGroupClient.GetAsync());
     }
 
 }

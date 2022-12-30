@@ -1,4 +1,5 @@
 @using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.Application.Dto.Users
 
 @if (Students is not null)
 {
@@ -47,6 +48,6 @@
 @code {
 
     [Parameter]
-    public ICollection<StudentDto>? Students { get; set; }
+    public IReadOnlyCollection<StudentDto>? Students { get; set; }
 
 }

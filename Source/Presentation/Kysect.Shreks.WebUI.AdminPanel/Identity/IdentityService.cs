@@ -1,14 +1,15 @@
-using Kysect.Shreks.WebApi.Sdk;
-using Kysect.Shreks.WebUI.AdminPanel.Models;
+using Kysect.Shreks.WebApi.Abstractions.Models.Identity;
+using Kysect.Shreks.WebApi.Sdk.ControllerClients;
+using Kysect.Shreks.WebApi.Sdk.Models;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Identity;
 
 public class IdentityService : IIdentityService
 {
     private readonly IIdentityManager _identityManager;
-    private readonly IdentityClient _identityClient;
+    private readonly IIdentityClient _identityClient;
 
-    public IdentityService(IIdentityManager identityManager, IdentityClient identityClient)
+    public IdentityService(IIdentityManager identityManager, IIdentityClient identityClient)
     {
         _identityManager = identityManager;
         _identityClient = identityClient;
@@ -16,7 +17,7 @@ public class IdentityService : IIdentityService
 
     public async Task LoginAsync(string username, string password, CancellationToken cancellationToken)
     {
-        var request = new LoginRequest { Username = username, Password = password, };
+        var request = new LoginRequest(username, password);
         var response = await _identityClient.LoginAsync(request, cancellationToken);
         var identity = new UserIdentity(response.Token, response.Expires);
 
