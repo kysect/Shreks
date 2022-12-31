@@ -1,5 +1,5 @@
 @using Kysect.Shreks.WebApi.Sdk
-@inject GithubManagementClient Client
+@inject IGithubManagementClient Client
 
 <Button Clicked="OnClickedAsync" Color="Color.Secondary" Disabled="@(_component?.Executing ?? false)">
     Sync GitHub Mentors
@@ -15,7 +15,7 @@
     private ConfirmationComponent? _component;
 
     private Task SyncAsync(CancellationToken cancellationToken)
-        => OrganizationName is null ? Task.CompletedTask : Client.ForceMentorSyncAsync(OrganizationName, cancellationToken);
+        => OrganizationName is null ? Task.CompletedTask : Client.ForceMentorsSyncAsync(OrganizationName, cancellationToken);
 
     private Task OnClickedAsync()
         => _component?.Show() ?? Task.CompletedTask;

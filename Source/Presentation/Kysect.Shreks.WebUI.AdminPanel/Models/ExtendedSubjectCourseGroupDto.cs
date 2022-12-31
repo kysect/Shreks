@@ -1,4 +1,5 @@
-using Kysect.Shreks.WebApi.Sdk;
+using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Models;
 

@@ -1,5 +1,5 @@
 using Blazored.LocalStorage;
-using Kysect.Shreks.WebUI.AdminPanel.Models;
+using Kysect.Shreks.WebApi.Sdk.Models;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Identity;
 
@@ -36,10 +36,10 @@ public class LocalStorageIdentityManager : IIdentityManager
     public async ValueTask<bool> HasIdentityAsync(CancellationToken cancellationToken)
     {
         var identity = await _storage.GetItemAsync<UserIdentity>(IdentityKey, cancellationToken);
-        
+
         if (identity is null)
             return false;
-        
+
         var now = DateTime.UtcNow;
 
         return identity.ExpirationDateTime > now;

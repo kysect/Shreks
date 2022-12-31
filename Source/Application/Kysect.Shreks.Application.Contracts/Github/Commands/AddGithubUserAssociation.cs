@@ -4,7 +4,5 @@ namespace Kysect.Shreks.Application.Contracts.Github.Commands;
 
 internal class AddGithubUserAssociation
 {
-    public record Command(Guid UserId, string GithubUsername) : IRequest<Response>;
-
-    public record Response;
+    public record Command(Guid UserId, string GithubUsername) : IRequest;
 }

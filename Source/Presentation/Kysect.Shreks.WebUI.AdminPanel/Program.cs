@@ -7,7 +7,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddAdminPanel(builder.HostEnvironment.BaseAddress);
+var baseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+builder.Services.AddAdminPanel(baseAddress);
 
 var app = builder.Build();
 

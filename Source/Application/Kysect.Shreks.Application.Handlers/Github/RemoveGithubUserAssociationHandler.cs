@@ -7,7 +7,7 @@ using static Kysect.Shreks.Application.Contracts.Github.Commands.RemoveGithubUse
 
 namespace Kysect.Shreks.Application.Handlers.Github;
 
-internal class RemoveGithubUserAssociationHandler : IRequestHandler<Command, Response>
+internal class RemoveGithubUserAssociationHandler : IRequestHandler<Command>
 {
     private readonly IShreksDatabaseContext _context;
 
@@ -16,7 +16,7 @@ internal class RemoveGithubUserAssociationHandler : IRequestHandler<Command, Res
         _context = context;
     }
 
-    public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
         Student student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
 
@@ -26,6 +26,6 @@ internal class RemoveGithubUserAssociationHandler : IRequestHandler<Command, Res
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new Response();
+        return Unit.Value;
     }
 }

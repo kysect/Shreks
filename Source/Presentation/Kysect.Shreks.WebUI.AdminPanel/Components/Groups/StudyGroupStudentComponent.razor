@@ -1,4 +1,5 @@
 @using Kysect.Shreks.WebApi.Sdk
+@using Kysect.Shreks.Application.Dto.Users
 @inject IStudentClient StudentClient
 
 @if (Student is not null)
@@ -42,7 +43,7 @@
         if (Student is null)
             return;
 
-        await StudentClient.DismissAsync(Student.User.Id, cancellationToken);
+        await StudentClient.DismissFromGroupAsync(Student.User.Id, cancellationToken);
 
         await (GroupComponent?.ReloadStudents() ?? Task.CompletedTask);
     }

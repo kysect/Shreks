@@ -1,5 +1,8 @@
 @using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.Extensions
+@using Microsoft.AspNetCore.Components
+@using Kysect.Shreks.Application.Dto.Users
+@using Kysect.Shreks.Application.Dto.Querying
 
 @if (Parameter is not null)
 {
@@ -13,13 +16,13 @@
                 <DropdownList TItem="StudentQueryParameter"
                               TValue="StudentQueryParameter"
                               Data="@(Parent?.AvailableParameters ?? Array.Empty<StudentQueryParameter>())"
-                              TextField="x => x.AsString()"
+                              TextField="x => x.ToString()"
                               ValueField="x => x"
                               @bind-SelectedValue="@Parameter.Type"
                               Color="Color.Primary"
                               Disabled="@(Parent?.IsFull ?? false)">
 
-                    @Parameter.Type.AsString()
+                    @Parameter.Type.ToString()
 
                 </DropdownList>
             </Addon>
@@ -44,7 +47,7 @@
 @code
 {
     [Parameter]
-    public StudentQueryParameterQueryParameter? Parameter { get; set; }
+    public QueryParameter<StudentQueryParameter>? Parameter { get; set; }
 
     [Parameter]
     public StudentQueryComponent? Parent { get; set; }

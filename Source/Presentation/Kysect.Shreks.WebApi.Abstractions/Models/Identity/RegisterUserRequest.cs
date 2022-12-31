@@ -1,3 +1,3 @@
-namespace Kysect.Shreks.Controllers.Models;
+namespace Kysect.Shreks.WebApi.Abstractions.Models.Identity;
 
 public record RegisterUserRequest(string Username, string Password);

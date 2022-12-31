@@ -1,9 +1,9 @@
 @page "/adminpanel/subjects/{subjectId:guid}"
-@using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.Components.SubjectCourse
 @using Kysect.Shreks.WebUI.AdminPanel.Components
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@inject SubjectClient SubjectClient
+@using Kysect.Shreks.Application.Dto.SubjectCourses
+@inject ISubjectClient SubjectClient
 @inject ISafeExecutor SafeExecutor
 @inject NavigationManager NavigationManager
 
@@ -32,11 +32,11 @@ else
     [Parameter]
     public Guid SubjectId { get; set; }
 
-    private ICollection<SubjectCourseDto>? _courses;
+    private IReadOnlyCollection<SubjectCourseDto>? _courses;
 
     protected override async Task OnInitializedAsync()
     {
-        await using var builder = SafeExecutor.Execute(async () => { _courses = await SubjectClient.CoursesAsync(SubjectId); });
+        await using var builder = SafeExecutor.Execute(async () => { _courses = await SubjectClient.GetCoursesAsync(SubjectId); });
 
         builder.Title = "Failed to load subject course";
 

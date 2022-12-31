@@ -3,6 +3,7 @@ using Kysect.Shreks.Application.Contracts.Study.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Identity.Entities;
+using Kysect.Shreks.WebApi.Abstractions.Models.Subjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,30 +23,38 @@ public class SubjectController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<SubjectDto>> Create(string name)
+    public async Task<ActionResult<SubjectDto>> Create(CreateSubjectRequest request)
     {
-        CreateSubject.Response response = await _mediator.Send(new CreateSubject.Command(name));
+        var command = new CreateSubject.Command(request.Name);
+        CreateSubject.Response response = await _mediator.Send(command);
+
         return Ok(response.Subject);
     }
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyCollection<SubjectDto>>> Get()
     {
-        GetSubjects.Response response = await _mediator.Send(new GetSubjects.Query());
+        var query = new GetSubjects.Query();
+        GetSubjects.Response response = await _mediator.Send(query);
+
         return Ok(response.Subjects);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:guid}")]
     public async Task<ActionResult<SubjectDto>> GetById(Guid id)
     {
-        GetSubjectById.Response response = await _mediator.Send(new GetSubjectById.Query(id));
+        var query = new GetSubjectById.Query(id);
+        GetSubjectById.Response response = await _mediator.Send(query);
+
         return Ok(response.Subject);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult<SubjectDto>> Update(Guid id, string name)
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<SubjectDto>> Update(Guid id, UpdateSubjectRequest request)
     {
-        UpdateSubject.Response response = await _mediator.Send(new UpdateSubject.Command(id, name));
+        var command = new UpdateSubject.Command(id, request.Name);
+        UpdateSubject.Response response = await _mediator.Send(command);
+
         return Ok(response.Subject);
     }
 

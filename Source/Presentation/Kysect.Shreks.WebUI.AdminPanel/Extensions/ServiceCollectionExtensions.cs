@@ -2,7 +2,8 @@ using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
-using Kysect.Shreks.WebApi.Sdk;
+using Kysect.Shreks.WebApi.Sdk.Extensions;
+using Kysect.Shreks.WebApi.Sdk.Identity;
 using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling;
 using Kysect.Shreks.WebUI.AdminPanel.Identity;
 using Kysect.Shreks.WebUI.AdminPanel.Tools;
@@ -12,7 +13,7 @@ namespace Kysect.Shreks.WebUI.AdminPanel.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddAdminPanel(this IServiceCollection collection, string baseUrl)
+    public static void AddAdminPanel(this IServiceCollection collection, Uri baseUrl)
     {
         collection.AddBlazoredLocalStorage();
         collection.AddBlazorise();
@@ -25,7 +26,10 @@ public static class ServiceCollectionExtensions
         var exceptionDisplayConfiguration = new ExceptionDisplayConfiguration(TimeSpan.FromSeconds(6));
         collection.AddSingleton(exceptionDisplayConfiguration);
 
-        collection.AddScoped<IIdentityManager, LocalStorageIdentityManager>();
+        collection.AddScoped<LocalStorageIdentityManager>();
+        collection.AddScoped<IIdentityManager>(x => x.GetRequiredService<LocalStorageIdentityManager>());
+        collection.AddScoped<IIdentityProvider>(x => x.GetRequiredService<LocalStorageIdentityManager>());
+
         collection.AddScoped<IIdentityService, IdentityService>();
 
         collection.AddSingleton<ExceptionManager>();
@@ -38,34 +42,6 @@ public static class ServiceCollectionExtensions
         collection.AddScoped<IdentityStateProvider>();
         collection.AddScoped<AuthenticationStateProvider>(x => x.GetRequiredService<IdentityStateProvider>());
 
-        collection.AddHttpClient(Constants.ClientName).AddHttpMessageHandler(p =>
-            new AuthorizationMessageHandlerDecorator(p.GetRequiredService<IIdentityManager>()));
-
-        collection.AddClients(baseUrl);
-    }
-
-    private static void AddClients(this IServiceCollection collection, string baseUrl)
-    {
-        collection.AddClient(x => new IdentityClient(baseUrl, x));
-        collection.AddClient(x => new SubjectClient(baseUrl, x));
-        collection.AddClient(x => new SubjectCourseClient(baseUrl, x));
-        collection.AddClient(x => new GoogleClient(baseUrl, x));
-        collection.AddClient(x => new GithubManagementClient(baseUrl, x));
-        collection.AddClient<IStudentClient>(x => new StudentClient(baseUrl, x));
-        collection.AddClient(x => new GroupAssignmentClient(baseUrl, x));
-        collection.AddClient<IStudyGroupClient>(x => new StudyGroupClient(baseUrl, x));
-        collection.AddClient<ISubjectCourseGroupClient>(x => new SubjectCourseGroupClient(baseUrl, x));
-    }
-
-    private static void AddClient<T>(this IServiceCollection collection, Func<HttpClient, T> clientFactory)
-        where T : class
-    {
-        collection.AddScoped(p =>
-        {
-            var factory = p.GetRequiredService<IHttpClientFactory>();
-            var client = factory.CreateClient(Constants.ClientName);
-
-            return clientFactory.Invoke(client);
-        });
+        collection.AddShreksSdk(baseUrl);
     }
 }
