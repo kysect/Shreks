@@ -5,7 +5,6 @@ using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.Google.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
-using Kysect.Shreks.Application.Services.Extensions;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Controllers;
 using Kysect.Shreks.Core.Study;
@@ -93,8 +92,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
     webApplicationBuilder.Services
         .AddHandlers()
         .AddGithubPresentation()
-        .AddMappingConfiguration()
-        .AddApplicationServices();
+        .AddMappingConfiguration();
 
     webApplicationBuilder.Services
         .AddDatabaseContext(o => o

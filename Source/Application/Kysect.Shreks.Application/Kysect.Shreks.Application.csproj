@@ -7,8 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="12.0.0" />
         <PackageReference Include="FluentChaining" Version="1.0.4" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.8" />
     </ItemGroup>
 
     <ItemGroup>

@@ -35,7 +35,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Services\Kysect.Shreks.Application.Services.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj" />
       <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />

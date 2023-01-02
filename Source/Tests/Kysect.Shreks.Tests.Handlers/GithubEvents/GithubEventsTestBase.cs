@@ -1,6 +1,5 @@
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Google.Extensions;
-using Kysect.Shreks.Application.Services.Extensions;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Seeding.Options;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +10,6 @@ public class GithubEventsTestBase : TestBase
 {
     protected override void ConfigureServices(IServiceCollection collection)
     {
-        collection.AddApplicationServices();
         collection.AddApplicationConfiguration();
         collection.AddDummyGoogleIntegration();
     }
