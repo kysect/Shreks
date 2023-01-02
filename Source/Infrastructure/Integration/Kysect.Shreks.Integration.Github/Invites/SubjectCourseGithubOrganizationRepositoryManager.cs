@@ -1,5 +1,5 @@
 ﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
-using Kysect.Shreks.Integration.Github.Client;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Client;
 using Octokit;
 
 namespace Kysect.Shreks.Integration.Github.Invites;

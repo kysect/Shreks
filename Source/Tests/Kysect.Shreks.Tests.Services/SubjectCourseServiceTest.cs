@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Kysect.Shreks.Tests.Services;
 
-public class SubjectCourseServiceTest : ServicesTestsBase
+public class SubjectCourseServiceTest : TestBase
 {
     private readonly ISubjectCourseService _service;
 

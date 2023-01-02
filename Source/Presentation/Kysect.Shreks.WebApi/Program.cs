@@ -1,8 +1,7 @@
 using Google.Apis.Auth.OAuth2;
-using Kysect.Shreks.Application.Commands.Extensions;
 using Kysect.Shreks.Application.Contracts.Identity.Commands;
 using Kysect.Shreks.Application.Extensions;
-using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.Google.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
@@ -22,6 +21,7 @@ using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Google.Models;
 using Kysect.Shreks.Mapping.Extensions;
+using Kysect.Shreks.Presentation.GitHub.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.WebApi.Abstractions.Models;
 using Kysect.Shreks.WebApi.Extensions;
@@ -92,7 +92,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 
     webApplicationBuilder.Services
         .AddHandlers()
-        .AddApplicationCommands()
+        .AddGithubPresentation()
         .AddMappingConfiguration()
         .AddApplicationServices();
 
@@ -170,7 +170,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     app
         .UseAuthentication()
         .UseAuthorization();
-    
+
     app.MapFallbackToFile("index.html");
 
     app.MapControllers();

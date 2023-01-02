@@ -1,4 +1,3 @@
-using Kysect.Shreks.WebApi.Abstractions.Models;
 using Kysect.Shreks.WebApi.Abstractions.Models.Identity;
 using Kysect.Shreks.WebApi.Sdk.Tools;
 using System.Net.Http.Json;

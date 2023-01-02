@@ -1,7 +1,7 @@
 ﻿using Kysect.CommonLib;
 using Kysect.GithubUtils;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
-using Kysect.Shreks.Integration.Github.Client;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Client;
 using Microsoft.Extensions.Logging;
 using Octokit;
 

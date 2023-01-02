@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Notifications;
 
 namespace Kysect.Shreks.Tests.GithubWorkflow.Tools;
 

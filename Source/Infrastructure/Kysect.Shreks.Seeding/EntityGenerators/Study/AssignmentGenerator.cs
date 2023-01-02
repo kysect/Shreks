@@ -22,7 +22,6 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
 
     protected override Assignment Generate(int index)
     {
-
         var subjectCourse = _faker.PickRandom<SubjectCourse>(_subjectCourseGenerator.GeneratedEntities);
 
         var assignmentOrder = index + 1;

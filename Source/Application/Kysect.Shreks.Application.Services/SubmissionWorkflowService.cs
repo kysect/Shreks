@@ -7,6 +7,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Application.Services;
@@ -27,7 +28,7 @@ public class SubmissionWorkflowService : ISubmissionWorkflowService
         _tableUpdateQueue = tableUpdateQueue;
     }
 
-    public async Task<ISubmissionWorkflow> GetWorkflowAsync(Guid submissionId, CancellationToken cancellationToken)
+    public async Task<ISubmissionWorkflow> GetSubmissionWorkflowAsync(Guid submissionId, CancellationToken cancellationToken)
     {
         SubjectCourse? subjectCourse = await _context.Submissions
             .Where(x => x.Id.Equals(submissionId))
@@ -36,6 +37,15 @@ public class SubmissionWorkflowService : ISubmissionWorkflowService
 
         if (subjectCourse is null)
             throw EntityNotFoundException.For<Submission>(submissionId);
+
+        return await GetSubjectCourseWorkflowAsync(subjectCourse.Id, cancellationToken);
+    }
+
+    public async Task<ISubmissionWorkflow> GetSubjectCourseWorkflowAsync(
+        Guid subjectCourseId,
+        CancellationToken cancellationToken)
+    {
+        SubjectCourse subjectCourse = await _context.SubjectCourses.GetByIdAsync(subjectCourseId, cancellationToken);
 
         return subjectCourse.WorkflowType switch
         {

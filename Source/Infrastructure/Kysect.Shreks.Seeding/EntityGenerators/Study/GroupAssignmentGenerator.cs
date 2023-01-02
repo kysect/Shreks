@@ -14,7 +14,7 @@ public class GroupAssignmentGenerator : EntityGeneratorBase<GroupAssignment>
         EntityGeneratorOptions<GroupAssignment> options,
         IEntityGenerator<StudentGroup> groupGenerator,
         IEntityGenerator<Assignment> assignmentGenerator,
-        Faker faker) 
+        Faker faker)
         : base(options)
     {
         _groupGenerator = groupGenerator;
@@ -42,7 +42,7 @@ public class GroupAssignmentGenerator : EntityGeneratorBase<GroupAssignment>
             assignment,
             DateOnly.FromDateTime(_faker.Date.Future())
         );
-        
+
         assignment.AddGroupAssignment(groupAssignment);
 
         return groupAssignment;

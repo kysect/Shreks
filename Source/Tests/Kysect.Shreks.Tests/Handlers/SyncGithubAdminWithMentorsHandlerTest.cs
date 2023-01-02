@@ -1,13 +1,12 @@
 ﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;
-using Kysect.Shreks.Tests.Application;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Kysect.Shreks.Tests.Handlers;
 
-public class SyncGithubAdminWithMentorsHandlerTest : ApplicationTestBase
+public class SyncGithubAdminWithMentorsHandlerTest : TestBase
 {
     [Fact]
     public async Task Handle_Should_UpdateSubmissionState()

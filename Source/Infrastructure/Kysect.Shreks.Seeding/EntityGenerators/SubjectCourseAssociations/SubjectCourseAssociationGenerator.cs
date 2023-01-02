@@ -25,13 +25,16 @@ public class SubjectCourseAssociationGenerator : EntityGeneratorBase<GithubSubje
         var count = _subjectCourseGenerator.GeneratedEntities.Count;
 
         if (index >= count)
-            throw new IndexOutOfRangeException("Subject course index more than count of subject courses.");
+        {
+            string message = "GitHub subject course association index more than count of subject courses.";
+            throw new IndexOutOfRangeException(message);
+        }
 
         var subjectCourse = _subjectCourseGenerator.GeneratedEntities[index];
 
         var association = new GithubSubjectCourseAssociation(
             subjectCourse,
-            Guid.NewGuid().ToString(),
+            _faker.Random.Guid().ToString(),
             _faker.Internet.UserName());
 
         subjectCourse.AddAssociation(association);

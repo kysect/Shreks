@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Abstractions.Submissions.Models;
 using Kysect.Shreks.Application.Dto.Submissions;
 
 namespace Kysect.Shreks.Application.Abstractions.Submissions;
@@ -33,5 +34,12 @@ public interface ISubmissionWorkflow
         Guid issuerId,
         Guid submissionId,
         bool isTerminal,
+        CancellationToken cancellationToken);
+
+    Task<SubmissionUpdateResult> SubmissionUpdatedAsync(
+        Guid issuerId,
+        Guid userId,
+        Guid assignmentId,
+        ISubmissionFactory submissionFactory,
         CancellationToken cancellationToken);
 }

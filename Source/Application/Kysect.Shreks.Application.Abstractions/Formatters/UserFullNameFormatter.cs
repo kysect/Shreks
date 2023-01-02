@@ -7,7 +7,7 @@ public class UserFullNameFormatter : IUserFullNameFormatter
 {
     public string GetFullName(UserDto user)
     {
-        var fullNameBuilder = new StringBuilder()
+        StringBuilder fullNameBuilder = new StringBuilder()
             .Append(user.LastName)
             .Append(' ')
             .Append(user.FirstName);

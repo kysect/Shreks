@@ -1,13 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 	    <AnalysisLevel>latest</AnalysisLevel>
 	    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 
         <IsPackable>false</IsPackable>
+
+        <LangVersion>11</LangVersion>
     </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+	  <NoWarn>1701;1702;IL2121;CA1707</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+	  <NoWarn>1701;1702;IL2121;CA1707</NoWarn>
+	</PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="FluentAssertions" Version="6.7.0" />
@@ -29,7 +37,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
       <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
       <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
       <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj" />

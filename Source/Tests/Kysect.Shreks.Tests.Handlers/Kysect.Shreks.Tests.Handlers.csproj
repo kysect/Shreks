@@ -1,11 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <NoWarn>1701;1702;IL2121;CA1707</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <NoWarn>1701;1702;IL2121;CA1707</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,13 +36,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
         <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
         <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
         <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj" />
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Services\Kysect.Shreks.Application.Services.csproj" />
         <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
         <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj" />
         <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />
+        <ProjectReference Include="..\Kysect.Shreks.Tests\Kysect.Shreks.Tests.csproj" />
     </ItemGroup>
 
 </Project>

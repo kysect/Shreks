@@ -2,5 +2,7 @@ namespace Kysect.Shreks.Application.Abstractions.Submissions;
 
 public interface ISubmissionWorkflowService
 {
-    Task<ISubmissionWorkflow> GetWorkflowAsync(Guid submissionId, CancellationToken cancellationToken);
+    Task<ISubmissionWorkflow> GetSubmissionWorkflowAsync(Guid submissionId, CancellationToken cancellationToken);
+
+    Task<ISubmissionWorkflow> GetSubjectCourseWorkflowAsync(Guid subjectCourseId, CancellationToken cancellationToken);
 }

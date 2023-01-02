@@ -1,5 +1,5 @@
 ﻿using Kysect.Shreks.Application.Contracts.Github.Commands;
-using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Providers;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.UserAssociations;

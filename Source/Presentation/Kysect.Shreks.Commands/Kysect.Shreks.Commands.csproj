@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Contracts\Kysect.Shreks.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj" />
+        <ProjectReference Include="..\..\Domain\Kysect.Shreks.Common\Kysect.Shreks.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="CommandLineParser" Version="2.9.1" />
+        <PackageReference Include="FluentScanning" Version="2.0.1" />
+        <PackageReference Include="MediatR" Version="10.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.3" />
+    </ItemGroup>
+
+</Project>

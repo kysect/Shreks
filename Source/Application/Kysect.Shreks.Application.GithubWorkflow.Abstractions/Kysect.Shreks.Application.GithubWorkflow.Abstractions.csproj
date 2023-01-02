@@ -13,4 +13,12 @@
 		<ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="EventHandling" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Octokit" Version="3.0.0" />
+	</ItemGroup>
+
 </Project>
