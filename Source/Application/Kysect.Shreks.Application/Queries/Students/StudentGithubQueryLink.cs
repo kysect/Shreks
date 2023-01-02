@@ -23,7 +23,10 @@ public class StudentGithubQueryLink : QueryLinkBase<Student, StudentQueryParamet
             return null;
 
         return query.Where(_matcher.Match(
+#pragma warning disable CS8602
+            // TODO: Possible NRE if there is no GH User Association.
             x => x.User.Associations.OfType<GithubUserAssociation>().FirstOrDefault().GithubUsername,
+#pragma warning restore CS8602
             parameter.Pattern));
     }
 }

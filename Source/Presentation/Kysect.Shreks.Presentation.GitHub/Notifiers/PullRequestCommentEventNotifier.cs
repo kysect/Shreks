@@ -8,7 +8,7 @@ public class PullRequestCommentEventNotifier : PullRequestEventNotifier, IPullRe
 {
     private readonly IActionNotifier _actionNotifier;
     private readonly long _commentId;
-    private readonly long _issueNumber;
+    /* private readonly long _issueNumber; */
     private readonly ILogger _logger;
     private readonly WebhookEvent _webhookEvent;
 
@@ -19,7 +19,7 @@ public class PullRequestCommentEventNotifier : PullRequestEventNotifier, IPullRe
         _actionNotifier = actionNotifier;
         _webhookEvent = webhookEvent;
         _commentId = commentId;
-        _issueNumber = issueNumber;
+        /* _issueNumber = issueNumber; */
         _logger = logger;
     }
 
@@ -29,6 +29,6 @@ public class PullRequestCommentEventNotifier : PullRequestEventNotifier, IPullRe
             _webhookEvent,
             _commentId,
             isSuccess);
-        _logger.LogInformation("Send reaction: " + isSuccess);
+        _logger.LogInformation("Send reaction: {IsSuccess}", isSuccess);
     }
 }

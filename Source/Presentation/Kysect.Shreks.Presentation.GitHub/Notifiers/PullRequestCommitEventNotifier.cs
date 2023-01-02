@@ -8,7 +8,7 @@ public class PullRequestCommitEventNotifier : PullRequestEventNotifier, IPullReq
 {
     private readonly IActionNotifier _actionNotifier;
     private readonly string _commitSha;
-    private readonly long _issueNumber;
+    /* private readonly long _issueNumber; */
     private readonly ILogger _logger;
     private readonly WebhookEvent _webhookEvent;
 
@@ -19,13 +19,13 @@ public class PullRequestCommitEventNotifier : PullRequestEventNotifier, IPullReq
         _actionNotifier = actionNotifier;
         _webhookEvent = webhookEvent;
         _commitSha = commitSha;
-        _issueNumber = issueNumber;
+        /* _issueNumber = issueNumber; */
         _logger = logger;
     }
 
     public async Task SendCommentToTriggeredCommit(string message)
     {
         await _actionNotifier.SendCommitComment(_webhookEvent, _commitSha, message);
-        _logger.LogInformation("Send comment to PR: " + message);
+        _logger.LogInformation("Send comment to PR: {Message}", message);
     }
 }

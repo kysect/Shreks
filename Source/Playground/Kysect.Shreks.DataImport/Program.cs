@@ -68,7 +68,7 @@ foreach (StudentInfo studentInfo in data)
 }
 
 return;
-
+/*
 var subjectClient = new SubjectClient(baseUrl, client);
 var subjectCourseController = new SubjectCourseClient(baseUrl, client);
 var assignmentClient = new AssignmentsClient(baseUrl, client);
@@ -138,6 +138,7 @@ DateTime CreateDateTime(int month, int day)
 {
     return new DateTime(2022, month, day);
 }
+*/
 
 async Task<StudentInfo[]> GetStudentInfos(string filePath)
 {

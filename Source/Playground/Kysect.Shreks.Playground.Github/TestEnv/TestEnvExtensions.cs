@@ -43,6 +43,7 @@ public static class TestEnvExtensions
         CancellationToken cancellationToken = default)
     {
         return;
+#pragma warning disable CS0162
         await serviceProvider.UseDatabaseSeeders(cancellationToken);
 
         using IServiceScope scope = serviceProvider.CreateScope();
@@ -67,5 +68,6 @@ public static class TestEnvExtensions
             new GithubSubjectCourseAssociation(subjectCourse, config.Organization, config.TemplateRepository));
 
         await dbContext.SaveChangesAsync(cancellationToken);
+#pragma warning restore CS0162
     }
 }

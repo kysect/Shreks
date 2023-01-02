@@ -37,6 +37,12 @@ public static class ServiceCollectionExtensions
         CacheConfiguration cacheConfiguration,
         GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
+        if (string.IsNullOrWhiteSpace(githubIntegrationConfiguration.GithubAppConfiguration.PrivateKey))
+        {
+            throw new ArgumentException(@"Github app configuration is missing private key",
+                nameof(githubIntegrationConfiguration));
+        }
+
         services.AddSingleton(
             new GitHubJwtFactory(
                 new FullStringPrivateKeySource(githubIntegrationConfiguration.GithubAppConfiguration.PrivateKey),
@@ -84,6 +90,13 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IServiceOrganizationGithubClientProvider, ServiceOrganizationGithubClientProvider>(
             serviceProvider =>
             {
+                if (string.IsNullOrWhiteSpace(githubIntegrationConfiguration.GithubAppConfiguration
+                        .ServiceOrganizationName))
+                {
+                    throw new ArgumentException(@"GitHub Service Organization Name is missing",
+                        nameof(githubIntegrationConfiguration));
+                }
+
                 IGitHubClient appClient = serviceProvider.GetRequiredService<IGitHubClient>();
                 IInstallationClientFactory installationClientFactory =
                     serviceProvider.GetRequiredService<IInstallationClientFactory>();
@@ -95,49 +108,50 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection AddGithubAuth(
-        this IServiceCollection services,
-        GithubAuthConfiguration githubAuthConfiguration)
-    {
-        services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddCookie(options =>
-            {
-                options.LoginPath = "/api/auth/github/sign-in";
-            })
-            .AddGitHub(options =>
-            {
-                options.ClientId = githubAuthConfiguration.OAuthClientId!;
-                options.ClientSecret = githubAuthConfiguration.OAuthClientSecret!;
-
-                options.CallbackPath = new PathString("/signin-github");
-                options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
-                options.TokenEndpoint = "https://github.com/login/oauth/access_token";
-                options.UserInformationEndpoint = "https://api.github.com/user";
-
-                options.Scope.Add("read:user");
-
-                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
-                options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
-                options.ClaimActions.MapJsonKey("urn:github:name", "name");
-                options.ClaimActions.MapJsonKey("urn:github:url", "url");
-
-                options.Events.OnCreatingTicket += context =>
+    /*
+        private static IServiceCollection AddGithubAuth(
+            this IServiceCollection services,
+            GithubAuthConfiguration githubAuthConfiguration)
+        {
+            services.AddAuthentication(options =>
                 {
-                    if (context.AccessToken is not null)
-                        context.Identity?.AddClaim(new Claim("access_token", context.AccessToken));
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/api/auth/github/sign-in";
+                })
+                .AddGitHub(options =>
+                {
+                    options.ClientId = githubAuthConfiguration.OAuthClientId!;
+                    options.ClientSecret = githubAuthConfiguration.OAuthClientSecret!;
 
-                    return Task.CompletedTask;
-                };
+                    options.CallbackPath = new PathString("/signin-github");
+                    options.AuthorizationEndpoint = "https://github.com/login/oauth/authorize";
+                    options.TokenEndpoint = "https://github.com/login/oauth/access_token";
+                    options.UserInformationEndpoint = "https://api.github.com/user";
 
-                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
-            });
+                    options.Scope.Add("read:user");
 
-        return services;
-    }
+                    options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+                    options.ClaimActions.MapJsonKey(ClaimTypes.Name, "login");
+                    options.ClaimActions.MapJsonKey("urn:github:name", "name");
+                    options.ClaimActions.MapJsonKey("urn:github:url", "url");
 
+                    options.Events.OnCreatingTicket += context =>
+                    {
+                        if (context.AccessToken is not null)
+                            context.Identity?.AddClaim(new Claim("access_token", context.AccessToken));
+
+                        return Task.CompletedTask;
+                    };
+
+                    options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                });
+
+            return services;
+        }
+    */
     private static IServiceCollection AddGithubServices(this IServiceCollection services)
     {
         return services
