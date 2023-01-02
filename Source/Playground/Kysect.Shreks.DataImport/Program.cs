@@ -9,9 +9,8 @@ Console.WriteLine();
 const string baseUrl = "https://localhost:7188";
 using var client = new HttpClient();
 
-string stringData = await File.ReadAllTextAsync("student_info.json");
-StudentInfo[] data = JsonConvert.DeserializeObject<StudentInfo[]>(stringData)
-                     ?? throw new ArgumentNullException(nameof(stringData), "unable to parse student_info.json");
+const string studentInfoFilePath = "student_info.json";
+StudentInfo[] data = await GetStudentInfos(studentInfoFilePath);
 
 IEnumerable<GroupName> groupNames = Enumerable.Range(0, 14)
     .Select(GroupName.FromShortName);
@@ -53,9 +52,10 @@ foreach (StudentInfo studentInfo in data)
     try
     {
         UserDto user = await userClient.UserAsync(studentInfo.IsuNumber);
-        continue;
+        /*
         await studentClient.GithubDeleteAsync(user.Id);
         await studentClient.GithubPostAsync(user.Id, studentInfo.GithubUsername);
+        */
     }
     catch (ApiException e) when (e.StatusCode is 204)
     {
@@ -121,7 +121,8 @@ IEnumerable<Task<GroupAssignmentDto>> groupAssignments = groups.Values
             new DateTimeOffset(lab.Deadline));
     });
 
-foreach (Task<GroupAssignmentDto> task in groupAssignments) await task;
+foreach (Task<GroupAssignmentDto> task in groupAssignments)
+    await task;
 
 
 IEnumerable<Task> tasks = Enumerable.Range(1, 5).Select(x =>
@@ -130,11 +131,19 @@ IEnumerable<Task> tasks = Enumerable.Range(1, 5).Select(x =>
     return subjectCourseController.FractionAsync(subjectCourse.Id, span, x * 0.2);
 });
 
-foreach (Task task in tasks) await task;
+foreach (Task task in tasks)
+    await task;
 
 DateTime CreateDateTime(int month, int day)
 {
     return new DateTime(2022, month, day);
+}
+
+async Task<StudentInfo[]> GetStudentInfos(string filePath)
+{
+    string stringData = await File.ReadAllTextAsync(filePath);
+    StudentInfo[]? studentInfos = JsonConvert.DeserializeObject<StudentInfo[]>(stringData);
+    return studentInfos ?? throw new ArgumentException($"unable to parse {filePath}", nameof(filePath));
 }
 
 namespace Kysect.Shreks.DataImport
@@ -151,6 +160,11 @@ namespace Kysect.Shreks.DataImport
     {
         public static StudentName FromString(string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException("Unable to parse empty StudentName", nameof(value));
+            }
+
             string[] split = value.Trim()
                 .Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 

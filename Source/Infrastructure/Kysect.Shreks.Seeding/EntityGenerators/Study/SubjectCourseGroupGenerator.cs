@@ -29,7 +29,7 @@ public class SubjectCourseGroupGenerator : EntityGeneratorBase<SubjectCourseGrou
         if (subjectCourseGroupNumber >= subjectCourseCount)
         {
             const string message = "The subject course group index is greater than the number of subject courses.";
-            throw new ArgumentOutOfRangeException(nameof(subjectCourseGroupNumber), message);
+            throw new ArgumentOutOfRangeException(nameof(index), message);
         }
 
         SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[subjectCourseGroupNumber];

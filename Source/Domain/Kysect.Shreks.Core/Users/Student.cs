@@ -41,7 +41,8 @@ public partial class Student : IEntity
     {
         var builder = new StringBuilder($"{User.FirstName} {User.LastName}");
 
-        if (Group is not null) builder.Append($" from {Group.Name} ({UserId})");
+        if (Group is not null)
+            builder.Append($" from {Group.Name} ({UserId})");
 
         return builder.ToString();
     }

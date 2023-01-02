@@ -26,7 +26,8 @@ internal class GetStudentByIdHandler : IRequestHandler<Query, Response>
             .Where(s => s.User.Id == request.UserId)
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (student == default) throw new EntityNotFoundException($"Student not found for user {request.UserId}");
+        if (student == default)
+            throw new EntityNotFoundException($"Student not found for user {request.UserId}");
 
         StudentDto? dto = _mapper.Map<StudentDto>(student);
 

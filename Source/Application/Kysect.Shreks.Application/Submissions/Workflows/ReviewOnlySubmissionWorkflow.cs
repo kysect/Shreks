@@ -180,7 +180,8 @@ public class ReviewOnlySubmissionWorkflow : ISubmissionWorkflow
 
             await UpdatePointsSheetAsync(submission.Id, cancellationToken);
 
-            if (triggeredByAnotherUser) throw new UnauthorizedException("Submission updated by another user");
+            if (triggeredByAnotherUser)
+                throw new UnauthorizedException("Submission updated by another user");
 
             SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 

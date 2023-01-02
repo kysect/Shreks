@@ -101,7 +101,8 @@ public class LabsTable : RowTable<SubjectCoursePointsDto>
             Label(assignmentPoints.Date, formatProvider).WithTrailingMediumBorder()
         );
 
-        if (assignmentPoints.IsBanned) stack = stack.FilledWith(Color.Red);
+        if (assignmentPoints.IsBanned)
+            stack = stack.FilledWith(Color.Red);
 
         return stack;
     }
