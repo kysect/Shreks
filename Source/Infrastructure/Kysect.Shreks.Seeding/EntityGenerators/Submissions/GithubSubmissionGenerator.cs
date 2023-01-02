@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Kysect.Shreks.Core.Models;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.Tools;
@@ -16,14 +17,14 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
     private const float ExtraPointsPresenceProbability = 0.1f;
 
     private readonly Faker _faker;
+    private readonly IEntityGenerator<Assignment> _assignmentGenerator;
     private readonly IEntityGenerator<Student> _studentGenerator;
-    private readonly IEntityGenerator<GroupAssignment> _assignmentGenerator;
 
     public GithubSubmissionGenerator(
         EntityGeneratorOptions<GithubSubmission> options,
         IEntityGenerator<Student> studentGenerator,
-        IEntityGenerator<GroupAssignment> assignmentGenerator,
-        Faker faker)
+        Faker faker,
+        IEntityGenerator<Assignment> assignmentGenerator)
         : base(options)
     {
         _faker = faker;
@@ -33,14 +34,26 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
 
     protected override GithubSubmission Generate(int index)
     {
-        var assignment = _faker.PickRandom<GroupAssignment>(_assignmentGenerator.GeneratedEntities);
-        var student = _faker.PickRandom<Student>(_studentGenerator.GeneratedEntities);
+        IEnumerable<Assignment> assignments = _assignmentGenerator.GeneratedEntities
+            .Where(x => x.GroupAssignments.SelectMany(xx => xx.Group.Students).Any());
+
+        Assignment assignment = _faker.PickRandom(assignments);
+
+        IEnumerable<Student> students = assignment.GroupAssignments.SelectMany(x => x.Group.Students)
+            .Where(student => assignment.SubjectCourse.Mentors
+                .Any(mentor => mentor.User.Equals(student.User)) is false);
+
+        Student student = _faker.PickRandom(students);
+
+        GroupAssignment groupAssignment = assignment.GroupAssignments.Single(x => x.Group.Equals(student.Group));
+
+        int submissionCount = groupAssignment.Submissions.Count(x => x.Student.Equals(student));
 
         var submission = new GithubSubmission
         (
-            index,
+            submissionCount + 1,
             student,
-            assignment,
+            groupAssignment,
             Calendar.FromLocal(_faker.Date.Future()),
             _faker.Internet.Url(),
             _faker.Company.CompanyName(),
@@ -48,18 +61,45 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
             _faker.Random.Long(0, 100)
         );
 
-        Fraction? rating = _faker.Random.Bool(PointsPresenceProbability)
-            ? _faker.Random.Fraction()
-            : null;
+        groupAssignment.AddSubmission(submission);
 
-        Points? extraPoints = _faker.Random.Bool(ExtraPointsPresenceProbability)
-            ? _faker.Random.Points(0, MaxExtraPoints)
-            : Points.None;
+        SubmissionStateKind stateKind = _faker.PickRandom(Enum.GetValues<SubmissionStateKind>());
 
-        if (rating.HasValue)
+        switch (stateKind)
         {
-            submission.Rate(rating, extraPoints);
+            case SubmissionStateKind.Active:
+                break;
+
+            case SubmissionStateKind.Inactive:
+                submission.Deactivate();
+                break;
+
+            case SubmissionStateKind.Deleted:
+                submission.Delete();
+                break;
+
+            case SubmissionStateKind.Completed:
+                Fraction rating = _faker.Random.Fraction();
+
+                Points? extraPoints = _faker.Random.Bool(ExtraPointsPresenceProbability)
+                    ? _faker.Random.Points(0, MaxExtraPoints)
+                    : Points.None;
+
+                submission.Rate(rating, extraPoints);
+                break;
+
+            case SubmissionStateKind.Reviewed:
+                submission.MarkAsReviewed();
+                break;
+
+            case SubmissionStateKind.Banned:
+                submission.Ban();
+                break;
+
+            default:
+                throw new ArgumentOutOfRangeException();
         }
+
 
         return submission;
     }

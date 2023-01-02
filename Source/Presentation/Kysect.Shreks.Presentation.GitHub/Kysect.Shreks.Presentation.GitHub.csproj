@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
+      <ProjectReference Include="..\Kysect.Shreks.Commands\Kysect.Shreks.Commands.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Octokit" Version="3.0.0" />
+        <PackageReference Include="Octokit.Webhooks.AspNetCore" Version="1.2.1" />
+    </ItemGroup>
+
+</Project>

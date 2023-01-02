@@ -4,6 +4,7 @@ namespace Kysect.Shreks.Application.Dto.Study;
 
 public record SubmissionRateDto(
     int Code,
+    string State,
     DateTime SubmissionDate,
     double? Rating,
     double? RawPoints,

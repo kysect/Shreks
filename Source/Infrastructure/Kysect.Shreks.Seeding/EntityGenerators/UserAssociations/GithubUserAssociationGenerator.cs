@@ -24,10 +24,10 @@ public class GithubUserAssociationGenerator : EntityGeneratorBase<GithubUserAsso
     {
         if (index >= _userGenerator.GeneratedEntities.Count)
             throw new IndexOutOfRangeException("Github association count is greater than count of users.");
-        
+
         var user = _userGenerator.GeneratedEntities[index];
 
-        var association = new GithubUserAssociation(user, Guid.NewGuid().ToString());
+        var association = new GithubUserAssociation(user, _faker.Random.Guid().ToString());
 
         return association;
     }

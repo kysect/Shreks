@@ -3,17 +3,15 @@ using FluentAssertions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.Models;
-using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
-using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Seeding.EntityGenerators;
-using Kysect.Shreks.Tests.DataAccess;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Kysect.Shreks.Tests.Mapping;
 
-public class MappingTest : DataAccessTestBase
+public class MappingTest : TestBase
 {
     private readonly IMapper _mapper;
 
@@ -26,7 +24,7 @@ public class MappingTest : DataAccessTestBase
     public void Map_Should_MapGithubSubmissionToSubmissionDto()
     {
         var submission = Provider.GetRequiredService<IEntityGenerator<GithubSubmission>>().Generate();
-        
+
         var submissionDto = _mapper.Map<SubmissionDto>(submission);
 
         Assert.NotNull(submissionDto);
@@ -49,7 +47,7 @@ public class MappingTest : DataAccessTestBase
     [Fact]
     public void Map_Should_MapStudentWithoutIsuToStudentDto()
     {
-        var student = Provider.GetRequiredService<IEntityGenerator<Student>>().Generate();
+        var student = Context.Students.First(x => x.User.Associations.OfType<IsuUserAssociation>().Any() == false);
 
         var dto = _mapper.Map<StudentDto>(student);
 
@@ -60,7 +58,7 @@ public class MappingTest : DataAccessTestBase
     [Fact]
     public void Map_Should_MapGroupAssignmentDtoToGroupAssignment()
     {
-        var groupAssignment = Provider.GetRequiredService<IEntityGenerator<GroupAssignment>>().Generate();
+        var groupAssignment = Context.GroupAssignments.First();
 
         var groupAssignmentDto = _mapper.Map<GroupAssignmentDto>(groupAssignment);
 

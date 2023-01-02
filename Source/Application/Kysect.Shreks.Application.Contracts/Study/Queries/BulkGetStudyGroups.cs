@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.Queries;
 
-public static class BulkGetStudyGroups
+internal static class BulkGetStudyGroups
 {
     public record Query(IReadOnlyCollection<Guid> Ids) : IRequest<Response>;
 

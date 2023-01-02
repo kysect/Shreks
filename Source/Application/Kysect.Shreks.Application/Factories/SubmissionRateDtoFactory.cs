@@ -19,6 +19,7 @@ public static class SubmissionRateDtoFactory
         var dto = new SubmissionRateDto
         (
             Code: submission.Code,
+            State: submission.State.Kind.ToString(),
             SubmissionDate: submission.SubmissionDate.Value,
             Rating: rating,
             RawPoints: submission.Points?.Value,

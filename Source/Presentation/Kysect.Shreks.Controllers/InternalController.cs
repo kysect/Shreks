@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.DeveloperEnvironment;
 using Kysect.Shreks.Identity.Entities;
 using Microsoft.AspNetCore.Authorization;

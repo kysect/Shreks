@@ -19,7 +19,7 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
         IEntityGenerator<User> userGenerator,
         IEntityGenerator<Subject> subjectGenerator,
         Faker faker,
-        IEntityGenerator<DeadlinePolicy> deadlinePolicyGenerator) 
+        IEntityGenerator<DeadlinePolicy> deadlinePolicyGenerator)
         : base(options)
     {
         _userGenerator = userGenerator;
@@ -46,10 +46,12 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 
         var subjectCourseName = _faker.Commerce.ProductName();
 
-        var subjectCourse = new SubjectCourse(subject, subjectCourseName, SubmissionStateWorkflowType.ReviewOnly);
+        SubmissionStateWorkflowType reviewType = SubmissionStateWorkflowType.ReviewWithDefense;
+
+        var subjectCourse = new SubjectCourse(subject, subjectCourseName, reviewType);
 
         IEnumerable<User> users = _faker.Random
-            .ListItems(_userGenerator.GeneratedEntities.ToList())
+            .ListItems(_userGenerator.GeneratedEntities.ToList(), 2)
             .Distinct();
 
         foreach (var user in users)

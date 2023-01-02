@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Client;
 using Kysect.Shreks.Integration.Github.CredentialStores;
 using Kysect.Shreks.Integration.Github.Entities;
 using Octokit;

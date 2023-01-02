@@ -1,7 +1,10 @@
 using FluentChaining;
 using Kysect.Shreks.Application.Abstractions.Permissions;
+using Kysect.Shreks.Application.Abstractions.SubjectCourses;
+using Kysect.Shreks.Application.Abstractions.Submissions;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Application.Queries;
+using Kysect.Shreks.Application.Services;
 using Kysect.Shreks.Application.Tools;
 using Kysect.Shreks.Application.Validators;
 using Kysect.Shreks.Core.Queue;
@@ -16,6 +19,8 @@ public static class ServiceCollectionExtensions
     {
         collection.AddSingleton<IQueryExecutor, QueryExecutor>();
         collection.AddScoped<IPermissionValidator, PermissionValidator>();
+        collection.AddScoped<ISubjectCourseService, SubjectCourseService>();
+        collection.AddScoped<ISubmissionWorkflowService, SubmissionWorkflowService>();
 
         collection.AddStudentQuery();
 
