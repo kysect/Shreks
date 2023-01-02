@@ -23,8 +23,4 @@
         <ProjectReference Include="..\Kysect.Shreks.WebApi.Sdk\Kysect.Shreks.WebApi.Sdk.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <_ContentIncludedByDefault Remove="Components\Study\SubjectComponent.razor"/>
-    </ItemGroup>
-
 </Project>

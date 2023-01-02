@@ -25,12 +25,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Application.db-shm" />
-        <None Remove="Application.db" />
-        <None Remove="shreks-identity.db-shm" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
         <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj" />
         <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />

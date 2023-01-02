@@ -20,14 +20,8 @@
         <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj"/>
     </ItemGroup>
 
-
     <ItemGroup>
         <InternalsVisibleTo Include="Kysect.Shreks.Tests"/>
-    </ItemGroup>
-
-
-    <ItemGroup>
-        <Folder Include="Submissions"/>
     </ItemGroup>
 
 </Project>
