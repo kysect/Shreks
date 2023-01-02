@@ -1,8 +1,8 @@
-﻿using System.Drawing;
-using FluentSpreadsheets;
+﻿using FluentSpreadsheets;
 using FluentSpreadsheets.Styles;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
+using System.Drawing;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
 
@@ -60,7 +60,7 @@ public static class RowComponentExtensions
         return (rowNumber % 2) switch
         {
             0 => row.FilledWith(Color.AliceBlue),
-            _ => row.FilledWith(Color.Transparent),
+            _ => row.FilledWith(Color.Transparent)
         };
     }
 }

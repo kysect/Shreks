@@ -1,6 +1,7 @@
 using Kysect.Shreks.Application.Contracts.Students.Commands;
 using Kysect.Shreks.Application.Contracts.Users.Commands;
 using Kysect.Shreks.Application.Contracts.Users.Queries;
+using Kysect.Shreks.Application.Dto.Identity;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Controllers.Extensions;
 using Kysect.Shreks.Identity.Entities;
@@ -25,7 +26,7 @@ public class UserController : ControllerBase
     [HttpPost("{userId:guid}/universityId/update")]
     public async Task<IActionResult> UpdateUniversityId(Guid userId, int universityId)
     {
-        var caller = HttpContext.GetUser();
+        IdentityUserDto caller = HttpContext.GetUser();
         var command = new UpdateUserUniversityId.Command(caller.Username, userId, universityId);
         await _mediator.Send(command);
 
@@ -38,7 +39,7 @@ public class UserController : ControllerBase
     public async Task<ActionResult<UserDto?>> FindUserByUniversityId(int universityId)
     {
         var command = new FindUserByUniversityId.Query(universityId);
-        var user = await _mediator.Send(command);
+        FindUserByUniversityId.Response user = await _mediator.Send(command);
         return Ok(user.User);
     }
 

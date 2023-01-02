@@ -1,6 +1,4 @@
-@using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.Application.Dto.Users
-
 @if (Students is not null)
 {
     <Table>
@@ -30,7 +28,7 @@
         </TableHeader>
         <TableBody>
 
-            @foreach (var student in GetStudents())
+            @foreach (StudentDto student in GetStudents())
             {
                 <StudyGroupStudentComponent Student="student" GroupComponent="Parent"/>
             }

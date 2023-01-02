@@ -6,8 +6,8 @@ namespace Kysect.Shreks.Core.Specifications.Submissions;
 public class FindLatestGithubSubmission : ISpecification<SubmissionAssociation, GithubSubmission>
 {
     private readonly string _organization;
-    private readonly string _repository;
     private readonly long _prNumber;
+    private readonly string _repository;
 
     public FindLatestGithubSubmission(string organization, string repository, long prNumber)
     {

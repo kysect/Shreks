@@ -12,7 +12,7 @@ public static class DbSetExtensions
         where T : class
         where TKey : IEquatable<TKey>
     {
-        var entity = await dbSet.FindAsync(new object[] { id }, cancellationToken);
+        T? entity = await dbSet.FindAsync(new object[] { id }, cancellationToken);
 
         if (entity is null)
             throw new EntityNotFoundException($"Entity of type {typeof(T).Name} with id {id} not found");

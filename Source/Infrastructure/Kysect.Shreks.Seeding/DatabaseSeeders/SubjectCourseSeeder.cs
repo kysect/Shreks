@@ -14,5 +14,7 @@ public class SubjectCourseSeeder : IDatabaseSeeder
     }
 
     public void Seed(IShreksDatabaseContext context)
-        => context.SubjectCourses.AddRange(_generator.GeneratedEntities);
+    {
+        context.SubjectCourses.AddRange(_generator.GeneratedEntities);
+    }
 }

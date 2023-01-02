@@ -14,5 +14,7 @@ public class IsuUserAssociationSeeder : IDatabaseSeeder
     }
 
     public void Seed(IShreksDatabaseContext context)
-        => context.UserAssociations.AddRange(_generator.GeneratedEntities);
+    {
+        context.UserAssociations.AddRange(_generator.GeneratedEntities);
+    }
 }

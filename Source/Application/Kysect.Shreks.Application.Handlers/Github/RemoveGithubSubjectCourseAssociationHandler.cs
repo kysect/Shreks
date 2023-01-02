@@ -24,12 +24,13 @@ internal class RemoveGithubSubjectCourseAssociationHandler : IRequestHandler<Com
             .SubjectCourseAssociations
             .OfType<GithubSubjectCourseAssociation>()
             .Where(gsa => gsa.SubjectCourse.Id == request.SubjectCourseId)
-            .FirstAsync(cancellationToken: cancellationToken);
+            .FirstAsync(cancellationToken);
 
         _context.SubjectCourseAssociations.Remove(subjectCourseAssociation);
         await _context.SaveChangesAsync(cancellationToken);
 
-        SubjectCourse subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
+        SubjectCourse subjectCourse =
+            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
         return new Response(SubjectCourseDtoFactory.CreateFrom(subjectCourse));
     }
 }

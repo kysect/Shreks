@@ -28,13 +28,15 @@ public partial class User : IEntity<Guid>
     public virtual IReadOnlyCollection<UserAssociation> Associations => _associations;
 
     public override string ToString()
-        => $"{FirstName} {MiddleName} {LastName}";
+    {
+        return $"{FirstName} {MiddleName} {LastName}";
+    }
 
     public void AddAssociation(UserAssociation association)
     {
         ArgumentNullException.ThrowIfNull(association);
 
-        var associationType = association.GetType();
+        Type associationType = association.GetType();
 
         if (Associations.Any(a => a.GetType() == associationType))
             throw new DomainInvalidOperationException($"User {this} already has {associationType} association");
@@ -51,8 +53,12 @@ public partial class User : IEntity<Guid>
     }
 
     public bool HasAssociation<T>() where T : UserAssociation
-        => Associations.Any(a => a is T);
+    {
+        return Associations.Any(a => a is T);
+    }
 
     public T? FindAssociation<T>() where T : UserAssociation
-        => Associations.OfType<T>().SingleOrDefault();
+    {
+        return Associations.OfType<T>().SingleOrDefault();
+    }
 }

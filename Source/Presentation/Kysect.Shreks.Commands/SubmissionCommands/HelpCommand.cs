@@ -8,8 +8,6 @@ namespace Kysect.Shreks.Commands.SubmissionCommands;
 [Verb("/help")]
 public class HelpCommand : ISubmissionCommand<BaseContext, string>
 {
-    private static readonly Task<string> CachedTask = Task.FromResult<string>(HelpString);
-
     public const string HelpString = @"
 Команды:
 
@@ -33,6 +31,8 @@ public class HelpCommand : ISubmissionCommand<BaseContext, string>
 - Создание или переоткрытие PR - создаёт сабмишен
 - Добавление нового комита в PR - обновляет дату сабмишена на текущую";
 
+    private static readonly Task<string> CachedTask = Task.FromResult<string>(HelpString);
+
     public Task<string> ExecuteAsync(BaseContext context, ILogger logger, CancellationToken cancellationToken)
     {
         logger.LogDebug("Handle /help command from {IssuerId}", context.IssuerId);
@@ -40,5 +40,7 @@ public class HelpCommand : ISubmissionCommand<BaseContext, string>
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
 }

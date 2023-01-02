@@ -4,7 +4,7 @@ namespace Kysect.Shreks.Application.Contracts.Submissions.Commands;
 
 internal static class CreateSubmission
 {
-    public record Command() : IRequest<Response>;
+    public record Command : IRequest<Response>;
 
-    public record Response();
+    public record Response;
 }

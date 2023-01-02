@@ -20,5 +20,7 @@ public class CreateSubmissionCommand : ISubmissionCommand<CreateSubmissionContex
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
 }

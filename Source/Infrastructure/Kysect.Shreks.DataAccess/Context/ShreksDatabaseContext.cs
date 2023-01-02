@@ -10,6 +10,7 @@ using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.ValueConverters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Kysect.Shreks.DataAccess.Context;
 
@@ -34,11 +35,11 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // TODO: WI-228
-        var cascadeFKs = modelBuilder.Model.GetEntityTypes()
+        IEnumerable<IMutableForeignKey> cascadeFKs = modelBuilder.Model.GetEntityTypes()
             .SelectMany(t => t.GetForeignKeys())
             .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
 
-        foreach (var fk in cascadeFKs)
+        foreach (IMutableForeignKey fk in cascadeFKs)
             fk.DeleteBehavior = DeleteBehavior.Restrict;
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAssemblyMarker).Assembly);

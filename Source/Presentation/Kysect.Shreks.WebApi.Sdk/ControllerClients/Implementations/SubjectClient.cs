@@ -21,7 +21,7 @@ internal class SubjectClient : ISubjectClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/Subject")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<SubjectDto>(message, cancellationToken);
@@ -45,7 +45,7 @@ internal class SubjectClient : ISubjectClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Put, "api/Subject")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<SubjectDto>(message, cancellationToken);

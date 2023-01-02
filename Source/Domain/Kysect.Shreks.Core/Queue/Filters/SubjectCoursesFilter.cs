@@ -12,5 +12,7 @@ public class SubjectCoursesFilter : IQueueFilter
     public Guid CourseId { get; }
 
     public IQueryable<Submission> Filter(IQueryable<Submission> query)
-        => query.Where(x => CourseId.Equals(x.GroupAssignment.Assignment.SubjectCourse.Id));
+    {
+        return query.Where(x => CourseId.Equals(x.GroupAssignment.Assignment.SubjectCourse.Id));
+    }
 }

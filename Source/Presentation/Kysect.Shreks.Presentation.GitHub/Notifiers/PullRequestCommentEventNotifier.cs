@@ -6,13 +6,14 @@ namespace Kysect.Shreks.Presentation.GitHub.Notifiers;
 
 public class PullRequestCommentEventNotifier : PullRequestEventNotifier, IPullRequestCommentEventNotifier
 {
-    private readonly ILogger _logger;
     private readonly IActionNotifier _actionNotifier;
-    private readonly WebhookEvent _webhookEvent;
     private readonly long _commentId;
     private readonly long _issueNumber;
+    private readonly ILogger _logger;
+    private readonly WebhookEvent _webhookEvent;
 
-    public PullRequestCommentEventNotifier(IActionNotifier actionNotifier, WebhookEvent webhookEvent, long commentId, long issueNumber, ILogger logger)
+    public PullRequestCommentEventNotifier(IActionNotifier actionNotifier, WebhookEvent webhookEvent, long commentId,
+        long issueNumber, ILogger logger)
         : base(actionNotifier, webhookEvent, issueNumber, logger)
     {
         _actionNotifier = actionNotifier;

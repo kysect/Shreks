@@ -6,7 +6,8 @@ namespace Kysect.Shreks.Application.GithubWorkflow.Abstractions.Extensions;
 
 public static class GithubEventNotifierExtensions
 {
-    public static async Task SendExceptionMessageSafe(this IPullRequestEventNotifier pullRequestEventNotifier, Exception exception, ILogger logger)
+    public static async Task SendExceptionMessageSafe(this IPullRequestEventNotifier pullRequestEventNotifier,
+        Exception exception, ILogger logger)
     {
         try
         {
@@ -16,7 +17,8 @@ public static class GithubEventNotifierExtensions
             }
             else
             {
-                const string newMessage = "An internal error occurred while processing command. Contact support for details.";
+                const string newMessage =
+                    "An internal error occurred while processing command. Contact support for details.";
                 await pullRequestEventNotifier.SendCommentToPullRequest(newMessage);
             }
         }

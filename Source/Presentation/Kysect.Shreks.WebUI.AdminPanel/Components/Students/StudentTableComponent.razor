@@ -1,6 +1,4 @@
-@using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.Application.Dto.Users
-
 @if (Students is not null)
 {
     <Table>
@@ -15,7 +13,7 @@
         </TableHeader>
         <TableBody>
 
-            @foreach (var student in Students)
+            @foreach (StudentDto student in Students)
             {
                 <TableRow>
                     <TableRowHeader>@(student.UniversityId?.ToString() ?? string.Empty)</TableRowHeader>

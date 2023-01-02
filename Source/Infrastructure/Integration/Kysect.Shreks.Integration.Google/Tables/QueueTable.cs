@@ -1,11 +1,12 @@
-﻿using System.Drawing;
-using FluentSpreadsheets;
+﻿using FluentSpreadsheets;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
+using System.Drawing;
 using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
@@ -22,8 +23,9 @@ public class QueueTable : RowTable<SubmissionsQueueDto>
         Label("GitHub").WithColumnWidth(3.2).WithTrailingMediumBorder()
     );
 
-    private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ICultureInfoProvider _cultureInfoProvider;
+
+    private readonly IUserFullNameFormatter _userFullNameFormatter;
 
     public QueueTable(IUserFullNameFormatter userFullNameFormatter, ICultureInfoProvider cultureInfoProvider)
     {
@@ -44,7 +46,7 @@ public class QueueTable : RowTable<SubmissionsQueueDto>
 
         for (int i = 0; i < submissions.Count; i++)
         {
-            (Application.Dto.Users.StudentDto student, SubmissionDto submission) = submissions[i];
+            (StudentDto student, SubmissionDto submission) = submissions[i];
 
             IRowComponent row = Row
             (

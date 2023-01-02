@@ -6,8 +6,8 @@ namespace Kysect.Shreks.WebUI.AdminPanel.Identity;
 
 public class IdentityService : IIdentityService
 {
-    private readonly IIdentityManager _identityManager;
     private readonly IIdentityClient _identityClient;
+    private readonly IIdentityManager _identityManager;
 
     public IdentityService(IIdentityManager identityManager, IIdentityClient identityClient)
     {
@@ -18,7 +18,7 @@ public class IdentityService : IIdentityService
     public async Task LoginAsync(string username, string password, CancellationToken cancellationToken)
     {
         var request = new LoginRequest(username, password);
-        var response = await _identityClient.LoginAsync(request, cancellationToken);
+        LoginResponse response = await _identityClient.LoginAsync(request, cancellationToken);
         var identity = new UserIdentity(response.Token, response.Expires);
 
         await _identityManager.UpdateIdentityAsync(identity, cancellationToken);

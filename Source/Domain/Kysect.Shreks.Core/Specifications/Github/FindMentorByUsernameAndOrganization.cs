@@ -5,8 +5,8 @@ namespace Kysect.Shreks.Core.Specifications.Github;
 
 public class FindMentorByUsernameAndOrganization : ISpecification<SubjectCourseAssociation, Mentor>
 {
-    private readonly Guid _userId;
     private readonly string _organization;
+    private readonly Guid _userId;
 
     public FindMentorByUsernameAndOrganization(Guid userId, string organization)
     {

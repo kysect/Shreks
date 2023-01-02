@@ -1,13 +1,12 @@
 using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-
 using static Kysect.Shreks.Application.Contracts.Study.Queries.GetAssignmentById;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
-
 
 internal class GetAssignmentByIdHandler : IRequestHandler<Query, Response>
 {
@@ -22,9 +21,9 @@ internal class GetAssignmentByIdHandler : IRequestHandler<Query, Response>
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        var assignment = await _context.Assignments.GetByIdAsync(request.AssignmentId, cancellationToken);
+        Assignment assignment = await _context.Assignments.GetByIdAsync(request.AssignmentId, cancellationToken);
 
-        var dto = _mapper.Map<AssignmentDto>(assignment);
+        AssignmentDto? dto = _mapper.Map<AssignmentDto>(assignment);
 
         return new Response(dto);
     }

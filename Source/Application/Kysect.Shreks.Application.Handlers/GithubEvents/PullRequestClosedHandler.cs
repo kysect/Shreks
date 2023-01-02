@@ -8,8 +8,8 @@ namespace Kysect.Shreks.Application.Handlers.GithubEvents;
 
 internal class PullRequestClosedHandler : IRequestHandler<Command, Response>
 {
-    private readonly ISubmissionWorkflowService _submissionWorkflowService;
     private readonly IPermissionValidator _permissionValidator;
+    private readonly ISubmissionWorkflowService _submissionWorkflowService;
 
     public PullRequestClosedHandler(
         ISubmissionWorkflowService submissionWorkflowService,
@@ -29,12 +29,14 @@ internal class PullRequestClosedHandler : IRequestHandler<Command, Response>
         bool isOrganizationMentor = await _permissionValidator.IsSubmissionMentorAsync(
             issuerId, submissionId, cancellationToken);
 
+#pragma warning disable IDE0072
         SubmissionActionMessageDto message = (isOrganizationMentor, IsMerged: isMerged) switch
         {
             (true, true) => await workflow.SubmissionAcceptedAsync(issuerId, submissionId, cancellationToken),
             (true, false) => await workflow.SubmissionRejectedAsync(issuerId, submissionId, cancellationToken),
-            (false, _) => await workflow.SubmissionAbandonedAsync(issuerId, submissionId, isMerged, cancellationToken),
+            (false, _) => await workflow.SubmissionAbandonedAsync(issuerId, submissionId, isMerged, cancellationToken)
         };
+#pragma warning restore IDE0072
 
         return new Response(message);
     }

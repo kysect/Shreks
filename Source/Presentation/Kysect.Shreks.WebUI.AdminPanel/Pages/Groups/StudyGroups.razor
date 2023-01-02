@@ -1,8 +1,9 @@
 @page "/adminpanel/groups"
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
+@using Kysect.Shreks.Application.Dto.Study
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Groups
 @using Kysect.Shreks.WebUI.AdminPanel.Components
-@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@using Kysect.Shreks.Application.Dto.Study
 @inject IStudyGroupClient StudyGroupClient
 @inject ISafeExecutor SafeExecutor
 
@@ -13,13 +14,12 @@
     </Heading>
 
     <Div>
-        @foreach (var group in _groups.OrderBy(x => x.Name))
+        @foreach (StudyGroupDto group in _groups.OrderBy(x => x.Name))
         {
             <StudyGroupInfoComponent Group="group"/>
         }
     </Div>
-}
-else
+} else
 {
     <LoaderComponent/>
 }
@@ -29,7 +29,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await using var builder = SafeExecutor.Execute(async () => _groups = await StudyGroupClient.GetAsync());
+        await using ISafeExecutionBuilder<IReadOnlyCollection<StudyGroupDto>> builder =
+            SafeExecutor.Execute(async () => _groups = await StudyGroupClient.GetAsync());
     }
 
 }

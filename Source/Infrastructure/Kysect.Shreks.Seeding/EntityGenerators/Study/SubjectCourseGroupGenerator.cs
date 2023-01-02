@@ -5,8 +5,8 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class SubjectCourseGroupGenerator : EntityGeneratorBase<SubjectCourseGroup>
 {
-    private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
     private readonly IEntityGenerator<StudentGroup> _studentGroupGenerator;
+    private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
 
     public SubjectCourseGroupGenerator(
         EntityGeneratorOptions<SubjectCourseGroup> options,
@@ -20,18 +20,20 @@ public class SubjectCourseGroupGenerator : EntityGeneratorBase<SubjectCourseGrou
 
     protected override SubjectCourseGroup Generate(int index)
     {
-        var studentGroupCount = _studentGroupGenerator.GeneratedEntities.Count;
-        var studentGroupNumber = index % studentGroupCount;
+        int studentGroupCount = _studentGroupGenerator.GeneratedEntities.Count;
+        int studentGroupNumber = index % studentGroupCount;
 
-        var subjectCourseCount = _subjectCourseGenerator.GeneratedEntities.Count;
-        var subjectCourseGroupNumber = index / studentGroupCount;
+        int subjectCourseCount = _subjectCourseGenerator.GeneratedEntities.Count;
+        int subjectCourseGroupNumber = index / studentGroupCount;
 
         if (subjectCourseGroupNumber >= subjectCourseCount)
-            throw new IndexOutOfRangeException(
-                "The subject course group index is greater than the number of subject courses.");
+        {
+            const string message = "The subject course group index is greater than the number of subject courses.";
+            throw new ArgumentOutOfRangeException(nameof(subjectCourseGroupNumber), message);
+        }
 
-        var subjectCourse = _subjectCourseGenerator.GeneratedEntities[subjectCourseGroupNumber];
-        var studentGroup = _studentGroupGenerator.GeneratedEntities[studentGroupNumber];
+        SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[subjectCourseGroupNumber];
+        StudentGroup studentGroup = _studentGroupGenerator.GeneratedEntities[studentGroupNumber];
 
         return subjectCourse.AddGroup(studentGroup);
     }

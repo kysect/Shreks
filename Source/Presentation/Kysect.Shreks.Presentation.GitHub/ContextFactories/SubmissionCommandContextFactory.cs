@@ -11,9 +11,9 @@ namespace Kysect.Shreks.Presentation.GitHub.ContextFactories;
 
 public class SubmissionCommandContextFactory : ISubmissionCommandContextFactory
 {
-    private readonly GithubPullRequestDescriptor _pullRequestDescriptor;
-    private readonly IMediator _mediator;
     private readonly IDefaultSubmissionProvider _defaultSubmissionProvider;
+    private readonly IMediator _mediator;
+    private readonly GithubPullRequestDescriptor _pullRequestDescriptor;
 
     public SubmissionCommandContextFactory(
         GithubPullRequestDescriptor pullRequestDescriptor,

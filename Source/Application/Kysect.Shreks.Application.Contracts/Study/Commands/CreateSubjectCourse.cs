@@ -6,7 +6,8 @@ namespace Kysect.Shreks.Application.Contracts.Study.Commands;
 
 internal static class CreateSubjectCourse
 {
-    public record Command(Guid SubjectId, string Title, SubmissionStateWorkflowTypeDto WorkflowType) : IRequest<Response>;
+    public record Command
+        (Guid SubjectId, string Title, SubmissionStateWorkflowTypeDto WorkflowType) : IRequest<Response>;
 
     public record Response(SubjectCourseDto SubjectCourse);
 }

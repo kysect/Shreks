@@ -1,6 +1,5 @@
 using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.WebApi.Sdk;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Components.Students;
 
@@ -21,9 +20,14 @@ public partial class StudentQueryComponent : IDisposable
 
     public bool IsFull => AvailableParameters.Count() is 0;
 
+    public void Dispose()
+    {
+        _cts.Dispose();
+    }
+
     public void Add()
     {
-        var type = AvailableParameters.First();
+        StudentQueryParameter type = AvailableParameters.First();
 
         var parameter = new QueryParameter<StudentQueryParameter>(type, string.Empty);
         _parameters.Add(parameter);
@@ -37,7 +41,9 @@ public partial class StudentQueryComponent : IDisposable
     }
 
     public void Update()
-        => StateHasChanged();
+    {
+        StateHasChanged();
+    }
 
     public QueryConfiguration<StudentQueryParameter> Build()
     {
@@ -47,7 +53,4 @@ public partial class StudentQueryComponent : IDisposable
 
         return new QueryConfiguration<StudentQueryParameter>(parameters);
     }
-
-    public void Dispose()
-        => _cts.Dispose();
 }

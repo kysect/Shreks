@@ -19,9 +19,9 @@ internal class StudentClient : IStudentClient
         CreateStudentRequest request,
         CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Post, $"api/Student")
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/Student")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<StudentDto>(message, cancellationToken);
@@ -60,9 +60,9 @@ internal class StudentClient : IStudentClient
         QueryConfiguration<StudentQueryParameter> query,
         CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Post, $"api/Student/query")
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/Student/query")
         {
-            Content = JsonContent.Create(query),
+            Content = JsonContent.Create(query)
         };
 
         return await _handler.SendAsync<IReadOnlyCollection<StudentDto>>(message, cancellationToken);

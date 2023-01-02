@@ -1,8 +1,9 @@
 @page "/adminpanel/subjects/{subjectId:guid}"
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
+@using Kysect.Shreks.Application.Dto.SubjectCourses
 @using Kysect.Shreks.WebUI.AdminPanel.Components.SubjectCourse
 @using Kysect.Shreks.WebUI.AdminPanel.Components
-@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@using Kysect.Shreks.Application.Dto.SubjectCourses
 @inject ISubjectClient SubjectClient
 @inject ISafeExecutor SafeExecutor
 @inject NavigationManager NavigationManager
@@ -15,14 +16,13 @@
         </Heading>
 
         <Div>
-            @foreach (var course in _courses)
+            @foreach (SubjectCourseDto course in _courses)
             {
                 <SubjectCourseComponent SubjectCourse="@course"/>
             }
         </Div>
     </Div>
-}
-else
+} else
 {
     <LoaderComponent/>
 }
@@ -36,7 +36,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await using var builder = SafeExecutor.Execute(async () => { _courses = await SubjectClient.GetCoursesAsync(SubjectId); });
+        await using ISafeExecutionBuilder builder = SafeExecutor.Execute(async () => { _courses = await SubjectClient.GetCoursesAsync(SubjectId); });
 
         builder.Title = "Failed to load subject course";
 

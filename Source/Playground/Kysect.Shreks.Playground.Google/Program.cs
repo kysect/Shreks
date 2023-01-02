@@ -1,9 +1,9 @@
-﻿using Kysect.Shreks.Application.Handlers.Extensions;
-using Google.Apis.Auth.OAuth2;
+﻿using Google.Apis.Auth.OAuth2;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Google.Extensions;
 using Kysect.Shreks.Application.Google.Workers;
+using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.Mapping.Extensions;
@@ -48,7 +48,8 @@ tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, group.Id);
 StudentGroup sameCourseGroup = subjectCourse.Groups.Skip(1).First().StudentGroup;
 tableQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, sameCourseGroup.Id);
 
-subjectCourse.Groups.Take(8).ToList().ForEach(g => tableQueue.EnqueueSubmissionsQueueUpdate(g.SubjectCourseId, g.StudentGroupId));
+subjectCourse.Groups.Take(8).ToList()
+    .ForEach(g => tableQueue.EnqueueSubmissionsQueueUpdate(g.SubjectCourseId, g.StudentGroupId));
 
 await Task.Delay(TimeSpan.FromSeconds(30));
 

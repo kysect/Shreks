@@ -17,9 +17,9 @@ namespace Kysect.Shreks.Tests;
 
 public class TestBase : IDisposable
 {
-    protected readonly ShreksDatabaseContext Context;
-    protected readonly IMapper Mapper;
-    protected readonly IServiceProvider Provider;
+    protected ShreksDatabaseContext Context { get; }
+    protected IMapper Mapper { get; }
+    protected IServiceProvider Provider { get; }
 
     public TestBase()
     {
@@ -28,10 +28,7 @@ public class TestBase : IDisposable
 
         Randomizer.Seed = new Random(101);
 
-        collection.AddDatabaseContext(x =>
-        {
-            x.UseLazyLoadingProxies().UseSqlite($"Data Source={id}.db");
-        });
+        collection.AddDatabaseContext(x => x.UseLazyLoadingProxies().UseSqlite($"Data Source={id}.db"));
 
         collection.AddEntityGenerators(x =>
         {
@@ -49,7 +46,11 @@ public class TestBase : IDisposable
         collection.AddDatabaseSeeders();
         collection.AddMappingConfiguration();
 
+        // TODO: Do not call virtual methods in constructor
+#pragma warning disable CA2214
+        // ReSharper disable once VirtualMemberCallInConstructor
         ConfigureServices(collection);
+#pragma warning restore CA2214
 
         Provider = collection.BuildServiceProvider();
 
@@ -65,8 +66,6 @@ public class TestBase : IDisposable
     {
         Context.Database.EnsureDeleted();
         Context.Dispose();
-
-        GC.SuppressFinalize(this);
     }
 
     protected virtual void ConfigureServices(IServiceCollection collection) { }

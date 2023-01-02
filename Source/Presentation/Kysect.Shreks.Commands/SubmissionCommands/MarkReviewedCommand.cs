@@ -22,5 +22,7 @@ public class MarkReviewedCommand : ISubmissionCommand<SubmissionContext, Submiss
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
 }

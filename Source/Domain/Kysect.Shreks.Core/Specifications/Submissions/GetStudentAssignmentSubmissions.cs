@@ -4,8 +4,8 @@ namespace Kysect.Shreks.Core.Specifications.Submissions;
 
 public class GetStudentAssignmentSubmissions : ISpecification<Submission, Submission>
 {
-    private readonly Guid _userId;
     private readonly Guid _assignmentId;
+    private readonly Guid _userId;
 
     public GetStudentAssignmentSubmissions(Guid userId, Guid assignmentId)
     {

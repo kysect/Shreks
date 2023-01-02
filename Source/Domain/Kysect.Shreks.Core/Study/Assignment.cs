@@ -43,7 +43,7 @@ public partial class Assignment : IEntity<Guid>
     {
         if (value > MaxPoints)
         {
-            var message = $"New minimal points ({value}) are greater than maximal points ({MaxPoints})";
+            string message = $"New minimal points ({value}) are greater than maximal points ({MaxPoints})";
             throw new DomainInvalidOperationException(message);
         }
 
@@ -54,7 +54,7 @@ public partial class Assignment : IEntity<Guid>
     {
         if (value < MinPoints)
         {
-            var message = $"New maximal points ({value}) are less than minimal points ({MinPoints})";
+            string message = $"New maximal points ({value}) are less than minimal points ({MinPoints})";
             throw new DomainInvalidOperationException(message);
         }
 
@@ -77,7 +77,7 @@ public partial class Assignment : IEntity<Guid>
             throw new DomainInvalidOperationException($"Assignment {assignment} cannot be removed");
     }
 
-    public override String ToString()
+    public override string ToString()
     {
         return $"Id: {Id}, Title: {ShortName}";
     }

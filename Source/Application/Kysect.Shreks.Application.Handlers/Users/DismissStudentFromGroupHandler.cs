@@ -18,7 +18,7 @@ internal class DismissStudentFromGroupHandler : IRequestHandler<Command>
 
     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
-        var student = await _context.Students
+        Student? student = await _context.Students
             .SingleOrDefaultAsync(x => x.User.Id.Equals(request.StudentId), cancellationToken);
 
         if (student is null)

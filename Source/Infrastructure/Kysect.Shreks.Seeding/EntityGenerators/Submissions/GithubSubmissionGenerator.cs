@@ -15,9 +15,9 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
     private const double MaxExtraPoints = 15;
     private const float PointsPresenceProbability = 0.5f;
     private const float ExtraPointsPresenceProbability = 0.1f;
+    private readonly IEntityGenerator<Assignment> _assignmentGenerator;
 
     private readonly Faker _faker;
-    private readonly IEntityGenerator<Assignment> _assignmentGenerator;
     private readonly IEntityGenerator<Student> _studentGenerator;
 
     public GithubSubmissionGenerator(
@@ -97,7 +97,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
                 break;
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(stateKind));
         }
 
 

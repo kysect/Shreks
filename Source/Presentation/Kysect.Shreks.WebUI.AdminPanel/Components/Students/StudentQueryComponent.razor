@@ -1,6 +1,7 @@
-@using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
 @using Kysect.Shreks.Application.Dto.Users
+@using Kysect.Shreks.Application.Dto.Querying
 @inject IStudentClient Client
 @inject ISafeExecutor SafeExecutor
 
@@ -26,8 +27,7 @@
                             Color="Color.Success">
                         Execute
                     </Button>
-                }
-                else
+                } else
                 {
                     <Button Clicked="Cancel"
                             Color="Color.Danger">
@@ -39,9 +39,9 @@
 
         <div @onclick:stopPropagation="true">
             <CollapseBody Padding="Padding.Is2.FromTop.Is0.FromBottom">
-                @foreach (var parameter in Parameters)
+                @foreach (QueryParameter<StudentQueryParameter>? parameter in Parameters)
                 {
-                    <StudentQueryParameterComponent Parameter="@parameter" Parent="@this"/>
+                    <StudentQueryParameterComponent Parameter="@parameter" Parent="@(this)"/>
                 }
             </CollapseBody>
         </div>
@@ -64,7 +64,7 @@
     private bool _visible;
     private bool _isExecuting;
 
-    private CancellationTokenSource _cts = new CancellationTokenSource();
+    private CancellationTokenSource _cts = new();
 
     private void Toggle(MouseEventArgs obj)
     {
@@ -84,7 +84,7 @@
     {
         _isExecuting = true;
 
-        await using (var builder = SafeExecutor.Execute(async () => { _students = await Client.QueryAsync(Build(), _cts.Token); }))
+        await using (ISafeExecutionBuilder builder = SafeExecutor.Execute(async () => { _students = await Client.QueryAsync(Build(), _cts.Token); }))
         {
             builder.Title = "Failed to execute query";
         }

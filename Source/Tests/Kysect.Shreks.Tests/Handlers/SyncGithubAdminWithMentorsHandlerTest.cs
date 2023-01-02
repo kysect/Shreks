@@ -11,9 +11,10 @@ public class SyncGithubAdminWithMentorsHandlerTest : TestBase
     [Fact]
     public async Task Handle_Should_UpdateSubmissionState()
     {
-        SubjectCourse subjectCourse = Context.SubjectCourses.First(sa => sa.Associations.OfType<GithubSubjectCourseAssociation>().Any());
+        SubjectCourse subjectCourse =
+            Context.SubjectCourses.First(sa => sa.Associations.OfType<GithubSubjectCourseAssociation>().Any());
 
-        var currentMentors = await Context
+        List<string> currentMentors = await Context
             .SubjectCourses
             .Where(s => s.Id == subjectCourse.Id)
             .SelectMany(a => a.Mentors)

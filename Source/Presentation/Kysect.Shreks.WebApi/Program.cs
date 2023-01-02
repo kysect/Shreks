@@ -30,18 +30,24 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.OpenApi.Models;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilogForAppLogs(builder.Configuration);
 
-var googleIntegrationConfiguration = builder.Configuration.GetSection(nameof(GoogleIntegrationConfiguration))
+GoogleIntegrationConfiguration googleIntegrationConfiguration = builder.Configuration
+    .GetSection(nameof(GoogleIntegrationConfiguration))
     .Get<GoogleIntegrationConfiguration>();
-var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
-var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration))
+CacheConfiguration cacheConfiguration =
+    builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
+GithubIntegrationConfiguration githubIntegrationConfiguration = builder.Configuration
+    .GetSection(nameof(GithubIntegrationConfiguration))
     .Get<GithubIntegrationConfiguration>();
-var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration))
+TestEnvironmentConfiguration testEnvironmentConfiguration = builder.Configuration
+    .GetSection(nameof(TestEnvironmentConfiguration))
     .Get<TestEnvironmentConfiguration>();
-var postgresConfiguration = builder.Configuration.GetSection(nameof(PostgresConfiguration)).Get<PostgresConfiguration>();
-var dbNames = builder.Configuration.GetSection(nameof(DbNamesConfiguration)).Get<DbNamesConfiguration>();
+PostgresConfiguration postgresConfiguration =
+    builder.Configuration.GetSection(nameof(PostgresConfiguration)).Get<PostgresConfiguration>();
+DbNamesConfiguration dbNames =
+    builder.Configuration.GetSection(nameof(DbNamesConfiguration)).Get<DbNamesConfiguration>();
 
 InitServiceCollection(builder);
 await InitWebApplication(builder);
@@ -49,9 +55,7 @@ await InitWebApplication(builder);
 void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 {
     if (testEnvironmentConfiguration is not null)
-    {
         webApplicationBuilder.Services.TryAddSingleton(testEnvironmentConfiguration);
-    }
 
     webApplicationBuilder.Services
         .AddControllers(x => x.Filters.Add<AuthenticationFilter>())
@@ -70,7 +74,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             Name = "Authorization",
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer",
+            Scheme = "Bearer"
         });
 
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -78,10 +82,10 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
             {
                 new OpenApiSecurityScheme
                 {
-                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer", },
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" },
                     Scheme = "oauth2",
                     Name = "Bearer",
-                    In = ParameterLocation.Header,
+                    In = ParameterLocation.Header
                 },
                 new List<string>()
             }
@@ -120,7 +124,7 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
         .AddGithubServices(cacheConfiguration, githubIntegrationConfiguration)
         .AddGithubWorkflowServices();
 
-    if (webApplicationBuilder.Environment.IsDevelopment())
+    if (webApplicationBuilder.Environment.IsDevelopment() && testEnvironmentConfiguration is not null)
     {
         webApplicationBuilder.Services
             .AddEntityGenerators(o =>
@@ -144,15 +148,13 @@ void InitServiceCollection(WebApplicationBuilder webApplicationBuilder)
 
 async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
 {
-    var app = webApplicationBuilder.Build();
+    WebApplication app = webApplicationBuilder.Build();
 
     app.UseRequestLogging();
 
     if (app.Environment.IsDevelopment())
-    {
         //await app.Services.UseDatabaseSeeders();
         app.UseWebAssemblyDebugging();
-    }
 
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -174,7 +176,7 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
     app.MapControllers();
     app.UseGithubIntegration(githubIntegrationConfiguration);
 
-    using (var scope = app.Services.CreateScope())
+    using (IServiceScope scope = app.Services.CreateScope())
     {
         await SeedAdmins(scope.ServiceProvider, app.Configuration);
         await scope.ServiceProvider.UseDatabaseContext();
@@ -185,12 +187,12 @@ async Task InitWebApplication(WebApplicationBuilder webApplicationBuilder)
 
 async Task SeedAdmins(IServiceProvider provider, IConfiguration configuration)
 {
-    var mediatr = provider.GetRequiredService<IMediator>();
-    var logger = provider.GetRequiredService<ILogger<Program>>();
-    var adminsSection = configuration.GetSection("Identity:DefaultAdmins");
+    IMediator mediatr = provider.GetRequiredService<IMediator>();
+    ILogger<Program> logger = provider.GetRequiredService<ILogger<Program>>();
+    IConfigurationSection adminsSection = configuration.GetSection("Identity:DefaultAdmins");
     AdminModel[] admins = adminsSection.Get<AdminModel[]>() ?? Array.Empty<AdminModel>();
 
-    foreach (var admin in admins)
+    foreach (AdminModel admin in admins)
     {
         try
         {

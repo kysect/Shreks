@@ -12,8 +12,8 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 
 internal class RateSubmissionHandler : IRequestHandler<Command, Response>
 {
-    private readonly IPermissionValidator _permissionValidator;
     private readonly IShreksDatabaseContext _context;
+    private readonly IPermissionValidator _permissionValidator;
 
     public RateSubmissionHandler(IPermissionValidator permissionValidator, IShreksDatabaseContext context)
     {

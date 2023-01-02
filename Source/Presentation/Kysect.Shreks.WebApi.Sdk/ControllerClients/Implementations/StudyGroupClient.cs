@@ -19,9 +19,9 @@ internal class StudyGroupClient : IStudyGroupClient
         CreateStudyGroupRequest request,
         CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Post, $"api/StudyGroup")
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/StudyGroup")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<StudyGroupDto>(message, cancellationToken);
@@ -35,7 +35,7 @@ internal class StudyGroupClient : IStudyGroupClient
 
     public async Task<IReadOnlyCollection<StudyGroupDto>> GetAsync(CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Get, $"api/StudyGroup");
+        using var message = new HttpRequestMessage(HttpMethod.Get, "api/StudyGroup");
         return await _handler.SendAsync<IReadOnlyCollection<StudyGroupDto>>(message, cancellationToken);
     }
 
@@ -78,7 +78,7 @@ internal class StudyGroupClient : IStudyGroupClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Put, $"api/StudyGroup/{id}")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<StudyGroupDto>(message, cancellationToken);

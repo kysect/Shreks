@@ -62,7 +62,9 @@ public abstract partial class Submission : IEntity<Guid>
     public ISubmissionState State { get; private set; }
 
     public override string ToString()
-        => $"{Code} ({Id})";
+    {
+        return $"{Code} ({Id})";
+    }
 
     public void Rate(Fraction? rating, Points? extraPoints)
     {
@@ -70,7 +72,8 @@ public abstract partial class Submission : IEntity<Guid>
         {
             const string ratingName = nameof(rating);
             const string extraPointsName = nameof(extraPoints);
-            const string message = $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
+            const string message =
+                $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
             throw new DomainInvalidOperationException(message);
         }
 
@@ -89,7 +92,8 @@ public abstract partial class Submission : IEntity<Guid>
         {
             const string ratingName = nameof(rating);
             const string extraPointsName = nameof(extraPoints);
-            const string message = $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
+            const string message =
+                $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
             throw new DomainInvalidOperationException(message);
         }
 

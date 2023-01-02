@@ -10,9 +10,9 @@ namespace Kysect.Shreks.Integration.Google.Sheets;
 
 public class QueueSheet : ISheet<SubmissionsQueueDto>
 {
-    private readonly ISheetManagementService _sheetEditor;
     private readonly ITable<SubmissionsQueueDto> _queueTable;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
+    private readonly ISheetManagementService _sheetEditor;
 
     public QueueSheet(
         ISheetManagementService sheetEditor,

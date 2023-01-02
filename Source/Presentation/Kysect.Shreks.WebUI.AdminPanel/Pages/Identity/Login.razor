@@ -1,5 +1,6 @@
 @page "/adminpanel/identity/login"
 @using Kysect.Shreks.WebUI.AdminPanel.Identity
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @layout EmptyLayout
 @inject IdentityStateProvider StateProvider
@@ -38,8 +39,8 @@
         if (_username is null || _password is null)
             return;
 
-        await using var builder = SafeExecutor.Execute(() => StateProvider.LoginAsync(_username, _password, default));
-        
+        await using ISafeExecutionBuilder builder = SafeExecutor.Execute(() => StateProvider.LoginAsync(_username, _password, default));
+
         builder.Title = "Login failed";
 
         builder.OnSuccessAsync(() =>

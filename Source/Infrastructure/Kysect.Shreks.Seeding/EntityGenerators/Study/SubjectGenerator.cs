@@ -7,7 +7,7 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 public class SubjectGenerator : EntityGeneratorBase<Subject>
 {
     private readonly Faker _faker;
-    
+
     public SubjectGenerator(EntityGeneratorOptions<Subject> options, Faker faker) : base(options)
     {
         _faker = faker;

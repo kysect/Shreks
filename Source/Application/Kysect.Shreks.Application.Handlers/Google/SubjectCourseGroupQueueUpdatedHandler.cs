@@ -18,11 +18,11 @@ namespace Kysect.Shreks.Application.Handlers.Google;
 internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<SubjectCourseGroupQueueUpdatedNotification>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IQueryExecutor _queryExecutor;
+    private readonly ILogger<SubjectCourseGroupQueueUpdatedHandler> _logger;
     private readonly IMapper _mapper;
+    private readonly IQueryExecutor _queryExecutor;
     private readonly ISheet<SubmissionsQueueDto> _sheet;
     private readonly ISubjectCourseTableService _subjectCourseTableService;
-    private readonly ILogger<SubjectCourseGroupQueueUpdatedHandler> _logger;
 
     public SubjectCourseGroupQueueUpdatedHandler(
         IShreksDatabaseContext context,

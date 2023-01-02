@@ -23,19 +23,14 @@ public class UpdateCommand : ISubmissionCommand<UpdateContext, SubmissionRateDto
     [Value(0, Required = false, MetaName = "SubmissionCode")]
     public int? SubmissionCode { get; }
 
-    [Option(shortName: 'r', longName: "rating", Group = "update", Required = false)]
+    [Option('r', "rating", Group = "update", Required = false)]
     public double? RatingPercent { get; }
 
-    [Option(shortName: 'e', longName: "extra", Group = "update", Required = false)]
+    [Option('e', "extra", Group = "update", Required = false)]
     public double? ExtraPoints { get; }
 
-    [Option(shortName: 'd', longName: "date", Group = "update", Required = false)]
+    [Option('d', "date", Group = "update", Required = false)]
     public string? DateStr { get; }
-
-    public DateOnly GetDate()
-    {
-        return RuCultureDate.Parse(DateStr);
-    }
 
     public async Task<SubmissionRateDto> ExecuteAsync(
         UpdateContext context,
@@ -73,7 +68,14 @@ public class UpdateCommand : ISubmissionCommand<UpdateContext, SubmissionRateDto
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
+
+    public DateOnly GetDate()
+    {
+        return RuCultureDate.Parse(DateStr);
+    }
 
     public string ToLogLine()
     {
@@ -81,7 +83,7 @@ public class UpdateCommand : ISubmissionCommand<UpdateContext, SubmissionRateDto
                $" RatingPercent: {RatingPercent}" +
                $" ExtraPoints: {ExtraPoints}" +
                $" DateStr: {DateStr}" +
-               $" }}";
+               " }";
     }
 
     private async Task<SubmissionDto> GetSubmissionByCodeAsync(

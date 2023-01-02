@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using FluentSpreadsheets;
+﻿using FluentSpreadsheets;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Dto.Study;
@@ -9,6 +8,7 @@ using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
 using System.Drawing;
+using System.Globalization;
 using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
@@ -23,8 +23,9 @@ public class LabsTable : RowTable<SubjectCoursePointsDto>
         BlankLabel.WithTrailingMediumBorder()
     );
 
-    private readonly IUserFullNameFormatter _userFullNameFormatter;
     private readonly ICultureInfoProvider _cultureInfoProvider;
+
+    private readonly IUserFullNameFormatter _userFullNameFormatter;
 
     public LabsTable(IUserFullNameFormatter userFullNameFormatter, ICultureInfoProvider cultureInfoProvider)
     {
@@ -100,10 +101,7 @@ public class LabsTable : RowTable<SubjectCoursePointsDto>
             Label(assignmentPoints.Date, formatProvider).WithTrailingMediumBorder()
         );
 
-        if (assignmentPoints.IsBanned)
-        {
-            stack = stack.FilledWith(Color.Red);
-        }
+        if (assignmentPoints.IsBanned) stack = stack.FilledWith(Color.Red);
 
         return stack;
     }

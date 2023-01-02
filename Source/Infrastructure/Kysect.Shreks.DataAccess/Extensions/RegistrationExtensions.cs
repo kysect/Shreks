@@ -21,7 +21,7 @@ public static class RegistrationExtensions
 
     public static Task UseDatabaseContext(this IServiceProvider provider)
     {
-        var context = provider.GetRequiredService<ShreksDatabaseContext>();
+        ShreksDatabaseContext context = provider.GetRequiredService<ShreksDatabaseContext>();
         return context.Database.MigrateAsync();
     }
 }

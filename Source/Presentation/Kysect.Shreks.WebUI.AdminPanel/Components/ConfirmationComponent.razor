@@ -21,8 +21,7 @@
             {
                 <Button Color="Color.Primary" Clicked="Execute">YES</Button>
                 <Button Color="Color.Secondary" Clicked="Dismiss">No</Button>
-            }
-            else
+            } else
             {
                 <Button Disabled="@Cancelled" Color="Color.Danger" Clicked="Cancel">Cancel</Button>
             }
@@ -43,13 +42,17 @@
     public bool Cancelled { get; private set; }
 
     private Modal? _modal;
-    private CancellationTokenSource _cts = new CancellationTokenSource();
+    private CancellationTokenSource _cts = new();
 
     public Task Show()
-        => _modal?.Show() ?? Task.CompletedTask;
+    {
+        return _modal?.Show() ?? Task.CompletedTask;
+    }
 
     private Task Dismiss()
-        => _modal?.Hide() ?? Task.CompletedTask;
+    {
+        return _modal?.Hide() ?? Task.CompletedTask;
+    }
 
     private async Task Execute()
     {
@@ -61,8 +64,7 @@
         try
         {
             await (Action?.Invoke(_cts.Token) ?? Task.CompletedTask);
-        }
-        catch (OperationCanceledException)
+        } catch (OperationCanceledException)
         {
             _cts = new CancellationTokenSource();
         }

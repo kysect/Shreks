@@ -7,9 +7,8 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class GithubUserAssociationGenerator : EntityGeneratorBase<GithubUserAssociation>
 {
-    private readonly IEntityGenerator<User> _userGenerator;
-
     private readonly Faker _faker;
+    private readonly IEntityGenerator<User> _userGenerator;
 
     public GithubUserAssociationGenerator(
         EntityGeneratorOptions<GithubUserAssociation> options,
@@ -25,7 +24,7 @@ public class GithubUserAssociationGenerator : EntityGeneratorBase<GithubUserAsso
         if (index >= _userGenerator.GeneratedEntities.Count)
             throw new IndexOutOfRangeException("Github association count is greater than count of users.");
 
-        var user = _userGenerator.GeneratedEntities[index];
+        User user = _userGenerator.GeneratedEntities[index];
 
         var association = new GithubUserAssociation(user, _faker.Random.Guid().ToString());
 

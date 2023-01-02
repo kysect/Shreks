@@ -7,8 +7,8 @@ namespace Kysect.Shreks.Integration.Github.Client;
 
 public class InstallationClientFactory : IInstallationClientFactory
 {
-    private readonly IShreksMemoryCache _memoryCache;
     private readonly IGitHubClient _gitHubAppClient;
+    private readonly IShreksMemoryCache _memoryCache;
 
     public InstallationClientFactory(IGitHubClient gitHubAppClient, IShreksMemoryCache memoryCache)
     {
@@ -18,12 +18,12 @@ public class InstallationClientFactory : IInstallationClientFactory
 
     public GitHubClient GetClient(long installationId)
     {
-        return _memoryCache.GetOrCreate(installationId,  _ => CreateInstallationClient(installationId));
+        return _memoryCache.GetOrCreate(installationId, _ => CreateInstallationClient(installationId));
     }
 
     private GitHubClient CreateInstallationClient(long installationId)
     {
-        return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"), 
+        return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"),
             new InstallationCredentialStore(_gitHubAppClient, installationId));
     }
 }

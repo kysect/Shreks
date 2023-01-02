@@ -21,7 +21,8 @@ public static class ShreksDatabaseContextExtensions
             .Select(x => x.Submission)
             .Where(submission => states.Any(x => x.Equals(submission.State)))
             .Where(x =>
-                x.GroupAssignment.Assignment.SubjectCourse.WorkflowType == SubmissionStateWorkflowType.ReviewWithDefense)
+                x.GroupAssignment.Assignment.SubjectCourse.WorkflowType ==
+                SubmissionStateWorkflowType.ReviewWithDefense)
             .FirstAsync();
     }
 

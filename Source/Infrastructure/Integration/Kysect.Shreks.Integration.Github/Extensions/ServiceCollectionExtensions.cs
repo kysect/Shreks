@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using GitHubJwt;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
 using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Client;
@@ -15,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
+using System.Security.Claims;
 
 namespace Kysect.Shreks.Integration.Github.Extensions;
 
@@ -52,7 +52,8 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IShreksMemoryCache, ShreksMemoryCache>(_ => new ShreksMemoryCache(
             new MemoryCacheOptions
             {
-                SizeLimit = cacheConfiguration.SizeLimit, ExpirationScanFrequency = cacheConfiguration.Expiration,
+                SizeLimit = cacheConfiguration.SizeLimit,
+                ExpirationScanFrequency = cacheConfiguration.Expiration
             },
             new MemoryCacheEntryOptions()
                 .SetSize(cacheConfiguration.CacheEntryConfiguration.EntrySize)
@@ -62,7 +63,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IGitHubClient>(serviceProvider =>
         {
-            var githubJwtFactory = serviceProvider.GetService<GitHubJwtFactory>()!;
+            GitHubJwtFactory githubJwtFactory = serviceProvider.GetService<GitHubJwtFactory>()!;
 
             var appClient = new GitHubClient(new ProductHeaderValue("Kysect.Shreks"),
                 new GithubAppCredentialStore(githubJwtFactory));
@@ -71,9 +72,9 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IInstallationClientFactory>(serviceProvider =>
         {
-            var appClient = serviceProvider.GetService<IGitHubClient>()!;
+            IGitHubClient appClient = serviceProvider.GetService<IGitHubClient>()!;
 
-            var memoryCache = serviceProvider.GetService<IShreksMemoryCache>()!;
+            IShreksMemoryCache memoryCache = serviceProvider.GetService<IShreksMemoryCache>()!;
 
             return new InstallationClientFactory(appClient, memoryCache);
         });
@@ -126,9 +127,7 @@ public static class ServiceCollectionExtensions
                 options.Events.OnCreatingTicket += context =>
                 {
                     if (context.AccessToken is not null)
-                    {
                         context.Identity?.AddClaim(new Claim("access_token", context.AccessToken));
-                    }
 
                     return Task.CompletedTask;
                 };

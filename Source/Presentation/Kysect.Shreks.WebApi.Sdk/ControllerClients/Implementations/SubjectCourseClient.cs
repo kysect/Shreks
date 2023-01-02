@@ -22,7 +22,7 @@ internal class SubjectCourseClient : ISubjectCourseClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/SubjectCourse")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<SubjectCourseDto>(message, cancellationToken);
@@ -47,13 +47,14 @@ internal class SubjectCourseClient : ISubjectCourseClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Put, $"api/SubjectCourse/{id}")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<SubjectCourseDto>(message, cancellationToken);
     }
 
-    public async Task<IReadOnlyCollection<StudentDto>> GetStudentsAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyCollection<StudentDto>> GetStudentsAsync(Guid id,
+        CancellationToken cancellationToken = default)
     {
         using var message = new HttpRequestMessage(HttpMethod.Get, $"api/SubjectCourse/{id}/students");
         return await _handler.SendAsync<IReadOnlyCollection<StudentDto>>(message, cancellationToken);
@@ -82,13 +83,14 @@ internal class SubjectCourseClient : ISubjectCourseClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, $"api/SubjectCourse/{id}/association/github")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<SubjectCourseDto>(message, cancellationToken);
     }
 
-    public async Task<SubjectCourseDto> RemoveGithubAssociationAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<SubjectCourseDto> RemoveGithubAssociationAsync(Guid id,
+        CancellationToken cancellationToken = default)
     {
         using var message = new HttpRequestMessage(HttpMethod.Delete, $"api/SubjectCourse/{id}/association/github");
         return await _handler.SendAsync<SubjectCourseDto>(message, cancellationToken);
@@ -101,7 +103,7 @@ internal class SubjectCourseClient : ISubjectCourseClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, $"api/SubjectCourse/{id}/deadline/fraction")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         await _handler.SendAsync(message, cancellationToken);

@@ -1,10 +1,8 @@
-@using Kysect.Shreks.WebUI.AdminPanel.Identity
-@using Kysect.Shreks.WebUI.AdminPanel.Components.Global
-@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@using Kysect.Shreks.WebUI.AdminPanel.Extensions
 @inject IIdentityManager IdentityManager
 @inject ISafeExecutor Executor
 @inject NavigationManager NavigationManager
+@using Kysect.Shreks.WebUI.AdminPanel.Identity
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @implements IDisposable
 
 <Bar Breakpoint="Breakpoint.Desktop"
@@ -34,7 +32,7 @@
                 <BarItem>
                     <BarLink @ref="_studentsLink" To="@StudentsPath">Students</BarLink>
                 </BarItem>
-                
+
                 <BarItem>
                     <BarLink @ref="_groupsLink" To="@GroupsPath">Groups</BarLink>
                 </BarItem>
@@ -86,7 +84,7 @@
             SubjectsPath => _subjectsLink,
             StudentsPath => _studentsLink,
             GroupsPath => _groupsLink,
-            _ => null,
+            _ => null
             };
 
         if (component is not null)

@@ -13,9 +13,9 @@ namespace Kysect.Shreks.Application.Google.Services;
 public class SubjectCourseTableService : ISubjectCourseTableService
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly ILogger<SubjectCourseTableService> _logger;
     private readonly ISpreadsheetManagementService _spreadsheetManagementService;
     private readonly ConcurrentDictionary<Guid, Task<string>> _tableIdCache;
-    private readonly ILogger<SubjectCourseTableService> _logger;
 
     public SubjectCourseTableService(
         IShreksDatabaseContext context,

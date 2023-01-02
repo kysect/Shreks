@@ -5,14 +5,14 @@ namespace Kysect.Shreks.Application.Google.Services;
 
 public class TableUpdateQueue : ITableUpdateQueue
 {
-    public ConcurrentHashSet<(Guid, Guid)> QueueUpdateSubjectCourseGroupIds { get; }
-    public ConcurrentHashSet<Guid> PointsUpdateSubjectCourseIds { get; }
-
     public TableUpdateQueue()
     {
         QueueUpdateSubjectCourseGroupIds = new ConcurrentHashSet<(Guid, Guid)>();
         PointsUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
     }
+
+    public ConcurrentHashSet<(Guid, Guid)> QueueUpdateSubjectCourseGroupIds { get; }
+    public ConcurrentHashSet<Guid> PointsUpdateSubjectCourseIds { get; }
 
     public void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId, Guid studentGroupId)
     {

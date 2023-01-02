@@ -11,11 +11,11 @@ namespace Kysect.Shreks.Application.Google.Workers;
 public class GoogleTableUpdateWorker : BackgroundService
 {
     private static readonly TimeSpan DelayBetweenSheetUpdates = TimeSpan.FromSeconds(10);
+    private readonly ILogger<GoogleTableUpdateWorker> _logger;
+    private readonly IServiceScopeFactory _serviceProvider;
+    private readonly Stopwatch _stopwatch;
 
     private readonly TableUpdateQueue _tableUpdateQueue;
-    private readonly IServiceScopeFactory _serviceProvider;
-    private readonly ILogger<GoogleTableUpdateWorker> _logger;
-    private readonly Stopwatch _stopwatch;
 
     public GoogleTableUpdateWorker(
         TableUpdateQueue tableUpdateQueue,

@@ -28,7 +28,7 @@ internal class GetSubjectCoursesBySubjectCourseIdHandler : IRequestHandler<Query
         SubjectCourseDto[] dto = courses
             .Select(_mapper.Map<SubjectCourseDto>)
             .ToArray();
-        
+
         return new Response(dto);
     }
 }

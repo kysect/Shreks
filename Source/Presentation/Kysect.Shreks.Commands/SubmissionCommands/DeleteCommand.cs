@@ -25,5 +25,7 @@ public class DeleteCommand : ISubmissionCommand<SubmissionContext, SubmissionDto
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
 }

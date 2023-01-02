@@ -13,35 +13,55 @@ public readonly record struct Points : IComparable<Points>
 
     public double Value { get; }
 
-    public static Points None => new Points();
-
-    public static Points Min(Points a, Points b)
-        => a < b ? a : b;
-
-    public static Points Max(Points a, Points b)
-        => a > b ? a : b;
-
-    public static implicit operator Points(double value)
-        => new Points(value);
-
-    public static Points operator +(Points a, Points b)
-        => new Points(a.Value + b.Value);
-
-    public static Points operator -(Points a, Points b)
-        => new Points(a.Value - b.Value);
-
-    public static Points operator *(Points a, Fraction b)
-        => new Points(a.Value * b.Value);
-
-    public static bool operator >(Points a, Points b)
-        => a.Value > b.Value;
-
-    public static bool operator <(Points a, Points b)
-        => a.Value < b.Value;
-
-    public override string ToString()
-        => Value.ToString(CultureInfo.InvariantCulture);
+    public static Points None => new();
 
     public int CompareTo(Points other)
-        => Value.CompareTo(other.Value);
+    {
+        return Value.CompareTo(other.Value);
+    }
+
+    public static Points Min(Points a, Points b)
+    {
+        return a < b ? a : b;
+    }
+
+    public static Points Max(Points a, Points b)
+    {
+        return a > b ? a : b;
+    }
+
+    public static implicit operator Points(double value)
+    {
+        return new(value);
+    }
+
+    public static Points operator +(Points a, Points b)
+    {
+        return new(a.Value + b.Value);
+    }
+
+    public static Points operator -(Points a, Points b)
+    {
+        return new(a.Value - b.Value);
+    }
+
+    public static Points operator *(Points a, Fraction b)
+    {
+        return new(a.Value * b.Value);
+    }
+
+    public static bool operator >(Points a, Points b)
+    {
+        return a.Value > b.Value;
+    }
+
+    public static bool operator <(Points a, Points b)
+    {
+        return a.Value < b.Value;
+    }
+
+    public override string ToString()
+    {
+        return Value.ToString(CultureInfo.InvariantCulture);
+    }
 }

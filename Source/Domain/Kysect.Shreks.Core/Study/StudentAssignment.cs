@@ -10,7 +10,7 @@ namespace Kysect.Shreks.Core.Study;
 public partial class StudentAssignment : IEntity
 {
     public StudentAssignment(Student student, GroupAssignment assignment)
-        : this(groupId: assignment.GroupId, assignmentId: assignment.AssignmentId, userId: student.UserId)
+        : this(assignment.GroupId, assignment.AssignmentId, student.UserId)
     {
         if (assignment.Group.Students.Contains(student) is false)
         {
@@ -23,11 +23,9 @@ public partial class StudentAssignment : IEntity
         Assignment = assignment;
     }
 
-    [KeyProperty]
-    public Student Student { get; }
+    [KeyProperty] public Student Student { get; }
 
-    [KeyProperty]
-    public GroupAssignment Assignment { get; }
+    [KeyProperty] public GroupAssignment Assignment { get; }
 
     public StudentAssignmentPoints? Points => CalculatePoints();
 

@@ -13,16 +13,22 @@ public abstract class DeadlinePolicy : IEquatable<DeadlinePolicy>
 
     public TimeSpan SpanBeforeActivation { get; protected init; }
 
+    public virtual bool Equals(DeadlinePolicy? other)
+    {
+        return other?.SpanBeforeActivation.Equals(SpanBeforeActivation) ?? false;
+    }
+
     public abstract Points Apply(Points points);
 
-    public virtual bool Equals(DeadlinePolicy? other)
-        => other?.SpanBeforeActivation.Equals(SpanBeforeActivation) ?? false;
-
     public override bool Equals(object? obj)
-        => Equals(obj as DeadlinePolicy);
+    {
+        return Equals(obj as DeadlinePolicy);
+    }
 
     public override int GetHashCode()
-        => SpanBeforeActivation.GetHashCode();
+    {
+        return SpanBeforeActivation.GetHashCode();
+    }
 
     public override string ToString()
     {

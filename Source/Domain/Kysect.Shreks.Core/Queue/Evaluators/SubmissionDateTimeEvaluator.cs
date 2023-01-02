@@ -13,5 +13,7 @@ public class SubmissionDateTimeEvaluator : ISubmissionEvaluator
     public SortingOrder SortingOrder { get; }
 
     public double Evaluate(Submission submission)
-        => submission.SubmissionDate.Value.Ticks;
+    {
+        return submission.SubmissionDate.Value.Ticks;
+    }
 }

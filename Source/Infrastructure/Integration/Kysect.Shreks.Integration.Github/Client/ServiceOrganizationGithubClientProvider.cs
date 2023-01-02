@@ -9,7 +9,8 @@ public class ServiceOrganizationGithubClientProvider : IServiceOrganizationGithu
     private readonly IInstallationClientFactory _clientFactory;
     private readonly string _serviceOrganization;
 
-    public ServiceOrganizationGithubClientProvider(IGitHubClient appClient, IInstallationClientFactory clientFactory, string serviceOrganization)
+    public ServiceOrganizationGithubClientProvider(IGitHubClient appClient, IInstallationClientFactory clientFactory,
+        string serviceOrganization)
     {
         ArgumentNullException.ThrowIfNull(appClient);
         ArgumentNullException.ThrowIfNull(clientFactory);
@@ -22,7 +23,8 @@ public class ServiceOrganizationGithubClientProvider : IServiceOrganizationGithu
 
     public async Task<GitHubClient> GetClient()
     {
-        Installation installation = await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(_serviceOrganization);
+        Installation installation =
+            await _appClient.GitHubApps.GetOrganizationInstallationForCurrent(_serviceOrganization);
         return _clientFactory.GetClient(installation.Id);
     }
 }

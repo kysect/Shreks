@@ -1,5 +1,6 @@
 using AutoMapper;
 using Kysect.Shreks.Common.Exceptions;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -20,9 +21,11 @@ internal class DeleteSubjectCourseGroupHandler : IRequestHandler<Command>
 
     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
-        var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
+        SubjectCourse subjectCourse =
+            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
-        var subjectCourseGroup = subjectCourse.Groups.FirstOrDefault(g => g.StudentGroupId == request.StudentGroupId);
+        Core.Study.SubjectCourseGroup? subjectCourseGroup =
+            subjectCourse.Groups.FirstOrDefault(g => g.StudentGroupId == request.StudentGroupId);
 
         if (subjectCourseGroup is null)
             throw new EntityNotFoundException($"SubjectCourseGroup with id {request.StudentGroupId} not found");

@@ -3,8 +3,10 @@ using FluentAssertions;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.Models;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.UserAssociations;
+using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.EntityGenerators;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -23,9 +25,9 @@ public class MappingTest : TestBase
     [Fact]
     public void Map_Should_MapGithubSubmissionToSubmissionDto()
     {
-        var submission = Provider.GetRequiredService<IEntityGenerator<GithubSubmission>>().Generate();
+        GithubSubmission submission = Provider.GetRequiredService<IEntityGenerator<GithubSubmission>>().Generate();
 
-        var submissionDto = _mapper.Map<SubmissionDto>(submission);
+        SubmissionDto? submissionDto = _mapper.Map<SubmissionDto>(submission);
 
         Assert.NotNull(submissionDto);
     }
@@ -37,9 +39,10 @@ public class MappingTest : TestBase
     [InlineData(SubmissionStateDto.Completed, SubmissionStateKind.Completed)]
     [InlineData(SubmissionStateDto.Reviewed, SubmissionStateKind.Reviewed)]
     [InlineData(SubmissionStateDto.Banned, SubmissionStateKind.Banned)]
-    public void Map_Should_MapSubmissionStateDtoToSubmissionState(SubmissionStateDto stateDto, SubmissionStateKind state)
+    public void Map_Should_MapSubmissionStateDtoToSubmissionState(SubmissionStateDto stateDto,
+        SubmissionStateKind state)
     {
-        var receivedState = _mapper.Map<SubmissionStateKind>(stateDto);
+        SubmissionStateKind receivedState = _mapper.Map<SubmissionStateKind>(stateDto);
 
         receivedState.Should().Be(state);
     }
@@ -47,9 +50,9 @@ public class MappingTest : TestBase
     [Fact]
     public void Map_Should_MapStudentWithoutIsuToStudentDto()
     {
-        var student = Context.Students.First(x => x.User.Associations.OfType<IsuUserAssociation>().Any() == false);
+        Student student = Context.Students.First(x => x.User.Associations.OfType<IsuUserAssociation>().Any() == false);
 
-        var dto = _mapper.Map<StudentDto>(student);
+        StudentDto? dto = _mapper.Map<StudentDto>(student);
 
         dto.Should().NotBeNull();
         dto.UniversityId.Should().BeNull();
@@ -58,9 +61,9 @@ public class MappingTest : TestBase
     [Fact]
     public void Map_Should_MapGroupAssignmentDtoToGroupAssignment()
     {
-        var groupAssignment = Context.GroupAssignments.First();
+        GroupAssignment groupAssignment = Context.GroupAssignments.First();
 
-        var groupAssignmentDto = _mapper.Map<GroupAssignmentDto>(groupAssignment);
+        GroupAssignmentDto? groupAssignmentDto = _mapper.Map<GroupAssignmentDto>(groupAssignment);
 
         Assert.NotNull(groupAssignmentDto);
     }

@@ -25,5 +25,7 @@ public class DeactivateCommand : ISubmissionCommand<SubmissionContext, Submissio
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
 }

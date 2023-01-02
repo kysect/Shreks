@@ -7,5 +7,5 @@ public enum SubmissionStateKind
     Deleted,
     Completed,
     Reviewed,
-    Banned,
+    Banned
 }

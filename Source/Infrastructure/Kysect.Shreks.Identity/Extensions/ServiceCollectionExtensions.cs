@@ -1,4 +1,3 @@
-using System.Text;
 using Kysect.Shreks.Application.Abstractions.Identity;
 using Kysect.Shreks.Identity.Entities;
 using Kysect.Shreks.Identity.Services;
@@ -9,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Kysect.Shreks.Identity.Extensions;
 
@@ -19,7 +19,7 @@ public static class ServiceCollectionExtensions
         IConfigurationSection identityConfigurationSection,
         Action<DbContextOptionsBuilder> dbContextAction)
     {
-        var identityConfiguration = identityConfigurationSection
+        IdentityConfiguration? identityConfiguration = identityConfigurationSection
             .Get<IdentityConfiguration>();
 
         collection.AddScoped<IAuthorizationService, AuthorizationService>();
@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
         collection.AddIdentity<ShreksIdentityUser, ShreksIdentityRole>()
             .AddEntityFrameworkStores<ShreksIdentityContext>()
             .AddDefaultTokenProviders();
-        
+
         collection.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -46,7 +46,7 @@ public static class ServiceCollectionExtensions
                 ValidateAudience = true,
                 ValidAudience = identityConfiguration.Audience,
                 ValidIssuer = identityConfiguration.Issuer,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(identityConfiguration.Secret)),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(identityConfiguration.Secret))
             };
         });
     }

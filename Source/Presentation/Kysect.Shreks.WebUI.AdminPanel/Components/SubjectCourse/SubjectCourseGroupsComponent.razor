@@ -1,20 +1,18 @@
 @using Kysect.Shreks.WebUI.AdminPanel.Models
-@using Kysect.Shreks.WebApi.Sdk
-@using Kysect.Shreks.WebUI.AdminPanel.Components.Groups
 @using Kysect.Shreks.Application.Dto.SubjectCourses
 @using Kysect.Shreks.Application.Dto.Study
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Groups
 @inject IStudyGroupClient StudyGroupClient
 
 @if (_groups is not null)
 {
     <Div>
-        @foreach (var group in _groups.OrderBy(x => x.Group.Name))
+        @foreach (ExtendedSubjectCourseGroupDto group in _groups.OrderBy(x => x.Group.Name))
         {
             <StudyGroupInfoComponent Group="@group.Group"/>
         }
     </Div>
-}
-else
+} else
 {
     <LoaderComponent/>
 }

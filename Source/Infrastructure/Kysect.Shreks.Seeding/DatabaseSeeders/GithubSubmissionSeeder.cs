@@ -14,5 +14,7 @@ public class GithubSubmissionSeeder : IDatabaseSeeder
     }
 
     public void Seed(IShreksDatabaseContext context)
-        => context.Submissions.AddRange(_generator.GeneratedEntities);
+    {
+        context.Submissions.AddRange(_generator.GeneratedEntities);
+    }
 }

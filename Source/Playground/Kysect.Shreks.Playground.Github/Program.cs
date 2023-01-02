@@ -14,14 +14,17 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File("ShreksGithubPlayground.log")
     .CreateLogger();
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
+CacheConfiguration cacheConfiguration =
+    builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
 
-var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration))
+GithubIntegrationConfiguration githubIntegrationConfiguration = builder.Configuration
+    .GetSection(nameof(GithubIntegrationConfiguration))
     .Get<GithubIntegrationConfiguration>();
 
-var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration))
+TestEnvironmentConfiguration testEnvironmentConfiguration = builder.Configuration
+    .GetSection(nameof(TestEnvironmentConfiguration))
     .Get<TestEnvironmentConfiguration>();
 
 builder.Services
@@ -36,7 +39,7 @@ builder.Services
 builder.Services
     .AddLogging(logBuilder => logBuilder.AddSerilog());
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 app.UseGithubIntegration(githubIntegrationConfiguration);
 await app.Services.UseTestEnv(testEnvironmentConfiguration);

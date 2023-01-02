@@ -20,7 +20,7 @@ internal class AssignmentClient : IAssignmentClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/Assignments/")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<AssignmentDto>(message, cancellationToken);

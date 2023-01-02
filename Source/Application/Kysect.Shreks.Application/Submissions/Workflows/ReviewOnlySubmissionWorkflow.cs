@@ -19,8 +19,8 @@ namespace Kysect.Shreks.Application.Submissions.Workflows;
 
 public class ReviewOnlySubmissionWorkflow : ISubmissionWorkflow
 {
-    private readonly IPermissionValidator _permissionValidator;
     private readonly IShreksDatabaseContext _context;
+    private readonly IPermissionValidator _permissionValidator;
     private readonly ITableUpdateQueue _updateQueue;
 
     public ReviewOnlySubmissionWorkflow(
@@ -123,13 +123,9 @@ public class ReviewOnlySubmissionWorkflow : ISubmissionWorkflow
         Submission submission = await ExecuteSubmissionCommandAsync(submissionId, cancellationToken, x =>
         {
             if (isTerminal)
-            {
                 x.Complete();
-            }
             else
-            {
                 x.Deactivate();
-            }
         });
 
         string message = UserCommandProcessingMessage.MergePullRequestWithoutRate(submission.Code);
@@ -184,10 +180,7 @@ public class ReviewOnlySubmissionWorkflow : ISubmissionWorkflow
 
             await UpdatePointsSheetAsync(submission.Id, cancellationToken);
 
-            if (triggeredByAnotherUser)
-            {
-                throw new UnauthorizedException("Submission updated by another user");
-            }
+            if (triggeredByAnotherUser) throw new UnauthorizedException("Submission updated by another user");
 
             SubmissionRateDto submissionDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 
@@ -224,8 +217,6 @@ public class ReviewOnlySubmissionWorkflow : ISubmissionWorkflow
             .SingleOrDefaultAsync(cancellationToken);
 
         if (submissionData is { Group: not null })
-        {
             _updateQueue.EnqueueSubmissionsQueueUpdate(submissionData.SubjectCourseId, submissionData.Group.Id);
-        }
     }
 }

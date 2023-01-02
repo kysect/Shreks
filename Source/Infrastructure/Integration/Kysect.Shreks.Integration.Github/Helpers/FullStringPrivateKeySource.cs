@@ -6,7 +6,13 @@ public class FullStringPrivateKeySource : IPrivateKeySource
 {
     private readonly string _key;
 
-    public FullStringPrivateKeySource(string key) => this._key = !string.IsNullOrEmpty(key) ? key : throw new ArgumentNullException(nameof (key));
+    public FullStringPrivateKeySource(string key)
+    {
+        _key = !string.IsNullOrEmpty(key) ? key : throw new ArgumentNullException(nameof(key));
+    }
 
-    public TextReader GetPrivateKeyReader() => new StringReader(this._key);
+    public TextReader GetPrivateKeyReader()
+    {
+        return new StringReader(_key);
+    }
 }

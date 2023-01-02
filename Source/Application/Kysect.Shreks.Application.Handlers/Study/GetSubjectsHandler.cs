@@ -24,7 +24,7 @@ internal class GetSubjectsHandler : IRequestHandler<Query, Response>
         List<SubjectDto> subject = await _context
             .Subjects
             .ProjectTo<SubjectDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken: cancellationToken);
+            .ToListAsync(cancellationToken);
 
         return new Response(subject);
     }

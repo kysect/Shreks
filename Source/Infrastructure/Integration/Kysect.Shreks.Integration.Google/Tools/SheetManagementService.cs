@@ -6,14 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
 
-/// <inheritdoc/>
+/// <inheritdoc />
 public class SheetManagementService : ISheetManagementService
 {
     private const string UpdateAllFields = "*";
+    private readonly ILogger<SheetManagementService> _logger;
 
     private readonly SheetsService _sheetsService;
     private readonly ISheetTitleComparer _sheetTitleComparer;
-    private readonly ILogger<SheetManagementService> _logger;
 
     public SheetManagementService(
         SheetsService sheetsService,
@@ -46,18 +46,13 @@ public class SheetManagementService : ISheetManagementService
     {
         var addSheetRequest = new Request
         {
-            AddSheet = new AddSheetRequest
-            {
-                Properties = new SheetProperties
-                {
-                    Title = sheetTitle
-                }
-            }
+            AddSheet = new AddSheetRequest { Properties = new SheetProperties { Title = sheetTitle } }
         };
 
         _logger.LogDebug("Create sheet with title {sheetTitle}.", sheetTitle);
 
-        BatchUpdateSpreadsheetResponse batchUpdateResponse = await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
+        BatchUpdateSpreadsheetResponse batchUpdateResponse =
+            await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
         SheetProperties addedSheetProperties = batchUpdateResponse.Replies[0].AddSheet.Properties;
 
         return addedSheetProperties.SheetId!.Value;
@@ -111,35 +106,16 @@ public class SheetManagementService : ISheetManagementService
 
     private async Task ClearSheetAsync(string spreadsheetId, int sheetId, CancellationToken token)
     {
-        var allFieldsGridRange = new GridRange
-        {
-            StartRowIndex = 0,
-            StartColumnIndex = 0,
-            SheetId = sheetId
-        };
+        var allFieldsGridRange = new GridRange { StartRowIndex = 0, StartColumnIndex = 0, SheetId = sheetId };
 
         var updateCellsRequest = new Request
         {
-            UpdateCells = new UpdateCellsRequest
-            {
-                Range = allFieldsGridRange,
-                Fields = UpdateAllFields
-            }
+            UpdateCells = new UpdateCellsRequest { Range = allFieldsGridRange, Fields = UpdateAllFields }
         };
 
-        var unmergeCellsRequest = new Request
-        {
-            UnmergeCells = new UnmergeCellsRequest
-            {
-                Range = allFieldsGridRange
-            }
-        };
+        var unmergeCellsRequest = new Request { UnmergeCells = new UnmergeCellsRequest { Range = allFieldsGridRange } };
 
-        var requests = new List<Request>
-        {
-            updateCellsRequest,
-            unmergeCellsRequest
-        };
+        var requests = new List<Request> { updateCellsRequest, unmergeCellsRequest };
 
         _logger.LogDebug("Clear sheet with id {sheetId}.", sheetId);
         await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, requests, token);

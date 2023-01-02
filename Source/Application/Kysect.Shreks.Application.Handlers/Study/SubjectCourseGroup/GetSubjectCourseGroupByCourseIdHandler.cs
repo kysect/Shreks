@@ -1,5 +1,6 @@
 using AutoMapper;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -20,7 +21,8 @@ internal class GetSubjectCourseGroupsByIdHandler : IRequestHandler<Query, Respon
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
+        SubjectCourse subjectCourse =
+            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
         var subjectCourseGroups = subjectCourse.Groups.Select(_mapper.Map<SubjectCourseGroupDto>).ToList();
 

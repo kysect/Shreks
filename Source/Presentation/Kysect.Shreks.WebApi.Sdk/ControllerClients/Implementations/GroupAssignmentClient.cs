@@ -20,7 +20,7 @@ internal class GroupAssignmentClient : IGroupAssignmentClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/GroupAssignment")
         {
-            Content = JsonContent.Create(request),
+            Content = JsonContent.Create(request)
         };
 
         return await _handler.SendAsync<GroupAssignmentDto>(message, cancellationToken);
@@ -33,7 +33,7 @@ internal class GroupAssignmentClient : IGroupAssignmentClient
         CancellationToken cancellationToken = default)
     {
         string uri = $"api/Assignments/{assignmentId}/groups/{groupId}";
-        using var message = new HttpRequestMessage(HttpMethod.Put, uri) { Content = JsonContent.Create(request), };
+        using var message = new HttpRequestMessage(HttpMethod.Put, uri) { Content = JsonContent.Create(request) };
 
         return await _handler.SendAsync<GroupAssignmentDto>(message, cancellationToken);
     }

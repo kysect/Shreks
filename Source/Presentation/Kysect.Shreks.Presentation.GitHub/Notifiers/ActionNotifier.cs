@@ -9,8 +9,8 @@ namespace Kysect.Shreks.Presentation.GitHub.Notifiers;
 
 public class ActionNotifier : IActionNotifier
 {
-    private readonly ILogger<ActionNotifier> _logger;
     private readonly IInstallationClientFactory _installationClientFactory;
+    private readonly ILogger<ActionNotifier> _logger;
 
     public ActionNotifier(IInstallationClientFactory installationClientFactory, ILogger<ActionNotifier> logger)
     {
@@ -22,7 +22,7 @@ public class ActionNotifier : IActionNotifier
     {
         ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
 
-        var installationClient = _installationClientFactory.GetClient(installation.Id);
+        GitHubClient installationClient = _installationClientFactory.GetClient(installation.Id);
 
         await installationClient.Issue.Comment.Create(
             repository.Owner.Login,
@@ -35,7 +35,7 @@ public class ActionNotifier : IActionNotifier
     {
         ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
 
-        var installationClient = _installationClientFactory.GetClient(installation.Id);
+        GitHubClient installationClient = _installationClientFactory.GetClient(installation.Id);
 
         await installationClient.Repository.Comment.Create(repository.Id, sha, new NewCommitComment(message));
     }
@@ -44,7 +44,7 @@ public class ActionNotifier : IActionNotifier
     {
         ParseWebhookEvent(webhookEvent, out Repository repository, out InstallationLite installation);
 
-        var installationClient = _installationClientFactory.GetClient(installation.Id);
+        GitHubClient installationClient = _installationClientFactory.GetClient(installation.Id);
 
         await installationClient.Reaction.IssueComment.Create(
             repository.Id,
@@ -52,7 +52,8 @@ public class ActionNotifier : IActionNotifier
             new NewReaction(isSuccessful ? ReactionType.Plus1 : ReactionType.Minus1));
     }
 
-    private void ParseWebhookEvent(WebhookEvent webhookEvent, out Repository repository, out InstallationLite installation)
+    private void ParseWebhookEvent(WebhookEvent webhookEvent, out Repository repository,
+        out InstallationLite installation)
     {
         if (webhookEvent is null)
         {

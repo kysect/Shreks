@@ -15,9 +15,15 @@ public class GithubAppConfiguration : IShreksConfiguration
 
 
         if (JwtExpirationSeconds <= 0)
-            throw new ArgumentException($"Expiration in {nameof(GithubIntegrationConfiguration)} must be greater than 0");
+        {
+            throw new ArgumentException(
+                $"Expiration in {nameof(GithubIntegrationConfiguration)} must be greater than 0");
+        }
 
         if (AppIntegrationId <= 0)
-            throw new ArgumentException($"AppIntegrationId in {nameof(GithubIntegrationConfiguration)} must be greater than 0");
+        {
+            throw new ArgumentException(
+                $"AppIntegrationId in {nameof(GithubIntegrationConfiguration)} must be greater than 0");
+        }
     }
 }

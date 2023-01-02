@@ -21,7 +21,7 @@ public class DeadlinePolicyGenerator : EntityGeneratorBase<DeadlinePolicy>
             0 => new AbsoluteDeadlinePolicy(_faker.Date.Timespan(), _faker.Random.Points(0, 10)),
             1 => new FractionDeadlinePolicy(_faker.Date.Timespan(), _faker.Random.Double()),
             2 => new CappingDeadlinePolicy(_faker.Date.Timespan(), _faker.Random.Double(0, 5)),
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(index))
         };
     }
 }

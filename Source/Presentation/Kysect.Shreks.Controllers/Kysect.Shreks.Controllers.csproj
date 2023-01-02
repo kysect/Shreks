@@ -1,32 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<AnalysisLevel>latest</AnalysisLevel>
-		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <NoWarn>1701;1702;CA1062</NoWarn>
+    </PropertyGroup>
 
-	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-	  <NoWarn>1701;1702;CA1062</NoWarn>
-	</PropertyGroup>
-
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-	  <NoWarn>1701;1702;CA1062</NoWarn>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
-		<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Contracts\Kysect.Shreks.Application.Contracts.csproj" />
-		<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
-		<ProjectReference Include="..\..\DeveloperEnvironment\Kysect.Shreks.DeveloperEnvironment\Kysect.Shreks.DeveloperEnvironment.csproj" />
-		<ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj" />
-		<ProjectReference Include="..\Kysect.Shreks.WebApi.Abstractions\Kysect.Shreks.WebApi.Abstractions.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Contracts\Kysect.Shreks.Application.Contracts.csproj"/>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\DeveloperEnvironment\Kysect.Shreks.DeveloperEnvironment\Kysect.Shreks.DeveloperEnvironment.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj"/>
+        <ProjectReference Include="..\Kysect.Shreks.WebApi.Abstractions\Kysect.Shreks.WebApi.Abstractions.csproj"/>
+    </ItemGroup>
 
 </Project>

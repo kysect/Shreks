@@ -30,7 +30,7 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
         {
             Owner = organization,
             Description = null,
-            Private = true,
+            Private = true
         };
 
         await client.Repository.Generate(

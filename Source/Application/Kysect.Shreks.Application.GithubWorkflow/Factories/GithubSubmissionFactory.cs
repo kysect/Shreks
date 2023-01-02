@@ -19,9 +19,9 @@ public class GithubSubmissionFactory : ISubmissionFactory
     private readonly IShreksDatabaseContext _context;
 
     private readonly string _organizationName;
-    private readonly string _repositoryName;
-    private readonly long _pullRequestNumber;
     private readonly string _payload;
+    private readonly long _pullRequestNumber;
+    private readonly string _repositoryName;
 
     public GithubSubmissionFactory(
         IShreksDatabaseContext context,

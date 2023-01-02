@@ -13,5 +13,7 @@ public class AssignmentGroupFilter : IQueueFilter
     public IReadOnlyCollection<Assignment> Assignments { get; }
 
     public IQueryable<Submission> Filter(IQueryable<Submission> query)
-        => query.Where(x => Assignments.Contains(x.GroupAssignment.Assignment));
+    {
+        return query.Where(x => Assignments.Contains(x.GroupAssignment.Assignment));
+    }
 }

@@ -104,6 +104,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
     private static string PointsFormula(Index index)
     {
         string n = GetCellNumber(index.WithColumnShift(-1));
-        return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>=40,\"FX-E\",\"FX\"))";
+        return
+            $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>=40,\"FX-E\",\"FX\"))";
     }
 }

@@ -1,5 +1,5 @@
-﻿using System.Text;
-using Kysect.Shreks.Application.Dto.Users;
+﻿using Kysect.Shreks.Application.Dto.Users;
+using System.Text;
 
 namespace Kysect.Shreks.Application.Abstractions.Formatters;
 

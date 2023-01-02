@@ -11,10 +11,10 @@ namespace Kysect.Shreks.Integration.Google.Sheets;
 public class PointsSheet : ISheet<CourseStudentsDto>
 {
     public const string Title = "Баллы";
-
-    private readonly ISheetManagementService _sheetEditor;
     private readonly ITable<CourseStudentsDto> _pointsTable;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
+
+    private readonly ISheetManagementService _sheetEditor;
 
     public PointsSheet(
         ISheetManagementService sheetEditor,

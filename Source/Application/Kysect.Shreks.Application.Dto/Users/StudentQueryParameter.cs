@@ -4,5 +4,5 @@ public enum StudentQueryParameter
 {
     Name = 1,
     Group = 2,
-    GithubUsername = 3,
+    GithubUsername = 3
 }

@@ -1,4 +1,3 @@
-@using Kysect.Shreks.WebApi.Sdk
 @inject IGithubManagementClient Client
 
 <Button Clicked="ButtonClicked" Color="Color.Secondary" Width="Width.Is100">
@@ -12,9 +11,13 @@
     private ConfirmationComponent? _component;
 
     private Task ButtonClicked()
-        => _component?.Show() ?? Task.CompletedTask;
+    {
+        return _component?.Show() ?? Task.CompletedTask;
+    }
 
     private Task SendAsync(CancellationToken cancellationToken)
-        => Client.ForceOrganizationUpdateAsync(cancellationToken);
+    {
+        return Client.ForceOrganizationUpdateAsync(cancellationToken);
+    }
 
 }

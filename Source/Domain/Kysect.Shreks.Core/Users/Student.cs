@@ -7,7 +7,7 @@ namespace Kysect.Shreks.Core.Users;
 
 public partial class Student : IEntity
 {
-    public Student(User user, StudentGroup group) : this(userId: user.Id)
+    public Student(User user, StudentGroup group) : this(user.Id)
     {
         User = user;
         Group = group;
@@ -15,8 +15,7 @@ public partial class Student : IEntity
         group.AddStudent(this);
     }
 
-    [KeyProperty]
-    public virtual User User { get; protected init; }
+    [KeyProperty] public virtual User User { get; protected init; }
 
     public virtual StudentGroup? Group { get; protected set; }
 
@@ -42,10 +41,7 @@ public partial class Student : IEntity
     {
         var builder = new StringBuilder($"{User.FirstName} {User.LastName}");
 
-        if (Group is not null)
-        {
-            builder.Append($" from {Group.Name} ({UserId})");
-        }
+        if (Group is not null) builder.Append($" from {Group.Name} ({UserId})");
 
         return builder.ToString();
     }

@@ -22,7 +22,7 @@ public static class RegistrationExtensions
         collection.AddSingleton(typeof(EntityGeneratorOptions<>));
         collection.TryAddSingleton<Faker>();
 
-        using var scanner = collection.UseAssemblyScanner(typeof(IAssemblyMarker));
+        using ServiceCollectionAssemblyScanner? scanner = collection.UseAssemblyScanner(typeof(IAssemblyMarker));
 
         scanner.EnqueueAdditionOfTypesThat()
             .WouldBeRegisteredAsTypesConstructedFrom(typeof(IEntityGenerator<>))
@@ -36,7 +36,7 @@ public static class RegistrationExtensions
 
     public static IServiceCollection AddDatabaseSeeders(this IServiceCollection collection)
     {
-        using var scanner = collection.UseAssemblyScanner(typeof(IAssemblyMarker));
+        using ServiceCollectionAssemblyScanner? scanner = collection.UseAssemblyScanner(typeof(IAssemblyMarker));
 
         scanner.EnqueueAdditionOfTypesThat()
             .WouldBeRegisteredAs<IDatabaseSeeder>()
@@ -52,17 +52,14 @@ public static class RegistrationExtensions
         this IServiceProvider provider,
         CancellationToken cancellationToken = default)
     {
-        using var scope = provider.CreateScope();
+        using IServiceScope scope = provider.CreateScope();
 
-        var context = scope.ServiceProvider.GetRequiredService<IShreksDatabaseContext>();
+        IShreksDatabaseContext context = scope.ServiceProvider.GetRequiredService<IShreksDatabaseContext>();
         IEnumerable<IDatabaseSeeder> seeders = scope.ServiceProvider
             .GetServices<IDatabaseSeeder>()
             .OrderByDescending(x => x.Priority);
 
-        foreach (var seeder in seeders)
-        {
-            seeder.Seed(context);
-        }
+        foreach (IDatabaseSeeder seeder in seeders) seeder.Seed(context);
 
         await context.SaveChangesAsync(cancellationToken);
     }

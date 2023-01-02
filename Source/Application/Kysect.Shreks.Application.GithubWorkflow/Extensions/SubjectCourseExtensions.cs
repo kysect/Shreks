@@ -7,7 +7,8 @@ namespace Kysect.Shreks.Application.GithubWorkflow.Extensions;
 
 public static class SubjectCourseExtensions
 {
-    public static async Task<SubjectCourse> GetSubjectCourseByOrganization(this DbSet<SubjectCourseAssociation> associations, string organization, CancellationToken cancellationToken)
+    public static async Task<SubjectCourse> GetSubjectCourseByOrganization(
+        this DbSet<SubjectCourseAssociation> associations, string organization, CancellationToken cancellationToken)
     {
         GithubSubjectCourseAssociation? subjectCourseAssociation = await associations
             .OfType<GithubSubjectCourseAssociation>()

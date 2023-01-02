@@ -23,7 +23,9 @@ public class DeletedSubmissionState : ISubmissionState
     }
 
     public ISubmissionState MoveToBanned()
-        => new BannedSubmissionState();
+    {
+        return new BannedSubmissionState();
+    }
 
     public ISubmissionState MoveToActivated()
     {

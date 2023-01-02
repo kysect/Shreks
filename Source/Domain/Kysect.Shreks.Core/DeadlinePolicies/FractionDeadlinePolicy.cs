@@ -14,7 +14,9 @@ public class FractionDeadlinePolicy : DeadlinePolicy
     public Fraction Fraction { get; set; }
 
     public override Points Apply(Points points)
-        => points * Fraction;
+    {
+        return points * Fraction;
+    }
 
     public override bool Equals(DeadlinePolicy? other)
     {

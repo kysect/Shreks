@@ -1,5 +1,6 @@
 using AutoMapper;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
@@ -20,16 +21,18 @@ internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Respon
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
+        SubjectCourse subjectCourse =
+            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
-        var studentGroup = await _context.StudentGroups.GetByIdAsync(request.StudentGroupId, cancellationToken);
+        StudentGroup studentGroup =
+            await _context.StudentGroups.GetByIdAsync(request.StudentGroupId, cancellationToken);
 
-        var subjectCourseGroup = subjectCourse.AddGroup(studentGroup);
+        Core.Study.SubjectCourseGroup subjectCourseGroup = subjectCourse.AddGroup(studentGroup);
 
         await _context.SubjectCourseGroups.AddAsync(subjectCourseGroup, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        var dto = _mapper.Map<SubjectCourseGroupDto>(subjectCourseGroup);
+        SubjectCourseGroupDto? dto = _mapper.Map<SubjectCourseGroupDto>(subjectCourseGroup);
 
         return new Response(dto);
     }

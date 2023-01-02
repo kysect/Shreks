@@ -10,11 +10,17 @@ public class CacheEntryConfiguration : IShreksConfiguration
     {
         if (EntrySize <= 0)
             throw new ArgumentException($"EntrySize in {nameof(CacheEntryConfiguration)} must be greater than 0");
-        
+
         if (AbsoluteExpiration.TotalSeconds <= 0)
-            throw new ArgumentException($"AbsoluteExpiration in {nameof(CacheEntryConfiguration)} must be greater than 0");
+        {
+            throw new ArgumentException(
+                $"AbsoluteExpiration in {nameof(CacheEntryConfiguration)} must be greater than 0");
+        }
 
         if (SlidingExpiration.TotalSeconds <= 0)
-            throw new ArgumentException($"SlidingExpiration in {nameof(CacheEntryConfiguration)} must be greater than 0");
+        {
+            throw new ArgumentException(
+                $"SlidingExpiration in {nameof(CacheEntryConfiguration)} must be greater than 0");
+        }
     }
-} 
+}

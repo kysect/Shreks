@@ -23,7 +23,11 @@ public class SubmissionStateEvaluator : ISubmissionEvaluator
         {
             SubmissionStateKind.Active => ActiveSubmissionPriority,
             SubmissionStateKind.Reviewed => ReviewedSubmissionPriority,
-            _ => 0,
+            SubmissionStateKind.Inactive => 0D,
+            SubmissionStateKind.Deleted => 0D,
+            SubmissionStateKind.Completed => 0D,
+            SubmissionStateKind.Banned => 0D,
+            _ => 0D
         };
     }
 }

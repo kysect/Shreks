@@ -1,13 +1,13 @@
-@using Kysect.Shreks.WebApi.Sdk
-@using Kysect.Shreks.Application.Dto.Study
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
+@using Kysect.Shreks.Application.Dto.Study
 @inject IAssignmentClient Client
 @inject ISafeExecutor SafeExecutor
 
 @if (_groupAssignments is not null)
 {
     <Div>
-        @foreach (var group in _groupAssignments.OrderBy(x => x.GroupName))
+        @foreach (GroupAssignmentDto group in _groupAssignments.OrderBy(x => x.GroupName))
         {
             <GroupAssignmentComponent Assignment="Assignment" Group="group"/>
         }
@@ -26,7 +26,8 @@
         if (Assignment is null)
             return;
 
-        await using var builder = SafeExecutor.Execute(async () => _groupAssignments = await Client.GetGroupAssignmentsAsync(Assignment.Id));
+        await using ISafeExecutionBuilder<IReadOnlyCollection<GroupAssignmentDto>> builder =
+            SafeExecutor.Execute(async () => _groupAssignments = await Client.GetGroupAssignmentsAsync(Assignment.Id));
         builder.Title = "Failed to load group assignments";
     }
 

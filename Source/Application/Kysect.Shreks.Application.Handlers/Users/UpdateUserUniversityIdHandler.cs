@@ -10,8 +10,8 @@ namespace Kysect.Shreks.Application.Handlers.Users;
 
 internal class UpdateUserUniversityIdHandler : IRequestHandler<Command>
 {
-    private readonly IShreksDatabaseContext _context;
     private readonly IAuthorizationService _authorizationService;
+    private readonly IShreksDatabaseContext _context;
 
     public UpdateUserUniversityIdHandler(IShreksDatabaseContext context, IAuthorizationService authorizationService)
     {

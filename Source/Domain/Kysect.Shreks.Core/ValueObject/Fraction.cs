@@ -12,16 +12,22 @@ public readonly record struct Fraction
         Value = value;
     }
 
-    public static Fraction None => new Fraction(0);
+    public static Fraction None => new(0);
 
     public double Value { get; }
 
     public static implicit operator Fraction(double value)
-        => new Fraction(value);
+    {
+        return new(value);
+    }
 
     public static implicit operator double(Fraction fraction)
-        => fraction.Value;
+    {
+        return fraction.Value;
+    }
 
     public static Fraction FromDenormalizedValue(double value)
-        => new Fraction(value / 100);
+    {
+        return new(value / 100);
+    }
 }

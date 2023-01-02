@@ -16,5 +16,7 @@ public class GroupAssignmentSeeder : IDatabaseSeeder
     public int Priority => 1;
 
     public void Seed(IShreksDatabaseContext context)
-        => context.GroupAssignments.AddRange(_generator.GeneratedEntities);
+    {
+        context.GroupAssignments.AddRange(_generator.GeneratedEntities);
+    }
 }
