@@ -13,7 +13,7 @@ using var client = new HttpClient();
 string? stringData = await File.ReadAllTextAsync("student_info.json");
 StudentInfo[]? data = JsonConvert.DeserializeObject<StudentInfo[]>(stringData);
 
-_ = data ?? throw new ArgumentNullException(nameof(stringData));
+_ = data ?? throw new Exception("Deserialization failed");
 
 IEnumerable<GroupName>? groupNames = Enumerable.Range(0, 14)
     .Select(GroupName.FromShortName);
@@ -22,8 +22,8 @@ var identityClient = new IdentityClient(baseUrl, client);
 
 LoginResponse? loginResponse = await identityClient.LoginAsync(new LoginRequest
 {
-    Username = "admin",
-    Password = "Shreksisl0ve-Shreksislife",
+    Username = "",
+    Password = "",
 });
 
 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {loginResponse.Token}");
@@ -61,7 +61,6 @@ foreach (StudentInfo studentInfo in data)
         continue;
         await studentClient.GithubDeleteAsync(user.Id);
         await studentClient.GithubPostAsync(user.Id, studentInfo.GithubUsername);
-        */
     }
     catch (ApiException e) when (e.StatusCode is 204)
     {
@@ -74,7 +73,7 @@ foreach (StudentInfo studentInfo in data)
 }
 
 return;
-/*
+
 var subjectClient = new SubjectClient(baseUrl, client);
 var subjectCourseController = new SubjectCourseClient(baseUrl, client);
 var assignmentClient = new AssignmentsClient(baseUrl, client);
@@ -143,44 +142,9 @@ IEnumerable<Task>? tasks = Enumerable.Range(1, 5).Select(x =>
 foreach (Task? task in tasks)
 {
     await task;
+}
 
 DateTime CreateDateTime(int month, int day)
 {
     return new DateTime(2022, month, day);
-}
-
-namespace Kysect.Shreks.DataImport
-{
-    public readonly record struct StudentInfo(
-        string FullName,
-        string Group,
-        string GithubUsername,
-        string TelegramTag,
-        int IsuNumber,
-        DateTime Submitted);
-
-    public readonly record struct StudentName(string FirstName, string MiddleName, string LastName)
-    {
-        public static StudentName FromString(string value)
-        {
-            string[] split = value.Trim()
-                .Split(' ', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-
-            string lastName = split.Length > 0 ? split[0] : string.Empty;
-            string firstName = split.Length > 1 ? split[1] : string.Empty;
-            string middleName = split.Length > 2 ? split[2] : string.Empty;
-
-            return new StudentName(firstName, middleName, lastName);
-        }
-    }
-
-    public readonly record struct GroupName(string Name)
-    {
-        public static GroupName FromShortName(int value)
-        {
-            return new GroupName($"M32{value:00}1");
-        }
-    }
-
-    public readonly record struct LabConfig(string Title, int Index, double MaxPoints, DateTime Deadline);
 }
