@@ -26,12 +26,16 @@ public static class ShreksDatabaseContextExtensions
             .FirstAsync();
     }
 
-    public static Task<User> GetNotMentorUser(this IShreksDatabaseContext context, GroupAssignment assignment)
+    public static Task<User> GetNotMentorUser(
+        this IShreksDatabaseContext context,
+        GroupAssignment assignment,
+        User excludedUser)
     {
         IEnumerable<Guid> mentors = assignment.Assignment.SubjectCourse.Mentors
             .Select(x => x.UserId);
 
         return context.Users
+            .Where(x => x.Equals(excludedUser) == false)
             .Where(user => mentors.Contains(user.Id) == false)
             .FirstAsync();
     }

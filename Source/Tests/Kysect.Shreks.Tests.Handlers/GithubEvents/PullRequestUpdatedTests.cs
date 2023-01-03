@@ -76,7 +76,7 @@ public class PullRequestUpdatedTests : GithubEventsTestBase
     {
         GroupAssignment groupAssignment = await Context.GetGroupAssignmentWithUnSubmittedStudents();
         Student student = groupAssignment.GetUnSubmittedStudent();
-        User issuer = await Context.GetNotMentorUser(groupAssignment);
+        User issuer = await Context.GetNotMentorUser(groupAssignment, student.User);
 
         string organizationName = groupAssignment.GetOrganizationName();
         string repositoryName = student.GetRepositoryName();
@@ -164,7 +164,7 @@ public class PullRequestUpdatedTests : GithubEventsTestBase
     {
         GroupAssignment groupAssignment = await Context.GetGroupAssignmentWithSubmittedStudents();
         Student student = groupAssignment.GetSubmittedStudent();
-        User issuer = await Context.GetNotMentorUser(groupAssignment);
+        User issuer = await Context.GetNotMentorUser(groupAssignment, student.User);
 
         string organizationName = groupAssignment.GetOrganizationName();
         string repositoryName = student.GetRepositoryName();

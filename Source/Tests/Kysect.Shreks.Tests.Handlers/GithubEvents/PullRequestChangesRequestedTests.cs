@@ -36,7 +36,7 @@ public class PullRequestChangesRequestedTests : GithubEventsTestBase
     public async Task Handle_ShouldThrowUnauthorizedException_WhenIssuedNotByMentor()
     {
         Submission submission = await Context.GetGithubSubmissionAsync(new ActiveSubmissionState());
-        User issuer = await Context.GetNotMentorUser(submission.GroupAssignment);
+        User issuer = await Context.GetNotMentorUser(submission.GroupAssignment, submission.Student.User);
         ISubmissionWorkflowService workflowService = Provider.GetRequiredService<ISubmissionWorkflowService>();
 
         var command = new PullRequestChangesRequested.Command(issuer.Id, submission.Id);
