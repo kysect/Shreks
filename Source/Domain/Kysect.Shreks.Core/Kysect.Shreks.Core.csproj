@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="RichEntity"/>
+        <PackageReference Include="RichEntity" />
     </ItemGroup>
 
     <ItemGroup>

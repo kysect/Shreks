@@ -9,6 +9,7 @@ dotnet_diagnostic.IDE0001.severity = warning
 dotnet_diagnostic.IDE0002.severity = warning
 
 # IDE0003 and IDE0009
+dotnet_diagnostic.SA0001.severity = none
 dotnet_diagnostic.IDE0003.severity = warning
 dotnet_diagnostic.IDE0009.severity = warning
 dotnet_style_qualification_for_field = false:warning

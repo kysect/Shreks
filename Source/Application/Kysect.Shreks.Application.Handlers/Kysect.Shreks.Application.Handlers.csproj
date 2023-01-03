@@ -7,22 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj"/>
-        <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj"/>
-        <ProjectReference Include="..\Kysect.Shreks.Application.Contracts\Kysect.Shreks.Application.Contracts.csproj"/>
-        <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj"/>
-        <ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj"/>
-        <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj" />
+        <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
+        <ProjectReference Include="..\Kysect.Shreks.Application.Contracts\Kysect.Shreks.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
+        <ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
+        <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper"/>
-        <PackageReference Include="Kysect.CommonLib"/>
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection"/>
+        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="Kysect.CommonLib" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     </ItemGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="Kysect.Shreks.Tests.Handlers"/>
+        <InternalsVisibleTo Include="Kysect.Shreks.Tests.Handlers" />
     </ItemGroup>
 
 </Project>
