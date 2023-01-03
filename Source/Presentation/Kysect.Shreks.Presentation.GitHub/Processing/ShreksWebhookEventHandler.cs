@@ -191,6 +191,15 @@ internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
         await eventNotifier.ReactToUserComment(result.IsSuccess);
     }
 
+    private static async Task NotifySubmissionActionMessage(
+        SubmissionActionMessageDto message,
+        IPullRequestEventNotifier eventNotifier,
+        ILogger logger)
+    {
+        await eventNotifier.SendCommentToPullRequest(message.Message);
+        logger.LogInformation("Notify: {Message}", message.Message);
+    }
+
     private async Task<UserDto> GetUserAsync(
         string username,
         CancellationToken cancellationToken)
@@ -253,14 +262,5 @@ internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
         logger.LogInformation("Notify: {Message}", result.Message);
 
         return result;
-    }
-
-    private static async Task NotifySubmissionActionMessage(
-        SubmissionActionMessageDto message,
-        IPullRequestEventNotifier eventNotifier,
-        ILogger logger)
-    {
-        await eventNotifier.SendCommentToPullRequest(message.Message);
-        logger.LogInformation("Notify: {Message}", message.Message);
     }
 }

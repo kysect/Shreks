@@ -239,7 +239,7 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
         return webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
     }
 
-    public GithubPullRequestDescriptor CreateDescriptor(PullRequestEvent @event)
+    private GithubPullRequestDescriptor CreateDescriptor(PullRequestEvent @event)
     {
         string login = @event.Sender!.Login;
         string payload = @event.PullRequest.HtmlUrl;
@@ -259,7 +259,7 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
         return pullRequestDescriptor;
     }
 
-    public GithubPullRequestDescriptor CreateDescriptor(PullRequestReviewEvent pullRequestReviewEvent)
+    private GithubPullRequestDescriptor CreateDescriptor(PullRequestReviewEvent pullRequestReviewEvent)
     {
         return new GithubPullRequestDescriptor(
             pullRequestReviewEvent.Sender!.Login,

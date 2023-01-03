@@ -13,22 +13,7 @@ public readonly record struct Points : IComparable<Points>
 
     public double Value { get; }
 
-    public static Points None => new Points();
-
-    public int CompareTo(Points other)
-    {
-        return Value.CompareTo(other.Value);
-    }
-
-    public static Points Min(Points a, Points b)
-    {
-        return a < b ? a : b;
-    }
-
-    public static Points Max(Points a, Points b)
-    {
-        return a > b ? a : b;
-    }
+    public static Points None => default;
 
     public static implicit operator Points(double value)
     {
@@ -58,6 +43,21 @@ public readonly record struct Points : IComparable<Points>
     public static bool operator <(Points a, Points b)
     {
         return a.Value < b.Value;
+    }
+
+    public int CompareTo(Points other)
+    {
+        return Value.CompareTo(other.Value);
+    }
+
+    public static Points Min(Points a, Points b)
+    {
+        return a < b ? a : b;
+    }
+
+    public static Points Max(Points a, Points b)
+    {
+        return a > b ? a : b;
     }
 
     public override string ToString()

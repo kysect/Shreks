@@ -100,19 +100,19 @@ public class SubmissionCommandContextFactory : ISubmissionCommandContextFactory
         return new CreateSubmissionContext(user.Id, _mediator, CreateFunc, _pullRequestDescriptor.Payload);
     }
 
-    private async Task<UserDto> GetIssuerAsync(CancellationToken cancellationToken)
+    public async Task<UserDto> GetStudentAsync(CancellationToken cancellationToken)
     {
-        var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Sender);
+        var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Repository);
         GetUserByGithubUsername.Response response = await _mediator.Send(query, cancellationToken);
 
         return response.User;
     }
 
-    public async Task<UserDto> GetStudentAsync(CancellationToken cancellationToken)
+    private async Task<UserDto> GetIssuerAsync(CancellationToken cancellationToken)
     {
-        var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Repository);
+        var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Sender);
         GetUserByGithubUsername.Response response = await _mediator.Send(query, cancellationToken);
-        
+
         return response.User;
     }
 }
