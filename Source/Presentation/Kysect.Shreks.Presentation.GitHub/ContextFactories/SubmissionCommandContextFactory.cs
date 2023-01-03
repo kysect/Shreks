@@ -27,13 +27,13 @@ public class SubmissionCommandContextFactory : ISubmissionCommandContextFactory
 
     public async Task<BaseContext> BaseContextAsync(CancellationToken cancellationToken)
     {
-        UserDto user = await GetUserAsync(cancellationToken);
+        UserDto user = await GetIssuerAsync(cancellationToken);
         return new BaseContext(user.Id, _mediator);
     }
 
     public async Task<SubmissionContext> SubmissionContextAsync(CancellationToken cancellationToken)
     {
-        UserDto user = await GetUserAsync(cancellationToken);
+        UserDto user = await GetIssuerAsync(cancellationToken);
 
         var query = new GetCurrentUnratedSubmission.Query(
             _pullRequestDescriptor.Organization,
@@ -48,17 +48,18 @@ public class SubmissionCommandContextFactory : ISubmissionCommandContextFactory
 
     public async Task<UpdateContext> UpdateContextAsync(CancellationToken cancellationToken)
     {
-        UserDto user = await GetUserAsync(cancellationToken);
+        UserDto issuer = await GetIssuerAsync(cancellationToken);
+        UserDto student = await GetStudentAsync(cancellationToken);
 
         var query = new GetAssignment.Query(_pullRequestDescriptor.Organization, _pullRequestDescriptor.BranchName);
         GetAssignment.Response response = await _mediator.Send(query, cancellationToken);
 
-        return new UpdateContext(user.Id, _mediator, response.Assignment, user, _defaultSubmissionProvider);
+        return new UpdateContext(issuer.Id, _mediator, response.Assignment, student, _defaultSubmissionProvider);
     }
 
     public async Task<PayloadAndAssignmentContext> PayloadAndAssignmentContextAsync(CancellationToken cancellationToken)
     {
-        UserDto user = await GetUserAsync(cancellationToken);
+        UserDto user = await GetIssuerAsync(cancellationToken);
 
         var query = new GetAssignment.Query(_pullRequestDescriptor.Organization, _pullRequestDescriptor.BranchName);
         GetAssignment.Response response = await _mediator.Send(query, cancellationToken);
@@ -74,7 +75,7 @@ public class SubmissionCommandContextFactory : ISubmissionCommandContextFactory
 
     public async Task<CreateSubmissionContext> CreateSubmissionContextAsync(CancellationToken cancellationToken)
     {
-        UserDto user = await GetUserAsync(cancellationToken);
+        UserDto user = await GetIssuerAsync(cancellationToken);
 
         var query = new GetAssignment.Query(_pullRequestDescriptor.Organization, _pullRequestDescriptor.BranchName);
         GetAssignment.Response response = await _mediator.Send(query, cancellationToken);
@@ -99,11 +100,19 @@ public class SubmissionCommandContextFactory : ISubmissionCommandContextFactory
         return new CreateSubmissionContext(user.Id, _mediator, CreateFunc, _pullRequestDescriptor.Payload);
     }
 
-    private async Task<UserDto> GetUserAsync(CancellationToken cancellationToken)
+    private async Task<UserDto> GetIssuerAsync(CancellationToken cancellationToken)
     {
         var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Sender);
         GetUserByGithubUsername.Response response = await _mediator.Send(query, cancellationToken);
 
+        return response.User;
+    }
+
+    public async Task<UserDto> GetStudentAsync(CancellationToken cancellationToken)
+    {
+        var query = new GetUserByGithubUsername.Query(_pullRequestDescriptor.Repository);
+        GetUserByGithubUsername.Response response = await _mediator.Send(query, cancellationToken);
+        
         return response.User;
     }
 }
