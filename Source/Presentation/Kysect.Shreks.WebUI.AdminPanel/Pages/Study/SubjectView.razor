@@ -1,6 +1,5 @@
 @page "/adminpanel/subjects/{subjectId:guid}"
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
 @using Kysect.Shreks.Application.Dto.SubjectCourses
 @using Kysect.Shreks.WebUI.AdminPanel.Components.SubjectCourse
 @using Kysect.Shreks.WebUI.AdminPanel.Components
@@ -16,13 +15,14 @@
         </Heading>
 
         <Div>
-            @foreach (SubjectCourseDto course in _courses)
+            @foreach (var course in _courses)
             {
                 <SubjectCourseComponent SubjectCourse="@course"/>
             }
         </Div>
     </Div>
-} else
+}
+else
 {
     <LoaderComponent/>
 }
@@ -36,7 +36,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await using ISafeExecutionBuilder builder = SafeExecutor.Execute(async () => { _courses = await SubjectClient.GetCoursesAsync(SubjectId); });
+        await using var builder = SafeExecutor.Execute(async () => { _courses = await SubjectClient.GetCoursesAsync(SubjectId); });
 
         builder.Title = "Failed to load subject course";
 

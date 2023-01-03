@@ -2,8 +2,8 @@
 
 public class ConcurrentHashSet<T>
 {
-    private readonly HashSet<T> _hashSet = new();
-    private readonly object _lock = new();
+    private readonly HashSet<T> _hashSet = new HashSet<T>();
+    private readonly object _lock = new object();
 
     public void Add(T value)
     {

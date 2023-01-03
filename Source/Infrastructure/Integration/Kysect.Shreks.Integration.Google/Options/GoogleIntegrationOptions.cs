@@ -24,7 +24,7 @@ public class GoogleIntegrationOptions
 
         var initializer = new BaseClientService.Initializer
         {
-            HttpClientInitializer = credentials.CreateScoped(AccessScopes)
+            HttpClientInitializer = credentials.CreateScoped(AccessScopes),
         };
 
         _collection

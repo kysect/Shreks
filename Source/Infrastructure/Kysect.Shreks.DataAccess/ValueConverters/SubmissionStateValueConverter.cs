@@ -26,7 +26,7 @@ public class SubmissionStateValueConverter : ValueConverter<ISubmissionState, in
             SubmissionStateKind.Completed => new CompletedSubmissionState(),
             SubmissionStateKind.Reviewed => new ReviewedSubmissionState(),
             SubmissionStateKind.Banned => new BannedSubmissionState(),
-            _ => throw new ArgumentOutOfRangeException(nameof(kindValue), $@"Invalid state kind {kind:G}")
+            _ => throw new ArgumentOutOfRangeException(nameof(kindValue), $@"Invalid state kind {kind:G}"),
         };
     }
 }

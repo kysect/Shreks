@@ -20,18 +20,19 @@ internal class SubjectCourseGroupClient : ISubjectCourseGroupClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/SubjectCourseGroup")
         {
-            Content = JsonContent.Create(request)
+            Content = JsonContent.Create(request),
         };
 
         return await _handler.SendAsync<SubjectCourseGroupDto>(message, cancellationToken);
     }
 
-    public async Task DeleteAsync(DeleteSubjectCourseGroupRequest request,
+    public async Task DeleteAsync(
+        DeleteSubjectCourseGroupRequest request,
         CancellationToken cancellationToken = default)
     {
         using var message = new HttpRequestMessage(HttpMethod.Delete, "api/SubjectCourseGroup")
         {
-            Content = JsonContent.Create(request)
+            Content = JsonContent.Create(request),
         };
 
         await _handler.SendAsync(message, cancellationToken);

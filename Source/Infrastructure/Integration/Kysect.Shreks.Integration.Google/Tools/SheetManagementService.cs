@@ -46,7 +46,7 @@ public class SheetManagementService : ISheetManagementService
     {
         var addSheetRequest = new Request
         {
-            AddSheet = new AddSheetRequest { Properties = new SheetProperties { Title = sheetTitle } }
+            AddSheet = new AddSheetRequest { Properties = new SheetProperties { Title = sheetTitle } },
         };
 
         _logger.LogDebug("Create sheet with title {sheetTitle}.", sheetTitle);
@@ -89,9 +89,8 @@ public class SheetManagementService : ISheetManagementService
                 {
                     UpdateSheetProperties = new UpdateSheetPropertiesRequest
                     {
-                        Properties = newProperties,
-                        Fields = UpdateAllFields
-                    }
+                        Properties = newProperties, Fields = UpdateAllFields,
+                    },
                 };
             })
             .ToArray();
@@ -110,7 +109,7 @@ public class SheetManagementService : ISheetManagementService
 
         var updateCellsRequest = new Request
         {
-            UpdateCells = new UpdateCellsRequest { Range = allFieldsGridRange, Fields = UpdateAllFields }
+            UpdateCells = new UpdateCellsRequest { Range = allFieldsGridRange, Fields = UpdateAllFields },
         };
 
         var unmergeCellsRequest = new Request { UnmergeCells = new UnmergeCellsRequest { Range = allFieldsGridRange } };

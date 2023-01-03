@@ -6,7 +6,7 @@ public class InstallationCredentialStore : ICredentialStore
 {
     private readonly IGitHubClient _gitHubAppClient;
     private readonly long _installationId;
-    private readonly object _lock = new();
+    private readonly object _lock = new object();
 
     private long _expirationUnixTimestamp;
     private volatile Task<Credentials> _task;
@@ -82,7 +82,7 @@ public class InstallationCredentialStore : ICredentialStore
         {
             NotRefreshing, //refreshing task is not running
             StartRefreshing, //refreshing task is being created
-            Refreshing //refreshing task is running
+            Refreshing, //refreshing task is running
         }
 
         private volatile int _state;

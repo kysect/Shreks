@@ -13,7 +13,7 @@ public readonly record struct Points : IComparable<Points>
 
     public double Value { get; }
 
-    public static Points None => new();
+    public static Points None => new Points();
 
     public int CompareTo(Points other)
     {
@@ -32,22 +32,22 @@ public readonly record struct Points : IComparable<Points>
 
     public static implicit operator Points(double value)
     {
-        return new(value);
+        return new Points(value);
     }
 
     public static Points operator +(Points a, Points b)
     {
-        return new(a.Value + b.Value);
+        return new Points(a.Value + b.Value);
     }
 
     public static Points operator -(Points a, Points b)
     {
-        return new(a.Value - b.Value);
+        return new Points(a.Value - b.Value);
     }
 
     public static Points operator *(Points a, Fraction b)
     {
-        return new(a.Value * b.Value);
+        return new Points(a.Value * b.Value);
     }
 
     public static bool operator >(Points a, Points b)

@@ -13,7 +13,7 @@
         </TableHeader>
         <TableBody>
 
-            @foreach (StudentDto student in Students)
+            @foreach (var student in Students)
             {
                 <TableRow>
                     <TableRowHeader>@(student.UniversityId?.ToString() ?? string.Empty)</TableRowHeader>

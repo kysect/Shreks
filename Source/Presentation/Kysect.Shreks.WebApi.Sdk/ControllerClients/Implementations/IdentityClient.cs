@@ -17,7 +17,7 @@ internal class IdentityClient : IIdentityClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/identity/login")
         {
-            Content = JsonContent.Create(request)
+            Content = JsonContent.Create(request),
         };
 
         return await _handler.SendAsync<LoginResponse>(message, cancellationToken);
@@ -30,12 +30,13 @@ internal class IdentityClient : IIdentityClient
         await _handler.SendAsync(message, cancellationToken);
     }
 
-    public async Task<LoginResponse> RegisterAsync(RegisterUserRequest request,
+    public async Task<LoginResponse> RegisterAsync(
+        RegisterUserRequest request,
         CancellationToken cancellationToken = default)
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/identity/register")
         {
-            Content = JsonContent.Create(request)
+            Content = JsonContent.Create(request),
         };
 
         return await _handler.SendAsync<LoginResponse>(message, cancellationToken);

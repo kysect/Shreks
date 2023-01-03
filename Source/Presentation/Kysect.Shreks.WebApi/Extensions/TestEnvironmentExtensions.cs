@@ -11,7 +11,8 @@ namespace Kysect.Shreks.WebApi.Extensions;
 
 internal static class TestEnvironmentExtensions
 {
-    internal static void AddEntityGeneratorsAndSeeding(this IServiceCollection serviceCollection,
+    internal static void AddEntityGeneratorsAndSeeding(
+        this IServiceCollection serviceCollection,
         TestEnvironmentConfiguration testEnvironmentConfiguration)
     {
         serviceCollection.AddEntityGenerators(o =>

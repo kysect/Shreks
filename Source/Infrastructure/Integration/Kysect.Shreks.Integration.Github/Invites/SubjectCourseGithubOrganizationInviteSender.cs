@@ -12,7 +12,8 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
     private readonly IOrganizationGithubClientProvider _clientProvider;
     private readonly ILogger<SubjectCourseGithubOrganizationInviteSender> _logger;
 
-    public SubjectCourseGithubOrganizationInviteSender(ILogger<SubjectCourseGithubOrganizationInviteSender> logger,
+    public SubjectCourseGithubOrganizationInviteSender(
+        ILogger<SubjectCourseGithubOrganizationInviteSender> logger,
         IOrganizationGithubClientProvider clientProvider)
     {
         _logger = logger;

@@ -10,12 +10,10 @@ namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroup;
 internal class DeleteSubjectCourseGroupHandler : IRequestHandler<Command>
 {
     private readonly IShreksDatabaseContext _context;
-    /*private readonly IMapper _mapper;*/
 
-    public DeleteSubjectCourseGroupHandler(IShreksDatabaseContext context/*, IMapper mapper*/)
+    public DeleteSubjectCourseGroupHandler(IShreksDatabaseContext context)
     {
         _context = context;
-        /*_mapper = mapper;*/
     }
 
     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)

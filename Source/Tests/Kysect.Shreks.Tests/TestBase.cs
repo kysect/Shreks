@@ -17,10 +17,6 @@ namespace Kysect.Shreks.Tests;
 
 public class TestBase : IDisposable
 {
-    protected ShreksDatabaseContext Context { get; }
-    protected IMapper Mapper { get; }
-    protected IServiceProvider Provider { get; }
-
     public TestBase()
     {
         var collection = new ServiceCollection();
@@ -61,6 +57,10 @@ public class TestBase : IDisposable
 
         Provider.UseDatabaseSeeders().GetAwaiter().GetResult();
     }
+
+    protected ShreksDatabaseContext Context { get; }
+    protected IMapper Mapper { get; }
+    protected IServiceProvider Provider { get; }
 
     public void Dispose()
     {

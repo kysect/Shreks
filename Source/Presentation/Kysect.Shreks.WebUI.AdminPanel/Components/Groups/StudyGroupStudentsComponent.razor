@@ -28,7 +28,7 @@
         </TableHeader>
         <TableBody>
 
-            @foreach (StudentDto student in GetStudents())
+            @foreach (var student in GetStudents())
             {
                 <StudyGroupStudentComponent Student="student" GroupComponent="Parent"/>
             }

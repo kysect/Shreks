@@ -14,13 +14,19 @@ public readonly record struct Fraction
         Value = value;
     }
 
-    public static Fraction None => new(0);
+    public static Fraction None => new Fraction(0);
 
     public double Value { get; }
 
-    public static implicit operator Fraction(double value) => new(value);
+    public static implicit operator Fraction(double value)
+    {
+        return new Fraction(value);
+    }
 
-    public static implicit operator double(Fraction fraction) => fraction.Value;
+    public static implicit operator double(Fraction fraction)
+    {
+        return fraction.Value;
+    }
 
     public static Fraction FromDenormalizedValue(double value)
     {

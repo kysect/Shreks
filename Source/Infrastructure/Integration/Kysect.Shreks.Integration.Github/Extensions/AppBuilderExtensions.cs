@@ -6,7 +6,8 @@ namespace Kysect.Shreks.Integration.Github.Extensions;
 
 public static class AppBuilderExtensions
 {
-    public static IApplicationBuilder UseGithubIntegration(this IApplicationBuilder app,
+    public static IApplicationBuilder UseGithubIntegration(
+        this IApplicationBuilder app,
         GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
         ArgumentNullException.ThrowIfNull(githubIntegrationConfiguration.GithubAppConfiguration.GithubAppSecret);

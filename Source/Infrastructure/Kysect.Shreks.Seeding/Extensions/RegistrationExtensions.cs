@@ -60,7 +60,9 @@ public static class RegistrationExtensions
             .OrderByDescending(x => x.Priority);
 
         foreach (IDatabaseSeeder seeder in seeders)
+        {
             seeder.Seed(context);
+        }
 
         await context.SaveChangesAsync(cancellationToken);
     }

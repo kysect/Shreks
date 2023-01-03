@@ -14,12 +14,13 @@
     </Heading>
 
     <Div>
-        @foreach (SubjectDto subject in _subjects.OrderBy(x => x.Title.Length))
+        @foreach (var subject in _subjects.OrderBy(x => x.Title.Length))
         {
             <SubjectInfoComponent Subject=@subject/>
         }
     </Div>
-} else
+}
+else
 {
     <LoaderComponent/>
 }

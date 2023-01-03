@@ -11,7 +11,9 @@ public partial class Mentor : IEntity
         Course = course;
     }
 
-    [KeyProperty] public virtual User User { get; protected init; }
+    [KeyProperty]
+    public virtual User User { get; protected init; }
 
-    [KeyProperty] public virtual SubjectCourse Course { get; protected init; }
+    [KeyProperty]
+    public virtual SubjectCourse Course { get; protected init; }
 }

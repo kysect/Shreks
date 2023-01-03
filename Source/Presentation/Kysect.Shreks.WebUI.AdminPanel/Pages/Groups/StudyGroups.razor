@@ -14,12 +14,13 @@
     </Heading>
 
     <Div>
-        @foreach (StudyGroupDto group in _groups.OrderBy(x => x.Name))
+        @foreach (var group in _groups.OrderBy(x => x.Name))
         {
             <StudyGroupInfoComponent Group="group"/>
         }
     </Div>
-} else
+}
+else
 {
     <LoaderComponent/>
 }

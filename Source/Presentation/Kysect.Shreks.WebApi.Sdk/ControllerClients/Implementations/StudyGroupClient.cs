@@ -21,7 +21,7 @@ internal class StudyGroupClient : IStudyGroupClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/StudyGroup")
         {
-            Content = JsonContent.Create(request)
+            Content = JsonContent.Create(request),
         };
 
         return await _handler.SendAsync<StudyGroupDto>(message, cancellationToken);
@@ -78,7 +78,7 @@ internal class StudyGroupClient : IStudyGroupClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Put, $"api/StudyGroup/{id}")
         {
-            Content = JsonContent.Create(request)
+            Content = JsonContent.Create(request),
         };
 
         return await _handler.SendAsync<StudyGroupDto>(message, cancellationToken);

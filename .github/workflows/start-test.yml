@@ -5,7 +5,7 @@ on:
     branches: [ dev ]
     paths:
       - 'Source/**'
-    
+
 jobs:
   deploy:
     name: Deploy Test
@@ -14,8 +14,8 @@ jobs:
     steps:
       - name: Docker Prune
         run: echo "Pruning docker builder cache" && docker builder prune -f
-        
+
       - uses: actions/checkout@v2
-        
+
       - name: Run deploy script
         run: YaCloud/start_test.py

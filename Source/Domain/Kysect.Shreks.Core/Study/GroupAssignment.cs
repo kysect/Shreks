@@ -21,9 +21,11 @@ public partial class GroupAssignment : IEntity
         _submissions = new HashSet<Submission>();
     }
 
-    [KeyProperty] public virtual StudentGroup Group { get; protected init; }
+    [KeyProperty]
+    public virtual StudentGroup Group { get; protected init; }
 
-    [KeyProperty] public virtual Assignment Assignment { get; protected init; }
+    [KeyProperty]
+    public virtual Assignment Assignment { get; protected init; }
 
     public DateOnly Deadline { get; set; }
     public virtual IReadOnlyCollection<Submission> Submissions => _submissions;

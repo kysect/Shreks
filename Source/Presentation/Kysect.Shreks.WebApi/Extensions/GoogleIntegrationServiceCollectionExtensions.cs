@@ -6,13 +6,12 @@ namespace Kysect.Shreks.WebApi.Extensions;
 
 internal static class GoogleIntegrationServiceCollectionExtensions
 {
-    internal static IServiceCollection AddGoogleIntegrationServices(this IServiceCollection serviceCollection,
+    internal static IServiceCollection AddGoogleIntegrationServices(
+        this IServiceCollection serviceCollection,
         WebApiConfiguration webApiConfiguration)
     {
         if (!webApiConfiguration.GoogleIntegrationConfiguration.EnableGoogleIntegration)
-        {
             return serviceCollection.AddDummyGoogleIntegration();
-        }
 
         return serviceCollection
             .AddGoogleIntegration(o => o

@@ -2,7 +2,7 @@
 @if (Associations is not null)
 {
     <Div>
-        @foreach (SubjectCourseAssociationDto association in Associations)
+        @foreach (var association in Associations)
         {
             <Text>
                 <Heading Size="HeadingSize.Is6" Display="Display.Inline">
@@ -44,7 +44,7 @@
         {
             "GithubSubjectCourseAssociation" => "Github",
             "GoogleTableSubjectCourseAssociation" => "Google",
-            _ => type
+            _ => type,
             };
     }
 

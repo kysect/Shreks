@@ -15,7 +15,8 @@ public class InternalController : ControllerBase
     private readonly DeveloperEnvironmentSeeder _developerEnvironmentSeeder;
     private readonly TestEnvironmentConfiguration _testEnvironmentConfiguration;
 
-    public InternalController(DeveloperEnvironmentSeeder developerEnvironmentSeeder,
+    public InternalController(
+        DeveloperEnvironmentSeeder developerEnvironmentSeeder,
         TestEnvironmentConfiguration testEnvironmentConfiguration)
     {
         _testEnvironmentConfiguration = testEnvironmentConfiguration;
@@ -43,7 +44,7 @@ public class InternalController : ControllerBase
                     Status = (int)HttpStatusCode.BadRequest,
                     Title = e.Message,
                     Detail =
-                        "You must put string 'Testing' into environment field if you have 100% ensured that it is not a production environment"
+                        "You must put string 'Testing' into environment field if you have 100% ensured that it is not a production environment",
                 });
         }
 

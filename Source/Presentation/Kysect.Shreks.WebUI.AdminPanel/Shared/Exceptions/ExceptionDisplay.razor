@@ -13,7 +13,7 @@
          Class="hide-scroll-bar">
 
         <Div Flex="Flex.Column">
-            @foreach (ExceptionMessage message in Store.Exceptions)
+            @foreach (var message in Store.Exceptions)
             {
                 <ExceptionMessageComponent Message="@message"Dismiss="Store.Dismiss"/>
             }

@@ -11,7 +11,10 @@ public class PullRequestEventNotifier : IPullRequestEventNotifier
     private readonly ILogger _logger;
     private readonly WebhookEvent _webhookEvent;
 
-    public PullRequestEventNotifier(IActionNotifier actionNotifier, WebhookEvent webhookEvent, long issueNumber,
+    public PullRequestEventNotifier(
+        IActionNotifier actionNotifier,
+        WebhookEvent webhookEvent,
+        long issueNumber,
         ILogger logger)
     {
         _actionNotifier = actionNotifier;

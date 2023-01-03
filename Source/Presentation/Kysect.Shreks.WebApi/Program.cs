@@ -13,7 +13,8 @@ internal class Program
         builder.Host.UseSerilogForAppLogs(builder.Configuration);
 
         var webApiConfiguration = new WebApiConfiguration(builder.Configuration);
-        IConfigurationSection identityConfigurationSection = builder.Configuration.GetSection("Identity").GetSection("IdentityConfiguration");
+        IConfigurationSection identityConfigurationSection =
+            builder.Configuration.GetSection("Identity").GetSection("IdentityConfiguration");
 
         builder.Services.ConfigureServiceCollection(webApiConfiguration,
             identityConfigurationSection,

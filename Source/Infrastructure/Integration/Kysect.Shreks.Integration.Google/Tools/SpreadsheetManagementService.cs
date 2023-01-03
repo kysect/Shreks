@@ -20,7 +20,7 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
 
     private const string UpdateTitle = "title";
 
-    private static readonly Permission AnyoneViewerPermission = new() { Type = "anyone", Role = "reader" };
+    private static readonly Permission AnyoneViewerPermission = new Permission { Type = "anyone", Role = "reader" };
 
     private readonly DriveService _driveService;
     private readonly ILogger<SheetManagementService> _logger;
@@ -44,9 +44,7 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
     {
         var spreadsheetToCreate = new File
         {
-            Parents = _tablesParentsProvider.GetParents(),
-            MimeType = SpreadsheetType,
-            Name = title
+            Parents = _tablesParentsProvider.GetParents(), MimeType = SpreadsheetType, Name = title,
         };
 
         _logger.LogDebug("Create file {title} on Google drive.", title);
@@ -76,9 +74,8 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
         {
             UpdateSheetProperties = new UpdateSheetPropertiesRequest
             {
-                Properties = defaultSheetProperties,
-                Fields = UpdateTitle
-            }
+                Properties = defaultSheetProperties, Fields = UpdateTitle,
+            },
         };
 
         _logger.LogDebug("Configure default sheet for {spreadsheetId}.", spreadsheetId);

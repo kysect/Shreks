@@ -18,7 +18,9 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
     private readonly IGithubUserProvider _githubUserProvider;
     private readonly IMapper _mapper;
 
-    public UpdateUserGithubUsernameHandler(IShreksDatabaseContext context, IMapper mapper,
+    public UpdateUserGithubUsernameHandler(
+        IShreksDatabaseContext context,
+        IMapper mapper,
         IGithubUserProvider githubUserProvider)
     {
         _context = context;
@@ -42,8 +44,8 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
 
         if (!isGithubUserExists)
         {
-            throw new DomainInvalidOperationException(
-                $"Github user with username {request.GithubUsername} does not exist");
+            string message = $"Github user with username {request.GithubUsername} does not exist";
+            throw new DomainInvalidOperationException(message);
         }
 
         var association = new GithubUserAssociation(user, request.GithubUsername);

@@ -60,7 +60,7 @@ public static class RowComponentExtensions
         return (rowNumber % 2) switch
         {
             0 => row.FilledWith(Color.AliceBlue),
-            _ => row.FilledWith(Color.Transparent)
+            _ => row.FilledWith(Color.Transparent),
         };
     }
 }

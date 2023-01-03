@@ -55,10 +55,14 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
             .Distinct();
 
         foreach (User user in users)
+        {
             subjectCourse.AddMentor(user);
+        }
 
         foreach (DeadlinePolicy deadline in deadlines)
+        {
             subjectCourse.AddDeadlinePolicy(deadline);
+        }
 
         subject.AddCourse(subjectCourse);
 

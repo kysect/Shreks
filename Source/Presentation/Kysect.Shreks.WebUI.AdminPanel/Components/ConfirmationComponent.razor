@@ -21,7 +21,8 @@
             {
                 <Button Color="Color.Primary" Clicked="Execute">YES</Button>
                 <Button Color="Color.Secondary" Clicked="Dismiss">No</Button>
-            } else
+            }
+            else
             {
                 <Button Disabled="@Cancelled" Color="Color.Danger" Clicked="Cancel">Cancel</Button>
             }
@@ -42,7 +43,7 @@
     public bool Cancelled { get; private set; }
 
     private Modal? _modal;
-    private CancellationTokenSource _cts = new();
+    private CancellationTokenSource _cts = new CancellationTokenSource();
 
     public Task Show()
     {
@@ -64,7 +65,8 @@
         try
         {
             await (Action?.Invoke(_cts.Token) ?? Task.CompletedTask);
-        } catch (OperationCanceledException)
+        }
+        catch (OperationCanceledException)
         {
             _cts = new CancellationTokenSource();
         }

@@ -27,7 +27,7 @@ public class SubmissionStateEvaluator : ISubmissionEvaluator
             SubmissionStateKind.Deleted => 0D,
             SubmissionStateKind.Completed => 0D,
             SubmissionStateKind.Banned => 0D,
-            _ => 0D
+            _ => 0D,
         };
     }
 }

@@ -9,7 +9,9 @@ public class ServiceOrganizationGithubClientProvider : IServiceOrganizationGithu
     private readonly IInstallationClientFactory _clientFactory;
     private readonly string _serviceOrganization;
 
-    public ServiceOrganizationGithubClientProvider(IGitHubClient appClient, IInstallationClientFactory clientFactory,
+    public ServiceOrganizationGithubClientProvider(
+        IGitHubClient appClient,
+        IInstallationClientFactory clientFactory,
         string serviceOrganization)
     {
         ArgumentNullException.ThrowIfNull(appClient);

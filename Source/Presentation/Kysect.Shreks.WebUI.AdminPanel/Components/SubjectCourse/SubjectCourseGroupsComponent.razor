@@ -7,12 +7,13 @@
 @if (_groups is not null)
 {
     <Div>
-        @foreach (ExtendedSubjectCourseGroupDto group in _groups.OrderBy(x => x.Group.Name))
+        @foreach (var group in _groups.OrderBy(x => x.Group.Name))
         {
             <StudyGroupInfoComponent Group="@group.Group"/>
         }
     </Div>
-} else
+}
+else
 {
     <LoaderComponent/>
 }

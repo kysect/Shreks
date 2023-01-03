@@ -59,7 +59,7 @@ public partial class SubmissionQueue : IEntity<Guid>
         {
             SortingOrder.Ascending => groupings.OrderBy(x => x.Key),
             SortingOrder.Descending => groupings.OrderByDescending(x => x.Key),
-            _ => throw new UnsupportedOperationException(nameof(evaluator.SortingOrder))
+            _ => throw new UnsupportedOperationException(nameof(evaluator.SortingOrder)),
         };
 
         if (evaluators.IsAtEnd)

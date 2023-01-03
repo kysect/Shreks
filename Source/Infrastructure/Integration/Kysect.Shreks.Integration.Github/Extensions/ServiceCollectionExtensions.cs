@@ -8,13 +8,9 @@ using Kysect.Shreks.Integration.Github.Entities;
 using Kysect.Shreks.Integration.Github.Helpers;
 using Kysect.Shreks.Integration.Github.Invites;
 using Kysect.Shreks.Integration.Github.Providers;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
-using System.Security.Claims;
 
 namespace Kysect.Shreks.Integration.Github.Extensions;
 
@@ -39,8 +35,8 @@ public static class ServiceCollectionExtensions
     {
         if (string.IsNullOrWhiteSpace(githubIntegrationConfiguration.GithubAppConfiguration.PrivateKey))
         {
-            throw new ArgumentException(@"Github app configuration is missing private key",
-                nameof(githubIntegrationConfiguration));
+            const string message = @"Github app configuration is missing private key";
+            throw new ArgumentException(message, nameof(githubIntegrationConfiguration));
         }
 
         services.AddSingleton(
@@ -52,14 +48,13 @@ public static class ServiceCollectionExtensions
                         githubIntegrationConfiguration.GithubAppConfiguration.AppIntegrationId, // The GitHub App Id
                     ExpirationSeconds =
                         githubIntegrationConfiguration.GithubAppConfiguration
-                            .JwtExpirationSeconds // 10 minutes is the maximum time allowed
+                            .JwtExpirationSeconds, // 10 minutes is the maximum time allowed
                 }));
 
         services.AddSingleton<IShreksMemoryCache, ShreksMemoryCache>(_ => new ShreksMemoryCache(
             new MemoryCacheOptions
             {
-                SizeLimit = cacheConfiguration.SizeLimit,
-                ExpirationScanFrequency = cacheConfiguration.Expiration
+                SizeLimit = cacheConfiguration.SizeLimit, ExpirationScanFrequency = cacheConfiguration.Expiration,
             },
             new MemoryCacheEntryOptions()
                 .SetSize(cacheConfiguration.CacheEntryConfiguration.EntrySize)
@@ -90,11 +85,13 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IServiceOrganizationGithubClientProvider, ServiceOrganizationGithubClientProvider>(
             serviceProvider =>
             {
-                if (string.IsNullOrWhiteSpace(githubIntegrationConfiguration.GithubAppConfiguration
-                        .ServiceOrganizationName))
+                string? serviceOrganizationName = githubIntegrationConfiguration
+                    .GithubAppConfiguration.ServiceOrganizationName;
+
+                if (string.IsNullOrWhiteSpace(serviceOrganizationName))
                 {
-                    throw new ArgumentException(@"GitHub Service Organization Name is missing",
-                        nameof(githubIntegrationConfiguration));
+                    const string message = @"GitHub Service Organization Name is missing";
+                    throw new ArgumentException(message, nameof(githubIntegrationConfiguration));
                 }
 
                 IGitHubClient appClient = serviceProvider.GetRequiredService<IGitHubClient>();
@@ -102,7 +99,7 @@ public static class ServiceCollectionExtensions
                     serviceProvider.GetRequiredService<IInstallationClientFactory>();
 
                 return new ServiceOrganizationGithubClientProvider(appClient, installationClientFactory,
-                    githubIntegrationConfiguration.GithubAppConfiguration.ServiceOrganizationName);
+                    serviceOrganizationName);
             });
 
         return services;

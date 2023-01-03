@@ -23,9 +23,11 @@ public partial class StudentAssignment : IEntity
         Assignment = assignment;
     }
 
-    [KeyProperty] public Student Student { get; }
+    [KeyProperty]
+    public Student Student { get; }
 
-    [KeyProperty] public GroupAssignment Assignment { get; }
+    [KeyProperty]
+    public GroupAssignment Assignment { get; }
 
     public StudentAssignmentPoints? Points => CalculatePoints();
 

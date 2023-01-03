@@ -16,7 +16,8 @@ namespace Kysect.Shreks.WebApi.Extensions;
 
 internal static class ServiceCollectionExtensions
 {
-    internal static IServiceCollection ConfigureServiceCollection(this IServiceCollection serviceCollection,
+    internal static IServiceCollection ConfigureServiceCollection(
+        this IServiceCollection serviceCollection,
         WebApiConfiguration webApiConfiguration,
         IConfigurationSection identityConfigurationSection,
         bool isDevelopmentEnvironment)
@@ -49,13 +50,12 @@ internal static class ServiceCollectionExtensions
 
         serviceCollection
             .AddGoogleIntegrationServices(webApiConfiguration)
-            .AddGithubServices(webApiConfiguration.CacheConfiguration, webApiConfiguration.GithubIntegrationConfiguration)
+            .AddGithubServices(webApiConfiguration.CacheConfiguration,
+                webApiConfiguration.GithubIntegrationConfiguration)
             .AddGithubWorkflowServices();
 
         if (isDevelopmentEnvironment && webApiConfiguration.TestEnvironmentConfiguration is not null)
-        {
             serviceCollection.AddEntityGeneratorsAndSeeding(webApiConfiguration.TestEnvironmentConfiguration);
-        }
 
         serviceCollection.AddRazorPages();
 

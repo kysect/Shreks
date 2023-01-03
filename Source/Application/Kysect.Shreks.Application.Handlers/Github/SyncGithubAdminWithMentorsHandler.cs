@@ -77,7 +77,9 @@ internal class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdm
         return currentMentors.ToHashSet();
     }
 
-    private async Task CreateMentorFromAdmin(SubjectCourse subjectCourse, string adminUsername,
+    private async Task CreateMentorFromAdmin(
+        SubjectCourse subjectCourse,
+        string adminUsername,
         CancellationToken cancellationToken)
     {
         GithubUserAssociation? userAssociation = await _shreksDatabaseContext

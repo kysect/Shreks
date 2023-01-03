@@ -15,7 +15,8 @@ public partial class Student : IEntity
         group.AddStudent(this);
     }
 
-    [KeyProperty] public virtual User User { get; protected init; }
+    [KeyProperty]
+    public virtual User User { get; protected init; }
 
     public virtual StudentGroup? Group { get; protected set; }
 

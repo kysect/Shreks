@@ -22,7 +22,7 @@ public static class EqualityComparerFactory
             {
                 (null, null) => true,
                 (null, not null) or (not null, null) => false,
-                _ => _comparer.Invoke(x, y)
+                _ => _comparer.Invoke(x, y),
             };
         }
 

@@ -20,11 +20,11 @@ var settings = new CSharpClientGeneratorSettings
         TimeSpanType = "System.TimeSpan",
         DateType = "System.DateOnly",
         DateTimeType = "System.DateTime",
-        EnumNameGenerator = new DefaultEnumNameGenerator()
+        EnumNameGenerator = new DefaultEnumNameGenerator(),
     },
     GenerateClientInterfaces = true,
     ClientClassAccessModifier = "public",
-    OperationNameGenerator = new MultipleClientsFromFirstTagAndPathSegmentsOperationNameGenerator()
+    OperationNameGenerator = new MultipleClientsFromFirstTagAndPathSegmentsOperationNameGenerator(),
 };
 
 

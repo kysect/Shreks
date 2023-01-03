@@ -14,7 +14,8 @@ namespace Kysect.Shreks.Playground.Github.TestEnv;
 
 public static class TestEnvExtensions
 {
-    public static IServiceCollection AddGithubPlaygroundDatabase(this IServiceCollection serviceCollection,
+    public static IServiceCollection AddGithubPlaygroundDatabase(
+        this IServiceCollection serviceCollection,
         TestEnvironmentConfiguration config)
     {
         serviceCollection

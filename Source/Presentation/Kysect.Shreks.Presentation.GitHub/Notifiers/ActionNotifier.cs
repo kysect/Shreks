@@ -52,7 +52,9 @@ public class ActionNotifier : IActionNotifier
             new NewReaction(isSuccessful ? ReactionType.Plus1 : ReactionType.Minus1));
     }
 
-    private void ParseWebhookEvent(WebhookEvent webhookEvent, out Repository repository,
+    private void ParseWebhookEvent(
+        WebhookEvent webhookEvent,
+        out Repository repository,
         out InstallationLite installation)
     {
         if (webhookEvent is null)

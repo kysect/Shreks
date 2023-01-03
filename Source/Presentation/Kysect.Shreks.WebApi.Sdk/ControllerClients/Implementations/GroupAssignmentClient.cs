@@ -20,7 +20,7 @@ internal class GroupAssignmentClient : IGroupAssignmentClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/GroupAssignment")
         {
-            Content = JsonContent.Create(request)
+            Content = JsonContent.Create(request),
         };
 
         return await _handler.SendAsync<GroupAssignmentDto>(message, cancellationToken);

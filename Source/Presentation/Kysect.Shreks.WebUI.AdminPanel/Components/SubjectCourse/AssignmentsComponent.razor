@@ -2,11 +2,12 @@
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Assignments
 @if (Assignments is not null)
 {
-    @foreach (AssignmentDto assignment in Assignments.OrderBy(x => x.Order))
+    @foreach (var assignment in Assignments.OrderBy(x => x.Order))
     {
         <AssignmentInfoComponent Assignment="assignment"/>
     }
-} else
+}
+else
 {
     <LoaderComponent/>
 }

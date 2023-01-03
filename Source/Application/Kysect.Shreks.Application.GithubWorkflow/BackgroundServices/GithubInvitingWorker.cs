@@ -17,7 +17,8 @@ public class GithubInvitingWorker : BackgroundService
     private readonly ILogger<GithubInvitingWorker> _logger;
     private readonly IServiceScopeFactory _serviceProvider;
 
-    public GithubInvitingWorker(IServiceScopeFactory serviceProvider,
+    public GithubInvitingWorker(
+        IServiceScopeFactory serviceProvider,
         ILogger<GithubInvitingWorker> logger)
     {
         _logger = logger;

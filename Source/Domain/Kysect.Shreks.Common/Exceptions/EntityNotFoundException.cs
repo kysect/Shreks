@@ -11,7 +11,9 @@ public class EntityNotFoundException : NotFoundException
         return new EntityNotFoundException($"Entity of type {typeof(T).Name} with id {id} was not found");
     }
 
-    public static EntityNotFoundException AssignmentWasNotFound(string branchName, string subjectCourseTitle,
+    public static EntityNotFoundException AssignmentWasNotFound(
+        string branchName,
+        string subjectCourseTitle,
         string subjectCourseAssignments)
     {
         return new EntityNotFoundException(string.Format(UserMessages.AssignmentNotFound, branchName,

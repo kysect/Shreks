@@ -28,9 +28,7 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
 
         var userRepositoryFromTemplate = new NewRepositoryFromTemplate(newRepositoryName)
         {
-            Owner = organization,
-            Description = null,
-            Private = true
+            Owner = organization, Description = null, Private = true,
         };
 
         await client.Repository.Generate(

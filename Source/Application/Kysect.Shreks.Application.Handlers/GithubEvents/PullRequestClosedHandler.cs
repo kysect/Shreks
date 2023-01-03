@@ -34,7 +34,7 @@ internal class PullRequestClosedHandler : IRequestHandler<Command, Response>
         {
             (true, true) => await workflow.SubmissionAcceptedAsync(issuerId, submissionId, cancellationToken),
             (true, false) => await workflow.SubmissionRejectedAsync(issuerId, submissionId, cancellationToken),
-            (false, _) => await workflow.SubmissionAbandonedAsync(issuerId, submissionId, isMerged, cancellationToken)
+            (false, _) => await workflow.SubmissionAbandonedAsync(issuerId, submissionId, isMerged, cancellationToken),
         };
 #pragma warning restore IDE0072
 

@@ -5,7 +5,9 @@ namespace Kysect.Shreks.WebApi.Extensions;
 
 internal static class StartupExtensions
 {
-    internal static WebApplication Configure(this WebApplication app, GithubIntegrationConfiguration githubIntegrationConfiguration)
+    internal static WebApplication Configure(
+        this WebApplication app,
+        GithubIntegrationConfiguration githubIntegrationConfiguration)
     {
         app.UseRequestLogging();
 

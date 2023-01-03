@@ -1,5 +1,4 @@
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
 @using Kysect.Shreks.Application.Dto.SubjectCourses
 @using Kysect.Shreks.Application.Dto.Study
 @inject ISubjectCourseClient Client
@@ -26,7 +25,7 @@
                         </BarItem>
 
                         @{
-                            string? organizationName = GithubOrganizationName;
+                            var organizationName = GithubOrganizationName;
                         }
 
                         @if (organizationName is not null)
@@ -97,7 +96,7 @@
         {
             nameof(_assignments) => ProcessAssignmentsSelected(),
             nameof(_subjectCourseGroups) => ProcessSubjectCourseGroupsSelected(),
-            _ => Task.CompletedTask
+            _ => Task.CompletedTask,
             };
     }
 
@@ -106,7 +105,7 @@
         if (SubjectCourse is null || _assignments is not null)
             return;
 
-        await using ISafeExecutionBuilder builder = SafeExecutor.Execute(async () => { _assignments = await Client.GetAssignmentsAsync(SubjectCourse.Id); });
+        await using var builder = SafeExecutor.Execute(async () => { _assignments = await Client.GetAssignmentsAsync(SubjectCourse.Id); });
     }
 
     private async Task ProcessSubjectCourseGroupsSelected()
@@ -114,7 +113,7 @@
         if (SubjectCourse is null || _subjectCourseGroups is not null)
             return;
 
-        await using ISafeExecutionBuilder builder = SafeExecutor.Execute(async () => { _subjectCourseGroups = await Client.GetGroupsAsync(SubjectCourse.Id); });
+        await using var builder = SafeExecutor.Execute(async () => { _subjectCourseGroups = await Client.GetGroupsAsync(SubjectCourse.Id); });
     }
 
 }

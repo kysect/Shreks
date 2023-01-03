@@ -40,7 +40,9 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
             .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);
 
         foreach (IMutableForeignKey fk in cascadeFKs)
+        {
             fk.DeleteBehavior = DeleteBehavior.Restrict;
+        }
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAssemblyMarker).Assembly);
     }

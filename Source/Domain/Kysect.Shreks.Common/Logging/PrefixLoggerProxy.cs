@@ -13,7 +13,11 @@ public class PrefixLoggerProxy : ILogger
         _prefix = prefix;
     }
 
-    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
+    public void Log<TState>(
+        LogLevel logLevel,
+        EventId eventId,
+        TState state,
+        Exception? exception,
         Func<TState, Exception?, string> formatter)
     {
         _logger.Log(logLevel, eventId, PrepareMessage(state), exception,

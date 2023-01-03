@@ -15,7 +15,9 @@ internal class BanSubmissionHandler : IRequestHandler<Command, Response>
     private readonly IMapper _mapper;
     private readonly IPermissionValidator _permissionValidator;
 
-    public BanSubmissionHandler(IPermissionValidator permissionValidator, IShreksDatabaseContext context,
+    public BanSubmissionHandler(
+        IPermissionValidator permissionValidator,
+        IShreksDatabaseContext context,
         IMapper mapper)
     {
         _permissionValidator = permissionValidator;

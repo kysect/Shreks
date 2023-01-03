@@ -39,7 +39,8 @@ public class MappingTest : TestBase
     [InlineData(SubmissionStateDto.Completed, SubmissionStateKind.Completed)]
     [InlineData(SubmissionStateDto.Reviewed, SubmissionStateKind.Reviewed)]
     [InlineData(SubmissionStateDto.Banned, SubmissionStateKind.Banned)]
-    public void Map_Should_MapSubmissionStateDtoToSubmissionState(SubmissionStateDto stateDto,
+    public void Map_Should_MapSubmissionStateDtoToSubmissionState(
+        SubmissionStateDto stateDto,
         SubmissionStateKind state)
     {
         SubmissionStateKind receivedState = _mapper.Map<SubmissionStateKind>(stateDto);

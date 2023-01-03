@@ -4,6 +4,8 @@ namespace Kysect.Shreks.Commands.Tools;
 
 public interface IDefaultSubmissionProvider
 {
-    Task<SubmissionDto> GetDefaultSubmissionAsync(Guid studentId, Guid assignmentId,
+    Task<SubmissionDto> GetDefaultSubmissionAsync(
+        Guid studentId,
+        Guid assignmentId,
         CancellationToken cancellationToken);
 }

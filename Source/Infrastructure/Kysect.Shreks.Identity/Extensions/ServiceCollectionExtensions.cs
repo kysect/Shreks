@@ -46,7 +46,7 @@ public static class ServiceCollectionExtensions
                 ValidateAudience = true,
                 ValidAudience = identityConfiguration.Audience,
                 ValidIssuer = identityConfiguration.Issuer,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(identityConfiguration.Secret))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(identityConfiguration.Secret)),
             };
         });
     }

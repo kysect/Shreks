@@ -14,9 +14,11 @@ public partial class SubjectCourseGroup : IEntity
         StudentGroup = studentGroup;
     }
 
-    [KeyProperty] public virtual SubjectCourse SubjectCourse { get; protected init; }
+    [KeyProperty]
+    public virtual SubjectCourse SubjectCourse { get; protected init; }
 
-    [KeyProperty] public virtual StudentGroup StudentGroup { get; protected init; }
+    [KeyProperty]
+    public virtual StudentGroup StudentGroup { get; protected init; }
 
     public override string ToString()
     {

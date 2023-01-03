@@ -83,7 +83,7 @@
             SubjectsPath => _subjectsLink,
             StudentsPath => _studentsLink,
             GroupsPath => _groupsLink,
-            _ => null
+            _ => null,
             };
 
         if (component is not null)
@@ -93,7 +93,7 @@
     private void Activate(BaseComponent component)
     {
 #pragma warning disable BL0005
-        // Component parameter 'Class' should not be set outside of its component.
+    // Component parameter 'Class' should not be set outside of its component.
         component.Class = $"active {component.Class}";
 #pragma warning restore BL0005
     }

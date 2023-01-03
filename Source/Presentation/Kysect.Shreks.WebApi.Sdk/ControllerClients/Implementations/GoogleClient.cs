@@ -11,7 +11,8 @@ internal class GoogleClient : IGoogleClient
         _handler = new ClientRequestHandler(client);
     }
 
-    public async Task ForceSubjectCourseTableSyncAsync(Guid subjectCourseId,
+    public async Task ForceSubjectCourseTableSyncAsync(
+        Guid subjectCourseId,
         CancellationToken cancellationToken = default)
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/Google/force-sync");
