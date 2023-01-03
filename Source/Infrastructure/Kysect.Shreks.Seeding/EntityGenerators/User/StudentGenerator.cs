@@ -6,18 +6,15 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class StudentGenerator : EntityGeneratorBase<Student>
 {
-    /*private readonly Faker _faker;*/
     private readonly IEntityGenerator<StudentGroup> _studentGroupGenerator;
     private readonly IEntityGenerator<User> _userGenerator;
 
     public StudentGenerator(
         EntityGeneratorOptions<Student> options,
         IEntityGenerator<StudentGroup> studentGroupGenerator,
-        /*Faker faker,*/
         IEntityGenerator<User> userGenerator) : base(options)
     {
         _studentGroupGenerator = studentGroupGenerator;
-        /*_faker = faker;*/
         _userGenerator = userGenerator;
     }
 

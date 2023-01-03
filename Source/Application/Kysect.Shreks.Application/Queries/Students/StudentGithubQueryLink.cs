@@ -22,11 +22,11 @@ public class StudentGithubQueryLink : QueryLinkBase<Student, StudentQueryParamet
         if (parameter.Type is not StudentQueryParameter.GithubUsername)
             return null;
 
-        return query.Where(_matcher.Match(
 #pragma warning disable CS8602
-            // TODO: Possible NRE if there is no GH User Association.
+        // TODO: Possible NRE if there is no GH User Association.
+        return query.Where(_matcher.Match(
             x => x.User.Associations.OfType<GithubUserAssociation>().FirstOrDefault().GithubUsername,
-#pragma warning restore CS8602
             parameter.Pattern));
+#pragma warning restore CS8602
     }
 }
