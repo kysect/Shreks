@@ -22,8 +22,8 @@ var identityClient = new IdentityClient(baseUrl, client);
 
 LoginResponse? loginResponse = await identityClient.LoginAsync(new LoginRequest
 {
-    Username = "",
-    Password = "",
+    Username = string.Empty,
+    Password = string.Empty,
 });
 
 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {loginResponse.Token}");
@@ -125,7 +125,9 @@ IEnumerable<Task<GroupAssignmentDto>>? groupAssignments = groups.Values
     .Select(x =>
     {
         LabConfig lab = labs.Single(xx => xx.Index.Equals(x.assignment.Order));
-        return groupAssignmentClient.GroupAssignmentPostAsync(x.group.Id, x.assignment.Id,
+        return groupAssignmentClient.GroupAssignmentPostAsync(
+            x.group.Id,
+            x.assignment.Id,
             new DateTimeOffset(lab.Deadline));
     });
 

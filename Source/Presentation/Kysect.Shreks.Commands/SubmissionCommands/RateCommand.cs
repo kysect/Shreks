@@ -27,8 +27,10 @@ public class RateCommand : ISubmissionCommand<SubmissionContext, SubmissionRateD
         ILogger logger,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handle /rate command from {IssuerId} with arguments: {Args}",
-            context.IssuerId, ToLogLine());
+        logger.LogInformation(
+            "Handle /rate command from {IssuerId} with arguments: {Args}",
+            context.IssuerId,
+            ToLogLine());
 
         var command = new RateSubmission.Command(context.IssuerId, context.SubmissionId, RatingPercent, ExtraPoints);
         RateSubmission.Response response = await context.Mediator.Send(command, cancellationToken);

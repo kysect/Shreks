@@ -8,7 +8,8 @@ public class DomainInvalidOperationException : ShreksDomainException
 
     public static DomainInvalidOperationException UserNotFoundByGithubUsername(string githubUsername)
     {
-        return new DomainInvalidOperationException(string.Format(UserMessages.UserNotFoundByGithubUsername,
+        return new DomainInvalidOperationException(string.Format(
+            UserMessages.UserNotFoundByGithubUsername,
             githubUsername));
     }
 

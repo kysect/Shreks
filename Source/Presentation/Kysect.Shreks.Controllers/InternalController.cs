@@ -38,7 +38,8 @@ public class InternalController : ControllerBase
         }
         catch (UserNotAcknowledgedEnvironmentException e)
         {
-            return StatusCode((int)HttpStatusCode.BadRequest,
+            return StatusCode(
+                (int)HttpStatusCode.BadRequest,
                 new ProblemDetails
                 {
                     Status = (int)HttpStatusCode.BadRequest,

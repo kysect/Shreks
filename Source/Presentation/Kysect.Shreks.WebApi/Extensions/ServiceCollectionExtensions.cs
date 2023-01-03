@@ -50,7 +50,8 @@ internal static class ServiceCollectionExtensions
 
         serviceCollection
             .AddGoogleIntegrationServices(webApiConfiguration)
-            .AddGithubServices(webApiConfiguration.CacheConfiguration,
+            .AddGithubServices(
+                webApiConfiguration.CacheConfiguration,
                 webApiConfiguration.GithubIntegrationConfiguration)
             .AddGithubWorkflowServices();
 

@@ -12,7 +12,6 @@ internal static class StartupExtensions
         app.UseRequestLogging();
 
         if (app.Environment.IsDevelopment())
-            //await app.Services.UseDatabaseSeeders();
             app.UseWebAssemblyDebugging();
 
         app.UseSwagger();

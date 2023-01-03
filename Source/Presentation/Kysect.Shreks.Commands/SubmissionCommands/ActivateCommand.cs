@@ -15,8 +15,10 @@ public class ActivateCommand : ISubmissionCommand<SubmissionContext, SubmissionD
         ILogger logger,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handle /activate command for submission {SubmissionId} from user {IssuerId}",
-            context.SubmissionId, context.IssuerId);
+        logger.LogInformation(
+            "Handle /activate command for submission {SubmissionId} from user {IssuerId}",
+            context.SubmissionId,
+            context.IssuerId);
 
         var command = new ActivateSubmission.Command(context.SubmissionId);
         ActivateSubmission.Response response = await context.Mediator.Send(command, cancellationToken);

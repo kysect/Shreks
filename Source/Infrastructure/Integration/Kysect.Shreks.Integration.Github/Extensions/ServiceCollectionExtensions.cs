@@ -66,7 +66,8 @@ public static class ServiceCollectionExtensions
         {
             GitHubJwtFactory githubJwtFactory = serviceProvider.GetService<GitHubJwtFactory>()!;
 
-            var appClient = new GitHubClient(new ProductHeaderValue("Kysect.Shreks"),
+            var appClient = new GitHubClient(
+                new ProductHeaderValue("Kysect.Shreks"),
                 new GithubAppCredentialStore(githubJwtFactory));
             return appClient;
         });
@@ -98,7 +99,9 @@ public static class ServiceCollectionExtensions
                 IInstallationClientFactory installationClientFactory =
                     serviceProvider.GetRequiredService<IInstallationClientFactory>();
 
-                return new ServiceOrganizationGithubClientProvider(appClient, installationClientFactory,
+                return new ServiceOrganizationGithubClientProvider(
+                    appClient,
+                    installationClientFactory,
                     serviceOrganizationName);
             });
 

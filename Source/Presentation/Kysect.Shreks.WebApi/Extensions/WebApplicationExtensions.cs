@@ -12,11 +12,11 @@ public static class WebApplicationExtensions
             options.IncludeQueryInRequestPath = true;
             options.Logger = new LoggerConfiguration()
                 .MinimumLevel.Verbose()
-                .WriteTo.File(Path.Join(BaseDirectoryName, "RequestLog_.log"),
+                .WriteTo.File(
+                    Path.Join(BaseDirectoryName, "RequestLog_.log"),
                     outputTemplate: "{Timestamp:o} {Message}{NewLine}",
                     rollingInterval: RollingInterval.Day,
-                    retainedFileCountLimit: 30
-                )
+                    retainedFileCountLimit: 30)
                 .CreateLogger();
         });
     }

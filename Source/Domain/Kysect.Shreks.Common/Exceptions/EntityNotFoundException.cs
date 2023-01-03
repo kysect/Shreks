@@ -16,19 +16,25 @@ public class EntityNotFoundException : NotFoundException
         string subjectCourseTitle,
         string subjectCourseAssignments)
     {
-        return new EntityNotFoundException(string.Format(UserMessages.AssignmentNotFound, branchName,
-            subjectCourseTitle, subjectCourseAssignments));
+        return new EntityNotFoundException(string.Format(
+            UserMessages.AssignmentNotFound,
+            branchName,
+            subjectCourseTitle,
+            subjectCourseAssignments));
     }
 
     public static EntityNotFoundException SubjectCourseForOrganizationNotFound(string organization)
     {
-        return new EntityNotFoundException(string.Format(UserMessages.SubjectCourseForOrganizationNotFound,
+        return new EntityNotFoundException(string.Format(
+            UserMessages.SubjectCourseForOrganizationNotFound,
             organization));
     }
 
     public static EntityNotFoundException UserNotFoundInSubjectCourse(Guid userId, string subjectCourse)
     {
-        return new EntityNotFoundException(string.Format(UserMessages.UserNotFoundInSubjectCourse, userId,
+        return new EntityNotFoundException(string.Format(
+            UserMessages.UserNotFoundInSubjectCourse,
+            userId,
             subjectCourse));
     }
 

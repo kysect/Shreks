@@ -56,7 +56,9 @@ public class ReviewOnlySubmissionWorkflow : ISubmissionWorkflow
         CancellationToken cancellationToken)
     {
         await _permissionValidator.EnsureSubmissionMentorAsync(issuerId, submissionId, cancellationToken);
-        Submission submission = await ExecuteSubmissionCommandAsync(submissionId, cancellationToken,
+        Submission submission = await ExecuteSubmissionCommandAsync(
+            submissionId,
+            cancellationToken,
             static x => x.Rate(0, 0));
 
         SubmissionRateDto submissionRateDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);

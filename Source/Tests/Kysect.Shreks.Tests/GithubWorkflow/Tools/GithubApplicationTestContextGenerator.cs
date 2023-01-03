@@ -46,8 +46,10 @@ public class GithubApplicationTestContextGenerator
         Subject subject = _subjectGenerator.Generate();
         var subjectCourse =
             new SubjectCourse(subject, _faker.Commerce.ProductName(), SubmissionStateWorkflowType.ReviewOnly);
-        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(subjectCourse,
-            _faker.Company.CompanyName(), _faker.Commerce.ProductName());
+        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(
+            subjectCourse,
+            _faker.Company.CompanyName(),
+            _faker.Commerce.ProductName());
         var subjectCourseGroup = new SubjectCourseGroup(subjectCourse, group);
         var assignment =
             new Assignment(_faker.Hacker.Verb(), "task-0", 1, new Points(0), new Points(10), subjectCourse);

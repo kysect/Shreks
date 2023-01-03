@@ -57,7 +57,8 @@ public class SubmissionWorkflowService : ISubmissionWorkflowService
             SubmissionStateWorkflowType.ReviewWithDefense
                 => new ReviewWithDefenceSubmissionWorkflow(_permissionValidator, _context, _tableUpdateQueue),
 
-            _ => throw new ArgumentOutOfRangeException(nameof(subjectCourseId),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(subjectCourseId),
                 $@"Invalid WorkflowType {subjectCourse.WorkflowType:G}"),
         };
     }

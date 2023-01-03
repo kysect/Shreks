@@ -24,15 +24,16 @@ public class InstallationCredentialStore : ICredentialStore
 
     public Task<Credentials> GetCredentials()
     {
-        //check if token has expired or is already refreshing in async task
+        // check if token has expired or is already refreshing in async task
         if (!IsTokenExpired() || _tokenRefreshState.IsRefreshing())
             return _task;
         lock (_lock)
         {
-            //check if while waiting for lock token was already set refreshing
+            // check if while waiting for lock token was already set refreshing
             if (!_tokenRefreshState.TrySetStartRefreshing())
                 return _task;
-            //check if it is not refreshing because it was successfully refreshed while we were waiting for lock
+
+            // check if it is not refreshing because it was successfully refreshed while we were waiting for lock
             if (IsTokenExpired())
             {
                 _task = RefreshToken();
@@ -80,9 +81,9 @@ public class InstallationCredentialStore : ICredentialStore
     {
         private enum State
         {
-            NotRefreshing, //refreshing task is not running
-            StartRefreshing, //refreshing task is being created
-            Refreshing, //refreshing task is running
+            NotRefreshing, // refreshing task is not running
+            StartRefreshing, // refreshing task is being created
+            Refreshing, // refreshing task is running
         }
 
         private volatile int _state;
@@ -102,17 +103,21 @@ public class InstallationCredentialStore : ICredentialStore
             _state = (int)State.NotRefreshing;
         }
 
-        //if not refreshing, advance to starting refreshing (creating refreshing task)
+        // if not refreshing, advance to starting refreshing (creating refreshing task)
         public bool TrySetStartRefreshing()
         {
-            return Interlocked.CompareExchange(ref _state, (int)State.StartRefreshing,
+            return Interlocked.CompareExchange(
+                ref _state,
+                (int)State.StartRefreshing,
                 (int)State.NotRefreshing) == (int)State.NotRefreshing;
         }
 
-        //if started refreshing, advance to actually refreshing (task is running)
+        // if started refreshing, advance to actually refreshing (task is running)
         public bool TrySetRefreshing()
         {
-            return Interlocked.CompareExchange(ref _state, (int)State.Refreshing,
+            return Interlocked.CompareExchange(
+                ref _state,
+                (int)State.Refreshing,
                 (int)State.StartRefreshing) == (int)State.StartRefreshing;
         }
     }
