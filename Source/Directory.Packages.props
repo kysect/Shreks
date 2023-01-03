@@ -1,0 +1,71 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <EnablePackageVersionOverride>false</EnablePackageVersionOverride>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="AspNet.Security.OAuth.GitHub" Version="6.0.9" />
+    <PackageVersion Include="AutoMapper" Version="12.0.0" />
+    <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageVersion Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageVersion Include="Blazorise.Bootstrap" Version="1.1.2" />
+    <PackageVersion Include="Blazorise.Components" Version="1.1.2" />
+    <PackageVersion Include="Blazorise.Icons.FontAwesome" Version="1.1.2" />
+    <PackageVersion Include="Blazorise.SpinKit" Version="1.1.2" />
+    <PackageVersion Include="Bogus" Version="34.0.2" />
+    <PackageVersion Include="CommandLineParser" Version="2.9.1" />
+    <PackageVersion Include="coverlet.collector" Version="3.1.2" />
+    <PackageVersion Include="FluentAssertions" Version="6.7.0" />
+    <PackageVersion Include="FluentChaining" Version="1.0.4" />
+    <PackageVersion Include="FluentScanning" Version="2.0.1" />
+    <PackageVersion Include="FluentScanning.DependencyInjection" Version="2.0.1" />
+    <PackageVersion Include="FluentSpreadsheets.GoogleSheets" Version="1.3.0" />
+    <PackageVersion Include="GitHubJwt" Version="0.0.5" />
+    <PackageVersion Include="Google.Apis.Drive.v3" Version="1.57.0.2746" />
+    <PackageVersion Include="Google.Apis.Sheets.v4" Version="1.57.0.2727" />
+    <PackageVersion Include="Kysect.CommonLib" Version="0.0.5" />
+    <PackageVersion Include="Kysect.GithubUtils" Version="1.0.12" />
+    <PackageVersion Include="MediatR" Version="10.0.1" />
+    <PackageVersion Include="MediatR.Contracts" Version="1.0.1" />
+    <PackageVersion Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.6" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.6" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.3" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.6" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
+    <PackageVersion Include="NSwag.CodeGeneration.CSharp" Version="13.17.0" />
+    <PackageVersion Include="Octokit" Version="3.0.0" />
+    <PackageVersion Include="Octokit.Webhooks.AspNetCore" Version="1.2.1" />
+    <PackageVersion Include="RichEntity" Version="1.1.1" />
+    <PackageVersion Include="Serilog" Version="2.11.0" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="5.0.1" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="3.1.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="4.0.1" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageVersion Include="Serilog.Sinks.XUnit" Version="3.0.3" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.3.2" />
+    <PackageVersion Include="xunit" Version="2.4.1" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.3" />
+  </ItemGroup>
+</Project>

@@ -14,10 +14,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.8"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.8"/>
-        <PackageReference Include="Serilog.AspNetCore" Version="6.0.1"/>
-        <PackageReference Include="Serilog.Sinks.Console" Version="4.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies"/>
+        <PackageReference Include="Serilog.AspNetCore"/>
+        <PackageReference Include="Serilog.Sinks.Console"/>
     </ItemGroup>
 
     <ItemGroup>
