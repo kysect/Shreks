@@ -32,7 +32,7 @@ var studyGroupClient = new StudyGroupClient(baseUrl, client);
 var studentClient = new StudentClient(baseUrl, client);
 var userClient = new UserClient(baseUrl, client)
 {
-    ReadResponseAsString = true
+    ReadResponseAsString = true,
 };
 
 ICollection<StudyGroupDto>? createdGroups = await studyGroupClient.StudyGroupGetAsync();
@@ -111,7 +111,7 @@ IEnumerable<CreateAssignmentRequest> assignmentRequests = labs.Select(x => new C
     ShortName = $"lab-{x.Index}",
     MinPoints = 0,
     MaxPoints = x.MaxPoints,
-    Title = x.Title
+    Title = x.Title,
 });
 
 foreach (CreateAssignmentRequest? assignmentRequest in assignmentRequests)

@@ -13,7 +13,7 @@ public partial class Initial : Migration
             columns: table => new
             {
                 Id = table.Column<Guid>(type: "uuid", nullable: false),
-                Name = table.Column<string>(type: "text", nullable: false)
+                Name = table.Column<string>(type: "text", nullable: false),
             },
             constraints: table =>
             {
@@ -25,7 +25,7 @@ public partial class Initial : Migration
             columns: table => new
             {
                 Id = table.Column<Guid>(type: "uuid", nullable: false),
-                Title = table.Column<string>(type: "text", nullable: false)
+                Title = table.Column<string>(type: "text", nullable: false),
             },
             constraints: table =>
             {
@@ -36,7 +36,7 @@ public partial class Initial : Migration
             name: "SubmissionQueues",
             columns: table => new
             {
-                Id = table.Column<Guid>(type: "uuid", nullable: false)
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -50,7 +50,7 @@ public partial class Initial : Migration
                 Id = table.Column<Guid>(type: "uuid", nullable: false),
                 FirstName = table.Column<string>(type: "text", nullable: false),
                 MiddleName = table.Column<string>(type: "text", nullable: false),
-                LastName = table.Column<string>(type: "text", nullable: false)
+                LastName = table.Column<string>(type: "text", nullable: false),
             },
             constraints: table =>
             {
@@ -63,7 +63,7 @@ public partial class Initial : Migration
             {
                 Id = table.Column<Guid>(type: "uuid", nullable: false),
                 SubjectId = table.Column<Guid>(type: "uuid", nullable: false),
-                Title = table.Column<string>(type: "text", nullable: false)
+                Title = table.Column<string>(type: "text", nullable: false),
             },
             constraints: table =>
             {
@@ -84,7 +84,7 @@ public partial class Initial : Migration
                 Position = table.Column<int>(type: "integer", nullable: false),
                 SortingOrder = table.Column<int>(type: "integer", nullable: false),
                 Discriminator = table.Column<string>(type: "text", nullable: false),
-                SubmissionQueueId = table.Column<Guid>(type: "uuid", nullable: true)
+                SubmissionQueueId = table.Column<Guid>(type: "uuid", nullable: true),
             },
             constraints: table =>
             {
@@ -104,7 +104,7 @@ public partial class Initial : Migration
                 Discriminator = table.Column<string>(type: "text", nullable: false),
                 SubmissionQueueId = table.Column<Guid>(type: "uuid", nullable: true),
                 CourseId = table.Column<Guid>(type: "uuid", nullable: true),
-                State = table.Column<int>(type: "integer", nullable: true)
+                State = table.Column<int>(type: "integer", nullable: true),
             },
             constraints: table =>
             {
@@ -121,7 +121,7 @@ public partial class Initial : Migration
             columns: table => new
             {
                 UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                GroupId = table.Column<Guid>(type: "uuid", nullable: false)
+                GroupId = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -148,7 +148,7 @@ public partial class Initial : Migration
                 UserId = table.Column<Guid>(type: "uuid", nullable: false),
                 Discriminator = table.Column<string>(type: "text", nullable: false),
                 GithubUsername = table.Column<string>(type: "text", nullable: true),
-                UniversityId = table.Column<int>(type: "integer", nullable: true)
+                UniversityId = table.Column<int>(type: "integer", nullable: true),
             },
             constraints: table =>
             {
@@ -171,7 +171,7 @@ public partial class Initial : Migration
                 Order = table.Column<int>(type: "integer", nullable: false),
                 MinPoints = table.Column<double>(type: "double precision", nullable: false),
                 MaxPoints = table.Column<double>(type: "double precision", nullable: false),
-                SubjectCourseId = table.Column<Guid>(type: "uuid", nullable: false)
+                SubjectCourseId = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -194,7 +194,7 @@ public partial class Initial : Migration
                 SubjectCourseId = table.Column<Guid>(type: "uuid", nullable: true),
                 AbsoluteValue = table.Column<double>(type: "double precision", nullable: true),
                 Cap = table.Column<double>(type: "double precision", nullable: true),
-                Fraction = table.Column<double>(type: "double precision", nullable: true)
+                Fraction = table.Column<double>(type: "double precision", nullable: true),
             },
             constraints: table =>
             {
@@ -211,7 +211,7 @@ public partial class Initial : Migration
             columns: table => new
             {
                 CourseId = table.Column<Guid>(type: "uuid", nullable: false),
-                UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                UserId = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -239,7 +239,7 @@ public partial class Initial : Migration
                 Discriminator = table.Column<string>(type: "text", nullable: false),
                 GithubOrganizationName = table.Column<string>(type: "text", nullable: true),
                 TemplateRepositoryName = table.Column<string>(type: "text", nullable: true),
-                SpreadsheetId = table.Column<string>(type: "text", nullable: true)
+                SpreadsheetId = table.Column<string>(type: "text", nullable: true),
             },
             constraints: table =>
             {
@@ -258,7 +258,7 @@ public partial class Initial : Migration
             {
                 StudentGroupId = table.Column<Guid>(type: "uuid", nullable: false),
                 SubjectCourseId = table.Column<Guid>(type: "uuid", nullable: false),
-                QueueId = table.Column<Guid>(type: "uuid", nullable: false)
+                QueueId = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -288,7 +288,7 @@ public partial class Initial : Migration
             columns: table => new
             {
                 FiltersId = table.Column<Guid>(type: "uuid", nullable: false),
-                GroupsId = table.Column<Guid>(type: "uuid", nullable: false)
+                GroupsId = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -312,7 +312,7 @@ public partial class Initial : Migration
             columns: table => new
             {
                 AssignmentsId = table.Column<Guid>(type: "uuid", nullable: false),
-                FiltersId = table.Column<Guid>(type: "uuid", nullable: false)
+                FiltersId = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -337,7 +337,7 @@ public partial class Initial : Migration
             {
                 AssignmentId = table.Column<Guid>(type: "uuid", nullable: false),
                 GroupId = table.Column<Guid>(type: "uuid", nullable: false),
-                Deadline = table.Column<DateOnly>(type: "date", nullable: false)
+                Deadline = table.Column<DateOnly>(type: "date", nullable: false),
             },
             constraints: table =>
             {
@@ -370,7 +370,7 @@ public partial class Initial : Migration
                 Payload = table.Column<string>(type: "text", nullable: false),
                 Rating = table.Column<double>(type: "double precision", nullable: true),
                 ExtraPoints = table.Column<double>(type: "double precision", nullable: true),
-                Discriminator = table.Column<string>(type: "text", nullable: false)
+                Discriminator = table.Column<string>(type: "text", nullable: false),
             },
             constraints: table =>
             {
@@ -398,7 +398,7 @@ public partial class Initial : Migration
                 Discriminator = table.Column<string>(type: "text", nullable: false),
                 Organization = table.Column<string>(type: "text", nullable: true),
                 Repository = table.Column<string>(type: "text", nullable: true),
-                PrNumber = table.Column<long>(type: "bigint", nullable: true)
+                PrNumber = table.Column<long>(type: "bigint", nullable: true),
             },
             constraints: table =>
             {
