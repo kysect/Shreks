@@ -1,4 +1,5 @@
-﻿using Kysect.Shreks.DataAccess.Abstractions;
+﻿using Kysect.Shreks.Core.Users;
+using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using static Kysect.Shreks.Application.Contracts.Students.Commands.UpdateUserName;
@@ -16,7 +17,7 @@ internal class UpdateUserNameHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var user = await _context.Users.GetByIdAsync(request.UserId, cancellationToken: cancellationToken);
+        User user = await _context.Users.GetByIdAsync(request.UserId, cancellationToken);
 
         user.FirstName = request.FirstName;
         user.MiddleName = request.MiddleName;

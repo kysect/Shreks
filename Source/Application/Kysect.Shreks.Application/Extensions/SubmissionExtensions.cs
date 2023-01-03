@@ -5,8 +5,12 @@ namespace Kysect.Shreks.Application.Extensions;
 public static class SubmissionExtensions
 {
     public static Guid GetCourseId(this Submission submission)
-        => submission.GroupAssignment.Assignment.SubjectCourse.Id;
+    {
+        return submission.GroupAssignment.Assignment.SubjectCourse.Id;
+    }
 
     public static Guid GetGroupId(this Submission submission)
-        => submission.GroupAssignment.GroupId;
+    {
+        return submission.GroupAssignment.GroupId;
+    }
 }

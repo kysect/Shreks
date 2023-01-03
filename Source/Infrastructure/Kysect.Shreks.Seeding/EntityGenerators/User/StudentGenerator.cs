@@ -1,5 +1,4 @@
-﻿using Bogus;
-using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.Seeding.Options;
 
@@ -9,16 +8,13 @@ public class StudentGenerator : EntityGeneratorBase<Student>
 {
     private readonly IEntityGenerator<StudentGroup> _studentGroupGenerator;
     private readonly IEntityGenerator<User> _userGenerator;
-    private readonly Faker _faker;
 
     public StudentGenerator(
         EntityGeneratorOptions<Student> options,
         IEntityGenerator<StudentGroup> studentGroupGenerator,
-        Faker faker,
         IEntityGenerator<User> userGenerator) : base(options)
     {
         _studentGroupGenerator = studentGroupGenerator;
-        _faker = faker;
         _userGenerator = userGenerator;
     }
 

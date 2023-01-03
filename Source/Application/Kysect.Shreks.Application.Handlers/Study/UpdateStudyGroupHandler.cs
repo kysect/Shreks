@@ -21,7 +21,7 @@ internal class UpdateStudyGroupHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        StudentGroup studentGroup = await _context.StudentGroups.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
+        StudentGroup studentGroup = await _context.StudentGroups.GetByIdAsync(request.Id, cancellationToken);
         studentGroup.Name = request.NewName;
         await _context.SaveChangesAsync(cancellationToken);
         return new Response(_mapper.Map<StudyGroupDto>(studentGroup));

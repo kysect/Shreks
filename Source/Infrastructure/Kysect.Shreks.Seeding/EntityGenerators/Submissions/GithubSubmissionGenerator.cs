@@ -13,23 +13,19 @@ namespace Kysect.Shreks.Seeding.EntityGenerators.Submissions;
 public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
 {
     private const double MaxExtraPoints = 15;
-    private const float PointsPresenceProbability = 0.5f;
     private const float ExtraPointsPresenceProbability = 0.1f;
+    private readonly IEntityGenerator<Assignment> _assignmentGenerator;
 
     private readonly Faker _faker;
-    private readonly IEntityGenerator<Assignment> _assignmentGenerator;
-    private readonly IEntityGenerator<Student> _studentGenerator;
 
     public GithubSubmissionGenerator(
         EntityGeneratorOptions<GithubSubmission> options,
-        IEntityGenerator<Student> studentGenerator,
         Faker faker,
         IEntityGenerator<Assignment> assignmentGenerator)
         : base(options)
     {
         _faker = faker;
         _assignmentGenerator = assignmentGenerator;
-        _studentGenerator = studentGenerator;
     }
 
     protected override GithubSubmission Generate(int index)
@@ -65,6 +61,13 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
 
         SubmissionStateKind stateKind = _faker.PickRandom(Enum.GetValues<SubmissionStateKind>());
 
+        SetSubmissionState(stateKind, submission);
+
+        return submission;
+    }
+
+    private void SetSubmissionState(SubmissionStateKind stateKind, Submission submission)
+    {
         switch (stateKind)
         {
             case SubmissionStateKind.Active:
@@ -97,10 +100,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
                 break;
 
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(stateKind));
         }
-
-
-        return submission;
     }
 }

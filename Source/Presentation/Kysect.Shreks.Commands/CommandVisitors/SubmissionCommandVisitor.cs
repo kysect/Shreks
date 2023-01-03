@@ -9,9 +9,9 @@ namespace Kysect.Shreks.Commands.CommandVisitors;
 
 public class SubmissionCommandVisitor : ISubmissionCommandVisitor
 {
+    private readonly CancellationToken _cancellationToken;
     private readonly ISubmissionCommandContextFactory _contextFactory;
     private readonly ILogger _logger;
-    private readonly CancellationToken _cancellationToken;
 
     public SubmissionCommandVisitor(
         ISubmissionCommandContextFactory contextFactory,

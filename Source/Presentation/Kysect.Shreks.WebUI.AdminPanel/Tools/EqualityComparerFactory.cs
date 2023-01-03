@@ -3,7 +3,9 @@ namespace Kysect.Shreks.WebUI.AdminPanel.Tools;
 public static class EqualityComparerFactory
 {
     public static IEqualityComparer<T> Create<T>(Func<T, T, bool> comparer)
-        => new GenericEqualityComparer<T>(comparer);
+    {
+        return new GenericEqualityComparer<T>(comparer);
+    }
 
     private class GenericEqualityComparer<T> : IEqualityComparer<T>
     {
@@ -25,6 +27,8 @@ public static class EqualityComparerFactory
         }
 
         public int GetHashCode(T obj)
-            => obj?.GetHashCode() ?? 0;
+        {
+            return obj?.GetHashCode() ?? 0;
+        }
     }
 }

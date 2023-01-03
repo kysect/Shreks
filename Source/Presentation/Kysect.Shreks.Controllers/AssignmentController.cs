@@ -33,7 +33,7 @@ public class AssignmentsController : ControllerBase
             request.MinPoints,
             request.MaxPoints);
 
-        var result = await _mediator.Send(command);
+        CreateAssignment.Response result = await _mediator.Send(command);
         return Ok(result.Assignment);
     }
 
@@ -42,7 +42,7 @@ public class AssignmentsController : ControllerBase
     {
         var command = new UpdateAssignmentPoints.Command(id, minPoints, maxPoints);
 
-        var response = await _mediator.Send(command);
+        UpdateAssignmentPoints.Response response = await _mediator.Send(command);
 
         return Ok(response.Assignment);
     }
@@ -52,7 +52,7 @@ public class AssignmentsController : ControllerBase
     {
         var query = new GetAssignmentById.Query(id);
 
-        var response = await _mediator.Send(query);
+        GetAssignmentById.Response response = await _mediator.Send(query);
 
         return Ok(response.Assignment);
     }

@@ -5,9 +5,8 @@ namespace Kysect.Shreks.Core.Queue.Building;
 
 public class QueueBuilder : IQueueFilterBuilder
 {
-    private readonly List<IQueueFilter> _filters;
-
     private readonly List<ISubmissionEvaluator> _evaluators;
+    private readonly List<IQueueFilter> _filters;
 
     public QueueBuilder()
     {

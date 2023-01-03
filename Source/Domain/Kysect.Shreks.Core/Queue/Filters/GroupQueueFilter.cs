@@ -13,5 +13,7 @@ public class GroupQueueFilter : IQueueFilter
     public IReadOnlyCollection<StudentGroup> Groups { get; }
 
     public IQueryable<Submission> Filter(IQueryable<Submission> query)
-        => query.Where(s => Groups.Contains(s.Student.Group));
+    {
+        return query.Where(s => Groups.Contains(s.Student.Group));
+    }
 }

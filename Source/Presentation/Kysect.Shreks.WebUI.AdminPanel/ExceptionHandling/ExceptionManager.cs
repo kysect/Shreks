@@ -5,17 +5,16 @@ namespace Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling;
 
 public class ExceptionManager : IExceptionSink, IExceptionStore
 {
-    private readonly HashSet<ExceptionMessage> _exceptions;
     private readonly ExceptionDisplayConfiguration _configuration;
+    private readonly HashSet<ExceptionMessage> _exceptions;
 
     public ExceptionManager(ExceptionDisplayConfiguration configuration)
     {
         _configuration = configuration;
-        var comparer = EqualityComparerFactory.Create<ExceptionMessage>((a, b) => a.Exception.Equals(b.Exception));
+        IEqualityComparer<ExceptionMessage> comparer =
+            EqualityComparerFactory.Create<ExceptionMessage>((a, b) => a.Exception.Equals(b.Exception));
         _exceptions = new HashSet<ExceptionMessage>(comparer);
     }
-
-    public IReadOnlyCollection<ExceptionMessage> Exceptions => _exceptions;
 
     public async ValueTask ConsumeAsync(Exception exception, string? title, string? message)
     {
@@ -27,6 +26,8 @@ public class ExceptionManager : IExceptionSink, IExceptionStore
         Dismiss(new ExceptionMessage(title, message, exception));
     }
 
+    public IReadOnlyCollection<ExceptionMessage> Exceptions => _exceptions;
+
     public void Dismiss(ExceptionMessage exception)
     {
         _exceptions.Remove(exception);
@@ -37,8 +38,12 @@ public class ExceptionManager : IExceptionSink, IExceptionStore
     public event Action<ExceptionMessage>? ExceptionDismissed;
 
     protected virtual void OnExceptionAdded(ExceptionMessage obj)
-        => ExceptionAdded?.Invoke(obj);
+    {
+        ExceptionAdded?.Invoke(obj);
+    }
 
     protected virtual void OnExceptionDismissed(ExceptionMessage obj)
-        => ExceptionDismissed?.Invoke(obj);
+    {
+        ExceptionDismissed?.Invoke(obj);
+    }
 }

@@ -1,8 +1,8 @@
-﻿using System.Drawing;
-using FluentSpreadsheets;
+﻿using FluentSpreadsheets;
 using FluentSpreadsheets.Styles;
 using Kysect.Shreks.Application.Dto.Tables;
 using Kysect.Shreks.Application.Dto.Users;
+using System.Drawing;
 
 namespace Kysect.Shreks.Integration.Google.Extensions;
 

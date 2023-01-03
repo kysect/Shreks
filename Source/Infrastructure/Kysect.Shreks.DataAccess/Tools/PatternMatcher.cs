@@ -7,8 +7,8 @@ namespace Kysect.Shreks.DataAccess.Tools;
 
 public class PatternMatcher<T> : IPatternMatcher<T>
 {
-    private readonly MethodInfo _matchingMethod;
     private readonly Expression _functionsExpression;
+    private readonly MethodInfo _matchingMethod;
 
     public PatternMatcher()
     {

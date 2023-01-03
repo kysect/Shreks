@@ -8,34 +8,36 @@ namespace Kysect.Shreks.Application.GithubWorkflow.BackgroundServices;
 public class GithubInvitingWorker : BackgroundService
 {
     /// <summary>
-    /// This worker is our restriction bypass, github allow to invite only 50 users per 24 hours.
-    /// So we need to send invites every 24 hours + 1 minutes shift for preventing race conditions.
-    /// But in case of restart it is better to try many time. Anyways we have logic for stop inviting after first fail.
+    ///     This worker is our restriction bypass, github allow to invite only 50 users per 24 hours.
+    ///     So we need to send invites every 24 hours + 1 minutes shift for preventing race conditions.
+    ///     But in case of restart it is better to try many time. Anyways we have logic for stop inviting after first fail.
     /// </summary>
     private readonly TimeSpan _delayBetweenInviteIteration = TimeSpan.FromHours(6);
 
     private readonly ILogger<GithubInvitingWorker> _logger;
     private readonly IServiceScopeFactory _serviceProvider;
 
-    public GithubInvitingWorker(IServiceScopeFactory serviceProvider,
+    public GithubInvitingWorker(
+        IServiceScopeFactory serviceProvider,
         ILogger<GithubInvitingWorker> logger)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         using var timer = new PeriodicTimer(_delayBetweenInviteIteration);
 
-        while (!cancellationToken.IsCancellationRequested && await timer.WaitForNextTickAsync(cancellationToken))
+        while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
         {
             try
             {
                 using IServiceScope scope = _serviceProvider.CreateScope();
 
-                var subjectCourseGithubOrganizationManager = scope.ServiceProvider.GetRequiredService<ISubjectCourseGithubOrganizationManager>();
-                await subjectCourseGithubOrganizationManager.UpdateOrganizations(cancellationToken);
+                ISubjectCourseGithubOrganizationManager subjectCourseGithubOrganizationManager =
+                    scope.ServiceProvider.GetRequiredService<ISubjectCourseGithubOrganizationManager>();
+                await subjectCourseGithubOrganizationManager.UpdateOrganizations(stoppingToken);
             }
             catch (Exception ex)
             {

@@ -11,9 +11,9 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 
 internal class MarkSubmissionReviewedHandler : IRequestHandler<Command, Response>
 {
-    private readonly IPermissionValidator _permissionValidator;
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
+    private readonly IPermissionValidator _permissionValidator;
 
     public MarkSubmissionReviewedHandler(
         IPermissionValidator permissionValidator,

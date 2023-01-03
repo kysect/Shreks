@@ -21,5 +21,7 @@ public class CreateSubmissionContext : BaseContext
     public string Payload { get; }
 
     public Task<SubmissionRateDto> CreateAsync(CancellationToken cancellationToken)
-        => _createFunc.Invoke(cancellationToken);
+    {
+        return _createFunc.Invoke(cancellationToken);
+    }
 }

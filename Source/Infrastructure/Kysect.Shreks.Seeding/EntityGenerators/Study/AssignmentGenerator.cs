@@ -7,8 +7,8 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class AssignmentGenerator : EntityGeneratorBase<Assignment>
 {
-    private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
     private readonly Faker _faker;
+    private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
 
     public AssignmentGenerator(
         EntityGeneratorOptions<Assignment> options,
@@ -22,9 +22,9 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
 
     protected override Assignment Generate(int index)
     {
-        var subjectCourse = _faker.PickRandom<SubjectCourse>(_subjectCourseGenerator.GeneratedEntities);
+        SubjectCourse? subjectCourse = _faker.PickRandom<SubjectCourse>(_subjectCourseGenerator.GeneratedEntities);
 
-        var assignmentOrder = index + 1;
+        int assignmentOrder = index + 1;
 
         var assignment = new Assignment
         (

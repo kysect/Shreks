@@ -2,5 +2,6 @@
     <PropertyGroup>
         <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 </Project>

@@ -30,7 +30,7 @@ public partial class GroupAssignment : IEntity
     public DateOnly Deadline { get; set; }
     public virtual IReadOnlyCollection<Submission> Submissions => _submissions;
 
-    public override String ToString()
+    public override string ToString()
     {
         return $"Assignment: {Assignment}, Group: {Group}";
     }

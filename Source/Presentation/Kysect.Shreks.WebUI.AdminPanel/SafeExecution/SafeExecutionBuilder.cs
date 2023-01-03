@@ -7,12 +7,12 @@ namespace Kysect.Shreks.WebUI.AdminPanel.SafeExecution;
 
 public class SafeExecutionBuilder : ISafeExecutionBuilder
 {
-    private readonly List<Func<Task>> _successHandlers;
+    private readonly Func<Task> _action;
     private readonly List<IExceptionHandler> _errorHandlers;
     private readonly IExceptionSink _exceptionSink;
     private readonly IIdentityManager _identityManager;
     private readonly NavigationManager _navigationManager;
-    private readonly Func<Task> _action;
+    private readonly List<Func<Task>> _successHandlers;
 
     public SafeExecutionBuilder(
         Func<Task> action,
@@ -33,10 +33,14 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
     public bool ShowExceptionDetails { get; set; }
 
     public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
-        => _errorHandlers.Add(new ExceptionHandler<TException>(action));
+    {
+        _errorHandlers.Add(new ExceptionHandler<TException>(action));
+    }
 
     public void OnSuccessAsync(Func<Task> action)
-        => _successHandlers.Add(action);
+    {
+        _successHandlers.Add(action);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -70,12 +74,12 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
 
 public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
 {
-    private readonly List<Func<T, Task>> _successHandlers;
+    private readonly Func<Task<T>> _action;
     private readonly List<IExceptionHandler> _errorHandlers;
     private readonly IExceptionSink _exceptionSink;
     private readonly IIdentityManager _identityManager;
     private readonly NavigationManager _navigationManager;
-    private readonly Func<Task<T>> _action;
+    private readonly List<Func<T, Task>> _successHandlers;
 
     public SafeExecutionBuilder(
         Func<Task<T>> action,
@@ -96,10 +100,14 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
     public bool ShowExceptionDetails { get; set; }
 
     public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
-        => _errorHandlers.Add(new ExceptionHandler<TException>(action));
+    {
+        _errorHandlers.Add(new ExceptionHandler<TException>(action));
+    }
 
     public void OnSuccessAsync(Func<T, Task> action)
-        => _successHandlers.Add(action);
+    {
+        _successHandlers.Add(action);
+    }
 
     public async ValueTask DisposeAsync()
     {

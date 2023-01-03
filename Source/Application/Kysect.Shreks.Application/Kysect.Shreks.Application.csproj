@@ -7,27 +7,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="12.0.0" />
-        <PackageReference Include="FluentChaining" Version="1.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.8" />
+        <PackageReference Include="AutoMapper" Version="12.0.0"/>
+        <PackageReference Include="FluentChaining" Version="1.0.4"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.8"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj" />
-        <ProjectReference Include="..\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
-        <ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj" />
-        <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
+        <ProjectReference Include="..\..\Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj"/>
+        <ProjectReference Include="..\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj"/>
+        <ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj"/>
+        <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj"/>
     </ItemGroup>
 
-
     <ItemGroup>
-        <InternalsVisibleTo Include="Kysect.Shreks.Tests" />
-    </ItemGroup>
-
-
-    <ItemGroup>
-      <Folder Include="Submissions" />
+        <InternalsVisibleTo Include="Kysect.Shreks.Tests"/>
     </ItemGroup>
 
 </Project>

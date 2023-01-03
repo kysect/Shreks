@@ -9,10 +9,10 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 {
-    private readonly Faker _faker;
-    private readonly IEntityGenerator<User> _userGenerator;
-    private readonly IEntityGenerator<Subject> _subjectGenerator;
     private readonly IEntityGenerator<DeadlinePolicy> _deadlinePolicyGenerator;
+    private readonly Faker _faker;
+    private readonly IEntityGenerator<Subject> _subjectGenerator;
+    private readonly IEntityGenerator<User> _userGenerator;
 
     public SubjectCourseGenerator(
         EntityGeneratorOptions<SubjectCourse> options,
@@ -30,9 +30,9 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 
     protected override SubjectCourse Generate(int index)
     {
-        var subjectCount = _subjectGenerator.GeneratedEntities.Count;
+        int subjectCount = _subjectGenerator.GeneratedEntities.Count;
 
-        var deadlineCount = _faker.Random.Int(0, _deadlinePolicyGenerator.GeneratedEntities.Count);
+        int deadlineCount = _faker.Random.Int(0, _deadlinePolicyGenerator.GeneratedEntities.Count);
 
         IEnumerable<DeadlinePolicy> deadlines = Enumerable.Range(0, deadlineCount)
             .Select(_ => _faker.Random.Int(0, _deadlinePolicyGenerator.GeneratedEntities.Count - 1))
@@ -42,11 +42,11 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
         if (index >= subjectCount)
             throw new IndexOutOfRangeException("The subject index is greater than the number of subjects.");
 
-        var subject = _subjectGenerator.GeneratedEntities[index];
+        Subject subject = _subjectGenerator.GeneratedEntities[index];
 
-        var subjectCourseName = _faker.Commerce.ProductName();
+        string? subjectCourseName = _faker.Commerce.ProductName();
 
-        SubmissionStateWorkflowType reviewType = SubmissionStateWorkflowType.ReviewWithDefense;
+        const SubmissionStateWorkflowType reviewType = SubmissionStateWorkflowType.ReviewWithDefense;
 
         var subjectCourse = new SubjectCourse(subject, subjectCourseName, reviewType);
 
@@ -54,12 +54,12 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
             .ListItems(_userGenerator.GeneratedEntities.ToList(), 2)
             .Distinct();
 
-        foreach (var user in users)
+        foreach (User user in users)
         {
             subjectCourse.AddMentor(user);
         }
 
-        foreach (var deadline in deadlines)
+        foreach (DeadlinePolicy deadline in deadlines)
         {
             subjectCourse.AddDeadlinePolicy(deadline);
         }

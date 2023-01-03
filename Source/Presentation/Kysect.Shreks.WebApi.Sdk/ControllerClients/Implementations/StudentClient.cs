@@ -19,7 +19,7 @@ internal class StudentClient : IStudentClient
         CreateStudentRequest request,
         CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Post, $"api/Student")
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/Student")
         {
             Content = JsonContent.Create(request),
         };
@@ -60,7 +60,7 @@ internal class StudentClient : IStudentClient
         QueryConfiguration<StudentQueryParameter> query,
         CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Post, $"api/Student/query")
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/Student/query")
         {
             Content = JsonContent.Create(query),
         };

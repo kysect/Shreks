@@ -19,7 +19,9 @@ public class SubmissionCommandExecutor : ISubmissionCommandExecutor
         _logger = logger;
     }
 
-    public async Task<IShreksCommandResult> ExecuteAsync(ISubmissionCommand command, CancellationToken cancellationToken)
+    public async Task<IShreksCommandResult> ExecuteAsync(
+        ISubmissionCommand command,
+        CancellationToken cancellationToken)
     {
         try
         {

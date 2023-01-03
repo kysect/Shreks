@@ -6,5 +6,7 @@ namespace Kysect.Shreks.Tests.Extensions;
 public static class SubmissionExtensions
 {
     public static Mentor GetMentor(this Submission submission)
-        => submission.GroupAssignment.GetMentor();
+    {
+        return submission.GroupAssignment.GetMentor();
+    }
 }

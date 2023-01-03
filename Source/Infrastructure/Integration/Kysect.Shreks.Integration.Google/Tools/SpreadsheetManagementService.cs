@@ -10,7 +10,7 @@ using File = Google.Apis.Drive.v3.Data.File;
 
 namespace Kysect.Shreks.Integration.Google.Tools;
 
-/// <inheritdoc/>
+/// <inheritdoc />
 public class SpreadsheetManagementService : ISpreadsheetManagementService
 {
     private const string SpreadsheetType = "application/vnd.google-apps.spreadsheet";
@@ -20,16 +20,13 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
 
     private const string UpdateTitle = "title";
 
-    private static readonly Permission AnyoneViewerPermission = new()
-    {
-        Type = "anyone",
-        Role = "reader"
-    };
+    private static readonly Permission AnyoneViewerPermission = new Permission { Type = "anyone", Role = "reader" };
+
+    private readonly DriveService _driveService;
+    private readonly ILogger<SheetManagementService> _logger;
 
     private readonly SheetsService _sheetsService;
-    private readonly DriveService _driveService;
     private readonly ITablesParentsProvider _tablesParentsProvider;
-    private readonly ILogger<SheetManagementService> _logger;
 
     public SpreadsheetManagementService(
         SheetsService sheetsService,
@@ -47,9 +44,7 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
     {
         var spreadsheetToCreate = new File
         {
-            Parents = _tablesParentsProvider.GetParents(),
-            MimeType = SpreadsheetType,
-            Name = title
+            Parents = _tablesParentsProvider.GetParents(), MimeType = SpreadsheetType, Name = title,
         };
 
         _logger.LogDebug("Create file {title} on Google drive.", title);
@@ -73,19 +68,14 @@ public class SpreadsheetManagementService : ISpreadsheetManagementService
 
     private async Task ConfigureDefaultSheetAsync(string spreadsheetId, CancellationToken token)
     {
-        var defaultSheetProperties = new SheetProperties
-        {
-            SheetId = DefaultSheetId,
-            Title = DefaultSheetTitle
-        };
+        var defaultSheetProperties = new SheetProperties { SheetId = DefaultSheetId, Title = DefaultSheetTitle };
 
         var updatePropertiesRequest = new Request
         {
             UpdateSheetProperties = new UpdateSheetPropertiesRequest
             {
-                Properties = defaultSheetProperties,
-                Fields = UpdateTitle
-            }
+                Properties = defaultSheetProperties, Fields = UpdateTitle,
+            },
         };
 
         _logger.LogDebug("Configure default sheet for {spreadsheetId}.", spreadsheetId);

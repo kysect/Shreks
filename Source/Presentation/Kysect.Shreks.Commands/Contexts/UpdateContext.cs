@@ -9,9 +9,6 @@ public class UpdateContext : BaseContext
 {
     private readonly IDefaultSubmissionProvider _submissionProvider;
 
-    public AssignmentDto Assignment { get; }
-    public UserDto Student { get; }
-
     public UpdateContext(
         Guid issuerId,
         IMediator mediator,
@@ -25,6 +22,11 @@ public class UpdateContext : BaseContext
         _submissionProvider = submissionProvider;
     }
 
+    public AssignmentDto Assignment { get; }
+    public UserDto Student { get; }
+
     public Task<SubmissionDto> GetDefaultSubmissionAsync(CancellationToken cancellationToken)
-        => _submissionProvider.GetDefaultSubmissionAsync(Student.Id, Assignment.Id, cancellationToken);
+    {
+        return _submissionProvider.GetDefaultSubmissionAsync(Student.Id, Assignment.Id, cancellationToken);
+    }
 }

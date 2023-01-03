@@ -4,5 +4,8 @@ namespace Kysect.Shreks.Common.Logging;
 
 public static class LoggingExtensions
 {
-    public static ILogger WithPrefix(this ILogger logger, string prefix) => new PrefixLoggerProxy(logger, prefix);
+    public static ILogger WithPrefix(this ILogger logger, string prefix)
+    {
+        return new PrefixLoggerProxy(logger, prefix);
+    }
 }

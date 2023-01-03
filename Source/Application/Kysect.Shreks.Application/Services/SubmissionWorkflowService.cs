@@ -28,7 +28,9 @@ public class SubmissionWorkflowService : ISubmissionWorkflowService
         _tableUpdateQueue = tableUpdateQueue;
     }
 
-    public async Task<ISubmissionWorkflow> GetSubmissionWorkflowAsync(Guid submissionId, CancellationToken cancellationToken)
+    public async Task<ISubmissionWorkflow> GetSubmissionWorkflowAsync(
+        Guid submissionId,
+        CancellationToken cancellationToken)
     {
         SubjectCourse? subjectCourse = await _context.Submissions
             .Where(x => x.Id.Equals(submissionId))
@@ -55,8 +57,8 @@ public class SubmissionWorkflowService : ISubmissionWorkflowService
             SubmissionStateWorkflowType.ReviewWithDefense
                 => new ReviewWithDefenceSubmissionWorkflow(_permissionValidator, _context, _tableUpdateQueue),
 
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(subjectCourse.WorkflowType), subjectCourse.WorkflowType, null),
+            _ => throw new ArgumentOutOfRangeException(nameof(subjectCourseId),
+                $@"Invalid WorkflowType {subjectCourse.WorkflowType:G}"),
         };
     }
 }

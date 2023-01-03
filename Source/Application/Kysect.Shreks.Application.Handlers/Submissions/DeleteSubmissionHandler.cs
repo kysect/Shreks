@@ -11,9 +11,9 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 
 internal class DeleteSubmissionHandler : IRequestHandler<Command, Response>
 {
-    private readonly IPermissionValidator _permissionValidator;
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
+    private readonly IPermissionValidator _permissionValidator;
 
     public DeleteSubmissionHandler(
         IPermissionValidator permissionValidator,

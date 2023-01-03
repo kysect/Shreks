@@ -1,8 +1,7 @@
-@using Kysect.Shreks.WebApi.Sdk
-@using Kysect.Shreks.WebUI.AdminPanel.Components
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
 @using Kysect.Shreks.Application.Dto.Study
 @using Kysect.Shreks.WebApi.Abstractions.Models.GroupAssignments
-@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @inject IGroupAssignmentClient Client
 @inject ISafeExecutor SafeExecutor
 
@@ -69,11 +68,8 @@
 
         var request = new UpdateGroupAssignmentRequest(Group.Deadline);
 
-        await using var builder = SafeExecutor.Execute(async () =>
-        {
-            return await Client.UpdateGroupAssignmentAsync(Group.AssignmentId, Group.GroupId, request, cancellationToken);
-        });
-        
+        await using ISafeExecutionBuilder<GroupAssignmentDto> builder = SafeExecutor.Execute(async () => { return await Client.UpdateGroupAssignmentAsync(Group.AssignmentId, Group.GroupId, request, cancellationToken); });
+
         builder.Title = "Failed to update deadline";
         builder.ShowExceptionDetails = true;
     }

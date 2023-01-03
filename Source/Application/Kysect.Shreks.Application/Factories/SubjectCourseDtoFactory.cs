@@ -17,13 +17,16 @@ public class SubjectCourseDtoFactory
             switch (subjectCourseAssociation)
             {
                 case GithubSubjectCourseAssociation githubSubjectCourseAssociation:
-                    string githubValue = $"Repo: {githubSubjectCourseAssociation.GithubOrganizationName}, Template: {githubSubjectCourseAssociation.TemplateRepositoryName}";
-                    associations.Add(new SubjectCourseAssociationDto(nameof(GithubSubjectCourseAssociation), githubValue));
+                    string githubValue =
+                        $"Repo: {githubSubjectCourseAssociation.GithubOrganizationName}, Template: {githubSubjectCourseAssociation.TemplateRepositoryName}";
+                    associations.Add(new SubjectCourseAssociationDto(nameof(GithubSubjectCourseAssociation),
+                        githubValue));
                     break;
 
                 case GoogleTableSubjectCourseAssociation googleTableSubjectCourseAssociation:
                     string googleValue = $"SpreadsheetId: {googleTableSubjectCourseAssociation.SpreadsheetId}";
-                    associations.Add(new SubjectCourseAssociationDto(nameof(GoogleTableSubjectCourseAssociation), googleValue));
+                    associations.Add(new SubjectCourseAssociationDto(nameof(GoogleTableSubjectCourseAssociation),
+                        googleValue));
                     break;
 
                 default:
@@ -32,9 +35,10 @@ public class SubjectCourseDtoFactory
         }
 
         SubmissionStateWorkflowTypeDto? workflowType = subjectCourse.WorkflowType.HasValue
-            ? (SubmissionStateWorkflowTypeDto) subjectCourse.WorkflowType
+            ? (SubmissionStateWorkflowTypeDto)subjectCourse.WorkflowType
             : null;
 
-        return new SubjectCourseDto(subjectCourse.Id, subjectCourse.Subject.Id, subjectCourse.Title, workflowType, associations);
+        return new SubjectCourseDto(subjectCourse.Id, subjectCourse.Subject.Id, subjectCourse.Title, workflowType,
+            associations);
     }
 }

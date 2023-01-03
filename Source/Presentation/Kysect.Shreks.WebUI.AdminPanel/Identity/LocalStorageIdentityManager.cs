@@ -15,7 +15,7 @@ public class LocalStorageIdentityManager : IIdentityManager
 
     public async ValueTask<UserIdentity?> FindIdentityAsync(CancellationToken cancellationToken)
     {
-        var identity = await _storage.GetItemAsync<UserIdentity>(IdentityKey, cancellationToken);
+        UserIdentity? identity = await _storage.GetItemAsync<UserIdentity>(IdentityKey, cancellationToken);
 
         if (identity is null)
             return null;
@@ -28,19 +28,23 @@ public class LocalStorageIdentityManager : IIdentityManager
     }
 
     public ValueTask UpdateIdentityAsync(UserIdentity userIdentity, CancellationToken cancellationToken)
-        => _storage.SetItemAsync(IdentityKey, userIdentity, cancellationToken);
+    {
+        return _storage.SetItemAsync(IdentityKey, userIdentity, cancellationToken);
+    }
 
     public ValueTask RemoveIdentityAsync(CancellationToken cancellationToken)
-        => _storage.RemoveItemAsync(IdentityKey, cancellationToken);
+    {
+        return _storage.RemoveItemAsync(IdentityKey, cancellationToken);
+    }
 
     public async ValueTask<bool> HasIdentityAsync(CancellationToken cancellationToken)
     {
-        var identity = await _storage.GetItemAsync<UserIdentity>(IdentityKey, cancellationToken);
+        UserIdentity? identity = await _storage.GetItemAsync<UserIdentity>(IdentityKey, cancellationToken);
 
         if (identity is null)
             return false;
 
-        var now = DateTime.UtcNow;
+        DateTime now = DateTime.UtcNow;
 
         return identity.ExpirationDateTime > now;
     }

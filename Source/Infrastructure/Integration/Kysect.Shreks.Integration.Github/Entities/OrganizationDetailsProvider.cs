@@ -16,7 +16,8 @@ public class OrganizationDetailsProvider : IOrganizationDetailsProvider
     public async Task<IReadOnlyCollection<string>> GetOrganizationOwners(string organizationName)
     {
         IGitHubClient client = await _clientProvider.GetClient(organizationName);
-        IReadOnlyList<User> owners = await client.Organization.Member.GetAll(organizationName, OrganizationMembersRole.Admin);
+        IReadOnlyList<User> owners =
+            await client.Organization.Member.GetAll(organizationName, OrganizationMembersRole.Admin);
         return owners.Select(u => u.Login).ToList();
     }
 }

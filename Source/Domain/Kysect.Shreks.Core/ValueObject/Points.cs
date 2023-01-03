@@ -15,33 +15,53 @@ public readonly record struct Points : IComparable<Points>
 
     public static Points None => new Points();
 
+    public int CompareTo(Points other)
+    {
+        return Value.CompareTo(other.Value);
+    }
+
     public static Points Min(Points a, Points b)
-        => a < b ? a : b;
+    {
+        return a < b ? a : b;
+    }
 
     public static Points Max(Points a, Points b)
-        => a > b ? a : b;
+    {
+        return a > b ? a : b;
+    }
 
     public static implicit operator Points(double value)
-        => new Points(value);
+    {
+        return new Points(value);
+    }
 
     public static Points operator +(Points a, Points b)
-        => new Points(a.Value + b.Value);
+    {
+        return new Points(a.Value + b.Value);
+    }
 
     public static Points operator -(Points a, Points b)
-        => new Points(a.Value - b.Value);
+    {
+        return new Points(a.Value - b.Value);
+    }
 
     public static Points operator *(Points a, Fraction b)
-        => new Points(a.Value * b.Value);
+    {
+        return new Points(a.Value * b.Value);
+    }
 
     public static bool operator >(Points a, Points b)
-        => a.Value > b.Value;
+    {
+        return a.Value > b.Value;
+    }
 
     public static bool operator <(Points a, Points b)
-        => a.Value < b.Value;
+    {
+        return a.Value < b.Value;
+    }
 
     public override string ToString()
-        => Value.ToString(CultureInfo.InvariantCulture);
-
-    public int CompareTo(Points other)
-        => Value.CompareTo(other.Value);
+    {
+        return Value.ToString(CultureInfo.InvariantCulture);
+    }
 }

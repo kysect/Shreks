@@ -21,5 +21,7 @@ public partial class SubjectCourseGroup : IEntity
     public virtual StudentGroup StudentGroup { get; protected init; }
 
     public override string ToString()
-        => StudentGroup.ToString();
+    {
+        return StudentGroup.ToString();
+    }
 }

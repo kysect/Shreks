@@ -36,7 +36,7 @@ public class PullRequestApprovedTests : GithubEventsTestBase
     {
         Submission submission = await Context.GetGithubSubmissionAsync(new ActiveSubmissionState());
         ISubmissionWorkflowService workflowService = Provider.GetRequiredService<ISubmissionWorkflowService>();
-        User issuer = await Context.GetNotMentorUser(submission.GroupAssignment);
+        User issuer = await Context.GetNotMentorUser(submission.GroupAssignment, submission.Student.User);
 
         var command = new PullRequestApproved.Command(issuer.Id, submission.Id);
         var handler = new PullRequestApprovedHandler(workflowService);

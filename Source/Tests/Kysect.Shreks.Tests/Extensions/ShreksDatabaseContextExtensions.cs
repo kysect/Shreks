@@ -21,16 +21,21 @@ public static class ShreksDatabaseContextExtensions
             .Select(x => x.Submission)
             .Where(submission => states.Any(x => x.Equals(submission.State)))
             .Where(x =>
-                x.GroupAssignment.Assignment.SubjectCourse.WorkflowType == SubmissionStateWorkflowType.ReviewWithDefense)
+                x.GroupAssignment.Assignment.SubjectCourse.WorkflowType ==
+                SubmissionStateWorkflowType.ReviewWithDefense)
             .FirstAsync();
     }
 
-    public static Task<User> GetNotMentorUser(this IShreksDatabaseContext context, GroupAssignment assignment)
+    public static Task<User> GetNotMentorUser(
+        this IShreksDatabaseContext context,
+        GroupAssignment assignment,
+        User excludedUser)
     {
         IEnumerable<Guid> mentors = assignment.Assignment.SubjectCourse.Mentors
             .Select(x => x.UserId);
 
         return context.Users
+            .Where(x => x.Equals(excludedUser) == false)
             .Where(user => mentors.Contains(user.Id) == false)
             .FirstAsync();
     }

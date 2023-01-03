@@ -14,5 +14,7 @@ public class StudentGroupSeeder : IDatabaseSeeder
     }
 
     public void Seed(IShreksDatabaseContext context)
-        => context.StudentGroups.AddRange(_generator.GeneratedEntities);
+    {
+        context.StudentGroups.AddRange(_generator.GeneratedEntities);
+    }
 }

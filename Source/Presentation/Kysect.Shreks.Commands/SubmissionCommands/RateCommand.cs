@@ -37,8 +37,12 @@ public class RateCommand : ISubmissionCommand<SubmissionContext, SubmissionRateD
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
 
     public string ToLogLine()
-        => $"RatingPercent: {RatingPercent}, ExtraPoints: {ExtraPoints}";
+    {
+        return $"RatingPercent: {RatingPercent}, ExtraPoints: {ExtraPoints}";
+    }
 }

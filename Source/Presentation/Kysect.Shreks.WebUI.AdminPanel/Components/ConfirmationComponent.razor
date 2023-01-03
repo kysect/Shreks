@@ -46,10 +46,14 @@
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
     public Task Show()
-        => _modal?.Show() ?? Task.CompletedTask;
+    {
+        return _modal?.Show() ?? Task.CompletedTask;
+    }
 
     private Task Dismiss()
-        => _modal?.Hide() ?? Task.CompletedTask;
+    {
+        return _modal?.Hide() ?? Task.CompletedTask;
+    }
 
     private async Task Execute()
     {

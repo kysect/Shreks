@@ -22,8 +22,8 @@ namespace Kysect.Shreks.Presentation.GitHub.Processing;
 internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
 {
     private readonly ISubmissionCommandParser _commandParser;
-    private readonly IMediator _mediator;
     private readonly IDefaultSubmissionProvider _defaultSubmissionProvider;
+    private readonly IMediator _mediator;
 
     public ShreksWebhookEventHandler(
         ISubmissionCommandParser commandParser,

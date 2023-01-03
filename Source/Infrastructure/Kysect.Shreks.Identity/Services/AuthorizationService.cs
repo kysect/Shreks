@@ -16,11 +16,11 @@ public class AuthorizationService : IAuthorizationService
 
     public async Task AuthorizeAdminAsync(string username, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByNameAsync(username);
-        
+        ShreksIdentityUser? user = await _userManager.FindByNameAsync(username);
+
         if (user is not null && await _userManager.IsInRoleAsync(user, ShreksIdentityRole.AdminRoleName))
             return;
-        
+
         throw new UnauthorizedException("User is not admin");
     }
 }

@@ -11,11 +11,14 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 
 internal class BanSubmissionHandler : IRequestHandler<Command, Response>
 {
-    private readonly IPermissionValidator _permissionValidator;
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
+    private readonly IPermissionValidator _permissionValidator;
 
-    public BanSubmissionHandler(IPermissionValidator permissionValidator, IShreksDatabaseContext context, IMapper mapper)
+    public BanSubmissionHandler(
+        IPermissionValidator permissionValidator,
+        IShreksDatabaseContext context,
+        IMapper mapper)
     {
         _permissionValidator = permissionValidator;
         _context = context;

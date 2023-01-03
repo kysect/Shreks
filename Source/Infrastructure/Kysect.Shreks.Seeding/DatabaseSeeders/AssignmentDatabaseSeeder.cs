@@ -14,5 +14,7 @@ public class AssignmentDatabaseSeeder : IDatabaseSeeder
     }
 
     public void Seed(IShreksDatabaseContext context)
-        => context.Assignments.AddRange(_generator.GeneratedEntities);
+    {
+        context.Assignments.AddRange(_generator.GeneratedEntities);
+    }
 }

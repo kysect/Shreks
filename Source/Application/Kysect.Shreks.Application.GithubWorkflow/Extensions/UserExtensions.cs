@@ -18,6 +18,7 @@ public static class UserExtensions
 
     public static async Task<User> GetUserByGithubUsername(this DbSet<UserAssociation> users, string githubUsername)
     {
-        return await FindUserByGithubUsername(users, githubUsername) ?? throw DomainInvalidOperationException.UserNotFoundByGithubUsername(githubUsername);
+        return await FindUserByGithubUsername(users, githubUsername) ??
+               throw DomainInvalidOperationException.UserNotFoundByGithubUsername(githubUsername);
     }
 }

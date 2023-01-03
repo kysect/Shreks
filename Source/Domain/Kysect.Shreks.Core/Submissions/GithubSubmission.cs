@@ -30,5 +30,7 @@ public partial class GithubSubmission : Submission
     }
 
     public GithubSubmissionAssociation GetAssociation()
-        => Associations.OfType<GithubSubmissionAssociation>().Single();
+    {
+        return Associations.OfType<GithubSubmissionAssociation>().Single();
+    }
 }

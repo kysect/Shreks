@@ -109,7 +109,7 @@ dotnet_diagnostic.IDE0035.severity = warning
 
 # IDE0036
 dotnet_diagnostic.IDE0036.severity = warning
-csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async
+csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async
 
 # IDE0037
 dotnet_diagnostic.IDE0037.severity = warning
@@ -172,7 +172,6 @@ dotnet_diagnostic.IDE0074.severity = suggestion
 dotnet_style_prefer_compound_assignment = true:suggestion
 
 # IDE0055
-dotnet_diagnostic.IDE0055.severity = warning
 dotnet_sort_system_directives_first = false
 dotnet_separate_import_directive_groups = false
 dotnet_style_namespace_match_folder = true:warning
@@ -180,7 +179,7 @@ csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
 csharp_new_line_before_finally = true
-csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_object_initializers = false
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
 csharp_indent_case_contents = true
@@ -512,31 +511,31 @@ dotnet_naming_style.prefix_interface_with_i_style.required_prefix = I
 dotnet_naming_style.prefix_type_parameters_with_t_style.capitalization = pascal_case
 dotnet_naming_style.prefix_type_parameters_with_t_style.required_prefix = T
 # disallowed_style - Anything that has this style applied is marked as disallowed
-dotnet_naming_style.disallowed_style.capitalization  = pascal_case
+dotnet_naming_style.disallowed_style.capitalization = pascal_case
 dotnet_naming_style.disallowed_style.required_prefix = ____RULE_VIOLATION____
 dotnet_naming_style.disallowed_style.required_suffix = ____RULE_VIOLATION____
 # internal_error_style - This style should never occur... if it does, it indicates a bug in file or in the parser using the file
-dotnet_naming_style.internal_error_style.capitalization  = pascal_case
+dotnet_naming_style.internal_error_style.capitalization = pascal_case
 dotnet_naming_style.internal_error_style.required_prefix = ____INTERNAL_ERROR____
 dotnet_naming_style.internal_error_style.required_suffix = ____INTERNAL_ERROR____
 
 dotnet_naming_symbols.public_protected_constant_fields_group.applicable_accessibilities = public, protected, protected_internal
-dotnet_naming_symbols.public_protected_constant_fields_group.required_modifiers         = const
-dotnet_naming_symbols.public_protected_constant_fields_group.applicable_kinds           = field
-dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.symbols    = public_protected_constant_fields_group
+dotnet_naming_symbols.public_protected_constant_fields_group.required_modifiers = const
+dotnet_naming_symbols.public_protected_constant_fields_group.applicable_kinds = field
+dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.symbols = public_protected_constant_fields_group
 dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.style = pascal_case_style
 dotnet_naming_rule.public_protected_constant_fields_must_be_pascal_case_rule.severity = warning
 
 dotnet_naming_symbols.public_protected_static_readonly_fields_group.applicable_accessibilities = public, protected, protected_internal
-dotnet_naming_symbols.public_protected_static_readonly_fields_group.required_modifiers         = static, readonly
-dotnet_naming_symbols.public_protected_static_readonly_fields_group.applicable_kinds           = field
-dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.symbols    = public_protected_static_readonly_fields_group
+dotnet_naming_symbols.public_protected_static_readonly_fields_group.required_modifiers = static, readonly
+dotnet_naming_symbols.public_protected_static_readonly_fields_group.applicable_kinds = field
+dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.symbols = public_protected_static_readonly_fields_group
 dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.style = pascal_case_style
 dotnet_naming_rule.public_protected_static_readonly_fields_must_be_pascal_case_rule.severity = warning
 
 dotnet_naming_symbols.other_public_protected_fields_group.applicable_accessibilities = public, protected, protected_internal
-dotnet_naming_symbols.other_public_protected_fields_group.applicable_kinds           = field
-dotnet_naming_rule.other_public_protected_fields_disallowed_rule.symbols             = other_public_protected_fields_group
+dotnet_naming_symbols.other_public_protected_fields_group.applicable_kinds = field
+dotnet_naming_rule.other_public_protected_fields_disallowed_rule.symbols = other_public_protected_fields_group
 dotnet_naming_rule.other_public_protected_fields_disallowed_rule.style = disallowed_style
 dotnet_naming_rule.other_public_protected_fields_disallowed_rule.severity = error
 
@@ -556,3 +555,6 @@ dotnet_style_allow_multiple_blank_lines_experimental = true:silent
 dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
 # IDE0230
 csharp_style_prefer_utf8_string_literals = true:suggestion
+
+# ReSharper
+resharper_csharp_empty_block_style = together_same_line

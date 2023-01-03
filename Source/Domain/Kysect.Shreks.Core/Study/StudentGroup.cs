@@ -21,7 +21,9 @@ public partial class StudentGroup : IEntity<Guid>
     public virtual IReadOnlyCollection<Student> Students => _students;
 
     public override string ToString()
-        => Name;
+    {
+        return Name;
+    }
 
     public void AddStudent(Student student)
     {

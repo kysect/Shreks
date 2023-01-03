@@ -21,8 +21,12 @@ public class SafeExecutor : ISafeExecutor
     }
 
     public ISafeExecutionBuilder Execute(Func<Task> action)
-        => new SafeExecutionBuilder(action, _exceptionSink, _identityManager, _navigationManager);
+    {
+        return new SafeExecutionBuilder(action, _exceptionSink, _identityManager, _navigationManager);
+    }
 
     public ISafeExecutionBuilder<T> Execute<T>(Func<Task<T>> action)
-        => new SafeExecutionBuilder<T>(action, _exceptionSink, _identityManager, _navigationManager);
+    {
+        return new SafeExecutionBuilder<T>(action, _exceptionSink, _identityManager, _navigationManager);
+    }
 }

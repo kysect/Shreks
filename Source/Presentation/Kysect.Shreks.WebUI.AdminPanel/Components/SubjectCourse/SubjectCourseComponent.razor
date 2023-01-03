@@ -1,4 +1,3 @@
-@using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @using Kysect.Shreks.Application.Dto.SubjectCourses
 @using Kysect.Shreks.Application.Dto.Study
@@ -106,10 +105,7 @@
         if (SubjectCourse is null || _assignments is not null)
             return;
 
-        await using var builder = SafeExecutor.Execute(async () =>
-        {
-            _assignments = await Client.GetAssignmentsAsync(SubjectCourse.Id);
-        });
+        await using var builder = SafeExecutor.Execute(async () => { _assignments = await Client.GetAssignmentsAsync(SubjectCourse.Id); });
     }
 
     private async Task ProcessSubjectCourseGroupsSelected()
@@ -117,10 +113,7 @@
         if (SubjectCourse is null || _subjectCourseGroups is not null)
             return;
 
-        await using var builder = SafeExecutor.Execute(async () =>
-        {
-            _subjectCourseGroups = await Client.GetGroupsAsync(SubjectCourse.Id);
-        });
+        await using var builder = SafeExecutor.Execute(async () => { _subjectCourseGroups = await Client.GetGroupsAsync(SubjectCourse.Id); });
     }
 
 }

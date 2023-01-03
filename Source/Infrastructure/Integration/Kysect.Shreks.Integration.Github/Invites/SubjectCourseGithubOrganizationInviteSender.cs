@@ -9,10 +9,12 @@ namespace Kysect.Shreks.Integration.Github.Invites;
 
 public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubOrganizationInviteSender
 {
-    private readonly ILogger<SubjectCourseGithubOrganizationInviteSender> _logger;
     private readonly IOrganizationGithubClientProvider _clientProvider;
+    private readonly ILogger<SubjectCourseGithubOrganizationInviteSender> _logger;
 
-    public SubjectCourseGithubOrganizationInviteSender(ILogger<SubjectCourseGithubOrganizationInviteSender> logger, IOrganizationGithubClientProvider clientProvider)
+    public SubjectCourseGithubOrganizationInviteSender(
+        ILogger<SubjectCourseGithubOrganizationInviteSender> logger,
+        IOrganizationGithubClientProvider clientProvider)
     {
         _logger = logger;
         _clientProvider = clientProvider;
@@ -36,8 +38,8 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
                 .Select(invite => invite.Username)
                 .ToList();
 
-            var count = invites.Count;
-            var users = invites.ToSingleString();
+            int count = invites.Count;
+            string users = invites.ToSingleString();
             _logger.LogInformation("Success invites: {InviteCount}. Users: {Users}", count, users);
         }
 
@@ -48,8 +50,8 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
                 .Select(invite => invite.Username)
                 .ToList();
 
-            var count = invites.Count;
-            var users = invites.ToSingleString();
+            int count = invites.Count;
+            string users = invites.ToSingleString();
             _logger.LogInformation("AlreadyAdded invites: {AlreadyAddedCount}. Users: {Users}", count, users);
         }
 
@@ -60,8 +62,8 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
                 .Select(invite => invite.Username)
                 .ToList();
 
-            var count = invites.Count;
-            var users = invites.ToSingleString();
+            int count = invites.Count;
+            string users = invites.ToSingleString();
             _logger.LogInformation("AlreadyInvitedCount invites: {AlreadyInvitedCount}. Users: {Users}", count, users);
         }
 
@@ -72,8 +74,8 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
                 .Select(invite => invite.Username)
                 .ToList();
 
-            var count = invites.Count;
-            var users = invites.ToSingleString();
+            int count = invites.Count;
+            string users = invites.ToSingleString();
             _logger.LogInformation("InvitationExpired invites: {Count}. Users: {Users}", count, users);
         }
 
@@ -83,8 +85,8 @@ public class SubjectCourseGithubOrganizationInviteSender : ISubjectCourseGithubO
                 .Where(result => result.Result is UserInviteResultType.Failed)
                 .ToList();
 
-            var count = invites.Count;
-            var error = invites.First(invite => invite.Reason is not null).Reason;
+            int count = invites.Count;
+            string? error = invites.First(invite => invite.Reason is not null).Reason;
             _logger.LogInformation("Failed invites: {FailedCount}. Error: {Error}", count, error);
         }
     }

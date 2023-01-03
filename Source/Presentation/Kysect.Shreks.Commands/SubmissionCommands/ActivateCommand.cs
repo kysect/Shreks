@@ -25,5 +25,7 @@ public class ActivateCommand : ISubmissionCommand<SubmissionContext, SubmissionD
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
 }

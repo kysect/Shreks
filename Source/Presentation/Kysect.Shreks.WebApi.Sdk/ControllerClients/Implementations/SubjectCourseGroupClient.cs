@@ -26,7 +26,9 @@ internal class SubjectCourseGroupClient : ISubjectCourseGroupClient
         return await _handler.SendAsync<SubjectCourseGroupDto>(message, cancellationToken);
     }
 
-    public async Task DeleteAsync(DeleteSubjectCourseGroupRequest request, CancellationToken cancellationToken = default)
+    public async Task DeleteAsync(
+        DeleteSubjectCourseGroupRequest request,
+        CancellationToken cancellationToken = default)
     {
         using var message = new HttpRequestMessage(HttpMethod.Delete, "api/SubjectCourseGroup")
         {

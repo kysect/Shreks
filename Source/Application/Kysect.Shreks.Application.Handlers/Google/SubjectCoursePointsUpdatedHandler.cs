@@ -12,10 +12,10 @@ namespace Kysect.Shreks.Application.Handlers.Google;
 
 internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectCoursePointsUpdatedNotification>
 {
-    private readonly ISubjectCourseTableService _subjectCourseTableService;
     private readonly ILogger<SubjectCoursePointsUpdatedHandler> _logger;
-    private readonly ISheet<SubjectCoursePointsDto> _sheet;
     private readonly ISubjectCourseService _service;
+    private readonly ISheet<SubjectCoursePointsDto> _sheet;
+    private readonly ISubjectCourseTableService _subjectCourseTableService;
 
     public SubjectCoursePointsUpdatedHandler(
         ISubjectCourseTableService subjectCourseTableService,
@@ -60,11 +60,12 @@ internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectC
         {
             _logger.LogTrace("Calculated points:");
 
-            var table = points.StudentsPoints.SelectMany(x => x.Points, (s, a) =>
-            {
-                AssignmentDto assignment = points.Assignments.Single(x => x.Id.Equals(a.AssignmentId));
-                return (Student: s, Points: a, Assignment: assignment);
-            });
+            IEnumerable<(StudentPointsDto Student, AssignmentPointsDto Points, AssignmentDto Assignment)> table =
+                points.StudentsPoints.SelectMany(x => x.Points, (s, a) =>
+                {
+                    AssignmentDto assignment = points.Assignments.Single(x => x.Id.Equals(a.AssignmentId));
+                    return (Student: s, Points: a, Assignment: assignment);
+                });
 
             foreach ((StudentPointsDto student, AssignmentPointsDto studentPoints, AssignmentDto assignment) in table)
             {

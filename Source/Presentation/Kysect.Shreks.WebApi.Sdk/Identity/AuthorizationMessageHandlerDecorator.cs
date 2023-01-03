@@ -21,9 +21,7 @@ public class AuthorizationMessageHandlerDecorator : DelegatingHandler
         UserIdentity? identity = await _identityProvider.FindIdentityAsync(cancellationToken);
 
         if (identity is not null)
-        {
             request.Headers.Authorization = AuthenticationHeaderValue.Parse($"Bearer {identity.Token}");
-        }
 
         return await base.SendAsync(request, cancellationToken);
     }

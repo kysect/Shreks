@@ -8,7 +8,7 @@ public class ShreksMemoryCache : IShreksMemoryCache
     private readonly MemoryCacheEntryOptions _cacheEntryOptions;
 
     public ShreksMemoryCache(
-        MemoryCacheOptions memoryCacheOptions, 
+        MemoryCacheOptions memoryCacheOptions,
         MemoryCacheEntryOptions memoryCacheEntryOptions)
     {
         _cache = new MemoryCache(memoryCacheOptions);
@@ -17,12 +17,15 @@ public class ShreksMemoryCache : IShreksMemoryCache
 
     public TItem GetOrCreate<TItem>(object key, Func<ICacheEntry, TItem> factory)
     {
-        return  _cache.GetOrCreate(key, entry =>
+        return _cache.GetOrCreate(key, entry =>
         {
             entry.SetOptions(_cacheEntryOptions);
             return factory(entry);
         });
     }
 
-    public void Dispose() => _cache.Dispose();
+    public void Dispose()
+    {
+        _cache.Dispose();
+    }
 }

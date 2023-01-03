@@ -5,8 +5,9 @@ namespace Kysect.Shreks.WebApi.Extensions;
 
 public static class WebApplicationExtensions
 {
-    public static IApplicationBuilder UseRequestLogging(this WebApplication webApplication) =>
-        webApplication.UseSerilogRequestLogging(options =>
+    public static IApplicationBuilder UseRequestLogging(this WebApplication webApplication)
+    {
+        return webApplication.UseSerilogRequestLogging(options =>
         {
             options.IncludeQueryInRequestPath = true;
             options.Logger = new LoggerConfiguration()
@@ -18,4 +19,5 @@ public static class WebApplicationExtensions
                 )
                 .CreateLogger();
         });
+    }
 }

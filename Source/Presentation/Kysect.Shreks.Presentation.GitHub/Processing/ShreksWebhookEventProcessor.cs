@@ -17,9 +17,9 @@ namespace Kysect.Shreks.Presentation.GitHub.Processing;
 public class ShreksWebhookEventProcessor : WebhookEventProcessor
 {
     private readonly IActionNotifier _actionNotifier;
-    private readonly ILogger<ShreksWebhookEventProcessor> _logger;
     private readonly IOrganizationGithubClientProvider _clientProvider;
     private readonly IShreksWebhookEventHandler _handler;
+    private readonly ILogger<ShreksWebhookEventProcessor> _logger;
 
     public ShreksWebhookEventProcessor(
         IActionNotifier actionNotifier,
@@ -263,10 +263,10 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
     {
         return new GithubPullRequestDescriptor(
             pullRequestReviewEvent.Sender!.Login,
-            Payload: pullRequestReviewEvent.Review.HtmlUrl,
+            pullRequestReviewEvent.Review.HtmlUrl,
             pullRequestReviewEvent.Organization!.Login,
             pullRequestReviewEvent.Repository!.Name,
-            BranchName: pullRequestReviewEvent.PullRequest.Head.Ref,
+            pullRequestReviewEvent.PullRequest.Head.Ref,
             pullRequestReviewEvent.PullRequest.Number);
     }
 
@@ -282,10 +282,10 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         return new GithubPullRequestDescriptor(
             issueCommentEvent.Sender.Login,
-            Payload: pullRequest.HtmlUrl,
+            pullRequest.HtmlUrl,
             issueCommentEvent.Organization.Login,
             issueCommentEvent.Repository.Name,
-            BranchName: pullRequest.Head.Ref,
+            pullRequest.Head.Ref,
             pullRequest.Number);
     }
 }

@@ -1,6 +1,6 @@
-@using Kysect.Shreks.WebApi.Sdk
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @using Kysect.Shreks.Application.Dto.Users
+@using Kysect.Shreks.Application.Dto.Querying
 @inject IStudentClient Client
 @inject ISafeExecutor SafeExecutor
 
@@ -39,9 +39,9 @@
 
         <div @onclick:stopPropagation="true">
             <CollapseBody Padding="Padding.Is2.FromTop.Is0.FromBottom">
-                @foreach (var parameter in Parameters)
+                @foreach (QueryParameter<StudentQueryParameter>? parameter in Parameters)
                 {
-                    <StudentQueryParameterComponent Parameter="@parameter" Parent="@this"/>
+                    <StudentQueryParameterComponent Parameter="@parameter" Parent="@(this)"/>
                 }
             </CollapseBody>
         </div>

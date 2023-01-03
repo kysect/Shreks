@@ -23,10 +23,14 @@ public class InactiveSubmissionState : ISubmissionState
     }
 
     public ISubmissionState MoveToBanned()
-        => new BannedSubmissionState();
+    {
+        return new BannedSubmissionState();
+    }
 
     public ISubmissionState MoveToActivated()
-        => new ActiveSubmissionState();
+    {
+        return new ActiveSubmissionState();
+    }
 
     public ISubmissionState MoveToDeactivated()
     {
@@ -41,7 +45,9 @@ public class InactiveSubmissionState : ISubmissionState
     }
 
     public ISubmissionState MoveToDeleted()
-        => new DeletedSubmissionState();
+    {
+        return new DeletedSubmissionState();
+    }
 
     public ISubmissionState MoveToCompleted()
     {

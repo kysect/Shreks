@@ -12,8 +12,8 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 
 internal class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response>
 {
-    private readonly IPermissionValidator _permissionValidator;
     private readonly IShreksDatabaseContext _context;
+    private readonly IPermissionValidator _permissionValidator;
 
     public UpdateSubmissionPointsHandler(IPermissionValidator permissionValidator, IShreksDatabaseContext context)
     {

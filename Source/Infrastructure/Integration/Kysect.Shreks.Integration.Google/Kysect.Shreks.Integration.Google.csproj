@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<AnalysisLevel>latest</AnalysisLevel>
-		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    </PropertyGroup>
 
-  <ItemGroup>
-	  <PackageReference Include="FluentSpreadsheets.GoogleSheets" Version="1.3.0" />
-	  <PackageReference Include="Google.Apis.Sheets.v4" Version="1.57.0.2727" />
-	  <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2746" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentSpreadsheets.GoogleSheets" Version="1.3.0"/>
+        <PackageReference Include="Google.Apis.Sheets.v4" Version="1.57.0.2727"/>
+        <PackageReference Include="Google.Apis.Drive.v3" Version="1.57.0.2746"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Application\Kysect.Shreks.Application.Abstractions\Kysect.Shreks.Application.Abstractions.csproj"/>
+    </ItemGroup>
 
 </Project>

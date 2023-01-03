@@ -8,7 +8,8 @@ internal class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command
 {
     private readonly ISubjectCourseGithubOrganizationManager _subjectCourseGithubOrganizationManager;
 
-    public UpdateSubjectCourseOrganizationsHandler(ISubjectCourseGithubOrganizationManager subjectCourseGithubOrganizationManager)
+    public UpdateSubjectCourseOrganizationsHandler(
+        ISubjectCourseGithubOrganizationManager subjectCourseGithubOrganizationManager)
     {
         _subjectCourseGithubOrganizationManager = subjectCourseGithubOrganizationManager;
     }

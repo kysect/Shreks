@@ -15,10 +15,13 @@ namespace Kysect.Shreks.Application.Handlers.Users;
 internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
     private readonly IGithubUserProvider _githubUserProvider;
+    private readonly IMapper _mapper;
 
-    public UpdateUserGithubUsernameHandler(IShreksDatabaseContext context, IMapper mapper, IGithubUserProvider githubUserProvider)
+    public UpdateUserGithubUsernameHandler(
+        IShreksDatabaseContext context,
+        IMapper mapper,
+        IGithubUserProvider githubUserProvider)
     {
         _context = context;
         _mapper = mapper;
@@ -32,7 +35,7 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
         bool usernameAlreadyExists = await _context
             .UserAssociations
             .OfType<GithubUserAssociation>()
-            .AnyAsync(a => a.GithubUsername == request.GithubUsername, cancellationToken: cancellationToken);
+            .AnyAsync(a => a.GithubUsername == request.GithubUsername, cancellationToken);
 
         if (usernameAlreadyExists)
             throw new DomainInvalidOperationException($"Username {request.GithubUsername} already used by other user");
@@ -40,7 +43,10 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
         bool isGithubUserExists = await _githubUserProvider.IsGithubUserExists(request.GithubUsername);
 
         if (!isGithubUserExists)
-            throw new DomainInvalidOperationException($"Github user with username {request.GithubUsername} does not exist");
+        {
+            string message = $"Github user with username {request.GithubUsername} does not exist";
+            throw new DomainInvalidOperationException(message);
+        }
 
         var association = new GithubUserAssociation(user, request.GithubUsername);
         user.AddAssociation(association);

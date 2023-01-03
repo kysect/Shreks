@@ -23,7 +23,7 @@ public class GithubAuthController : Controller
     [HttpGet("sign-in")]
     public IActionResult SignInGithubUser()
     {
-        return Challenge(new AuthenticationProperties() { RedirectUri = "/" }, "GitHub");
+        return Challenge(new AuthenticationProperties { RedirectUri = "/" }, "GitHub");
     }
 
     [HttpPut("user")]
@@ -40,8 +40,8 @@ public class GithubAuthController : Controller
             return Unauthorized();
 
         // TODO: use real UserId here
-        var command = new UpdateUserGithubUsername.Command(UserId: Guid.NewGuid(), GithubUsername: githubUsername);
-        var response = await _mediator.Send(command);
+        var command = new UpdateUserGithubUsername.Command(Guid.NewGuid(), githubUsername);
+        UpdateUserGithubUsername.Response response = await _mediator.Send(command);
 
         return Ok(response);
     }

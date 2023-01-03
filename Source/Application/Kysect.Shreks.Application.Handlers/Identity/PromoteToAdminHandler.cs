@@ -9,8 +9,8 @@ namespace Kysect.Shreks.Application.Handlers.Identity;
 
 internal class PromoteToAdminHandler : IRequestHandler<Command>
 {
-    private readonly UserManager<ShreksIdentityUser> _userManager;
     private readonly RoleManager<ShreksIdentityRole> _roleManager;
+    private readonly UserManager<ShreksIdentityUser> _userManager;
 
     public PromoteToAdminHandler(
         UserManager<ShreksIdentityUser> userManager,
@@ -22,7 +22,7 @@ internal class PromoteToAdminHandler : IRequestHandler<Command>
 
     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByNameAsync(request.Username);
+        ShreksIdentityUser? user = await _userManager.FindByNameAsync(request.Username);
 
         if (user is null)
             throw new EntityNotFoundException("User with such username does not exist");

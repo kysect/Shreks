@@ -18,7 +18,7 @@ public class StudentGroupGenerator : EntityGeneratorBase<StudentGroup>
 
     protected override StudentGroup Generate(int index)
     {
-        var groupNumber = _faker.Random.Int(MinGroupNumber, MaxGroupNumber);
+        int groupNumber = _faker.Random.Int(MinGroupNumber, MaxGroupNumber);
         return new StudentGroup($"M{groupNumber}");
     }
 }

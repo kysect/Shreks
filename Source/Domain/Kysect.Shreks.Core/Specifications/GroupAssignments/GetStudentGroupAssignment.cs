@@ -4,8 +4,8 @@ namespace Kysect.Shreks.Core.Specifications.GroupAssignments;
 
 public class GetStudentGroupAssignment : ISpecification<GroupAssignment, GroupAssignment>
 {
-    private readonly Guid _userId;
     private readonly Guid _assignmentId;
+    private readonly Guid _userId;
 
     public GetStudentGroupAssignment(Guid userId, Guid assignmentId)
     {

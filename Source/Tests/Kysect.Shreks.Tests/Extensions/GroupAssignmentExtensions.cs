@@ -32,5 +32,7 @@ public static class GroupAssignmentExtensions
     }
 
     public static Mentor GetMentor(this GroupAssignment assignment)
-        => assignment.Assignment.SubjectCourse.Mentors.First();
+    {
+        return assignment.Assignment.SubjectCourse.Mentors.First();
+    }
 }

@@ -9,10 +9,10 @@ public class RequestFailedException : ShreksSdkException
         Code = code;
     }
 
+    public HttpStatusCode Code { get; }
+
     internal static RequestFailedException Create(string message, HttpStatusCode code)
     {
         return new RequestFailedException($"[{code}] Request failed: {message}", code);
     }
-
-    public HttpStatusCode Code { get; }
 }

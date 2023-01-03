@@ -17,7 +17,8 @@ public class GetLastPullRequestSubmissionHandlerTests : TestBase
         Submission submission = await Context.Submissions
             .Where(x => x.Associations.OfType<GithubSubmissionAssociation>().Any())
             .Where(x =>
-                x.GroupAssignment.Assignment.SubjectCourse.WorkflowType == SubmissionStateWorkflowType.ReviewWithDefense)
+                x.GroupAssignment.Assignment.SubjectCourse.WorkflowType ==
+                SubmissionStateWorkflowType.ReviewWithDefense)
             .OrderByDescending(x => x.Code)
             .FirstAsync();
 

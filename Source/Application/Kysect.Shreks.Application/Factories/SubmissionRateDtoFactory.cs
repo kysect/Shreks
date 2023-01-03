@@ -18,15 +18,15 @@ public static class SubmissionRateDtoFactory
 
         var dto = new SubmissionRateDto
         (
-            Code: submission.Code,
-            State: submission.State.Kind.ToString(),
-            SubmissionDate: submission.SubmissionDate.Value,
-            Rating: rating,
-            RawPoints: submission.Points?.Value,
-            MaxRawPoints: maxRowPoints.Value,
-            ExtraPoints: submission.ExtraPoints?.Value,
-            PenaltyPoints: submission.PointPenalty?.Value,
-            TotalPoints: submission.EffectivePoints?.Value
+            submission.Code,
+            submission.State.Kind.ToString(),
+            submission.SubmissionDate.Value,
+            rating,
+            submission.Points?.Value,
+            maxRowPoints.Value,
+            submission.ExtraPoints?.Value,
+            submission.PointPenalty?.Value,
+            submission.EffectivePoints?.Value
         );
 
         return dto;

@@ -12,9 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Playground.Github.TestEnv;
 
-public static class TestEnv
+public static class TestEnvExtensions
 {
-    public static IServiceCollection AddGithubPlaygroundDatabase(this IServiceCollection serviceCollection, TestEnvironmentConfiguration config)
+    public static IServiceCollection AddGithubPlaygroundDatabase(
+        this IServiceCollection serviceCollection,
+        TestEnvironmentConfiguration config)
     {
         serviceCollection
             .AddDatabaseContext(optionsBuilder => optionsBuilder
@@ -37,34 +39,36 @@ public static class TestEnv
     }
 
     public static async Task UseTestEnv(
-        this IServiceProvider serviceProvider, 
+        this IServiceProvider serviceProvider,
         TestEnvironmentConfiguration config,
         CancellationToken cancellationToken = default)
     {
-        
         return;
+#pragma warning disable CS0162
         await serviceProvider.UseDatabaseSeeders(cancellationToken);
 
-        using var scope  = serviceProvider.CreateScope();
-        
-        var dbContext = scope.ServiceProvider.GetRequiredService<IShreksDatabaseContext>();
+        using IServiceScope scope = serviceProvider.CreateScope();
 
-        var userGenerator = serviceProvider.GetRequiredService<IEntityGenerator<User>>();
-        var users = userGenerator.GeneratedEntities;
+        IShreksDatabaseContext dbContext = scope.ServiceProvider.GetRequiredService<IShreksDatabaseContext>();
+
+        IEntityGenerator<User> userGenerator = serviceProvider.GetRequiredService<IEntityGenerator<User>>();
+        IReadOnlyList<User> users = userGenerator.GeneratedEntities;
         dbContext.Users.AttachRange(users);
-        for (var index = 0; index < config.Users.Count; index++)
+        for (int index = 0; index < config.Users.Count; index++)
         {
-            var user = users[index];
-            var login = config.Users[index];
+            User user = users[index];
+            string login = config.Users[index];
             dbContext.UserAssociations.Add(new GithubUserAssociation(user, login));
         }
-        
-        var subjectCourseGenerator = serviceProvider.GetRequiredService<IEntityGenerator<SubjectCourse>>();
-        var subjectCourse = subjectCourseGenerator.GeneratedEntities[0];
+
+        IEntityGenerator<SubjectCourse> subjectCourseGenerator =
+            serviceProvider.GetRequiredService<IEntityGenerator<SubjectCourse>>();
+        SubjectCourse subjectCourse = subjectCourseGenerator.GeneratedEntities[0];
         dbContext.SubjectCourses.Attach(subjectCourse);
         dbContext.SubjectCourseAssociations.Add(
             new GithubSubjectCourseAssociation(subjectCourse, config.Organization, config.TemplateRepository));
 
         await dbContext.SaveChangesAsync(cancellationToken);
+#pragma warning restore CS0162
     }
 }

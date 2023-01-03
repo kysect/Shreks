@@ -7,24 +7,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
-        <PackageReference Include="Blazorise.Bootstrap" Version="1.1.2" />
-        <PackageReference Include="Blazorise.Components" Version="1.1.2" />
-        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.1.2" />
-        <PackageReference Include="Blazorise.SpinKit" Version="1.1.2" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.6" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.6" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+        <PackageReference Include="Blazored.LocalStorage" Version="4.2.0"/>
+        <PackageReference Include="Blazorise.Bootstrap" Version="1.1.2"/>
+        <PackageReference Include="Blazorise.Components" Version="1.1.2"/>
+        <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.1.2"/>
+        <PackageReference Include="Blazorise.SpinKit" Version="1.1.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.6"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.6" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Kysect.Shreks.WebApi.Sdk\Kysect.Shreks.WebApi.Sdk.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="Components\Study\SubjectComponent.razor" />
+        <ProjectReference Include="..\Kysect.Shreks.WebApi.Sdk\Kysect.Shreks.WebApi.Sdk.csproj"/>
     </ItemGroup>
 
 </Project>

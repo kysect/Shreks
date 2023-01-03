@@ -12,8 +12,8 @@ public class DeveloperEnvironmentSeeder
     private const string ExceptedEnvironment = "Testing";
 
     private readonly IShreksDatabaseContext _context;
-    private readonly IEntityGenerator<User> _userGenerator;
     private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
+    private readonly IEntityGenerator<User> _userGenerator;
 
     public DeveloperEnvironmentSeeder(
         IShreksDatabaseContext context,
@@ -37,16 +37,15 @@ public class DeveloperEnvironmentSeeder
     private static void EnsureUserAcknowledgedEnvironment(DeveloperEnvironmentSeedingRequest request)
     {
         if (!request.Environment.Equals(ExceptedEnvironment, StringComparison.OrdinalIgnoreCase))
-        {
             throw new UserNotAcknowledgedEnvironmentException();
-        }
     }
 
     private void AddGithubUserAssociations(DeveloperEnvironmentSeedingRequest request)
     {
         SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[0];
         _context.SubjectCourses.Attach(subjectCourse);
-        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(subjectCourse, request.Organization, request.TemplateRepository);
+        var githubSubjectCourseAssociation =
+            new GithubSubjectCourseAssociation(subjectCourse, request.Organization, request.TemplateRepository);
         _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
     }
 

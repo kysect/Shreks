@@ -37,7 +37,9 @@ public class BanCommand : ISubmissionCommand<UpdateContext, SubmissionDto>
     }
 
     public Task AcceptAsync(ISubmissionCommandVisitor visitor)
-        => visitor.VisitAsync(this);
+    {
+        return visitor.VisitAsync(this);
+    }
 
     private async Task<SubmissionDto> GetSubmissionByCodeAsync(
         UpdateContext context,
