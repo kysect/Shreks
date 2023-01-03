@@ -25,7 +25,7 @@ internal class GetUserByGithubUsernameHandler : IRequestHandler<Query, Response>
     {
         User? user = await _context.UserAssociations
             .OfType<GithubUserAssociation>()
-            .Where(x => x.GithubUsername.Equals(request.Username))
+            .Where(x => x.GithubUsername.ToLower().Equals(request.Username.ToLower()))
             .Select(x => x.User)
             .SingleOrDefaultAsync(cancellationToken);
 
