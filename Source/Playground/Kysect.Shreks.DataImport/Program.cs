@@ -132,7 +132,6 @@ IEnumerable<Task<GroupAssignmentDto>>? groupAssignments = groups.Values
 foreach (Task<GroupAssignmentDto> task in groupAssignments)
     await task;
 
-
 IEnumerable<Task>? tasks = Enumerable.Range(1, 5).Select(x =>
 {
     var span = TimeSpan.FromDays(x * 7);

@@ -8,6 +8,7 @@ namespace Kysect.Shreks.Core.Submissions.States;
 public class DeletedSubmissionState : ISubmissionState
 {
     public SubmissionStateKind Kind => SubmissionStateKind.Deleted;
+
     public bool IsTerminalEffectiveState => false;
 
     public ISubmissionState MoveToRated(Fraction? rating, Points? extraPoints)

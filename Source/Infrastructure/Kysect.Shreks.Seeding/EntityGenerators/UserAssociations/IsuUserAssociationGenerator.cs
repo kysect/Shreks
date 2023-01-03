@@ -17,7 +17,8 @@ public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociatio
     public IsuUserAssociationGenerator(
         EntityGeneratorOptions<IsuUserAssociation> options,
         Faker faker,
-        IEntityGenerator<User> userGenerator) : base(options)
+        IEntityGenerator<User> userGenerator)
+        : base(options)
     {
         _faker = faker;
         _userGenerator = userGenerator;

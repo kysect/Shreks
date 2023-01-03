@@ -9,7 +9,8 @@ public class UserGenerator : EntityGeneratorBase<User>
 {
     private readonly Faker _faker;
 
-    public UserGenerator(EntityGeneratorOptions<User> options, Faker faker) : base(options)
+    public UserGenerator(EntityGeneratorOptions<User> options, Faker faker)
+        : base(options)
     {
         _faker = faker;
     }

@@ -8,6 +8,7 @@ namespace Kysect.Shreks.Core.Submissions.States;
 public class ReviewedSubmissionState : ISubmissionState
 {
     public SubmissionStateKind Kind => SubmissionStateKind.Reviewed;
+
     public bool IsTerminalEffectiveState => false;
 
     public ISubmissionState MoveToRated(Fraction? rating, Points? extraPoints)

@@ -12,5 +12,6 @@ public class PayloadAndAssignmentContext : BaseContext
     }
 
     public Guid AssignmentId { get; }
+
     public string Payload { get; }
 }

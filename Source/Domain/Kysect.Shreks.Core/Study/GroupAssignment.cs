@@ -28,6 +28,7 @@ public partial class GroupAssignment : IEntity
     public virtual Assignment Assignment { get; protected init; }
 
     public DateOnly Deadline { get; set; }
+
     public virtual IReadOnlyCollection<Submission> Submissions => _submissions;
 
     public override string ToString()

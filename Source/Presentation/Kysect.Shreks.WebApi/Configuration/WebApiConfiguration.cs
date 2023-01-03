@@ -27,9 +27,14 @@ internal class WebApiConfiguration
     }
 
     public GoogleIntegrationConfiguration GoogleIntegrationConfiguration { get; }
+
     public CacheConfiguration CacheConfiguration { get; }
+
     public GithubIntegrationConfiguration GithubIntegrationConfiguration { get; }
+
     public TestEnvironmentConfiguration? TestEnvironmentConfiguration { get; }
+
     public PostgresConfiguration PostgresConfiguration { get; }
+
     public DbNamesConfiguration DbNamesConfiguration { get; }
 }

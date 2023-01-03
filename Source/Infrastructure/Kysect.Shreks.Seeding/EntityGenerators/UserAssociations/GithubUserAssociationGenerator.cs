@@ -13,7 +13,8 @@ public class GithubUserAssociationGenerator : EntityGeneratorBase<GithubUserAsso
     public GithubUserAssociationGenerator(
         EntityGeneratorOptions<GithubUserAssociation> options,
         Faker faker,
-        IEntityGenerator<User> userGenerator) : base(options)
+        IEntityGenerator<User> userGenerator)
+        : base(options)
     {
         _faker = faker;
         _userGenerator = userGenerator;

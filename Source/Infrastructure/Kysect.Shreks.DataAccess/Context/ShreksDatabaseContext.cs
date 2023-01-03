@@ -19,17 +19,29 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
     public ShreksDatabaseContext(DbContextOptions<ShreksDatabaseContext> options) : base(options) { }
 
     public DbSet<User> Users { get; protected init; } = null!;
+
     public DbSet<Student> Students { get; protected init; } = null!;
+
     public DbSet<Mentor> Mentors { get; protected init; } = null!;
+
     public DbSet<Assignment> Assignments { get; protected init; } = null!;
+
     public DbSet<GroupAssignment> GroupAssignments { get; protected init; } = null!;
+
     public DbSet<StudentGroup> StudentGroups { get; protected init; } = null!;
+
     public DbSet<Subject> Subjects { get; protected init; } = null!;
+
     public DbSet<SubjectCourse> SubjectCourses { get; protected init; } = null!;
+
     public DbSet<SubjectCourseGroup> SubjectCourseGroups { get; protected init; } = null!;
+
     public DbSet<Submission> Submissions { get; protected init; } = null!;
+
     public DbSet<SubmissionAssociation> SubmissionAssociations { get; protected init; } = null!;
+
     public DbSet<UserAssociation> UserAssociations { get; protected init; } = null!;
+
     public DbSet<SubjectCourseAssociation> SubjectCourseAssociations { get; protected init; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -52,7 +64,8 @@ public class ShreksDatabaseContext : DbContext, IShreksDatabaseContext
         configurationBuilder.Properties<Points>().HaveConversion<PointsValueConverter>();
         configurationBuilder.Properties<Fraction>().HaveConversion<FractionValueConverter>();
         configurationBuilder.Properties<TimeSpan>().HaveConversion<TimeSpanConverter>();
-        //configurationBuilder.Properties<DateOnly>().HaveConversion<DateOnlyConverter>();
+
+        // configurationBuilder.Properties<DateOnly>().HaveConversion<DateOnlyConverter>();
         configurationBuilder.Properties<SpbDateTime>().HaveConversion<SpbDateTimeValueConverter>();
         configurationBuilder.Properties<ISubmissionState>().HaveConversion<SubmissionStateValueConverter>();
     }

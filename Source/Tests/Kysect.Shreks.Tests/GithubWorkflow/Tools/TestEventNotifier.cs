@@ -5,6 +5,7 @@ namespace Kysect.Shreks.Tests.GithubWorkflow.Tools;
 public class TestEventNotifier : IPullRequestCommitEventNotifier
 {
     public ICollection<string> PullRequestMessages { get; } = Array.Empty<string>();
+
     public ICollection<string> CommitMessages { get; } = Array.Empty<string>();
 
     public Task SendCommentToPullRequest(string message)

@@ -8,7 +8,8 @@ public class SubjectGenerator : EntityGeneratorBase<Subject>
 {
     private readonly Faker _faker;
 
-    public SubjectGenerator(EntityGeneratorOptions<Subject> options, Faker faker) : base(options)
+    public SubjectGenerator(EntityGeneratorOptions<Subject> options, Faker faker)
+        : base(options)
     {
         _faker = faker;
     }

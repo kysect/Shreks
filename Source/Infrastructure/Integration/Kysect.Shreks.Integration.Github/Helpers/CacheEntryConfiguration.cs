@@ -3,7 +3,9 @@ namespace Kysect.Shreks.Integration.Github.Helpers;
 public class CacheEntryConfiguration : IShreksConfiguration
 {
     public int EntrySize { get; init; }
+
     public TimeSpan SlidingExpiration { get; init; }
+
     public TimeSpan AbsoluteExpiration { get; init; }
 
     public void Verify()

@@ -54,7 +54,6 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
         await _context.UserAssociations.AddAsync(association, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-
         UserDto? dto = _mapper.Map<UserDto>(user);
 
         return new Response(dto);

@@ -8,6 +8,7 @@ namespace Kysect.Shreks.Core.Submissions.States;
 public class CompletedSubmissionState : ISubmissionState
 {
     public SubmissionStateKind Kind => SubmissionStateKind.Completed;
+
     public bool IsTerminalEffectiveState => true;
 
     public ISubmissionState MoveToRated(Fraction? rating, Points? extraPoints)

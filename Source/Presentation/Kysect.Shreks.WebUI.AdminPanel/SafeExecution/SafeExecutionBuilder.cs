@@ -30,9 +30,11 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
     }
 
     public string? Title { get; set; }
+
     public bool ShowExceptionDetails { get; set; }
 
-    public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
+    public void OnFailAsync<TException>(Func<TException, Task> action)
+        where TException : Exception
     {
         _errorHandlers.Add(new ExceptionHandler<TException>(action));
     }
@@ -97,9 +99,11 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
     }
 
     public string? Title { get; set; }
+
     public bool ShowExceptionDetails { get; set; }
 
-    public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
+    public void OnFailAsync<TException>(Func<TException, Task> action)
+        where TException : Exception
     {
         _errorHandlers.Add(new ExceptionHandler<TException>(action));
     }

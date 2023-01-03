@@ -32,11 +32,17 @@ public partial class Assignment : IEntity<Guid>
     }
 
     public string Title { get; set; }
+
     public string ShortName { get; set; }
+
     public int Order { get; set; }
+
     public Points MinPoints { get; protected set; }
+
     public Points MaxPoints { get; protected set; }
+
     public virtual SubjectCourse SubjectCourse { get; protected init; }
+
     public virtual IReadOnlyCollection<GroupAssignment> GroupAssignments => _groupAssignments;
 
     public void UpdateMinPoints(Points value)

@@ -27,7 +27,6 @@ var settings = new CSharpClientGeneratorSettings
     OperationNameGenerator = new MultipleClientsFromFirstTagAndPathSegmentsOperationNameGenerator(),
 };
 
-
 var generator = new CSharpClientGenerator(document, settings);
 string code = generator.GenerateFile();
 

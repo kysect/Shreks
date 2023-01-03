@@ -15,8 +15,8 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<SubjectCourseGroup> _groups;
     private readonly HashSet<Mentor> _mentors;
 
-    public SubjectCourse(Subject subject, string title, SubmissionStateWorkflowType? workflowType) : this(
-        Guid.NewGuid())
+    public SubjectCourse(Subject subject, string title, SubmissionStateWorkflowType? workflowType)
+        : this(Guid.NewGuid())
     {
         Subject = subject;
         Title = title;
@@ -30,12 +30,19 @@ public partial class SubjectCourse : IEntity<Guid>
     }
 
     public virtual Subject Subject { get; protected init; }
+
     public string Title { get; set; }
+
     public SubmissionStateWorkflowType? WorkflowType { get; set; }
+
     public virtual IReadOnlyCollection<SubjectCourseGroup> Groups => _groups;
+
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
+
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
+
     public virtual IReadOnlyCollection<Mentor> Mentors => _mentors;
+
     public virtual IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
     public override string ToString()
