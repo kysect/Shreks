@@ -9,11 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="RichEntity" Version="1.1.1"/>
+        <PackageReference Include="RichEntity" Version="1.1.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Kysect.Shreks.Common\Kysect.Shreks.Common.csproj"/>
+        <ProjectReference Include="..\Kysect.Shreks.Common\Kysect.Shreks.Common.csproj" />
     </ItemGroup>
 
 </Project>

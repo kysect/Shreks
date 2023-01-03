@@ -199,8 +199,8 @@ public class ReviewWithDefenceSubmissionWorkflow : ISubmissionWorkflow
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _updateQueue.EnqueueCoursePointsUpdate(submission.GetCourseId());
-        _updateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
+        _updateQueue.EnqueueCoursePointsUpdate(submission.GetSubjectCourseId());
+        _updateQueue.EnqueueSubmissionsQueueUpdate(submission.GetSubjectCourseId(), submission.GetGroupId());
 
         return submission;
     }
@@ -209,10 +209,12 @@ public class ReviewWithDefenceSubmissionWorkflow : ISubmissionWorkflow
     {
         var submissionData = await _context.Submissions
             .Where(x => x.Id.Equals(submissionId))
-            .Select(x => new { SubjectCourseId = x.GroupAssignment.Assignment.SubjectCourse.Id, x.Student.Group })
+            .Select(x => new { x.GroupAssignment.Assignment.SubjectCourse, x.Student.Group })
             .SingleOrDefaultAsync(cancellationToken);
 
-        if (submissionData is { Group: not null })
-            _updateQueue.EnqueueSubmissionsQueueUpdate(submissionData.SubjectCourseId, submissionData.Group.Id);
+        if (submissionData is { SubjectCourse: not null, Group: not null })
+        {
+            _updateQueue.EnqueueSubmissionsQueueUpdate(submissionData.SubjectCourse.Id, submissionData.Group.Id);
+        }
     }
 }

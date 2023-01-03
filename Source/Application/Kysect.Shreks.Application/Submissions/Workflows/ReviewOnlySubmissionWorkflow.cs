@@ -204,8 +204,8 @@ public class ReviewOnlySubmissionWorkflow : ISubmissionWorkflow
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _updateQueue.EnqueueCoursePointsUpdate(submission.GetCourseId());
-        _updateQueue.EnqueueSubmissionsQueueUpdate(submission.GetCourseId(), submission.GetGroupId());
+        _updateQueue.EnqueueCoursePointsUpdate(submission.GetSubjectCourseId());
+        _updateQueue.EnqueueSubmissionsQueueUpdate(submission.GetSubjectCourseId(), submission.GetGroupId());
 
         return submission;
     }
