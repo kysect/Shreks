@@ -15,7 +15,8 @@ internal class GoogleClient : IGoogleClient
         Guid subjectCourseId,
         CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Post, "api/Google/force-sync");
+        string uri = $"api/Google/force-sync?subjectCourseId={subjectCourseId}";
+        using var message = new HttpRequestMessage(HttpMethod.Post, uri);
 
         await _handler.SendAsync(message, cancellationToken);
     }
