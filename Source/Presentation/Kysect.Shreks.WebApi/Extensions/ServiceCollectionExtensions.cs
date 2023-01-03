@@ -28,7 +28,7 @@ internal static class ServiceCollectionExtensions
         serviceCollection
             .AddControllers(x => x.Filters.Add<AuthenticationFilter>())
             .AddNewtonsoftJson()
-            .AddApplicationPart(typeof(IControllersProjectMarker).Assembly)
+            .AddApplicationPart(typeof(IControllerProjectMarker).Assembly)
             .AddControllersAsServices();
 
         serviceCollection
