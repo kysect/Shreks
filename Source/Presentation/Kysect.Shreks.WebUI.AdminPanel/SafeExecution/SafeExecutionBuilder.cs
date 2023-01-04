@@ -53,7 +53,10 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
 
             await Task.WhenAll(handleTasks);
         }
-        catch (OperationCanceledException) { }
+        catch (OperationCanceledException)
+        {
+            // ignored
+        }
         catch (Exception e)
         {
             IEnumerable<Task> handleTasks = _errorHandlers.Select(x => x.Handle(e));
@@ -74,7 +77,9 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
     }
 }
 
+#pragma warning disable SA1402
 public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
+#pragma warning restore SA1402
 {
     private readonly Func<Task<T>> _action;
     private readonly List<IExceptionHandler> _errorHandlers;
@@ -122,7 +127,10 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
 
             await Task.WhenAll(handleTasks);
         }
-        catch (OperationCanceledException) { }
+        catch (OperationCanceledException)
+        {
+            // ignored
+        }
         catch (Exception e)
         {
             IEnumerable<Task> handleTasks = _errorHandlers.Select(x => x.Handle(e));

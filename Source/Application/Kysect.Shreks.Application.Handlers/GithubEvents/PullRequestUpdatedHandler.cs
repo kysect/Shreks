@@ -36,14 +36,12 @@ internal class PullRequestUpdatedHandler : IRequestHandler<Command, Response>
         ISubmissionWorkflow workflow = await _submissionWorkflowService.GetSubjectCourseWorkflowAsync(
             subjectCourse.Id, cancellationToken);
 
-        var submissionFactory = new GithubSubmissionFactory
-        (
+        var submissionFactory = new GithubSubmissionFactory(
             _context,
             request.OrganizationName,
             request.RepositoryName,
             request.PullRequestNumber,
-            request.Payload
-        );
+            request.Payload);
 
         SubmissionUpdateResult result = await workflow.SubmissionUpdatedAsync(
             request.IssuerId, request.UserId, request.AssignmentId, submissionFactory, cancellationToken);

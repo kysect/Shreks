@@ -26,15 +26,13 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
 
         int assignmentOrder = index + 1;
 
-        var assignment = new Assignment
-        (
+        var assignment = new Assignment(
             _faker.Commerce.Product(),
             $"lab-{assignmentOrder}",
             assignmentOrder,
             _faker.Random.Points(0, 5),
             _faker.Random.Points(5, 10),
-            subjectCourse
-        );
+            subjectCourse);
 
         subjectCourse.AddAssignment(assignment);
 

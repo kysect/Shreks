@@ -64,13 +64,11 @@ public class SubmissionCommandContextFactory : ISubmissionCommandContextFactory
         var query = new GetAssignment.Query(_pullRequestDescriptor.Organization, _pullRequestDescriptor.BranchName);
         GetAssignment.Response response = await _mediator.Send(query, cancellationToken);
 
-        return new PayloadAndAssignmentContext
-        (
+        return new PayloadAndAssignmentContext(
             user.Id,
             _mediator,
             response.Assignment.Id,
-            _pullRequestDescriptor.Payload
-        );
+            _pullRequestDescriptor.Payload);
     }
 
     public async Task<CreateSubmissionContext> CreateSubmissionContextAsync(CancellationToken cancellationToken)
@@ -82,15 +80,13 @@ public class SubmissionCommandContextFactory : ISubmissionCommandContextFactory
 
         async Task<SubmissionRateDto> CreateFunc(CancellationToken ct)
         {
-            var command = new CreateGithubSubmission.Command
-            (
+            var command = new CreateGithubSubmission.Command(
                 user.Id,
                 response.Assignment.Id,
                 _pullRequestDescriptor.Organization,
                 _pullRequestDescriptor.Repository,
                 _pullRequestDescriptor.PrNumber,
-                _pullRequestDescriptor.Payload
-            );
+                _pullRequestDescriptor.Payload);
 
             CreateGithubSubmission.Response commandResponse = await _mediator.Send(command, ct);
 

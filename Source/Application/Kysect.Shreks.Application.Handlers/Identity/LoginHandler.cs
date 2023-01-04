@@ -43,26 +43,22 @@ internal class LoginHandler : IRequestHandler<Query, Response>
         JwtSecurityToken token = GetToken(claims);
         string? tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return new Response
-        (
+        return new Response(
             tokenString,
             token.ValidTo,
-            new ReadOnlyCollection<string>(roles)
-        );
+            new ReadOnlyCollection<string>(roles));
     }
 
     private JwtSecurityToken GetToken(IEnumerable<Claim> authClaims)
     {
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.Secret));
 
-        var token = new JwtSecurityToken
-        (
+        var token = new JwtSecurityToken(
             _configuration.Issuer,
             _configuration.Audience,
             expires: DateTime.UtcNow.AddHours(_configuration.ExpiresHours),
             claims: authClaims,
-            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-        );
+            signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256));
 
         return token;
     }

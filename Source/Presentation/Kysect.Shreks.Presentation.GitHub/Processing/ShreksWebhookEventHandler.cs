@@ -62,16 +62,14 @@ internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
         AssignmentDto assignment = await GetAssignmentAsync(
             prDescriptor.Organization, prDescriptor.BranchName, cancellationToken);
 
-        var command = new PullRequestUpdated.Command
-        (
+        var command = new PullRequestUpdated.Command(
             issuer.Id,
             user.Id,
             assignment.Id,
             prDescriptor.Organization,
             prDescriptor.Repository,
             prDescriptor.PrNumber,
-            prDescriptor.Payload
-        );
+            prDescriptor.Payload);
 
         PullRequestUpdated.Response response = await _mediator.Send(command, cancellationToken);
         SubmissionUpdateResult result = response.Message;

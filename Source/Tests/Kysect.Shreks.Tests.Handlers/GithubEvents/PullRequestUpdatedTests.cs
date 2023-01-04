@@ -23,16 +23,14 @@ public class PullRequestUpdatedTests : GithubEventsTestBase
 
         ISubmissionWorkflowService workflowService = Provider.GetRequiredService<ISubmissionWorkflowService>();
 
-        var command = new PullRequestUpdated.Command
-        (
+        var command = new PullRequestUpdated.Command(
             student.UserId,
             student.UserId,
             groupAssignment.AssignmentId,
             organizationName,
             repositoryName,
             1,
-            "payload"
-        );
+            "payload");
 
         var handler = new PullRequestUpdatedHandler(Context, workflowService);
 
@@ -53,16 +51,14 @@ public class PullRequestUpdatedTests : GithubEventsTestBase
 
         ISubmissionWorkflowService workflowService = Provider.GetRequiredService<ISubmissionWorkflowService>();
 
-        var command = new PullRequestUpdated.Command
-        (
+        var command = new PullRequestUpdated.Command(
             mentor.UserId,
             student.UserId,
             groupAssignment.AssignmentId,
             organizationName,
             repositoryName,
             1,
-            "payload"
-        );
+            "payload");
 
         var handler = new PullRequestUpdatedHandler(Context, workflowService);
 
@@ -83,16 +79,14 @@ public class PullRequestUpdatedTests : GithubEventsTestBase
 
         ISubmissionWorkflowService workflowService = Provider.GetRequiredService<ISubmissionWorkflowService>();
 
-        var command = new PullRequestUpdated.Command
-        (
+        var command = new PullRequestUpdated.Command(
             issuer.Id,
             student.UserId,
             groupAssignment.AssignmentId,
             organizationName,
             repositoryName,
             1,
-            "payload"
-        );
+            "payload");
 
         var handler = new PullRequestUpdatedHandler(Context, workflowService);
 
@@ -111,16 +105,14 @@ public class PullRequestUpdatedTests : GithubEventsTestBase
 
         ISubmissionWorkflowService workflowService = Provider.GetRequiredService<ISubmissionWorkflowService>();
 
-        var command = new PullRequestUpdated.Command
-        (
+        var command = new PullRequestUpdated.Command(
             student.UserId,
             student.UserId,
             groupAssignment.AssignmentId,
             organizationName,
             repositoryName,
             1,
-            "payload"
-        );
+            "payload");
 
         var handler = new PullRequestUpdatedHandler(Context, workflowService);
 
@@ -141,16 +133,14 @@ public class PullRequestUpdatedTests : GithubEventsTestBase
 
         ISubmissionWorkflowService workflowService = Provider.GetRequiredService<ISubmissionWorkflowService>();
 
-        var command = new PullRequestUpdated.Command
-        (
+        var command = new PullRequestUpdated.Command(
             mentor.UserId,
             student.UserId,
             groupAssignment.AssignmentId,
             organizationName,
             repositoryName,
             1,
-            "payload"
-        );
+            "payload");
 
         var handler = new PullRequestUpdatedHandler(Context, workflowService);
 
@@ -171,16 +161,14 @@ public class PullRequestUpdatedTests : GithubEventsTestBase
 
         ISubmissionWorkflowService workflowService = Provider.GetRequiredService<ISubmissionWorkflowService>();
 
-        var command = new PullRequestUpdated.Command
-        (
+        var command = new PullRequestUpdated.Command(
             issuer.Id,
             student.UserId,
             groupAssignment.AssignmentId,
             organizationName,
             repositoryName,
             1,
-            "payload"
-        );
+            "payload");
 
         var handler = new PullRequestUpdatedHandler(Context, workflowService);
 

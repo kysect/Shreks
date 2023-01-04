@@ -59,8 +59,7 @@ public static class ServiceCollectionExtensions
             new MemoryCacheEntryOptions()
                 .SetSize(cacheConfiguration.CacheEntryConfiguration.EntrySize)
                 .SetAbsoluteExpiration(cacheConfiguration.CacheEntryConfiguration.AbsoluteExpiration)
-                .SetSlidingExpiration(cacheConfiguration.CacheEntryConfiguration.SlidingExpiration)
-        ));
+                .SetSlidingExpiration(cacheConfiguration.CacheEntryConfiguration.SlidingExpiration)));
 
         services.AddSingleton<IGitHubClient>(serviceProvider =>
         {

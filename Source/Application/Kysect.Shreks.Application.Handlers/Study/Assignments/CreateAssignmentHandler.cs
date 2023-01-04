@@ -31,8 +31,7 @@ internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
             request.Order,
             new Points(request.MinPoints),
             new Points(request.MaxPoints),
-            subjectCourse
-        );
+            subjectCourse);
 
         _context.Assignments.Add(assignment);
         await _context.SaveChangesAsync(cancellationToken);
