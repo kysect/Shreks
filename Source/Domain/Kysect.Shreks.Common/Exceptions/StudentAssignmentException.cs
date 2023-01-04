@@ -4,8 +4,7 @@ namespace Kysect.Shreks.Common.Exceptions;
 
 public class StudentAssignmentException : ShreksDomainException
 {
-    private StudentAssignmentException(string message)
-        : base(message) { }
+    private StudentAssignmentException(string message) : base(message) { }
 
     public static StudentAssignmentException StudentGroupAssignmentMismatch(string student, string group)
     {

@@ -6,8 +6,7 @@ public interface ISafeExecutionBuilder : IAsyncDisposable
 
     bool ShowExceptionDetails { get; set; }
 
-    void OnFailAsync<TException>(Func<TException, Task> action)
-        where TException : Exception;
+    void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception;
 
     void OnSuccessAsync(Func<Task> action);
 }
@@ -18,8 +17,7 @@ public interface ISafeExecutionBuilder<out T> : IAsyncDisposable
 
     bool ShowExceptionDetails { get; set; }
 
-    void OnFailAsync<TException>(Func<TException, Task> action)
-        where TException : Exception;
+    void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception;
 
     void OnSuccessAsync(Func<T, Task> action);
 }

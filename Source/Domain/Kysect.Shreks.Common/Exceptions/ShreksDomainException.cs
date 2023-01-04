@@ -4,9 +4,7 @@ public abstract class ShreksDomainException : Exception
 {
     protected ShreksDomainException() { }
 
-    protected ShreksDomainException(string? message)
-        : base(message) { }
+    protected ShreksDomainException(string? message) : base(message) { }
 
-    protected ShreksDomainException(string? message, Exception? innerException)
-        : base(message, innerException) { }
+    protected ShreksDomainException(string? message, Exception? innerException) : base(message, innerException) { }
 }

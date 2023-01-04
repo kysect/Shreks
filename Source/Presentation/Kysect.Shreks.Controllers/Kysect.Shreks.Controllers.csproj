@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
-        <NoWarn>1701;1702;CA1062;SA1101;SA1309;SA1633;SA1503</NoWarn>
+        <NoWarn>1701;1702;CA1062;SA1101;SA1309;SA1633;SA1503;SA1127;SA1128;SA1502</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

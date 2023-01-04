@@ -55,14 +55,12 @@ public partial class User : IEntity<Guid>
             throw new DomainInvalidOperationException($"User {this} could not remove association {association}");
     }
 
-    public bool HasAssociation<T>()
-        where T : UserAssociation
+    public bool HasAssociation<T>() where T : UserAssociation
     {
         return Associations.Any(a => a is T);
     }
 
-    public T? FindAssociation<T>()
-        where T : UserAssociation
+    public T? FindAssociation<T>() where T : UserAssociation
     {
         return Associations.OfType<T>().SingleOrDefault();
     }

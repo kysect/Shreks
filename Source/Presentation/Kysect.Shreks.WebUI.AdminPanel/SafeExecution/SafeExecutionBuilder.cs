@@ -33,8 +33,7 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
 
     public bool ShowExceptionDetails { get; set; }
 
-    public void OnFailAsync<TException>(Func<TException, Task> action)
-        where TException : Exception
+    public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
     {
         _errorHandlers.Add(new ExceptionHandler<TException>(action));
     }
@@ -107,8 +106,7 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
 
     public bool ShowExceptionDetails { get; set; }
 
-    public void OnFailAsync<TException>(Func<TException, Task> action)
-        where TException : Exception
+    public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
     {
         _errorHandlers.Add(new ExceptionHandler<TException>(action));
     }
