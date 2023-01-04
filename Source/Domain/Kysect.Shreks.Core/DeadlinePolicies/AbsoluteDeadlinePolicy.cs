@@ -4,7 +4,8 @@ namespace Kysect.Shreks.Core.DeadlinePolicies;
 
 public class AbsoluteDeadlinePolicy : DeadlinePolicy
 {
-    public AbsoluteDeadlinePolicy(TimeSpan spanBeforeActivation, Points absoluteValue) : base(spanBeforeActivation)
+    public AbsoluteDeadlinePolicy(TimeSpan spanBeforeActivation, Points absoluteValue)
+        : base(spanBeforeActivation)
     {
         AbsoluteValue = absoluteValue;
     }

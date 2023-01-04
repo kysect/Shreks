@@ -1,6 +1,7 @@
 namespace Kysect.Shreks.WebUI.AdminPanel.SafeExecution;
 
-public class ExceptionHandler<T> : IExceptionHandler where T : Exception
+public class ExceptionHandler<T> : IExceptionHandler
+    where T : Exception
 {
     private readonly Func<T, Task> _handler;
 

@@ -4,7 +4,8 @@ namespace Kysect.Shreks.Common.Exceptions;
 
 public class EntityNotFoundException : NotFoundException
 {
-    public EntityNotFoundException(string? message) : base(message) { }
+    public EntityNotFoundException(string? message)
+        : base(message) { }
 
     public static EntityNotFoundException For<T>(Guid id)
     {

@@ -5,5 +5,6 @@ namespace Kysect.Shreks.DataAccess.ValueConverters;
 
 public class PointsValueConverter : ValueConverter<Points, double>
 {
-    public PointsValueConverter() : base(x => x.Value, x => new Points(x)) { }
+    public PointsValueConverter()
+        : base(x => x.Value, x => new Points(x)) { }
 }

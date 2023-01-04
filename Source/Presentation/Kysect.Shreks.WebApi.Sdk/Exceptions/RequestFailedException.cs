@@ -4,7 +4,8 @@ namespace Kysect.Shreks.WebApi.Sdk.Exceptions;
 
 public class RequestFailedException : ShreksSdkException
 {
-    private RequestFailedException(string message, HttpStatusCode code) : base(message)
+    private RequestFailedException(string message, HttpStatusCode code)
+        : base(message)
     {
         Code = code;
     }

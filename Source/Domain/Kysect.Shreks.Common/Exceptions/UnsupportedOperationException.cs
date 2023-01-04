@@ -2,5 +2,6 @@
 
 public class UnsupportedOperationException : ShreksDomainException
 {
-    public UnsupportedOperationException(string? message) : base(message) { }
+    public UnsupportedOperationException(string? message)
+        : base(message) { }
 }

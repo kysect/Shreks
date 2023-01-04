@@ -4,7 +4,8 @@ namespace Kysect.Shreks.Common.Exceptions;
 
 public class DomainInvalidOperationException : ShreksDomainException
 {
-    public DomainInvalidOperationException(string? message) : base(message) { }
+    public DomainInvalidOperationException(string? message)
+        : base(message) { }
 
     public static DomainInvalidOperationException UserNotFoundByGithubUsername(string githubUsername)
     {
