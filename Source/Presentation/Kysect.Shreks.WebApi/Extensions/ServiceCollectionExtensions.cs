@@ -28,7 +28,7 @@ internal static class ServiceCollectionExtensions
         serviceCollection
             .AddControllers(x => x.Filters.Add<AuthenticationFilter>())
             .AddNewtonsoftJson()
-            .AddApplicationPart(typeof(IControllersProjectMarker).Assembly)
+            .AddApplicationPart(typeof(IControllerProjectMarker).Assembly)
             .AddControllersAsServices();
 
         serviceCollection
@@ -50,7 +50,8 @@ internal static class ServiceCollectionExtensions
 
         serviceCollection
             .AddGoogleIntegrationServices(webApiConfiguration)
-            .AddGithubServices(webApiConfiguration.CacheConfiguration,
+            .AddGithubServices(
+                webApiConfiguration.CacheConfiguration,
                 webApiConfiguration.GithubIntegrationConfiguration)
             .AddGithubWorkflowServices();
 

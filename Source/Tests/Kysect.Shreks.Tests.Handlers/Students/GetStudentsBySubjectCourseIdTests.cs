@@ -6,7 +6,7 @@ using Xunit;
 
 namespace Kysect.Shreks.Tests.Handlers.Students;
 
-public class StudentHandlerTest : TestBase
+public class GetStudentsBySubjectCourseIdTests : TestBase
 {
     [Fact]
     public async Task Handle_Should_NoThrow()

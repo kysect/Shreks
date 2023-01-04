@@ -6,7 +6,7 @@
         <AnalysisLevel>latest</AnalysisLevel>
         <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
         <IsPackable>false</IsPackable>
-        <NoWarn>1701;1702;IL2121;CA1707</NoWarn>
+        <NoWarn>1701;1702;IL2121;CA1707;SA1633;SA1309;SA1101;SA1518;SA1502</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>

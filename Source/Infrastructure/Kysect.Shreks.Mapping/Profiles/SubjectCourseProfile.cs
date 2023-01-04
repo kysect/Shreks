@@ -5,9 +5,9 @@ using Kysect.Shreks.Core.SubjectCourseAssociations;
 
 namespace Kysect.Shreks.Mapping.Profiles;
 
-internal class SubjectCourserProfile : Profile
+internal class SubjectCourseProfile : Profile
 {
-    public SubjectCourserProfile()
+    public SubjectCourseProfile()
     {
         CreateMap<SubjectCourse, SubjectCourseDto>();
 

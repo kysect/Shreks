@@ -11,5 +11,6 @@ public class BaseContext
     }
 
     public Guid IssuerId { get; }
+
     public IMediator Mediator { get; }
 }

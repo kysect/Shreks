@@ -22,8 +22,8 @@ var identityClient = new IdentityClient(baseUrl, client);
 
 LoginResponse? loginResponse = await identityClient.LoginAsync(new LoginRequest
 {
-    Username = "",
-    Password = "",
+    Username = string.Empty,
+    Password = string.Empty,
 });
 
 client.DefaultRequestHeaders.Add("Authorization", $"Bearer {loginResponse.Token}");
@@ -32,7 +32,7 @@ var studyGroupClient = new StudyGroupClient(baseUrl, client);
 var studentClient = new StudentClient(baseUrl, client);
 var userClient = new UserClient(baseUrl, client)
 {
-    ReadResponseAsString = true
+    ReadResponseAsString = true,
 };
 
 ICollection<StudyGroupDto>? createdGroups = await studyGroupClient.StudyGroupGetAsync();
@@ -111,7 +111,7 @@ IEnumerable<CreateAssignmentRequest> assignmentRequests = labs.Select(x => new C
     ShortName = $"lab-{x.Index}",
     MinPoints = 0,
     MaxPoints = x.MaxPoints,
-    Title = x.Title
+    Title = x.Title,
 });
 
 foreach (CreateAssignmentRequest? assignmentRequest in assignmentRequests)
@@ -125,13 +125,14 @@ IEnumerable<Task<GroupAssignmentDto>>? groupAssignments = groups.Values
     .Select(x =>
     {
         LabConfig lab = labs.Single(xx => xx.Index.Equals(x.assignment.Order));
-        return groupAssignmentClient.GroupAssignmentPostAsync(x.group.Id, x.assignment.Id,
+        return groupAssignmentClient.GroupAssignmentPostAsync(
+            x.group.Id,
+            x.assignment.Id,
             new DateTimeOffset(lab.Deadline));
     });
 
 foreach (Task<GroupAssignmentDto> task in groupAssignments)
     await task;
-
 
 IEnumerable<Task>? tasks = Enumerable.Range(1, 5).Select(x =>
 {

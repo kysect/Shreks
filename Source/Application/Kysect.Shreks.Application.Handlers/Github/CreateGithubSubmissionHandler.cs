@@ -19,14 +19,12 @@ internal class CreateGithubSubmissionHandler : IRequestHandler<Command, Response
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var factory = new GithubSubmissionFactory
-        (
+        var factory = new GithubSubmissionFactory(
             _context,
             request.OrganizationName,
             request.RepositoryName,
             request.PullRequestNumber,
-            request.Payload
-        );
+            request.Payload);
 
         Submission submission = await factory.CreateAsync(
             request.IssuerId, request.AssignmentId, cancellationToken);

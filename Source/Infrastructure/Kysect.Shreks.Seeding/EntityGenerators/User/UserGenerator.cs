@@ -9,18 +9,17 @@ public class UserGenerator : EntityGeneratorBase<User>
 {
     private readonly Faker _faker;
 
-    public UserGenerator(EntityGeneratorOptions<User> options, Faker faker) : base(options)
+    public UserGenerator(EntityGeneratorOptions<User> options, Faker faker)
+        : base(options)
     {
         _faker = faker;
     }
 
     protected override User Generate(int index)
     {
-        return new User
-        (
+        return new User(
             _faker.Name.FirstName(),
             _faker.Name.MiddleName(),
-            _faker.Name.LastName()
-        );
+            _faker.Name.LastName());
     }
 }

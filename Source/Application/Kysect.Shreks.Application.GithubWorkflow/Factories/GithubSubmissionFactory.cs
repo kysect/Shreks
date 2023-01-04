@@ -88,8 +88,7 @@ public class GithubSubmissionFactory : ISubmissionFactory
             .WithSpecification(studentAssignmentSubmissionsSpec)
             .CountAsync(cancellationToken);
 
-        return new GithubSubmission
-        (
+        return new GithubSubmission(
             count + 1,
             student,
             groupAssignment,
@@ -97,8 +96,7 @@ public class GithubSubmissionFactory : ISubmissionFactory
             _payload,
             _organizationName,
             _repositoryName,
-            _pullRequestNumber
-        );
+            _pullRequestNumber);
     }
 
     private async Task<Student> FindStudentByRepositoryName(

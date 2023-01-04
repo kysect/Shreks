@@ -9,7 +9,8 @@ public class DeadlinePolicyGenerator : EntityGeneratorBase<DeadlinePolicy>
 {
     private readonly Faker _faker;
 
-    public DeadlinePolicyGenerator(EntityGeneratorOptions<DeadlinePolicy> options, Faker faker) : base(options)
+    public DeadlinePolicyGenerator(EntityGeneratorOptions<DeadlinePolicy> options, Faker faker)
+        : base(options)
     {
         _faker = faker;
     }

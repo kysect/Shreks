@@ -37,8 +37,10 @@ public class UpdateCommand : ISubmissionCommand<UpdateContext, SubmissionRateDto
         ILogger logger,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handle /update command from {IssuerId} with arguments: {Args}",
-            context.IssuerId, ToLogLine());
+        logger.LogInformation(
+            "Handle /update command from {IssuerId} with arguments: {Args}",
+            context.IssuerId,
+            ToLogLine());
 
         SubmissionDto submission = SubmissionCode is null
             ? await context.GetDefaultSubmissionAsync(cancellationToken)

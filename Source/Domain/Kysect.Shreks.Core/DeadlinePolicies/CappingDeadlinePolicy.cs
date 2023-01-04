@@ -4,7 +4,8 @@ namespace Kysect.Shreks.Core.DeadlinePolicies;
 
 public class CappingDeadlinePolicy : DeadlinePolicy
 {
-    public CappingDeadlinePolicy(TimeSpan spanBeforeActivation, double cap) : base(spanBeforeActivation)
+    public CappingDeadlinePolicy(TimeSpan spanBeforeActivation, double cap)
+        : base(spanBeforeActivation)
     {
         Cap = new Points(cap);
     }

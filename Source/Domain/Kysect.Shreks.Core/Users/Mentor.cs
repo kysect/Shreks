@@ -5,7 +5,8 @@ namespace Kysect.Shreks.Core.Users;
 
 public partial class Mentor : IEntity
 {
-    public Mentor(User user, SubjectCourse course) : this(userId: user.Id, courseId: course.Id)
+    public Mentor(User user, SubjectCourse course)
+        : this(userId: user.Id, courseId: course.Id)
     {
         User = user;
         Course = course;

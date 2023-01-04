@@ -15,8 +15,10 @@ public class DeactivateCommand : ISubmissionCommand<SubmissionContext, Submissio
         ILogger logger,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handle /deactivate command for submission {SubmissionId} from user {IssuerId}",
-            context.SubmissionId, context.IssuerId);
+        logger.LogInformation(
+            "Handle /deactivate command for submission {SubmissionId} from user {IssuerId}",
+            context.SubmissionId,
+            context.IssuerId);
 
         var command = new DeactivateSubmission.Command(context.SubmissionId);
         DeactivateSubmission.Response response = await context.Mediator.Send(command, cancellationToken);

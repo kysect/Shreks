@@ -8,6 +8,7 @@ namespace Kysect.Shreks.Core.Submissions.States;
 public class BannedSubmissionState : ISubmissionState
 {
     public SubmissionStateKind Kind => SubmissionStateKind.Banned;
+
     public bool IsTerminalEffectiveState => true;
 
     public ISubmissionState MoveToRated(Fraction? rating, Points? extraPoints)

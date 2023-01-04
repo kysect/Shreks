@@ -7,7 +7,8 @@ namespace Kysect.Shreks.Core.Users;
 
 public partial class Student : IEntity
 {
-    public Student(User user, StudentGroup group) : this(user.Id)
+    public Student(User user, StudentGroup group)
+        : this(user.Id)
     {
         User = user;
         Group = group;

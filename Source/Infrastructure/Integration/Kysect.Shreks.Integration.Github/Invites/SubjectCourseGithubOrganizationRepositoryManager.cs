@@ -41,7 +41,8 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
     {
         GitHubClient client = await _clientProvider.GetClient(organization);
 
-        await client.Repository.Collaborator.Add(organization,
+        await client.Repository.Collaborator.Add(
+            organization,
             repositoryName,
             username,
             new CollaboratorRequest(Permission.Admin));

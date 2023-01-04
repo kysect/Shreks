@@ -36,12 +36,10 @@ public class GroupAssignmentGenerator : EntityGeneratorBase<GroupAssignment>
         StudentGroup group = _groupGenerator.GeneratedEntities[groupNumber];
         Assignment assignment = _assignmentGenerator.GeneratedEntities[assignmentNumber];
 
-        var groupAssignment = new GroupAssignment
-        (
+        var groupAssignment = new GroupAssignment(
             group,
             assignment,
-            DateOnly.FromDateTime(_faker.Date.Future())
-        );
+            DateOnly.FromDateTime(_faker.Date.Future()));
 
         assignment.AddGroupAssignment(groupAssignment);
 

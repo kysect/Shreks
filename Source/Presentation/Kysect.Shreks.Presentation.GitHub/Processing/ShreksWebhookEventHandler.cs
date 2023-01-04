@@ -62,16 +62,14 @@ internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
         AssignmentDto assignment = await GetAssignmentAsync(
             prDescriptor.Organization, prDescriptor.BranchName, cancellationToken);
 
-        var command = new PullRequestUpdated.Command
-        (
+        var command = new PullRequestUpdated.Command(
             issuer.Id,
             user.Id,
             assignment.Id,
             prDescriptor.Organization,
             prDescriptor.Repository,
             prDescriptor.PrNumber,
-            prDescriptor.Payload
-        );
+            prDescriptor.Payload);
 
         PullRequestUpdated.Response response = await _mediator.Send(command, cancellationToken);
         SubmissionUpdateResult result = response.Message;
@@ -191,6 +189,15 @@ internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
         await eventNotifier.ReactToUserComment(result.IsSuccess);
     }
 
+    private static async Task NotifySubmissionActionMessage(
+        SubmissionActionMessageDto message,
+        IPullRequestEventNotifier eventNotifier,
+        ILogger logger)
+    {
+        await eventNotifier.SendCommentToPullRequest(message.Message);
+        logger.LogInformation("Notify: {Message}", message.Message);
+    }
+
     private async Task<UserDto> GetUserAsync(
         string username,
         CancellationToken cancellationToken)
@@ -253,14 +260,5 @@ internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
         logger.LogInformation("Notify: {Message}", result.Message);
 
         return result;
-    }
-
-    private static async Task NotifySubmissionActionMessage(
-        SubmissionActionMessageDto message,
-        IPullRequestEventNotifier eventNotifier,
-        ILogger logger)
-    {
-        await eventNotifier.SendCommentToPullRequest(message.Message);
-        logger.LogInformation("Notify: {Message}", message.Message);
     }
 }

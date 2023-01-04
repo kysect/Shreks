@@ -15,5 +15,6 @@ public partial class GithubSubjectCourseAssociation : SubjectCourseAssociation
     }
 
     public string GithubOrganizationName { get; protected set; }
+
     public string TemplateRepositoryName { get; protected set; }
 }

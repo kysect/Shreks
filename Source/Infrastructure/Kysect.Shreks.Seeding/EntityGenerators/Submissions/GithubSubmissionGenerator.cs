@@ -45,8 +45,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
 
         int submissionCount = groupAssignment.Submissions.Count(x => x.Student.Equals(student));
 
-        var submission = new GithubSubmission
-        (
+        var submission = new GithubSubmission(
             submissionCount + 1,
             student,
             groupAssignment,
@@ -54,8 +53,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
             _faker.Internet.Url(),
             _faker.Company.CompanyName(),
             _faker.Commerce.ProductName(),
-            _faker.Random.Long(0, 100)
-        );
+            _faker.Random.Long(0, 100));
 
         groupAssignment.AddSubmission(submission);
 

@@ -16,6 +16,11 @@ public class PermissionValidator : IPermissionValidator
         _context = context;
     }
 
+    public static bool IsRepositoryOwner(string username, string repositoryName)
+    {
+        return string.Equals(username, repositoryName, StringComparison.OrdinalIgnoreCase);
+    }
+
     public async Task<bool> IsOrganizationMentor(Guid senderId, string organizationName)
     {
         return await _context.SubjectCourseAssociations
@@ -39,10 +44,5 @@ public class PermissionValidator : IPermissionValidator
     {
         if (await IsSubmissionMentorAsync(userId, submissionId, cancellationToken) is false)
             throw new UnauthorizedException();
-    }
-
-    public static bool IsRepositoryOwner(string username, string repositoryName)
-    {
-        return string.Equals(username, repositoryName, StringComparison.CurrentCultureIgnoreCase);
     }
 }

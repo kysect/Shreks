@@ -3,6 +3,7 @@
 public class GithubAuthConfiguration : IShreksConfiguration
 {
     public string? OAuthClientId { get; set; }
+
     public string? OAuthClientSecret { get; set; }
 
     public void Verify()

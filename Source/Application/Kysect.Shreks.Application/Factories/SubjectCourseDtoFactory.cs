@@ -19,13 +19,15 @@ public class SubjectCourseDtoFactory
                 case GithubSubjectCourseAssociation githubSubjectCourseAssociation:
                     string githubValue =
                         $"Repo: {githubSubjectCourseAssociation.GithubOrganizationName}, Template: {githubSubjectCourseAssociation.TemplateRepositoryName}";
-                    associations.Add(new SubjectCourseAssociationDto(nameof(GithubSubjectCourseAssociation),
+                    associations.Add(new SubjectCourseAssociationDto(
+                        nameof(GithubSubjectCourseAssociation),
                         githubValue));
                     break;
 
                 case GoogleTableSubjectCourseAssociation googleTableSubjectCourseAssociation:
                     string googleValue = $"SpreadsheetId: {googleTableSubjectCourseAssociation.SpreadsheetId}";
-                    associations.Add(new SubjectCourseAssociationDto(nameof(GoogleTableSubjectCourseAssociation),
+                    associations.Add(new SubjectCourseAssociationDto(
+                        nameof(GoogleTableSubjectCourseAssociation),
                         googleValue));
                     break;
 
@@ -38,7 +40,11 @@ public class SubjectCourseDtoFactory
             ? (SubmissionStateWorkflowTypeDto)subjectCourse.WorkflowType
             : null;
 
-        return new SubjectCourseDto(subjectCourse.Id, subjectCourse.Subject.Id, subjectCourse.Title, workflowType,
+        return new SubjectCourseDto(
+            subjectCourse.Id,
+            subjectCourse.Subject.Id,
+            subjectCourse.Title,
+            workflowType,
             associations);
     }
 }

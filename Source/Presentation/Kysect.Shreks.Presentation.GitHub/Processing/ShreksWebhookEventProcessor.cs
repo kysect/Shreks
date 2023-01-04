@@ -51,17 +51,18 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         string pullRequestAction = action;
 
-        repositoryLogger.LogInformation("{MethodName}: {EventName} with type {Action}",
-            methodName, pullRequestEvent.GetType().Name, pullRequestAction);
+        repositoryLogger.LogInformation(
+            "{MethodName}: {EventName} with type {Action}",
+            methodName,
+            pullRequestEvent.GetType().Name,
+            pullRequestAction);
 
-        var pullRequestCommitEventNotifier = new PullRequestCommitEventNotifier
-        (
+        var pullRequestCommitEventNotifier = new PullRequestCommitEventNotifier(
             _actionNotifier,
             pullRequestEvent,
             pullRequestEvent.PullRequest.Head.Sha,
             pullRequestEvent.PullRequest.Number,
-            repositoryLogger
-        );
+            repositoryLogger);
 
         try
         {
@@ -69,19 +70,29 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
             {
                 case PullRequestActionValue.Synchronize:
                 case PullRequestActionValue.Opened:
-                    await _handler.ProcessPullRequestUpdate(githubPullRequestDescriptor, repositoryLogger,
-                        pullRequestCommitEventNotifier, default);
+                    await _handler.ProcessPullRequestUpdate(
+                        githubPullRequestDescriptor,
+                        repositoryLogger,
+                        pullRequestCommitEventNotifier,
+                        default);
                     break;
 
                 case PullRequestActionValue.Reopened:
-                    await _handler.ProcessPullRequestReopen(githubPullRequestDescriptor, repositoryLogger,
-                        pullRequestCommitEventNotifier, default);
+                    await _handler.ProcessPullRequestReopen(
+                        githubPullRequestDescriptor,
+                        repositoryLogger,
+                        pullRequestCommitEventNotifier,
+                        default);
                     break;
 
                 case PullRequestActionValue.Closed:
                     bool merged = pullRequestEvent.PullRequest.Merged ?? false;
-                    await _handler.ProcessPullRequestClosed(merged, githubPullRequestDescriptor, repositoryLogger,
-                        pullRequestCommitEventNotifier, default);
+                    await _handler.ProcessPullRequestClosed(
+                        merged,
+                        githubPullRequestDescriptor,
+                        repositoryLogger,
+                        pullRequestCommitEventNotifier,
+                        default);
                     break;
 
                 case PullRequestActionValue.Assigned:
@@ -91,7 +102,8 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
                     break;
 
                 default:
-                    repositoryLogger.LogWarning("Unsupported pull request webhook type was received: {Action}",
+                    repositoryLogger.LogWarning(
+                        "Unsupported pull request webhook type was received: {Action}",
                         pullRequestAction);
                     break;
             }
@@ -123,11 +135,17 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         string pullRequestReviewAction = action;
 
-        repositoryLogger.LogInformation("{MethodName}: {Name} with type {Action}",
-            methodName, pullRequestReviewEvent.GetType().Name, pullRequestReviewAction);
+        repositoryLogger.LogInformation(
+            "{MethodName}: {Name} with type {Action}",
+            methodName,
+            pullRequestReviewEvent.GetType().Name,
+            pullRequestReviewAction);
 
-        var pullRequestEventNotifier = new PullRequestEventNotifier(_actionNotifier, pullRequestReviewEvent,
-            pullRequestReviewEvent.PullRequest.Number, repositoryLogger);
+        var pullRequestEventNotifier = new PullRequestEventNotifier(
+            _actionNotifier,
+            pullRequestReviewEvent,
+            pullRequestReviewEvent.PullRequest.Number,
+            repositoryLogger);
 
         try
         {
@@ -136,28 +154,42 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
             switch (pullRequestReviewAction1)
             {
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "approved":
-                    await _handler.ProcessPullRequestReviewApprove(pullRequestReviewEvent.Review.Body,
-                        githubPullRequestDescriptor, repositoryLogger, pullRequestEventNotifier, default);
+                    await _handler.ProcessPullRequestReviewApprove(
+                        pullRequestReviewEvent.Review.Body,
+                        githubPullRequestDescriptor,
+                        repositoryLogger,
+                        pullRequestEventNotifier,
+                        default);
                     break;
 
                 case PullRequestReviewActionValue.Submitted
                     when pullRequestReviewEvent.Review.State == "changes_requested":
-                    await _handler.ProcessPullRequestReviewRequestChanges(pullRequestReviewEvent.Review.Body,
-                        githubPullRequestDescriptor, repositoryLogger, pullRequestEventNotifier, default);
+                    await _handler.ProcessPullRequestReviewRequestChanges(
+                        pullRequestReviewEvent.Review.Body,
+                        githubPullRequestDescriptor,
+                        repositoryLogger,
+                        pullRequestEventNotifier,
+                        default);
                     break;
 
                 case PullRequestReviewActionValue.Submitted when pullRequestReviewEvent.Review.State == "commented":
-                    await _handler.ProcessPullRequestReviewComment(pullRequestReviewEvent.Review.Body,
-                        githubPullRequestDescriptor, repositoryLogger, pullRequestEventNotifier, default);
+                    await _handler.ProcessPullRequestReviewComment(
+                        pullRequestReviewEvent.Review.Body,
+                        githubPullRequestDescriptor,
+                        repositoryLogger,
+                        pullRequestEventNotifier,
+                        default);
                     break;
 
                 case PullRequestReviewActionValue.Edited:
                 case PullRequestReviewActionValue.Dismissed:
-                    repositoryLogger.LogWarning("Pull request review action {Action} is not supported",
+                    repositoryLogger.LogWarning(
+                        "Pull request review action {Action} is not supported",
                         pullRequestReviewAction1);
                     break;
                 default:
-                    repositoryLogger.LogWarning("Pull request review for pr {PrLink} is not processed",
+                    repositoryLogger.LogWarning(
+                        "Pull request review for pr {PrLink} is not processed",
                         githubPullRequestDescriptor.Payload);
                     break;
             }
@@ -183,14 +215,14 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         if (IsSenderBotOrNull(issueCommentEvent))
         {
-            repositoryLogger.LogTrace(
-                $"{methodName} was skipped because sender is bot or null");
+            repositoryLogger.LogTrace($"{methodName} was skipped because sender is bot or null");
             return;
         }
 
         if (IsPullRequestCommand(issueCommentEvent) is false)
         {
-            repositoryLogger.LogTrace("Skipping commit in {IssueId}. Issue comments is not supported",
+            repositoryLogger.LogTrace(
+                "Skipping commit in {IssueId}. Issue comments is not supported",
                 issueCommentEvent.Issue.Id);
 
             return;
@@ -198,24 +230,36 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
 
         string issueCommentAction = action;
 
-        repositoryLogger.LogInformation("{MethodName}: {EventName} with type {Action}",
-            methodName, issueCommentEvent.GetType().Name, issueCommentAction);
+        repositoryLogger.LogInformation(
+            "{MethodName}: {EventName} with type {Action}",
+            methodName,
+            issueCommentEvent.GetType().Name,
+            issueCommentAction);
 
-        var pullRequestCommentEventNotifier = new PullRequestCommentEventNotifier(_actionNotifier, issueCommentEvent,
-            issueCommentEvent.Comment.Id, issueCommentEvent.Issue.Number, repositoryLogger);
+        var pullRequestCommentEventNotifier = new PullRequestCommentEventNotifier(
+            _actionNotifier,
+            issueCommentEvent,
+            issueCommentEvent.Comment.Id,
+            issueCommentEvent.Issue.Number,
+            repositoryLogger);
 
         try
         {
             switch (issueCommentAction)
             {
                 case IssueCommentActionValue.Created:
-                    await _handler.ProcessIssueCommentCreate(issueCommentEvent.Comment.Body,
-                        githubPullRequestDescriptor, repositoryLogger, pullRequestCommentEventNotifier, default);
+                    await _handler.ProcessIssueCommentCreate(
+                        issueCommentEvent.Comment.Body,
+                        githubPullRequestDescriptor,
+                        repositoryLogger,
+                        pullRequestCommentEventNotifier,
+                        default);
                     break;
 
                 case IssueCommentActionValue.Deleted:
                 case IssueCommentActionValue.Edited:
-                    repositoryLogger.LogTrace("Pull request comment {Action} event will be ignored",
+                    repositoryLogger.LogTrace(
+                        "Pull request comment {Action} event will be ignored",
                         issueCommentAction);
                     break;
             }
@@ -239,7 +283,7 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
         return webhookEvent.Sender is null || webhookEvent.Sender.Type == UserType.Bot;
     }
 
-    public GithubPullRequestDescriptor CreateDescriptor(PullRequestEvent @event)
+    private GithubPullRequestDescriptor CreateDescriptor(PullRequestEvent @event)
     {
         string login = @event.Sender!.Login;
         string payload = @event.PullRequest.HtmlUrl;
@@ -259,7 +303,7 @@ public class ShreksWebhookEventProcessor : WebhookEventProcessor
         return pullRequestDescriptor;
     }
 
-    public GithubPullRequestDescriptor CreateDescriptor(PullRequestReviewEvent pullRequestReviewEvent)
+    private GithubPullRequestDescriptor CreateDescriptor(PullRequestReviewEvent pullRequestReviewEvent)
     {
         return new GithubPullRequestDescriptor(
             pullRequestReviewEvent.Sender!.Login,

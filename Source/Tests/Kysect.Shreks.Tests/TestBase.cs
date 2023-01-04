@@ -44,6 +44,7 @@ public class TestBase : IDisposable
 
         // TODO: Do not call virtual methods in constructor
 #pragma warning disable CA2214
+
         // ReSharper disable once VirtualMemberCallInConstructor
         ConfigureServices(collection);
 #pragma warning restore CA2214
@@ -59,7 +60,9 @@ public class TestBase : IDisposable
     }
 
     protected ShreksDatabaseContext Context { get; }
+
     protected IMapper Mapper { get; }
+
     protected IServiceProvider Provider { get; }
 
     public void Dispose()

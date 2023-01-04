@@ -11,7 +11,8 @@ public class StudentGroupGenerator : EntityGeneratorBase<StudentGroup>
 
     private readonly Faker _faker;
 
-    public StudentGroupGenerator(EntityGeneratorOptions<StudentGroup> options, Faker faker) : base(options)
+    public StudentGroupGenerator(EntityGeneratorOptions<StudentGroup> options, Faker faker)
+        : base(options)
     {
         _faker = faker;
     }

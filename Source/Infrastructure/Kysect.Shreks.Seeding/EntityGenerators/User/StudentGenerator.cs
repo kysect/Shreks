@@ -12,7 +12,8 @@ public class StudentGenerator : EntityGeneratorBase<Student>
     public StudentGenerator(
         EntityGeneratorOptions<Student> options,
         IEntityGenerator<StudentGroup> studentGroupGenerator,
-        IEntityGenerator<User> userGenerator) : base(options)
+        IEntityGenerator<User> userGenerator)
+        : base(options)
     {
         _studentGroupGenerator = studentGroupGenerator;
         _userGenerator = userGenerator;

@@ -20,9 +20,11 @@ public class SubmissionProfile : Profile
             .ForCtorParam(nameof(SubmissionDto.State), opt => opt.MapFrom(x => x.State.Kind));
 
         CreateMap<Submission, QueueSubmissionDto>()
-            .ForCtorParam(nameof(QueueSubmissionDto.Submission),
+            .ForCtorParam(
+                nameof(QueueSubmissionDto.Submission),
                 opt => opt.MapFrom(x => x))
-            .ForCtorParam(nameof(QueueSubmissionDto.Student),
+            .ForCtorParam(
+                nameof(QueueSubmissionDto.Student),
                 opt => opt.MapFrom(x => x.Student));
     }
 }

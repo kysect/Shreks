@@ -16,7 +16,8 @@ internal class Program
         IConfigurationSection identityConfigurationSection =
             builder.Configuration.GetSection("Identity").GetSection("IdentityConfiguration");
 
-        builder.Services.ConfigureServiceCollection(webApiConfiguration,
+        builder.Services.ConfigureServiceCollection(
+            webApiConfiguration,
             identityConfigurationSection,
             builder.Environment.IsDevelopment());
 

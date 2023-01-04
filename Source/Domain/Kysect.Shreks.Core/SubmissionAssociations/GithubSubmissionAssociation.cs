@@ -8,7 +8,8 @@ public partial class GithubSubmissionAssociation : SubmissionAssociation
         GithubSubmission submission,
         string organization,
         string repository,
-        long prNumber) : base(submission)
+        long prNumber)
+        : base(submission)
     {
         Repository = repository;
         PrNumber = prNumber;
@@ -16,6 +17,8 @@ public partial class GithubSubmissionAssociation : SubmissionAssociation
     }
 
     public string Organization { get; protected set; }
+
     public string Repository { get; protected set; }
+
     public long PrNumber { get; protected set; }
 }

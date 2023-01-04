@@ -15,8 +15,10 @@ public class DeleteCommand : ISubmissionCommand<SubmissionContext, SubmissionDto
         ILogger logger,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handle /delete command for submission {SubmissionId} from user {IssuerId}",
-            context.SubmissionId, context.IssuerId);
+        logger.LogInformation(
+            "Handle /delete command for submission {SubmissionId} from user {IssuerId}",
+            context.SubmissionId,
+            context.IssuerId);
 
         var command = new DeleteSubmission.Command(context.IssuerId, context.SubmissionId);
         DeleteSubmission.Response response = await context.Mediator.Send(command, cancellationToken);

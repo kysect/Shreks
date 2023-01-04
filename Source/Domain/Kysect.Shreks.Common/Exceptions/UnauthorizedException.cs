@@ -6,7 +6,8 @@ public class UnauthorizedException : ShreksDomainException
 {
     public UnauthorizedException(string? message) : base(message) { }
 
-    public UnauthorizedException() : base(UserMessages.UnauthorizedExceptionMessage) { }
+    public UnauthorizedException()
+        : base(UserMessages.UnauthorizedExceptionMessage) { }
 
     public static UnauthorizedException DoesNotHavePermissionForActivateSubmission()
     {

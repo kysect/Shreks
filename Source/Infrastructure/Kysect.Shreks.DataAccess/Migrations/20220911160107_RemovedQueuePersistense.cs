@@ -49,7 +49,7 @@ public partial class RemovedQueuePersistense : Migration
             name: "SubmissionQueues",
             columns: table => new
             {
-                Id = table.Column<Guid>(type: "uuid", nullable: false)
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -64,7 +64,7 @@ public partial class RemovedQueuePersistense : Migration
                 Discriminator = table.Column<string>(type: "text", nullable: false),
                 Position = table.Column<int>(type: "integer", nullable: false),
                 SortingOrder = table.Column<int>(type: "integer", nullable: false),
-                SubmissionQueueId = table.Column<Guid>(type: "uuid", nullable: true)
+                SubmissionQueueId = table.Column<Guid>(type: "uuid", nullable: true),
             },
             constraints: table =>
             {
@@ -84,7 +84,7 @@ public partial class RemovedQueuePersistense : Migration
                 Discriminator = table.Column<string>(type: "text", nullable: false),
                 SubmissionQueueId = table.Column<Guid>(type: "uuid", nullable: true),
                 CourseId = table.Column<Guid>(type: "uuid", nullable: true),
-                State = table.Column<int>(type: "integer", nullable: true)
+                State = table.Column<int>(type: "integer", nullable: true),
             },
             constraints: table =>
             {
@@ -101,7 +101,7 @@ public partial class RemovedQueuePersistense : Migration
             columns: table => new
             {
                 AssignmentsId = table.Column<Guid>(type: "uuid", nullable: false),
-                FiltersId = table.Column<Guid>(type: "uuid", nullable: false)
+                FiltersId = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {
@@ -125,7 +125,7 @@ public partial class RemovedQueuePersistense : Migration
             columns: table => new
             {
                 FiltersId = table.Column<Guid>(type: "uuid", nullable: false),
-                GroupsId = table.Column<Guid>(type: "uuid", nullable: false)
+                GroupsId = table.Column<Guid>(type: "uuid", nullable: false),
             },
             constraints: table =>
             {

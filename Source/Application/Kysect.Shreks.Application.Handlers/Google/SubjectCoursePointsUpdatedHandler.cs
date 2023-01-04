@@ -37,7 +37,9 @@ internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectC
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error updating course points for subject course {SubjectCourseId}",
+            _logger.LogError(
+                e,
+                "Error updating course points for subject course {SubjectCourseId}",
                 notification.SubjectCourseId);
         }
     }
@@ -46,7 +48,8 @@ internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectC
         SubjectCoursePointsUpdatedNotification notification,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Start updating for points sheet of course {SubjectCourseId}.",
+        _logger.LogInformation(
+            "Start updating for points sheet of course {SubjectCourseId}.",
             notification.SubjectCourseId);
 
         _logger.LogInformation("Started to collecting all course {courseId} points", notification.SubjectCourseId);
@@ -69,8 +72,12 @@ internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectC
 
             foreach ((StudentPointsDto student, AssignmentPointsDto studentPoints, AssignmentDto assignment) in table)
             {
-                _logger.LogTrace("\t{Student} - {Assignment}: {Points}, banned: {Banned}",
-                    student.Student.GitHubUsername, assignment.Title, studentPoints.Points, studentPoints.IsBanned);
+                _logger.LogTrace(
+                    "\t{Student} - {Assignment}: {Points}, banned: {Banned}",
+                    student.Student.GitHubUsername,
+                    assignment.Title,
+                    studentPoints.Points,
+                    studentPoints.IsBanned);
             }
         }
 
@@ -79,7 +86,8 @@ internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectC
 
         await _sheet.UpdateAsync(spreadsheetId, points, cancellationToken);
 
-        _logger.LogInformation("Successfully updated points sheet of course {SubjectCourseId}.",
+        _logger.LogInformation(
+            "Successfully updated points sheet of course {SubjectCourseId}",
             notification.SubjectCourseId);
     }
 }

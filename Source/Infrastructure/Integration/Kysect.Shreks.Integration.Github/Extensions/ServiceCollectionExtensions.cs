@@ -59,14 +59,14 @@ public static class ServiceCollectionExtensions
             new MemoryCacheEntryOptions()
                 .SetSize(cacheConfiguration.CacheEntryConfiguration.EntrySize)
                 .SetAbsoluteExpiration(cacheConfiguration.CacheEntryConfiguration.AbsoluteExpiration)
-                .SetSlidingExpiration(cacheConfiguration.CacheEntryConfiguration.SlidingExpiration)
-        ));
+                .SetSlidingExpiration(cacheConfiguration.CacheEntryConfiguration.SlidingExpiration)));
 
         services.AddSingleton<IGitHubClient>(serviceProvider =>
         {
             GitHubJwtFactory githubJwtFactory = serviceProvider.GetService<GitHubJwtFactory>()!;
 
-            var appClient = new GitHubClient(new ProductHeaderValue("Kysect.Shreks"),
+            var appClient = new GitHubClient(
+                new ProductHeaderValue("Kysect.Shreks"),
                 new GithubAppCredentialStore(githubJwtFactory));
             return appClient;
         });
@@ -98,7 +98,9 @@ public static class ServiceCollectionExtensions
                 IInstallationClientFactory installationClientFactory =
                     serviceProvider.GetRequiredService<IInstallationClientFactory>();
 
-                return new ServiceOrganizationGithubClientProvider(appClient, installationClientFactory,
+                return new ServiceOrganizationGithubClientProvider(
+                    appClient,
+                    installationClientFactory,
                     serviceOrganizationName);
             });
 

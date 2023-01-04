@@ -35,6 +35,7 @@ public class ExceptionManager : IExceptionSink, IExceptionStore
     }
 
     public event Action<ExceptionMessage>? ExceptionAdded;
+
     public event Action<ExceptionMessage>? ExceptionDismissed;
 
     protected virtual void OnExceptionAdded(ExceptionMessage obj)

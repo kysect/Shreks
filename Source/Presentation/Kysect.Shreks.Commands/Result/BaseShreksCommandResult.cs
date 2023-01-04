@@ -9,6 +9,7 @@ public class BaseShreksCommandResult : IShreksCommandResult
     }
 
     public bool IsSuccess { get; }
+
     public string Message { get; }
 
     public static BaseShreksCommandResult Success(string message)

@@ -18,6 +18,7 @@ public partial class StudentGroup : IEntity<Guid>
     }
 
     public string Name { get; set; }
+
     public virtual IReadOnlyCollection<Student> Students => _students;
 
     public override string ToString()

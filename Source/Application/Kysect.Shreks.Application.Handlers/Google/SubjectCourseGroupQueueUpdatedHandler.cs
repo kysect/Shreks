@@ -50,8 +50,11 @@ internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<Subj
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error while updating queue for subject course {SubjectCourseId} group {GroupId}",
-                notification.SubjectCourseId, notification.GroupId);
+            _logger.LogError(
+                e,
+                "Error while updating queue for subject course {SubjectCourseId} group {GroupId}",
+                notification.SubjectCourseId,
+                notification.GroupId);
         }
     }
 

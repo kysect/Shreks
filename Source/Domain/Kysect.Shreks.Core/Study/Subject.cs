@@ -7,7 +7,8 @@ public partial class Subject : IEntity<Guid>
 {
     private readonly HashSet<SubjectCourse> _courses;
 
-    public Subject(string title) : this(Guid.NewGuid())
+    public Subject(string title)
+        : this(Guid.NewGuid())
     {
         ArgumentNullException.ThrowIfNull(title);
 
@@ -16,6 +17,7 @@ public partial class Subject : IEntity<Guid>
     }
 
     public string Title { get; set; }
+
     public virtual IReadOnlyCollection<SubjectCourse> Courses => _courses;
 
     public void AddCourse(SubjectCourse course)

@@ -23,7 +23,8 @@ public class InstallationClientFactory : IInstallationClientFactory
 
     private GitHubClient CreateInstallationClient(long installationId)
     {
-        return new GitHubClient(new ProductHeaderValue($"Installation-{installationId}"),
+        return new GitHubClient(
+            new ProductHeaderValue($"Installation-{installationId}"),
             new InstallationCredentialStore(_gitHubAppClient, installationId));
     }
 }

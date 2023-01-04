@@ -40,7 +40,10 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
                 await _context.SubjectCourses.GetAllGithubUsers(subjectAssociation.SubjectCourse.Id);
             var usernames = githubUserAssociations.Select(a => a.GithubUsername).ToList();
             await _inviteSender.Invite(subjectAssociation.GithubOrganizationName, usernames);
-            await GenerateRepositories(_repositoryManager, usernames, subjectAssociation.GithubOrganizationName,
+            await GenerateRepositories(
+                _repositoryManager,
+                usernames,
+                subjectAssociation.GithubOrganizationName,
                 subjectAssociation.TemplateRepositoryName);
         }
     }

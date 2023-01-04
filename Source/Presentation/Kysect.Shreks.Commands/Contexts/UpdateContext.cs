@@ -23,6 +23,7 @@ public class UpdateContext : BaseContext
     }
 
     public AssignmentDto Assignment { get; }
+
     public UserDto Student { get; }
 
     public Task<SubmissionDto> GetDefaultSubmissionAsync(CancellationToken cancellationToken)

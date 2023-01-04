@@ -11,7 +11,8 @@ public class TableUpdateQueue : ITableUpdateQueue
         PointsUpdateSubjectCourseIds = new ConcurrentHashSet<Guid>();
     }
 
-    public ConcurrentHashSet<(Guid, Guid)> QueueUpdateSubjectCourseGroupIds { get; }
+    public ConcurrentHashSet<(Guid SubjectCourseId, Guid StudentGroupId)> QueueUpdateSubjectCourseGroupIds { get; }
+
     public ConcurrentHashSet<Guid> PointsUpdateSubjectCourseIds { get; }
 
     public void EnqueueSubmissionsQueueUpdate(Guid subjectCourseId, Guid studentGroupId)

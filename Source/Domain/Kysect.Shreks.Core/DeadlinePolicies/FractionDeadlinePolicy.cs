@@ -4,7 +4,8 @@ namespace Kysect.Shreks.Core.DeadlinePolicies;
 
 public class FractionDeadlinePolicy : DeadlinePolicy
 {
-    public FractionDeadlinePolicy(TimeSpan spanBeforeActivation, Fraction fraction) : base(spanBeforeActivation)
+    public FractionDeadlinePolicy(TimeSpan spanBeforeActivation, Fraction fraction)
+        : base(spanBeforeActivation)
     {
         Fraction = fraction;
     }
