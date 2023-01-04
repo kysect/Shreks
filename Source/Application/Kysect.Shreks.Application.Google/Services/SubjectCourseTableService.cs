@@ -49,7 +49,7 @@ public class SubjectCourseTableService : ISubjectCourseTableService
             string spreadsheetId = await _spreadsheetManagementService
                 .CreateSpreadsheetAsync(subjectCourse.Title, cancellationToken);
 
-            spreadsheetAssociation = new GoogleTableSubjectCourseAssociation(subjectCourse, spreadsheetId);
+            spreadsheetAssociation = new GoogleTableSubjectCourseAssociation(Guid.NewGuid(), subjectCourse, spreadsheetId);
             _context.SubjectCourseAssociations.Add(spreadsheetAssociation);
 
             await _context.SaveChangesAsync(cancellationToken);

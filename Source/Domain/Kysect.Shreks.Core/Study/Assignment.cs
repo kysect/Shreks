@@ -9,13 +9,14 @@ public partial class Assignment : IEntity<Guid>
     private readonly HashSet<GroupAssignment> _groupAssignments;
 
     public Assignment(
+        Guid id,
         string title,
         string shortName,
         int order,
         Points minPoints,
         Points maxPoints,
         SubjectCourse subjectCourse)
-        : this(Guid.NewGuid())
+        : this(id)
     {
         ArgumentNullException.ThrowIfNull(title);
 

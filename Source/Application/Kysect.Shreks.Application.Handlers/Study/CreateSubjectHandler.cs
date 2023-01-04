@@ -20,7 +20,7 @@ internal class CreateSubjectHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var subject = new Subject(request.Title);
+        var subject = new Subject(Guid.NewGuid(), request.Title);
         _context.Subjects.Add(subject);
         await _context.SaveChangesAsync(cancellationToken);
         return new Response(_mapper.Map<SubjectDto>(subject));

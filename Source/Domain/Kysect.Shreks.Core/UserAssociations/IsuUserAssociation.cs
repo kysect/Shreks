@@ -4,8 +4,7 @@ namespace Kysect.Shreks.Core.UserAssociations;
 
 public partial class IsuUserAssociation : UserAssociation
 {
-    public IsuUserAssociation(User user, int universityId)
-        : base(user)
+    public IsuUserAssociation(Guid id, User user, int universityId) : base(id, user)
     {
         UniversityId = universityId;
     }

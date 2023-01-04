@@ -15,8 +15,8 @@ public partial class SubjectCourse : IEntity<Guid>
     private readonly HashSet<SubjectCourseGroup> _groups;
     private readonly HashSet<Mentor> _mentors;
 
-    public SubjectCourse(Subject subject, string title, SubmissionStateWorkflowType? workflowType)
-        : this(Guid.NewGuid())
+    public SubjectCourse(Guid id, Subject subject, string title, SubmissionStateWorkflowType? workflowType)
+        : this(id)
     {
         Subject = subject;
         Title = title;

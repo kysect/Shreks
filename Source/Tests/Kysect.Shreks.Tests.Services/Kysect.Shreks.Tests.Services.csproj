@@ -4,7 +4,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <NoWarn>1701;1702;IL2121;CA1707;1591;SA1633;SA1101;SA1503;SA1309;SA1601;SA1201</NoWarn>
+        <NoWarn>$(NoWarn);1701;1702;IL2121;CA1707;1591;SA1633;SA1101;SA1503;SA1309;SA1601;SA1201</NoWarn>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 

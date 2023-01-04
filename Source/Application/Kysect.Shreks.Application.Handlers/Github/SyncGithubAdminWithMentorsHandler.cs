@@ -99,8 +99,8 @@ internal class SyncGithubAdminWithMentorsHandler : IRequestHandler<SyncGithubAdm
             if (!isGithubUserExists)
                 throw new DomainInvalidOperationException($"Github user with username {adminUsername} does not exist");
 
-            var adminUser = new User(adminUsername, adminUsername, adminUsername);
-            var githubUserAssociation = new GithubUserAssociation(adminUser, adminUsername);
+            var adminUser = new User(Guid.NewGuid(), adminUsername, adminUsername, adminUsername);
+            var githubUserAssociation = new GithubUserAssociation(Guid.NewGuid(), adminUser, adminUsername);
 
             _shreksDatabaseContext.Users.Add(adminUser);
             _shreksDatabaseContext.UserAssociations.Add(githubUserAssociation);

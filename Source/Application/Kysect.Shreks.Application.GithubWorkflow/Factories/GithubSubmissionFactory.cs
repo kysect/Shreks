@@ -89,6 +89,7 @@ public class GithubSubmissionFactory : ISubmissionFactory
             .CountAsync(cancellationToken);
 
         return new GithubSubmission(
+            Guid.NewGuid(),
             count + 1,
             student,
             groupAssignment,

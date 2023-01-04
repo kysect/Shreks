@@ -16,6 +16,6 @@ public class SubjectGenerator : EntityGeneratorBase<Subject>
 
     protected override Subject Generate(int index)
     {
-        return new Subject(_faker.Commerce.Product());
+        return new Subject(_faker.Random.Guid(), _faker.Commerce.Product());
     }
 }

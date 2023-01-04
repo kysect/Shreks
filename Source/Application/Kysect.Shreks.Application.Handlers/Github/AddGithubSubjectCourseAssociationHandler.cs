@@ -19,10 +19,14 @@ internal class AddGithubSubjectCourseAssociationHandler : IRequestHandler<Comman
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        SubjectCourse subjectCourse =
-            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
-        var githubSubjectCourseAssociation =
-            new GithubSubjectCourseAssociation(subjectCourse, request.Organization, request.TemplateRepository);
+        SubjectCourse subjectCourse = await _context.SubjectCourses
+            .GetByIdAsync(request.SubjectCourseId, cancellationToken);
+
+        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(
+            Guid.NewGuid(),
+            subjectCourse,
+            request.Organization,
+            request.TemplateRepository);
 
         _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
         await _context.SaveChangesAsync(cancellationToken);

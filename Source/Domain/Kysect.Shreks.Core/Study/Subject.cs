@@ -7,8 +7,7 @@ public partial class Subject : IEntity<Guid>
 {
     private readonly HashSet<SubjectCourse> _courses;
 
-    public Subject(string title)
-        : this(Guid.NewGuid())
+    public Subject(Guid id, string title) : this(id)
     {
         ArgumentNullException.ThrowIfNull(title);
 

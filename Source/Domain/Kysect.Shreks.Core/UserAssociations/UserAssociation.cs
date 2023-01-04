@@ -5,8 +5,7 @@ namespace Kysect.Shreks.Core.UserAssociations;
 
 public abstract partial class UserAssociation : IEntity<Guid>
 {
-    protected UserAssociation(User user)
-        : this(Guid.NewGuid())
+    protected UserAssociation(Guid id, User user) : this(id)
     {
         User = user;
         user.AddAssociation(this);

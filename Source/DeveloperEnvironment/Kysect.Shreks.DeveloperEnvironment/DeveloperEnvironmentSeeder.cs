@@ -44,8 +44,13 @@ public class DeveloperEnvironmentSeeder
     {
         SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[0];
         _context.SubjectCourses.Attach(subjectCourse);
-        var githubSubjectCourseAssociation =
-            new GithubSubjectCourseAssociation(subjectCourse, request.Organization, request.TemplateRepository);
+
+        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(
+            Guid.NewGuid(),
+            subjectCourse,
+            request.Organization,
+            request.TemplateRepository);
+
         _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
     }
 
@@ -58,7 +63,7 @@ public class DeveloperEnvironmentSeeder
         {
             User user = users[index];
             string login = request.Users[index];
-            _context.UserAssociations.Add(new GithubUserAssociation(user, login));
+            _context.UserAssociations.Add(new GithubUserAssociation(Guid.NewGuid(), user, login));
         }
     }
 }

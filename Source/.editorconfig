@@ -559,3 +559,6 @@ csharp_style_prefer_utf8_string_literals = true:suggestion
 
 # ReSharper
 resharper_csharp_empty_block_style = together_same_line
+
+csharp_wrap_arguments_style=chop_if_long
+csharp_wrap_chained_method_calls=chop_if_long

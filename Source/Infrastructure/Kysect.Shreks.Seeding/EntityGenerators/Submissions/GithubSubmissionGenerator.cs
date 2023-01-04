@@ -36,8 +36,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
         Assignment assignment = _faker.PickRandom(assignments);
 
         IEnumerable<Student> students = assignment.GroupAssignments.SelectMany(x => x.Group.Students)
-            .Where(student => assignment.SubjectCourse.Mentors
-                .Any(mentor => mentor.User.Equals(student.User)) is false);
+            .Where(student => assignment.SubjectCourse.Mentors.Any(mentor => mentor.User.Equals(student.User)) is false);
 
         Student student = _faker.PickRandom(students);
 
@@ -46,6 +45,7 @@ public class GithubSubmissionGenerator : EntityGeneratorBase<GithubSubmission>
         int submissionCount = groupAssignment.Submissions.Count(x => x.Student.Equals(student));
 
         var submission = new GithubSubmission(
+            _faker.Random.Guid(),
             submissionCount + 1,
             student,
             groupAssignment,
