@@ -18,6 +18,7 @@ public class UserGenerator : EntityGeneratorBase<User>
     protected override User Generate(int index)
     {
         return new User(
+            _faker.Random.Guid(),
             _faker.Name.FirstName(),
             _faker.Name.MiddleName(),
             _faker.Name.LastName());

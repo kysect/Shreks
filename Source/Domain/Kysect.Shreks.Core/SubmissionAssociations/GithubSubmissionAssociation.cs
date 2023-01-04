@@ -5,11 +5,12 @@ namespace Kysect.Shreks.Core.SubmissionAssociations;
 public partial class GithubSubmissionAssociation : SubmissionAssociation
 {
     public GithubSubmissionAssociation(
+        Guid id,
         GithubSubmission submission,
         string organization,
         string repository,
         long prNumber)
-        : base(submission)
+        : base(id)
     {
         Repository = repository;
         PrNumber = prNumber;

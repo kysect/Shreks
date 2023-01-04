@@ -19,21 +19,23 @@ public static class TestEnvExtensions
         TestEnvironmentConfiguration config)
     {
         serviceCollection
-            .AddDatabaseContext(optionsBuilder => optionsBuilder
-                .UseSqlite("Filename=shreks-gh.db")
-                .UseLazyLoadingProxies());
+            .AddDatabaseContext(
+                optionsBuilder => optionsBuilder
+                    .UseSqlite("Filename=shreks-gh.db")
+                    .UseLazyLoadingProxies());
 
-        serviceCollection.AddEntityGenerators(o =>
-        {
-            o.ConfigureFaker(o => o.Locale = "ru");
-            o.ConfigureEntityGenerator<User>(o => o.Count = config.Users.Count);
-            o.ConfigureEntityGenerator<Student>(o => o.Count = config.Users.Count);
-            o.ConfigureEntityGenerator<GithubUserAssociation>(o => o.Count = 0);
-            o.ConfigureEntityGenerator<IsuUserAssociation>(o => o.Count = 0);
-            o.ConfigureEntityGenerator<Submission>(o => o.Count = 0);
-            o.ConfigureEntityGenerator<SubjectCourse>(o => o.Count = 1);
-            o.ConfigureEntityGenerator<SubjectCourseAssociation>(o => o.Count = 0);
-        });
+        serviceCollection.AddEntityGenerators(
+            o =>
+            {
+                o.ConfigureFaker(o => o.Locale = "ru");
+                o.ConfigureEntityGenerator<User>(o => o.Count = config.Users.Count);
+                o.ConfigureEntityGenerator<Student>(o => o.Count = config.Users.Count);
+                o.ConfigureEntityGenerator<GithubUserAssociation>(o => o.Count = 0);
+                o.ConfigureEntityGenerator<IsuUserAssociation>(o => o.Count = 0);
+                o.ConfigureEntityGenerator<Submission>(o => o.Count = 0);
+                o.ConfigureEntityGenerator<SubjectCourse>(o => o.Count = 1);
+                o.ConfigureEntityGenerator<SubjectCourseAssociation>(o => o.Count = 0);
+            });
 
         return serviceCollection.AddDatabaseSeeders();
     }
@@ -58,15 +60,22 @@ public static class TestEnvExtensions
         {
             User user = users[index];
             string login = config.Users[index];
-            dbContext.UserAssociations.Add(new GithubUserAssociation(user, login));
+            dbContext.UserAssociations.Add(new GithubUserAssociation(Guid.NewGuid(), user, login));
         }
 
-        IEntityGenerator<SubjectCourse> subjectCourseGenerator =
-            serviceProvider.GetRequiredService<IEntityGenerator<SubjectCourse>>();
+        IEntityGenerator<SubjectCourse> subjectCourseGenerator = serviceProvider
+            .GetRequiredService<IEntityGenerator<SubjectCourse>>();
+
         SubjectCourse subjectCourse = subjectCourseGenerator.GeneratedEntities[0];
         dbContext.SubjectCourses.Attach(subjectCourse);
-        dbContext.SubjectCourseAssociations.Add(
-            new GithubSubjectCourseAssociation(subjectCourse, config.Organization, config.TemplateRepository));
+
+        var association = new GithubSubjectCourseAssociation(
+            Guid.NewGuid(),
+            subjectCourse,
+            config.Organization,
+            config.TemplateRepository);
+
+        dbContext.SubjectCourseAssociations.Add(association);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 #pragma warning restore CS0162

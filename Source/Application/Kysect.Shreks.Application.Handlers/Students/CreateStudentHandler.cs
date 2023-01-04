@@ -30,7 +30,7 @@ internal class CreateStudentHandler : IRequestHandler<Command, Response>
         if (group is null)
             throw EntityNotFoundException.For<StudentGroup>(request.GroupId);
 
-        var user = new User(request.FirstName, request.MiddleName, request.LastName);
+        var user = new User(Guid.NewGuid(), request.FirstName, request.MiddleName, request.LastName);
         var student = new Student(user, group);
 
         _context.Students.Add(student);

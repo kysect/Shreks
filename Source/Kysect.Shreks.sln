@@ -59,11 +59,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.GithubWorkflow.Abstractions", "Application\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj", "{3B0EB40E-6E3C-4F8D-BBD7-9B7FC5FB7D68}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{557DD492-F931-45E9-8E1E-96FAE771E747}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Application.Google", "Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj", "{A57B6F3D-1DC1-41A7-90CD-99158B4D55DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kysect.Shreks.Controllers", "Presentation\Kysect.Shreks.Controllers\Kysect.Shreks.Controllers.csproj", "{561BAC9C-4E54-414A-BFDA-AFF90B6F5ADF}"

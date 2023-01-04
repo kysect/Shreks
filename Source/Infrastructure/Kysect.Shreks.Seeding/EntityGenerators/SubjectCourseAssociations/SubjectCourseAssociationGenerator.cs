@@ -33,6 +33,7 @@ public class SubjectCourseAssociationGenerator : EntityGeneratorBase<GithubSubje
         SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[index];
 
         var association = new GithubSubjectCourseAssociation(
+            _faker.Random.Guid(),
             subjectCourse,
             _faker.Random.Guid().ToString(),
             _faker.Internet.UserName());

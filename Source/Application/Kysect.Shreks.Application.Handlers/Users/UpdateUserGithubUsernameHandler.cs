@@ -48,7 +48,7 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
             throw new DomainInvalidOperationException(message);
         }
 
-        var association = new GithubUserAssociation(user, request.GithubUsername);
+        var association = new GithubUserAssociation(Guid.NewGuid(), user, request.GithubUsername);
         user.AddAssociation(association);
 
         await _context.UserAssociations.AddAsync(association, cancellationToken);

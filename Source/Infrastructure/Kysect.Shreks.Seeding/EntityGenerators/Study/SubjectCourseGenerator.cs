@@ -48,7 +48,7 @@ public class SubjectCourseGenerator : EntityGeneratorBase<SubjectCourse>
 
         const SubmissionStateWorkflowType reviewType = SubmissionStateWorkflowType.ReviewWithDefense;
 
-        var subjectCourse = new SubjectCourse(subject, subjectCourseName, reviewType);
+        var subjectCourse = new SubjectCourse(_faker.Random.Guid(), subject, subjectCourseName, reviewType);
 
         IEnumerable<User> users = _faker.Random
             .ListItems(_userGenerator.GeneratedEntities.ToList(), 2)

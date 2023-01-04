@@ -15,12 +15,13 @@ public abstract partial class Submission : IEntity<Guid>
     private readonly HashSet<SubmissionAssociation> _associations;
 
     protected Submission(
+        Guid id,
         int code,
         Student student,
         GroupAssignment groupAssignment,
         SpbDateTime submissionDate,
         string payload)
-        : this(Guid.NewGuid())
+        : this(id)
     {
         Code = code;
         SubmissionDate = submissionDate;

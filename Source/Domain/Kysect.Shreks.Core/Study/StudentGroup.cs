@@ -8,8 +8,7 @@ public partial class StudentGroup : IEntity<Guid>
 {
     private readonly HashSet<Student> _students;
 
-    public StudentGroup(string name)
-        : this(Guid.NewGuid())
+    public StudentGroup(Guid id, string name) : this(id)
     {
         ArgumentNullException.ThrowIfNull(name);
 

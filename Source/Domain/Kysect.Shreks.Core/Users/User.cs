@@ -8,8 +8,7 @@ public partial class User : IEntity<Guid>
 {
     private readonly HashSet<UserAssociation> _associations;
 
-    public User(string firstName, string middleName, string lastName)
-        : this(Guid.NewGuid())
+    public User(Guid id, string firstName, string middleName, string lastName) : this(id)
     {
         ArgumentNullException.ThrowIfNull(firstName);
         ArgumentNullException.ThrowIfNull(middleName);

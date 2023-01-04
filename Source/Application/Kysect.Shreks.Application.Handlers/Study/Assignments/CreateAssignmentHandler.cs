@@ -26,6 +26,7 @@ internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
             await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
         var assignment = new Assignment(
+            Guid.NewGuid(),
             request.Title,
             request.ShortName,
             request.Order,

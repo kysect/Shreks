@@ -20,7 +20,7 @@ internal class CreateStudyGroupHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var studentGroup = new StudentGroup(request.Name);
+        var studentGroup = new StudentGroup(Guid.NewGuid(), request.Name);
         _context.StudentGroups.Add(studentGroup);
         await _context.SaveChangesAsync(cancellationToken);
         return new Response(_mapper.Map<StudyGroupDto>(studentGroup));
