@@ -22,8 +22,9 @@ internal class CreateSubjectCourseHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        Subject subject = await _context.Subjects.GetByIdAsync(request.SubjectId, cancellationToken: cancellationToken);
-        var subjectCourse = new SubjectCourse(subject, request.Title, (SubmissionStateWorkflowType)request.WorkflowType);
+        Subject subject = await _context.Subjects.GetByIdAsync(request.SubjectId, cancellationToken);
+        var subjectCourse =
+            new SubjectCourse(Guid.NewGuid(), subject, request.Title, (SubmissionStateWorkflowType)request.WorkflowType);
         _context.SubjectCourses.Add(subjectCourse);
         await _context.SaveChangesAsync(cancellationToken);
 

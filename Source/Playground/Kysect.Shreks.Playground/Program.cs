@@ -10,7 +10,7 @@ Log.Logger = new LoggerConfiguration()
 
 Console.WriteLine("Hello, World!");
 
-var builder = new DbContextOptionsBuilder<ShreksDatabaseContext>()
+DbContextOptionsBuilder<ShreksDatabaseContext> builder = new DbContextOptionsBuilder<ShreksDatabaseContext>()
     .UseSqlite("Data Source=ShreksPlayground.db");
 
 var context = new ShreksDatabaseContext(builder.Options);

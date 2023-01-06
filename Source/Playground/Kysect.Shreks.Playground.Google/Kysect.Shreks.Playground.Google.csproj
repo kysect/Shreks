@@ -1,33 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-	<Content Include="client_secrets.json">
-	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="client_secrets.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
 
-  <ItemGroup>
-	<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.8" />
-	<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.8" />
-	<PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
-	<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies"/>
+        <PackageReference Include="Serilog.AspNetCore"/>
+        <PackageReference Include="Serilog.Sinks.Console"/>
+    </ItemGroup>
 
-  <ItemGroup>
-	<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj" />
-	<ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
-	<ProjectReference Include="..\..\Application\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
-	<ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj"/>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj"/>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Integration\Kysect.Shreks.Integration.Google\Kysect.Shreks.Integration.Google.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj"/>
+    </ItemGroup>
 
 </Project>

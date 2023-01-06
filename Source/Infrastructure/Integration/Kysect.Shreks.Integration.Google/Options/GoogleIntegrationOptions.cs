@@ -9,11 +9,7 @@ namespace Kysect.Shreks.Integration.Google.Options;
 
 public class GoogleIntegrationOptions
 {
-    private static readonly string[] AccessScopes =
-    {
-        SheetsService.Scope.Spreadsheets,
-        DriveService.Scope.Drive
-    };
+    private static readonly string[] AccessScopes = { SheetsService.Scope.Spreadsheets, DriveService.Scope.Drive };
 
     private readonly IServiceCollection _collection;
 
@@ -28,7 +24,7 @@ public class GoogleIntegrationOptions
 
         var initializer = new BaseClientService.Initializer
         {
-            HttpClientInitializer = credentials.CreateScoped(AccessScopes)
+            HttpClientInitializer = credentials.CreateScoped(AccessScopes),
         };
 
         _collection

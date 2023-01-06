@@ -14,7 +14,7 @@ public record SubmissionDto(
     string AssignmentShortName,
     SubmissionStateDto State)
 {
-    public string ToPullRequestString()
+    public string ToDisplayString()
     {
         var stringBuilder = new StringBuilder();
 

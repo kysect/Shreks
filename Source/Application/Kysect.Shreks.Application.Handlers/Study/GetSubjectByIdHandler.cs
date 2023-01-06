@@ -23,7 +23,7 @@ internal class GetSubjectByIdHandler : IRequestHandler<Query, Response>
     {
         Subject subject = await _context
             .Subjects
-            .GetByIdAsync(request.Id, cancellationToken: cancellationToken);
+            .GetByIdAsync(request.Id, cancellationToken);
 
         return new Response(_mapper.Map<SubjectDto>(subject));
     }

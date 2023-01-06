@@ -16,8 +16,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
     private const int ReferenceRowShift = 2;
     private const string ReferenceHeaderRange = "1:1";
 
-    private static readonly IRowComponent Header = Row
-    (
+    private static readonly IRowComponent Header = Row(
         Label("ISU").WithColumnWidth(0.8).WithFrozenRows(),
         Label("ФИО").WithColumnWidth(2),
         Label("Группа"),
@@ -27,8 +26,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
         Label("Экзамен"),
         Label("Сумма"),
         Label("Оценка"),
-        Label("Комментарий").WithColumnWidth(2.7).WithTrailingMediumBorder()
-    );
+        Label("Комментарий").WithColumnWidth(2.7).WithTrailingMediumBorder());
 
     protected override IComponent Customize(IComponent component)
     {
@@ -53,8 +51,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
 
     private static IRowComponent GetRowReference()
     {
-        return Row
-        (
+        return Row(
             Label(AssignedReference),
             Label(AssignedReference),
             Label(AssignedReference),
@@ -64,8 +61,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
             Empty(),
             Label(GetTotalFunction),
             Label(PointsFormula),
-            Empty().WithTrailingMediumBorder()
-        );
+            Empty().WithTrailingMediumBorder());
     }
 
     private static string AssignedReference(Index index)
@@ -104,6 +100,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
     private static string PointsFormula(Index index)
     {
         string n = GetCellNumber(index.WithColumnShift(-1));
-        return $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>=40,\"FX-E\",\"FX\"))";
+        return
+            $"=if({n}>=60,if({n}>67,if({n}>74,if({n}>83,if({n}>90,\"A\",\"B\"),\"C\"),\"D\"),\"E\"),if({n}>=40,\"FX-E\",\"FX\"))";
     }
 }

@@ -1,4 +1,3 @@
-@using Kysect.Shreks.WebApi.Sdk
 @inject IGithubManagementClient Client
 
 <Button Clicked="OnClickedAsync" Color="Color.Secondary" Disabled="@(_component?.Executing ?? false)">
@@ -15,9 +14,13 @@
     private ConfirmationComponent? _component;
 
     private Task SyncAsync(CancellationToken cancellationToken)
-        => OrganizationName is null ? Task.CompletedTask : Client.ForceMentorsSyncAsync(OrganizationName, cancellationToken);
+    {
+        return OrganizationName is null ? Task.CompletedTask : Client.ForceMentorsSyncAsync(OrganizationName, cancellationToken);
+    }
 
     private Task OnClickedAsync()
-        => _component?.Show() ?? Task.CompletedTask;
+    {
+        return _component?.Show() ?? Task.CompletedTask;
+    }
 
 }

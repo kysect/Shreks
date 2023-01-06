@@ -1,12 +1,14 @@
 using FluentAssertions;
 using Kysect.Shreks.Application.Abstractions.SubjectCourses;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Application.Services;
+using Kysect.Shreks.Core.Study;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace Kysect.Shreks.Tests.Services;
 
-public class SubjectCourseServiceTest : ServicesTestsBase
+public class SubjectCourseServiceTest : TestBase
 {
     private readonly ISubjectCourseService _service;
 
@@ -18,14 +20,14 @@ public class SubjectCourseServiceTest : ServicesTestsBase
     [Fact]
     public async Task CalculatePointsAsync_Should_ReturnPoints()
     {
-        var course = await Context.SubjectCourses
+        SubjectCourse course = await Context.SubjectCourses
             .Where(x => x.Assignments
                 .SelectMany(xx => xx.GroupAssignments)
                 .SelectMany(xx => xx.Submissions)
                 .Any())
             .FirstAsync();
 
-        var points = await _service.CalculatePointsAsync(course.Id, default);
+        SubjectCoursePointsDto points = await _service.CalculatePointsAsync(course.Id, default);
 
         points.StudentsPoints.Should().NotBeEmpty();
     }

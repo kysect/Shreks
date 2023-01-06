@@ -13,9 +13,9 @@ namespace Kysect.Shreks.Application.Google.Services;
 public class SubjectCourseTableService : ISubjectCourseTableService
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly ILogger<SubjectCourseTableService> _logger;
     private readonly ISpreadsheetManagementService _spreadsheetManagementService;
     private readonly ConcurrentDictionary<Guid, Task<string>> _tableIdCache;
-    private readonly ILogger<SubjectCourseTableService> _logger;
 
     public SubjectCourseTableService(
         IShreksDatabaseContext context,
@@ -40,7 +40,8 @@ public class SubjectCourseTableService : ISubjectCourseTableService
             if (spreadsheetAssociation is not null)
                 return spreadsheetAssociation.SpreadsheetId;
 
-            _logger.LogInformation("Spreadsheet of course {SubjectCourseId} was not found and will be created.",
+            _logger.LogInformation(
+                "Spreadsheet of course {SubjectCourseId} was not found and will be created",
                 subjectCourseId);
 
             SubjectCourse subjectCourse = await _context.SubjectCourses.GetByIdAsync(id, cancellationToken);
@@ -48,11 +49,13 @@ public class SubjectCourseTableService : ISubjectCourseTableService
             string spreadsheetId = await _spreadsheetManagementService
                 .CreateSpreadsheetAsync(subjectCourse.Title, cancellationToken);
 
-            spreadsheetAssociation = new GoogleTableSubjectCourseAssociation(subjectCourse, spreadsheetId);
+            spreadsheetAssociation = new GoogleTableSubjectCourseAssociation(Guid.NewGuid(), subjectCourse, spreadsheetId);
             _context.SubjectCourseAssociations.Add(spreadsheetAssociation);
 
             await _context.SaveChangesAsync(cancellationToken);
-            _logger.LogInformation("Successfully created spreadsheet of course {SubjectCourseId}.", subjectCourseId);
+            _logger.LogInformation(
+                "Successfully created spreadsheet of course {SubjectCourseId}",
+                subjectCourseId);
 
             _tableIdCache.TryRemove(id, out _);
             return spreadsheetId;

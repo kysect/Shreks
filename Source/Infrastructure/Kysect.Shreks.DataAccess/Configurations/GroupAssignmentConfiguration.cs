@@ -9,5 +9,7 @@ public class GroupAssignmentConfiguration : IEntityTypeConfiguration<GroupAssign
     public void Configure(EntityTypeBuilder<GroupAssignment> builder)
     {
         builder.HasKey(x => new { x.GroupId, x.AssignmentId });
+
+        builder.Navigation(x => x.Submissions).HasField("_submissions");
     }
 }

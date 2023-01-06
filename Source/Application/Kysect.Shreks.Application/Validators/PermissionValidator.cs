@@ -16,6 +16,11 @@ public class PermissionValidator : IPermissionValidator
         _context = context;
     }
 
+    public static bool IsRepositoryOwner(string username, string repositoryName)
+    {
+        return string.Equals(username, repositoryName, StringComparison.OrdinalIgnoreCase);
+    }
+
     public async Task<bool> IsOrganizationMentor(Guid senderId, string organizationName)
     {
         return await _context.SubjectCourseAssociations
@@ -23,23 +28,21 @@ public class PermissionValidator : IPermissionValidator
             .AnyAsync();
     }
 
+    public Task<bool> IsSubmissionMentorAsync(Guid userId, Guid submissionId, CancellationToken cancellationToken)
+    {
+        return _context.Submissions
+            .Where(x => x.Id.Equals(submissionId))
+            .Select(x => x.GroupAssignment.Assignment.SubjectCourse)
+            .SelectMany(x => x.Mentors)
+            .AnyAsync(x => x.UserId.Equals(userId), cancellationToken);
+    }
+
     public async Task EnsureSubmissionMentorAsync(
         Guid userId,
         Guid submissionId,
         CancellationToken cancellationToken)
     {
-        bool isMentor = await _context.Submissions
-            .Where(x => x.Id.Equals(submissionId))
-            .Select(x => x.GroupAssignment.Assignment.SubjectCourse)
-            .SelectMany(x => x.Mentors)
-            .AnyAsync(x => x.UserId.Equals(userId), cancellationToken);
-
-        if (isMentor is false)
+        if (await IsSubmissionMentorAsync(userId, submissionId, cancellationToken) is false)
             throw new UnauthorizedException();
-    }
-
-    public static bool IsRepositoryOwner(string username, string repositoryName)
-    {
-        return string.Equals(username, repositoryName, StringComparison.CurrentCultureIgnoreCase);
     }
 }

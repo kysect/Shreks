@@ -6,7 +6,8 @@ namespace Kysect.Shreks.Identity;
 
 public sealed class ShreksIdentityContext : IdentityDbContext<ShreksIdentityUser, ShreksIdentityRole, Guid>
 {
-    public ShreksIdentityContext(DbContextOptions<ShreksIdentityContext> options) : base(options)
+    public ShreksIdentityContext(DbContextOptions<ShreksIdentityContext> options)
+        : base(options)
     {
         Database.EnsureCreated();
     }

@@ -1,4 +1,5 @@
-﻿using Octokit;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Client;
+using Octokit;
 
 namespace Kysect.Shreks.Integration.Github.Client;
 

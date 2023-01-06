@@ -19,7 +19,6 @@ internal class GetAssignmentsBySubjectCourseHandler : IRequestHandler<Query, Res
         _mapper = mapper;
     }
 
-
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
         IReadOnlyCollection<Assignment> assignments = await _context

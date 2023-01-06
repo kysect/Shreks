@@ -1,4 +1,3 @@
-using Kysect.Shreks.WebApi.Abstractions.Models;
 using Kysect.Shreks.WebApi.Abstractions.Models.Identity;
 using Kysect.Shreks.WebApi.Sdk.Tools;
 using System.Net.Http.Json;
@@ -16,7 +15,7 @@ internal class IdentityClient : IIdentityClient
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Post, $"api/identity/login")
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/identity/login")
         {
             Content = JsonContent.Create(request),
         };
@@ -31,7 +30,9 @@ internal class IdentityClient : IIdentityClient
         await _handler.SendAsync(message, cancellationToken);
     }
 
-    public async Task<LoginResponse> RegisterAsync(RegisterUserRequest request, CancellationToken cancellationToken = default)
+    public async Task<LoginResponse> RegisterAsync(
+        RegisterUserRequest request,
+        CancellationToken cancellationToken = default)
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/identity/register")
         {

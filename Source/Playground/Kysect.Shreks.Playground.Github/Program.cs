@@ -1,40 +1,44 @@
-using Kysect.Shreks.Application.Commands.Extensions;
-using Kysect.Shreks.Application.Extensions;
-using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
-using Kysect.Shreks.Application.Google.Extensions;
-using Kysect.Shreks.Application.Handlers.Extensions;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.Integration.Github.Extensions;
 using Kysect.Shreks.Integration.Github.Helpers;
-using Kysect.Shreks.Mapping.Extensions;
+using Kysect.Shreks.Playground.Github.Extensions;
 using Kysect.Shreks.Playground.Github.TestEnv;
 using Serilog;
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Verbose()
-    .WriteTo.File("ShreksGithubPlayground.log")
-    .CreateLogger();
+namespace Kysect.Shreks.Playground.Github;
 
-var builder = WebApplication.CreateBuilder(args);
+internal static class Program
+{
+    public static async Task Main(string[] args)
+    {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .WriteTo.File("ShreksGithubPlayground.log")
+            .CreateLogger();
 
-var cacheConfiguration = builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
-var githubIntegrationConfiguration = builder.Configuration.GetSection(nameof(GithubIntegrationConfiguration)).Get<GithubIntegrationConfiguration>();
-var testEnvironmentConfiguration = builder.Configuration.GetSection(nameof(TestEnvironmentConfiguration)).Get<TestEnvironmentConfiguration>();
+        WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddApplicationConfiguration()
-    .AddMappingConfiguration()
-    .AddHandlers()
-    .AddApplicationCommands()
-    .AddGithubServices(cacheConfiguration, githubIntegrationConfiguration)
-    .AddGithubPlaygroundDatabase(testEnvironmentConfiguration)
-    .AddDummyGoogleIntegration();
+        CacheConfiguration cacheConfiguration =
+            builder.Configuration.GetSection(nameof(CacheConfiguration)).Get<CacheConfiguration>();
 
-builder.Services
-    .AddLogging(logBuilder => logBuilder.AddSerilog());
+        GithubIntegrationConfiguration githubIntegrationConfiguration = builder.Configuration
+            .GetSection(nameof(GithubIntegrationConfiguration))
+            .Get<GithubIntegrationConfiguration>();
 
-var app = builder.Build();
+        TestEnvironmentConfiguration testEnvironmentConfiguration = builder.Configuration
+            .GetSection(nameof(TestEnvironmentConfiguration))
+            .Get<TestEnvironmentConfiguration>();
 
-app.UseGithubIntegration(githubIntegrationConfiguration);
-await app.Services.UseTestEnv(testEnvironmentConfiguration);
+        builder.Services
+            .AddPlaygroundDependencies()
+            .AddGithubServices(cacheConfiguration, githubIntegrationConfiguration)
+            .AddGithubPlaygroundDatabase(testEnvironmentConfiguration);
 
-app.Run();
+        WebApplication app = builder.Build();
+
+        app.UseGithubIntegration(githubIntegrationConfiguration);
+        await app.Services.UseTestEnv(testEnvironmentConfiguration);
+
+        await app.RunAsync();
+    }
+}

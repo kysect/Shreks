@@ -33,7 +33,7 @@ internal class GroupAssignmentClient : IGroupAssignmentClient
         CancellationToken cancellationToken = default)
     {
         string uri = $"api/Assignments/{assignmentId}/groups/{groupId}";
-        using var message = new HttpRequestMessage(HttpMethod.Put, uri) { Content = JsonContent.Create(request), };
+        using var message = new HttpRequestMessage(HttpMethod.Put, uri) { Content = JsonContent.Create(request) };
 
         return await _handler.SendAsync<GroupAssignmentDto>(message, cancellationToken);
     }

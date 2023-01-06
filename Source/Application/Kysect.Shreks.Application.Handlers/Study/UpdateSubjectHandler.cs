@@ -21,7 +21,7 @@ internal class UpdateSubjectHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        Subject subject = await _context.Subjects.GetByIdAsync(request.Id, cancellationToken: cancellationToken);
+        Subject subject = await _context.Subjects.GetByIdAsync(request.Id, cancellationToken);
         subject.Title = request.NewName;
         await _context.SaveChangesAsync(cancellationToken);
         return new Response(_mapper.Map<SubjectDto>(subject));

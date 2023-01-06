@@ -4,7 +4,7 @@ namespace Kysect.Shreks.Core.UserAssociations;
 
 public partial class GithubUserAssociation : UserAssociation
 {
-    public GithubUserAssociation(User user, string githubUsername) : base(user)
+    public GithubUserAssociation(Guid id, User user, string githubUsername) : base(id, user)
     {
         GithubUsername = githubUsername;
     }

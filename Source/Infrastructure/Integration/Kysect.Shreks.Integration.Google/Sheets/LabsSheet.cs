@@ -14,12 +14,12 @@ public class LabsSheet : ISheet<SubjectCoursePointsDto>
 {
     public const int Id = 0;
     public const string Title = "Лабораторные";
-
-    private readonly IUserFullNameFormatter _userFullNameFormatter;
-    private readonly ISheetManagementService _sheetEditor;
+    private readonly ISheet<CourseStudentsDto> _pointsSheet;
     private readonly ITable<SubjectCoursePointsDto> _pointsTable;
     private readonly IComponentRenderer<GoogleSheetRenderCommand> _renderer;
-    private readonly ISheet<CourseStudentsDto> _pointsSheet;
+    private readonly ISheetManagementService _sheetEditor;
+
+    private readonly IUserFullNameFormatter _userFullNameFormatter;
 
     public LabsSheet(
         IUserFullNameFormatter userFullNameFormatter,

@@ -16,17 +16,16 @@ public static class SubmissionRateDtoFactory
         if (submission.Rating is not null)
             rating = submission.Rating * 100;
 
-        var dto = new SubmissionRateDto
-        (
-            Code: submission.Code,
-            SubmissionDate: submission.SubmissionDate.Value,
-            Rating: rating,
-            RawPoints: submission.Points?.Value,
-            MaxRawPoints: maxRowPoints.Value,
-            ExtraPoints: submission.ExtraPoints?.Value,
-            PenaltyPoints: submission.PointPenalty?.Value,
-            TotalPoints: submission.EffectivePoints?.Value
-        );
+        var dto = new SubmissionRateDto(
+            submission.Code,
+            submission.State.Kind.ToString(),
+            submission.SubmissionDate.Value,
+            rating,
+            submission.Points?.Value,
+            maxRowPoints.Value,
+            submission.ExtraPoints?.Value,
+            submission.PointPenalty?.Value,
+            submission.EffectivePoints?.Value);
 
         return dto;
     }

@@ -1,4 +1,3 @@
-using Kysect.Shreks.WebApi.Abstractions.Models;
 using Kysect.Shreks.WebApi.Abstractions.Models.Identity;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients;

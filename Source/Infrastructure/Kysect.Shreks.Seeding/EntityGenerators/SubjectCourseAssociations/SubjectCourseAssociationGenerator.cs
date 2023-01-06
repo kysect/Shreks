@@ -7,8 +7,8 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class SubjectCourseAssociationGenerator : EntityGeneratorBase<GithubSubjectCourseAssociation>
 {
-    private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
     private readonly Faker _faker;
+    private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
 
     public SubjectCourseAssociationGenerator(
         EntityGeneratorOptions<GithubSubjectCourseAssociation> options,
@@ -22,16 +22,20 @@ public class SubjectCourseAssociationGenerator : EntityGeneratorBase<GithubSubje
 
     protected override GithubSubjectCourseAssociation Generate(int index)
     {
-        var count = _subjectCourseGenerator.GeneratedEntities.Count;
+        int count = _subjectCourseGenerator.GeneratedEntities.Count;
 
         if (index >= count)
-            throw new IndexOutOfRangeException("Subject course index more than count of subject courses.");
+        {
+            const string message = "GitHub subject course association index more than count of subject courses.";
+            throw new ArgumentOutOfRangeException(nameof(index), message);
+        }
 
-        var subjectCourse = _subjectCourseGenerator.GeneratedEntities[index];
+        SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[index];
 
         var association = new GithubSubjectCourseAssociation(
+            _faker.Random.Guid(),
             subjectCourse,
-            Guid.NewGuid().ToString(),
+            _faker.Random.Guid().ToString(),
             _faker.Internet.UserName());
 
         subjectCourse.AddAssociation(association);

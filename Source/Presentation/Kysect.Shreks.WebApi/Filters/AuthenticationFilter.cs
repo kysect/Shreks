@@ -8,8 +8,8 @@ public class AuthenticationFilter : IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-        var mediator = context.HttpContext.RequestServices.GetRequiredService<IMediator>();
-        var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        IMediator mediator = context.HttpContext.RequestServices.GetRequiredService<IMediator>();
+        string? token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
         if (token is null)
         {
@@ -20,7 +20,7 @@ public class AuthenticationFilter : IAsyncActionFilter
         try
         {
             var query = new GetIdentityUserByToken.Query(token);
-            var response = await mediator.Send(query, context.HttpContext.RequestAborted);
+            GetIdentityUserByToken.Response response = await mediator.Send(query, context.HttpContext.RequestAborted);
 
             context.HttpContext.Items["user"] = response.User;
         }

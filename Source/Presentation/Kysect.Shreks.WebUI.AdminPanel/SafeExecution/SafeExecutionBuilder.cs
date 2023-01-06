@@ -7,12 +7,12 @@ namespace Kysect.Shreks.WebUI.AdminPanel.SafeExecution;
 
 public class SafeExecutionBuilder : ISafeExecutionBuilder
 {
-    private readonly List<Func<Task>> _successHandlers;
+    private readonly Func<Task> _action;
     private readonly List<IExceptionHandler> _errorHandlers;
     private readonly IExceptionSink _exceptionSink;
     private readonly IIdentityManager _identityManager;
     private readonly NavigationManager _navigationManager;
-    private readonly Func<Task> _action;
+    private readonly List<Func<Task>> _successHandlers;
 
     public SafeExecutionBuilder(
         Func<Task> action,
@@ -30,13 +30,18 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
     }
 
     public string? Title { get; set; }
+
     public bool ShowExceptionDetails { get; set; }
 
     public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
-        => _errorHandlers.Add(new ExceptionHandler<TException>(action));
+    {
+        _errorHandlers.Add(new ExceptionHandler<TException>(action));
+    }
 
     public void OnSuccessAsync(Func<Task> action)
-        => _successHandlers.Add(action);
+    {
+        _successHandlers.Add(action);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -47,7 +52,10 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
 
             await Task.WhenAll(handleTasks);
         }
-        catch (OperationCanceledException) { }
+        catch (OperationCanceledException)
+        {
+            // ignored
+        }
         catch (Exception e)
         {
             IEnumerable<Task> handleTasks = _errorHandlers.Select(x => x.Handle(e));
@@ -68,14 +76,16 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
     }
 }
 
+#pragma warning disable SA1402
 public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
+#pragma warning restore SA1402
 {
-    private readonly List<Func<T, Task>> _successHandlers;
+    private readonly Func<Task<T>> _action;
     private readonly List<IExceptionHandler> _errorHandlers;
     private readonly IExceptionSink _exceptionSink;
     private readonly IIdentityManager _identityManager;
     private readonly NavigationManager _navigationManager;
-    private readonly Func<Task<T>> _action;
+    private readonly List<Func<T, Task>> _successHandlers;
 
     public SafeExecutionBuilder(
         Func<Task<T>> action,
@@ -93,13 +103,18 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
     }
 
     public string? Title { get; set; }
+
     public bool ShowExceptionDetails { get; set; }
 
     public void OnFailAsync<TException>(Func<TException, Task> action) where TException : Exception
-        => _errorHandlers.Add(new ExceptionHandler<TException>(action));
+    {
+        _errorHandlers.Add(new ExceptionHandler<TException>(action));
+    }
 
     public void OnSuccessAsync(Func<T, Task> action)
-        => _successHandlers.Add(action);
+    {
+        _successHandlers.Add(action);
+    }
 
     public async ValueTask DisposeAsync()
     {
@@ -110,7 +125,10 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
 
             await Task.WhenAll(handleTasks);
         }
-        catch (OperationCanceledException) { }
+        catch (OperationCanceledException)
+        {
+            // ignored
+        }
         catch (Exception e)
         {
             IEnumerable<Task> handleTasks = _errorHandlers.Select(x => x.Handle(e));

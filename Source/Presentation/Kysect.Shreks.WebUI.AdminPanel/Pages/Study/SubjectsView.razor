@@ -1,8 +1,9 @@
 @page "/adminpanel/subjects"
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
+@using Kysect.Shreks.Application.Dto.Study
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Subjects
 @using Kysect.Shreks.WebUI.AdminPanel.Components
-@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@using Kysect.Shreks.Application.Dto.Study
 @inject ISubjectClient SubjectClient
 @inject ISafeExecutor SafeExecutor
 
@@ -30,7 +31,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await using var builder = SafeExecutor.Execute(async () => _subjects = await SubjectClient.GetAsync());
+        await using ISafeExecutionBuilder<IReadOnlyCollection<SubjectDto>> builder =
+            SafeExecutor.Execute(async () => _subjects = await SubjectClient.GetAsync());
         builder.Title = "Failed to load subjects";
         builder.ShowExceptionDetails = true;
     }

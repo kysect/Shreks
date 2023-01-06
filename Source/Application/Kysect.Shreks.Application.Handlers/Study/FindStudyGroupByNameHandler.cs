@@ -24,7 +24,7 @@ internal class FindStudyGroupByNameHandler : IRequestHandler<Query, Response>
         StudentGroup? studentGroup = await _context
             .StudentGroups
             .Where(g => g.Name == request.Name)
-            .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
 
         if (studentGroup is null)
             return new Response(null);

@@ -4,9 +4,11 @@
 @inject NavigationManager NavigationManager
 
 @code {
+
     protected override async Task OnInitializedAsync()
     {
         await StateProvider.LogoutAsync(default);
         NavigationManager.NavigateTo("/", true);
     }
+
 }

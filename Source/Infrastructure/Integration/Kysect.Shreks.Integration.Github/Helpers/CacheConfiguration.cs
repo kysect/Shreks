@@ -3,8 +3,10 @@ namespace Kysect.Shreks.Integration.Github.Helpers;
 public class CacheConfiguration : IShreksConfiguration
 {
     public int SizeLimit { get; init; }
+
     public TimeSpan Expiration { get; init; }
-    public CacheEntryConfiguration CacheEntryConfiguration { get; init; }
+
+    public CacheEntryConfiguration CacheEntryConfiguration { get; init; } = null!;
 
     public void Verify()
     {

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Providers;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
@@ -15,10 +15,13 @@ namespace Kysect.Shreks.Application.Handlers.Users;
 internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
     private readonly IGithubUserProvider _githubUserProvider;
+    private readonly IMapper _mapper;
 
-    public UpdateUserGithubUsernameHandler(IShreksDatabaseContext context, IMapper mapper, IGithubUserProvider githubUserProvider)
+    public UpdateUserGithubUsernameHandler(
+        IShreksDatabaseContext context,
+        IMapper mapper,
+        IGithubUserProvider githubUserProvider)
     {
         _context = context;
         _mapper = mapper;
@@ -32,7 +35,7 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
         bool usernameAlreadyExists = await _context
             .UserAssociations
             .OfType<GithubUserAssociation>()
-            .AnyAsync(a => a.GithubUsername == request.GithubUsername, cancellationToken: cancellationToken);
+            .AnyAsync(a => a.GithubUsername == request.GithubUsername, cancellationToken);
 
         if (usernameAlreadyExists)
             throw new DomainInvalidOperationException($"Username {request.GithubUsername} already used by other user");
@@ -40,14 +43,16 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
         bool isGithubUserExists = await _githubUserProvider.IsGithubUserExists(request.GithubUsername);
 
         if (!isGithubUserExists)
-            throw new DomainInvalidOperationException($"Github user with username {request.GithubUsername} does not exist");
+        {
+            string message = $"Github user with username {request.GithubUsername} does not exist";
+            throw new DomainInvalidOperationException(message);
+        }
 
-        var association = new GithubUserAssociation(user, request.GithubUsername);
+        var association = new GithubUserAssociation(Guid.NewGuid(), user, request.GithubUsername);
         user.AddAssociation(association);
 
         await _context.UserAssociations.AddAsync(association, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
-
 
         UserDto? dto = _mapper.Map<UserDto>(user);
 

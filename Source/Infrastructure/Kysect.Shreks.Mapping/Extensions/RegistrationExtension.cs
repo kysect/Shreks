@@ -8,6 +8,6 @@ public static class RegistrationExtension
     {
         collection.AddAutoMapper(typeof(IAssemblyMarker));
 
-    	return collection;
+        return collection;
     }
 }

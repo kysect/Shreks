@@ -8,8 +8,7 @@ public partial class StudentGroup : IEntity<Guid>
 {
     private readonly HashSet<Student> _students;
 
-    public StudentGroup(string name)
-        : this(Guid.NewGuid())
+    public StudentGroup(Guid id, string name) : this(id)
     {
         ArgumentNullException.ThrowIfNull(name);
 
@@ -18,10 +17,13 @@ public partial class StudentGroup : IEntity<Guid>
     }
 
     public string Name { get; set; }
+
     public virtual IReadOnlyCollection<Student> Students => _students;
 
     public override string ToString()
-        => Name;
+    {
+        return Name;
+    }
 
     public void AddStudent(Student student)
     {

@@ -1,10 +1,8 @@
-@using Kysect.Shreks.WebUI.AdminPanel.Identity
-@using Kysect.Shreks.WebUI.AdminPanel.Components.Global
-@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@using Kysect.Shreks.WebUI.AdminPanel.Extensions
 @inject IIdentityManager IdentityManager
 @inject ISafeExecutor Executor
 @inject NavigationManager NavigationManager
+@using Kysect.Shreks.WebUI.AdminPanel.Identity
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
 @implements IDisposable
 
 <Bar Breakpoint="Breakpoint.Desktop"
@@ -21,7 +19,7 @@
 
     <BarMenu>
         <BarStart>
-            @if (HasIdentity)
+            @if (_hasIdentity)
             {
                 <BarItem>
                     <BarLink @ref="_globalLink" To="@GlobalPath">Global</BarLink>
@@ -34,7 +32,7 @@
                 <BarItem>
                     <BarLink @ref="_studentsLink" To="@StudentsPath">Students</BarLink>
                 </BarItem>
-                
+
                 <BarItem>
                     <BarLink @ref="_groupsLink" To="@GroupsPath">Groups</BarLink>
                 </BarItem>
@@ -42,7 +40,7 @@
         </BarStart>
 
         <BarEnd>
-            @if (HasIdentity)
+            @if (_hasIdentity)
             {
                 <BarItem>
                     <BarLink To="logout">Logout</BarLink>
@@ -59,8 +57,7 @@
         private const string StudentsPath = "adminpanel/students";
         private const string GroupsPath = "adminpanel/groups";
 
-    public bool HasIdentity;
-    private int _counter;
+    private bool _hasIdentity;
 
     private BarLink? _globalLink;
     private BarLink? _subjectsLink;
@@ -69,7 +66,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        HasIdentity = await IdentityManager.HasIdentityAsync(default);
+        _hasIdentity = await IdentityManager.HasIdentityAsync(default);
         NavigationManager.LocationChanged += HandleLocationChanged;
     }
 
@@ -95,7 +92,10 @@
 
     private void Activate(BaseComponent component)
     {
+#pragma warning disable BL0005
+    // Component parameter 'Class' should not be set outside of its component.
         component.Class = $"active {component.Class}";
+#pragma warning restore BL0005
     }
 
 }

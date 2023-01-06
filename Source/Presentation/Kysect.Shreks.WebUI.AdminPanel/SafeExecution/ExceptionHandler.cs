@@ -13,7 +13,7 @@ public class ExceptionHandler<T> : IExceptionHandler where T : Exception
     {
         if (exception is T typedException)
             return _handler.Invoke(typedException);
-        
+
         return Task.CompletedTask;
     }
 }

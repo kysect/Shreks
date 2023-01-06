@@ -4,7 +4,8 @@ namespace Kysect.Shreks.Core.DeadlinePolicies;
 
 public class CappingDeadlinePolicy : DeadlinePolicy
 {
-    public CappingDeadlinePolicy(TimeSpan spanBeforeActivation, double cap) : base(spanBeforeActivation)
+    public CappingDeadlinePolicy(TimeSpan spanBeforeActivation, double cap)
+        : base(spanBeforeActivation)
     {
         Cap = new Points(cap);
     }
@@ -14,7 +15,9 @@ public class CappingDeadlinePolicy : DeadlinePolicy
     public Points Cap { get; set; }
 
     public override Points Apply(Points points)
-        => Points.Min(points, Cap);
+    {
+        return Points.Min(points, Cap);
+    }
 
     public override bool Equals(DeadlinePolicy? other)
     {

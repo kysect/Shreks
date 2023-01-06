@@ -11,9 +11,12 @@ internal class GoogleClient : IGoogleClient
         _handler = new ClientRequestHandler(client);
     }
 
-    public async Task ForceSubjectCourseTableSyncAsync(Guid subjectCourseId, CancellationToken cancellationToken = default)
+    public async Task ForceSubjectCourseTableSyncAsync(
+        Guid subjectCourseId,
+        CancellationToken cancellationToken = default)
     {
-        using var message = new HttpRequestMessage(HttpMethod.Post, "api/Google/force-sync");
+        string uri = $"api/Google/force-sync?subjectCourseId={subjectCourseId}";
+        using var message = new HttpRequestMessage(HttpMethod.Post, uri);
 
         await _handler.SendAsync(message, cancellationToken);
     }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using Kysect.Shreks.Application.Dto.Study;
+using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,11 +21,11 @@ internal class BulkGetStudyGroupsHandler : IRequestHandler<Query, Response>
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        var groups = await _context.StudentGroups
+        List<StudentGroup> groups = await _context.StudentGroups
             .Where(x => request.Ids.Contains(x.Id))
             .ToListAsync(cancellationToken);
 
-        var dto = groups.Select(_mapper.Map<StudyGroupDto>).ToArray();
+        StudyGroupDto[] dto = groups.Select(_mapper.Map<StudyGroupDto>).ToArray();
 
         return new Response(dto);
     }

@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Kysect.Shreks.Tests.Handlers.Students;
 
-public class DismissStudentFromGroupTest : HandlerTestBase
+public class DismissStudentFromGroupTest : TestBase
 {
     [Fact]
     public async Task Handle_Should_NotThrow()

@@ -11,14 +11,15 @@ public class StudentGroupGenerator : EntityGeneratorBase<StudentGroup>
 
     private readonly Faker _faker;
 
-    public StudentGroupGenerator(EntityGeneratorOptions<StudentGroup> options, Faker faker) : base(options)
+    public StudentGroupGenerator(EntityGeneratorOptions<StudentGroup> options, Faker faker)
+        : base(options)
     {
         _faker = faker;
     }
 
     protected override StudentGroup Generate(int index)
     {
-        var groupNumber = _faker.Random.Int(MinGroupNumber, MaxGroupNumber);
-        return new StudentGroup($"M{groupNumber}");
+        int groupNumber = _faker.Random.Int(MinGroupNumber, MaxGroupNumber);
+        return new StudentGroup(_faker.Random.Guid(), $"M{groupNumber}");
     }
 }

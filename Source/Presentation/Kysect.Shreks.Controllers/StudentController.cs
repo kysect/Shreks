@@ -30,12 +30,11 @@ public class StudentController : ControllerBase
     {
         (string? firstName, string? middleName, string? lastName, Guid groupId) = request;
 
-        var command = new CreateStudent.Command
-        (
+        var command = new CreateStudent.Command(
             firstName ?? string.Empty,
             middleName ?? string.Empty,
-            lastName ?? string.Empty, groupId
-        );
+            lastName ?? string.Empty,
+            groupId);
 
         CreateStudent.Response response = await _mediator.Send(command);
         return Ok(response.Student);

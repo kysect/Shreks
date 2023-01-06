@@ -62,7 +62,8 @@ public class SubjectController : ControllerBase
     public async Task<ActionResult<IReadOnlyCollection<SubjectCourseDto>>> GetSubjectCourses(Guid id)
     {
         var request = new GetSubjectCoursesBySubjectCourseId.Query(id);
-        GetSubjectCoursesBySubjectCourseId.Response response = await _mediator.Send(request, HttpContext.RequestAborted);
+        GetSubjectCoursesBySubjectCourseId.Response
+            response = await _mediator.Send(request, HttpContext.RequestAborted);
 
         return Ok(response.Courses);
     }

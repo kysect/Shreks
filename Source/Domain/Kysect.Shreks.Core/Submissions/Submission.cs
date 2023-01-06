@@ -15,12 +15,13 @@ public abstract partial class Submission : IEntity<Guid>
     private readonly HashSet<SubmissionAssociation> _associations;
 
     protected Submission(
+        Guid id,
         int code,
         Student student,
         GroupAssignment groupAssignment,
         SpbDateTime submissionDate,
         string payload)
-        : this(Guid.NewGuid())
+        : this(id)
     {
         Code = code;
         SubmissionDate = submissionDate;
@@ -36,33 +37,43 @@ public abstract partial class Submission : IEntity<Guid>
     }
 
     public int Code { get; protected init; }
+
     public string Payload { get; set; }
+
     public Fraction? Rating { get; private set; }
+
     public Points? ExtraPoints { get; set; }
+
     public SpbDateTime SubmissionDate { get; private set; }
+
     public virtual Student Student { get; protected init; }
+
     public virtual GroupAssignment GroupAssignment { get; protected init; }
+
     public virtual IReadOnlyCollection<SubmissionAssociation> Associations => _associations;
 
     public Points? Points => Rating is null ? default : GroupAssignment.Assignment.MaxPoints * Rating;
 
     /// <summary>
-    ///     Points with deadline policy applied
+    ///     Gets points with deadline policy applied.
     /// </summary>
     public Points? EffectivePoints => GetEffectivePoints();
 
     /// <summary>
-    ///     Points subtracted by deadline policy
+    ///     Gets points subtracted by deadline policy.
     /// </summary>
     public Points? PointPenalty => GetPointPenalty();
 
     public bool IsRated => Rating is not null;
+
     public DateOnly SubmissionDateOnly => SubmissionDate.AsDateOnly();
 
     public ISubmissionState State { get; private set; }
 
     public override string ToString()
-        => $"{Code} ({Id})";
+    {
+        return $"{Code} ({Id})";
+    }
 
     public void Rate(Fraction? rating, Points? extraPoints)
     {
@@ -70,7 +81,8 @@ public abstract partial class Submission : IEntity<Guid>
         {
             const string ratingName = nameof(rating);
             const string extraPointsName = nameof(extraPoints);
-            const string message = $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
+            const string message =
+                $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
             throw new DomainInvalidOperationException(message);
         }
 
@@ -89,7 +101,8 @@ public abstract partial class Submission : IEntity<Guid>
         {
             const string ratingName = nameof(rating);
             const string extraPointsName = nameof(extraPoints);
-            const string message = $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
+            const string message =
+                $"Cannot update submission points, both {ratingName} and {extraPointsName} are null.";
             throw new DomainInvalidOperationException(message);
         }
 

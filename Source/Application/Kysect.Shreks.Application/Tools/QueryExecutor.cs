@@ -6,5 +6,7 @@ namespace Kysect.Shreks.Application.Tools;
 internal class QueryExecutor : IQueryExecutor
 {
     public async Task<IReadOnlyCollection<T>> ExecuteAsync<T>(IQueryable<T> query, CancellationToken cancellationToken)
-        => await query.ToListAsync(cancellationToken);
+    {
+        return await query.ToListAsync(cancellationToken);
+    }
 }

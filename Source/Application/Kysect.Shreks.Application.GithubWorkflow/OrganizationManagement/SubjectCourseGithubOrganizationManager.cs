@@ -10,10 +10,10 @@ namespace Kysect.Shreks.Application.GithubWorkflow.OrganizationManagement;
 
 public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrganizationManager
 {
-    private readonly ISubjectCourseGithubOrganizationInviteSender _inviteSender;
-    private readonly ISubjectCourseGithubOrganizationRepositoryManager _repositoryManager;
     private readonly IShreksDatabaseContext _context;
+    private readonly ISubjectCourseGithubOrganizationInviteSender _inviteSender;
     private readonly ILogger<SubjectCourseGithubOrganizationManager> _logger;
+    private readonly ISubjectCourseGithubOrganizationRepositoryManager _repositoryManager;
 
     public SubjectCourseGithubOrganizationManager(
         ISubjectCourseGithubOrganizationInviteSender inviteSender,
@@ -36,10 +36,15 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
 
         foreach (GithubSubjectCourseAssociation subjectAssociation in githubSubjectCourseAssociations)
         {
-            IReadOnlyCollection<GithubUserAssociation> githubUserAssociations = await _context.SubjectCourses.GetAllGithubUsers(subjectAssociation.SubjectCourse.Id);
+            IReadOnlyCollection<GithubUserAssociation> githubUserAssociations =
+                await _context.SubjectCourses.GetAllGithubUsers(subjectAssociation.SubjectCourse.Id);
             var usernames = githubUserAssociations.Select(a => a.GithubUsername).ToList();
             await _inviteSender.Invite(subjectAssociation.GithubOrganizationName, usernames);
-            await GenerateRepositories(_repositoryManager, usernames, subjectAssociation.GithubOrganizationName, subjectAssociation.TemplateRepositoryName);
+            await GenerateRepositories(
+                _repositoryManager,
+                usernames,
+                subjectAssociation.GithubOrganizationName,
+                subjectAssociation.TemplateRepositoryName);
         }
     }
 

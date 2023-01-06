@@ -24,7 +24,7 @@ internal class GetStudyGroupsHandler : IRequestHandler<Query, Response>
         List<StudyGroupDto> studentGroups = await _context
             .StudentGroups
             .ProjectTo<StudyGroupDto>(_mapper.ConfigurationProvider)
-            .ToListAsync(cancellationToken: cancellationToken);
+            .ToListAsync(cancellationToken);
 
         return new Response(studentGroups);
     }

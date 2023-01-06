@@ -10,7 +10,7 @@ public static class IdentityManagerExtensions
         this IIdentityManager manager,
         CancellationToken cancellationToken)
     {
-        var identity = await manager.FindIdentityAsync(cancellationToken);
+        UserIdentity? identity = await manager.FindIdentityAsync(cancellationToken);
 
         if (identity is null)
             throw new UnauthorizedException();

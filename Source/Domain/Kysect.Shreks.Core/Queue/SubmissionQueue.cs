@@ -9,8 +9,8 @@ namespace Kysect.Shreks.Core.Queue;
 
 public partial class SubmissionQueue : IEntity<Guid>
 {
-    private readonly IReadOnlyCollection<IQueueFilter> _filters;
     private readonly IReadOnlyList<ISubmissionEvaluator> _evaluators;
+    private readonly IReadOnlyCollection<IQueueFilter> _filters;
 
     public SubmissionQueue(
         IReadOnlyCollection<IQueueFilter> filters,
@@ -50,7 +50,7 @@ public partial class SubmissionQueue : IEntity<Guid>
         IEnumerable<Submission> submissions,
         ForwardIterator<ISubmissionEvaluator> evaluators)
     {
-        var evaluator = evaluators.Current;
+        ISubmissionEvaluator evaluator = evaluators.Current;
 
         IEnumerable<IGrouping<double, Submission>> groupings = submissions
             .GroupBy(x => evaluator.Evaluate(x));

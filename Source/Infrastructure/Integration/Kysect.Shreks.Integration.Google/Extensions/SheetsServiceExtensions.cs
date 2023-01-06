@@ -21,10 +21,7 @@ public static class SheetsServiceExtensions
         IList<Request> requests,
         CancellationToken token)
     {
-        var batchUpdateRequest = new BatchUpdateSpreadsheetRequest
-        {
-            Requests = requests
-        };
+        var batchUpdateRequest = new BatchUpdateSpreadsheetRequest { Requests = requests };
 
         return await service.Spreadsheets
             .BatchUpdate(batchUpdateRequest, spreadsheetId)

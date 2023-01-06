@@ -6,7 +6,9 @@ namespace Kysect.Shreks.Application.DatabaseContextExtensions;
 
 public static class GithubSubjectCourseAssociationExtensions
 {
-    public static async Task<IReadOnlyCollection<GithubUserAssociation>> GetAllGithubUsers(this DbSet<SubjectCourse> subjectCourses, Guid subjectCourseId)
+    public static async Task<IReadOnlyCollection<GithubUserAssociation>> GetAllGithubUsers(
+        this DbSet<SubjectCourse> subjectCourses,
+        Guid subjectCourseId)
     {
         return await subjectCourses
             .Where(sc => sc.Id == subjectCourseId)

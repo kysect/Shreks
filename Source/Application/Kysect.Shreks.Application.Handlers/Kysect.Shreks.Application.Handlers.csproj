@@ -10,14 +10,15 @@
         <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj" />
         <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
         <ProjectReference Include="..\Kysect.Shreks.Application.Contracts\Kysect.Shreks.Application.Contracts.csproj" />
+        <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
         <ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
         <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="11.0.1" />
-        <PackageReference Include="Kysect.CommonLib" Version="0.0.5" />
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+        <PackageReference Include="AutoMapper" />
+        <PackageReference Include="Kysect.CommonLib" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     </ItemGroup>
 
     <ItemGroup>

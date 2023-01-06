@@ -18,11 +18,11 @@ namespace Kysect.Shreks.Application.Handlers.Google;
 internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<SubjectCourseGroupQueueUpdatedNotification>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IQueryExecutor _queryExecutor;
+    private readonly ILogger<SubjectCourseGroupQueueUpdatedHandler> _logger;
     private readonly IMapper _mapper;
+    private readonly IQueryExecutor _queryExecutor;
     private readonly ISheet<SubmissionsQueueDto> _sheet;
     private readonly ISubjectCourseTableService _subjectCourseTableService;
-    private readonly ILogger<SubjectCourseGroupQueueUpdatedHandler> _logger;
 
     public SubjectCourseGroupQueueUpdatedHandler(
         IShreksDatabaseContext context,
@@ -50,8 +50,11 @@ internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<Subj
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error while updating queue for subject course {SubjectCourseId} group {GroupId}",
-                notification.SubjectCourseId, notification.GroupId);
+            _logger.LogError(
+                e,
+                "Error while updating queue for subject course {SubjectCourseId} group {GroupId}",
+                notification.SubjectCourseId,
+                notification.GroupId);
         }
     }
 

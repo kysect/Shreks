@@ -1,5 +1,5 @@
 ﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
-using Kysect.Shreks.Integration.Github.Client;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Client;
 using Octokit;
 
 namespace Kysect.Shreks.Integration.Github.Invites;
@@ -28,9 +28,7 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
 
         var userRepositoryFromTemplate = new NewRepositoryFromTemplate(newRepositoryName)
         {
-            Owner = organization,
-            Description = null,
-            Private = true,
+            Owner = organization, Description = null, Private = true,
         };
 
         await client.Repository.Generate(
@@ -43,7 +41,8 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
     {
         GitHubClient client = await _clientProvider.GetClient(organization);
 
-        await client.Repository.Collaborator.Add(organization,
+        await client.Repository.Collaborator.Add(
+            organization,
             repositoryName,
             username,
             new CollaboratorRequest(Permission.Admin));

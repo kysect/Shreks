@@ -17,22 +17,18 @@ internal class RegisterHandler : IRequestHandler<Command>
 
     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
-        var existingUser = await _userManager.FindByNameAsync(request.Username);
+        ShreksIdentityUser? existingUser = await _userManager.FindByNameAsync(request.Username);
 
         if (existingUser is not null)
             throw new RegistrationFailedException("User with given name already exists");
 
-        var user = new ShreksIdentityUser
-        {
-            UserName = request.Username,
-            SecurityStamp = Guid.NewGuid().ToString(),
-        };
+        var user = new ShreksIdentityUser { UserName = request.Username, SecurityStamp = Guid.NewGuid().ToString() };
 
-        var result = await _userManager.CreateAsync(user, request.Password);
+        IdentityResult? result = await _userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
             throw new RegistrationFailedException(string.Join(' ', result.Errors.Select(r => r.Description)));
-        
+
         return Unit.Value;
     }
 }

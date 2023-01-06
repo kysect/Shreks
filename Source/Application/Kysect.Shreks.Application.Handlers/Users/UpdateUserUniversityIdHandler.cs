@@ -10,8 +10,8 @@ namespace Kysect.Shreks.Application.Handlers.Users;
 
 internal class UpdateUserUniversityIdHandler : IRequestHandler<Command>
 {
-    private readonly IShreksDatabaseContext _context;
     private readonly IAuthorizationService _authorizationService;
+    private readonly IShreksDatabaseContext _context;
 
     public UpdateUserUniversityIdHandler(IShreksDatabaseContext context, IAuthorizationService authorizationService)
     {
@@ -28,7 +28,7 @@ internal class UpdateUserUniversityIdHandler : IRequestHandler<Command>
 
         if (association is null)
         {
-            association = new IsuUserAssociation(user, request.UniversityId);
+            association = new IsuUserAssociation(Guid.NewGuid(), user, request.UniversityId);
             _context.UserAssociations.Add(association);
         }
         else

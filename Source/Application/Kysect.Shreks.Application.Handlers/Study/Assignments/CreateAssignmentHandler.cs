@@ -5,7 +5,6 @@ using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-
 using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateAssignment;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
@@ -23,21 +22,22 @@ internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        var subjectCourse = await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
+        SubjectCourse subjectCourse =
+            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
         var assignment = new Assignment(
+            Guid.NewGuid(),
             request.Title,
             request.ShortName,
             request.Order,
             new Points(request.MinPoints),
             new Points(request.MaxPoints),
-            subjectCourse
-        );
+            subjectCourse);
 
         _context.Assignments.Add(assignment);
         await _context.SaveChangesAsync(cancellationToken);
 
-        var dto = _mapper.Map<AssignmentDto>(assignment);
+        AssignmentDto? dto = _mapper.Map<AssignmentDto>(assignment);
 
         return new Response(dto);
     }

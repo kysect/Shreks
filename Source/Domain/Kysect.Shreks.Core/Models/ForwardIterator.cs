@@ -18,7 +18,7 @@ public readonly record struct ForwardIterator<T>
     public ForwardIterator<T> Next()
     {
         if (_index == _collection.Count - 1)
-            throw new ArgumentOutOfRangeException(nameof(_index), "StepperCollection is at the end of the collection");
+            throw new ArgumentOutOfRangeException(nameof(_index), @"StepperCollection is at the end of the collection");
 
         return new ForwardIterator<T>(_collection, _index + 1);
     }

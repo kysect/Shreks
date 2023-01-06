@@ -9,13 +9,14 @@ namespace Kysect.Shreks.Core.Study;
 
 public partial class SubjectCourse : IEntity<Guid>
 {
-    private readonly HashSet<SubjectCourseGroup> _groups;
     private readonly HashSet<Assignment> _assignments;
     private readonly HashSet<SubjectCourseAssociation> _associations;
-    private readonly HashSet<Mentor> _mentors;
     private readonly HashSet<DeadlinePolicy> _deadlinePolicies;
+    private readonly HashSet<SubjectCourseGroup> _groups;
+    private readonly HashSet<Mentor> _mentors;
 
-    public SubjectCourse(Subject subject, string title, SubmissionStateWorkflowType? workflowType) : this(Guid.NewGuid())
+    public SubjectCourse(Guid id, Subject subject, string title, SubmissionStateWorkflowType? workflowType)
+        : this(id)
     {
         Subject = subject;
         Title = title;
@@ -29,16 +30,25 @@ public partial class SubjectCourse : IEntity<Guid>
     }
 
     public virtual Subject Subject { get; protected init; }
+
     public string Title { get; set; }
+
     public SubmissionStateWorkflowType? WorkflowType { get; set; }
+
     public virtual IReadOnlyCollection<SubjectCourseGroup> Groups => _groups;
+
     public virtual IReadOnlyCollection<Assignment> Assignments => _assignments;
+
     public virtual IReadOnlyCollection<SubjectCourseAssociation> Associations => _associations;
+
     public virtual IReadOnlyCollection<Mentor> Mentors => _mentors;
+
     public virtual IReadOnlyCollection<DeadlinePolicy> DeadlinePolicies => _deadlinePolicies;
 
     public override string ToString()
-        => Title;
+    {
+        return Title;
+    }
 
     public SubjectCourseGroup AddGroup(StudentGroup group)
     {
@@ -81,7 +91,7 @@ public partial class SubjectCourse : IEntity<Guid>
     {
         ArgumentNullException.ThrowIfNull(association);
 
-        var associationType = association.GetType();
+        Type associationType = association.GetType();
 
         if (Assignments.Any(a => a.GetType() == associationType))
             throw new DomainInvalidOperationException($"Course {this} already has {associationType} association");

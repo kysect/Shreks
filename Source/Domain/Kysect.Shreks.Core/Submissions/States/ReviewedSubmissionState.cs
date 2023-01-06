@@ -8,10 +8,13 @@ namespace Kysect.Shreks.Core.Submissions.States;
 public class ReviewedSubmissionState : ISubmissionState
 {
     public SubmissionStateKind Kind => SubmissionStateKind.Reviewed;
+
     public bool IsTerminalEffectiveState => false;
 
     public ISubmissionState MoveToRated(Fraction? rating, Points? extraPoints)
-        => new CompletedSubmissionState();
+    {
+        return new CompletedSubmissionState();
+    }
 
     public ISubmissionState MoveToPointsUpdated(Fraction? rating, Points? extraPoints)
     {
@@ -20,7 +23,9 @@ public class ReviewedSubmissionState : ISubmissionState
     }
 
     public ISubmissionState MoveToBanned()
-        => new BannedSubmissionState();
+    {
+        return new BannedSubmissionState();
+    }
 
     public ISubmissionState MoveToActivated()
     {
@@ -29,16 +34,24 @@ public class ReviewedSubmissionState : ISubmissionState
     }
 
     public ISubmissionState MoveToDeactivated()
-        => new InactiveSubmissionState();
+    {
+        return new InactiveSubmissionState();
+    }
 
     public ISubmissionState MoveToDateUpdated(SpbDateTime newDate)
-        => this;
+    {
+        return this;
+    }
 
     public ISubmissionState MoveToDeleted()
-        => new DeletedSubmissionState();
+    {
+        return new DeletedSubmissionState();
+    }
 
     public ISubmissionState MoveToCompleted()
-        => new CompletedSubmissionState();
+    {
+        return new CompletedSubmissionState();
+    }
 
     public ISubmissionState MoveToReviewed()
     {

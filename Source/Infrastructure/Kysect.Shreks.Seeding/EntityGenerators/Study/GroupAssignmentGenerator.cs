@@ -6,15 +6,15 @@ namespace Kysect.Shreks.Seeding.EntityGenerators;
 
 public class GroupAssignmentGenerator : EntityGeneratorBase<GroupAssignment>
 {
-    private readonly IEntityGenerator<StudentGroup> _groupGenerator;
     private readonly IEntityGenerator<Assignment> _assignmentGenerator;
     private readonly Faker _faker;
+    private readonly IEntityGenerator<StudentGroup> _groupGenerator;
 
     public GroupAssignmentGenerator(
         EntityGeneratorOptions<GroupAssignment> options,
         IEntityGenerator<StudentGroup> groupGenerator,
         IEntityGenerator<Assignment> assignmentGenerator,
-        Faker faker) 
+        Faker faker)
         : base(options)
     {
         _groupGenerator = groupGenerator;
@@ -24,25 +24,23 @@ public class GroupAssignmentGenerator : EntityGeneratorBase<GroupAssignment>
 
     protected override GroupAssignment Generate(int index)
     {
-        var groupCount = _groupGenerator.GeneratedEntities.Count;
-        var assignmentCount = _assignmentGenerator.GeneratedEntities.Count;
+        int groupCount = _groupGenerator.GeneratedEntities.Count;
+        int assignmentCount = _assignmentGenerator.GeneratedEntities.Count;
 
-        var groupNumber = index / assignmentCount;
-        var assignmentNumber = index % assignmentCount;
+        int groupNumber = index / assignmentCount;
+        int assignmentNumber = index % assignmentCount;
 
         if (groupNumber >= groupCount)
             throw new IndexOutOfRangeException("The group index is greater than the number of groups.");
 
-        var group = _groupGenerator.GeneratedEntities[groupNumber];
-        var assignment = _assignmentGenerator.GeneratedEntities[assignmentNumber];
+        StudentGroup group = _groupGenerator.GeneratedEntities[groupNumber];
+        Assignment assignment = _assignmentGenerator.GeneratedEntities[assignmentNumber];
 
-        var groupAssignment = new GroupAssignment
-        (
+        var groupAssignment = new GroupAssignment(
             group,
             assignment,
-            DateOnly.FromDateTime(_faker.Date.Future())
-        );
-        
+            DateOnly.FromDateTime(_faker.Date.Future()));
+
         assignment.AddGroupAssignment(groupAssignment);
 
         return groupAssignment;

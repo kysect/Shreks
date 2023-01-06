@@ -11,9 +11,9 @@ namespace Kysect.Shreks.Application.Handlers.Users;
 
 internal class FindStudentsByQueryHandler : IRequestHandler<Query, Response>
 {
-    private readonly IEntityQuery<Student, StudentQueryParameter> _query;
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
+    private readonly IEntityQuery<Student, StudentQueryParameter> _query;
 
     public FindStudentsByQueryHandler(
         IEntityQuery<Student, StudentQueryParameter> query,

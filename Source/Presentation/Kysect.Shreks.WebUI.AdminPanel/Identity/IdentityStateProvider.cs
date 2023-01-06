@@ -1,3 +1,4 @@
+using Kysect.Shreks.WebApi.Sdk.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 
@@ -16,13 +17,13 @@ public class IdentityStateProvider : AuthenticationStateProvider
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var userIdentity = await _identityManager.FindIdentityAsync(default);
+        UserIdentity? userIdentity = await _identityManager.FindIdentityAsync();
 
         var identity = new ClaimsIdentity();
 
         if (userIdentity is not null)
         {
-            var claims = Array.Empty<Claim>();
+            Claim[] claims = Array.Empty<Claim>();
             identity = new ClaimsIdentity(claims, "Shreks Identity");
         }
 
@@ -34,7 +35,7 @@ public class IdentityStateProvider : AuthenticationStateProvider
         await _identityService.LoginAsync(username, password, cancellationToken);
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
-    
+
     public async Task LogoutAsync(CancellationToken cancellationToken)
     {
         await _identityManager.RemoveIdentityAsync(cancellationToken);

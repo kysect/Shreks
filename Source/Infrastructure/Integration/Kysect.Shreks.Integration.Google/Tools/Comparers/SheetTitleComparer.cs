@@ -19,7 +19,7 @@ public class SheetTitleComparer : ISheetTitleComparer
         {
             (true, false) => -1,
             (false, true) => 1,
-            _ => string.Compare(x, y, StringComparison.InvariantCulture)
+            _ => string.Compare(x, y, StringComparison.InvariantCulture),
         };
     }
 }

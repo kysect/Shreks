@@ -1,4 +1,4 @@
-﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Models;
 using Kysect.Shreks.DeveloperEnvironment;
 using Kysect.Shreks.Identity.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -12,10 +12,12 @@ namespace Kysect.Shreks.Controllers;
 [Authorize(Roles = ShreksIdentityRole.AdminRoleName)]
 public class InternalController : ControllerBase
 {
-    private readonly TestEnvironmentConfiguration _testEnvironmentConfiguration;
     private readonly DeveloperEnvironmentSeeder _developerEnvironmentSeeder;
+    private readonly TestEnvironmentConfiguration _testEnvironmentConfiguration;
 
-    public InternalController(DeveloperEnvironmentSeeder developerEnvironmentSeeder, TestEnvironmentConfiguration testEnvironmentConfiguration)
+    public InternalController(
+        DeveloperEnvironmentSeeder developerEnvironmentSeeder,
+        TestEnvironmentConfiguration testEnvironmentConfiguration)
     {
         _testEnvironmentConfiguration = testEnvironmentConfiguration;
         _developerEnvironmentSeeder = developerEnvironmentSeeder;
@@ -36,12 +38,15 @@ public class InternalController : ControllerBase
         }
         catch (UserNotAcknowledgedEnvironmentException e)
         {
-            return StatusCode((int)HttpStatusCode.BadRequest, new ProblemDetails
-            {
-                Status = (int)HttpStatusCode.BadRequest,
-                Title = e.Message,
-                Detail = "You must put string 'Testing' into environment field if you have 100% ensured that it is not a production environment"
-            });
+            return StatusCode(
+                (int)HttpStatusCode.BadRequest,
+                new ProblemDetails
+                {
+                    Status = (int)HttpStatusCode.BadRequest,
+                    Title = e.Message,
+                    Detail =
+                        "You must put string 'Testing' into environment field if you have 100% ensured that it is not a production environment",
+                });
         }
 
         return NoContent();

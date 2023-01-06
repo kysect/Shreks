@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.GithubWorkflow.Abstractions;
+using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Providers;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
@@ -32,7 +32,7 @@ internal class AddGithubUserAssociationHandler : IRequestHandler<Command>
 
         Student student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
 
-        var association = new GithubUserAssociation(student.User, request.GithubUsername);
+        var association = new GithubUserAssociation(Guid.NewGuid(), student.User, request.GithubUsername);
         _context.UserAssociations.Add(association);
         _context.Users.Update(student.User);
 

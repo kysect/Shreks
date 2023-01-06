@@ -19,7 +19,9 @@ public abstract class EntityGeneratorBase<TEntity> : IEntityGenerator<TEntity>
     public IReadOnlyList<TEntity> GeneratedEntities => _lazyGeneratedEntities.Value;
 
     public TEntity Generate()
-        => Generate(0);
+    {
+        return Generate(0);
+    }
 
     protected abstract TEntity Generate(int index);
 }

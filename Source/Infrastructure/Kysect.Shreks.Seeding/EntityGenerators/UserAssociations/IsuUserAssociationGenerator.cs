@@ -10,14 +10,15 @@ public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociatio
     private const int MinIsuNumber = 100000;
     private const int MaxIsuNumber = 1000000;
 
-    private readonly IEntityGenerator<User> _userGenerator;
-
     private readonly Faker _faker;
+
+    private readonly IEntityGenerator<User> _userGenerator;
 
     public IsuUserAssociationGenerator(
         EntityGeneratorOptions<IsuUserAssociation> options,
         Faker faker,
-        IEntityGenerator<User> userGenerator) : base(options)
+        IEntityGenerator<User> userGenerator)
+        : base(options)
     {
         _faker = faker;
         _userGenerator = userGenerator;
@@ -26,18 +27,21 @@ public class IsuUserAssociationGenerator : EntityGeneratorBase<IsuUserAssociatio
     protected override IsuUserAssociation Generate(int index)
     {
         if (index >= _userGenerator.GeneratedEntities.Count)
-            throw new IndexOutOfRangeException("Isu association count is greater than count of users.");
-        
-        var user = _userGenerator.GeneratedEntities[index];
+        {
+            const string message = "Isu association count is greater than count of users.";
+            throw new ArgumentOutOfRangeException(nameof(index), message);
+        }
+
+        User user = _userGenerator.GeneratedEntities[index];
 
         foreach (UserAssociation userAssociation in user.Associations)
         {
             if (userAssociation is IsuUserAssociation isuUserAssociation)
                 return isuUserAssociation;
         }
-        
-        var id = _faker.Random.Int(MinIsuNumber, MaxIsuNumber);
-        var association = new IsuUserAssociation(user, id);
+
+        int id = _faker.Random.Int(MinIsuNumber, MaxIsuNumber);
+        var association = new IsuUserAssociation(_faker.Random.Guid(), user, id);
 
         return association;
     }

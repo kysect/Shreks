@@ -7,8 +7,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentChaining" Version="1.0.4"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.8"/>
+        <PackageReference Include="AutoMapper"/>
+        <PackageReference Include="FluentChaining"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -17,7 +19,6 @@
         <ProjectReference Include="..\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj"/>
         <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj"/>
     </ItemGroup>
-
 
     <ItemGroup>
         <InternalsVisibleTo Include="Kysect.Shreks.Tests"/>

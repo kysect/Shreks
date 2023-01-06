@@ -39,7 +39,7 @@
             return;
 
         await using var builder = SafeExecutor.Execute(() => StateProvider.LoginAsync(_username, _password, default));
-        
+
         builder.Title = "Login failed";
 
         builder.OnSuccessAsync(() =>

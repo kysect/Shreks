@@ -21,6 +21,10 @@ public class StudentGroupQueryLink : QueryLinkBase<Student, StudentQueryParamete
         if (parameter.Type is not StudentQueryParameter.Group)
             return null;
 
+#pragma warning disable CS8602
+
+        // TODO: If student is not assigned to group when something could explode.
         return query.Where(_matcher.Match(x => x.Group.Name, parameter.Pattern));
+#pragma warning restore CS8602
     }
 }

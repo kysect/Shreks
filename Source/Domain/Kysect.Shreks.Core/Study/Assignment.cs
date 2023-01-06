@@ -9,13 +9,14 @@ public partial class Assignment : IEntity<Guid>
     private readonly HashSet<GroupAssignment> _groupAssignments;
 
     public Assignment(
+        Guid id,
         string title,
         string shortName,
         int order,
         Points minPoints,
         Points maxPoints,
         SubjectCourse subjectCourse)
-        : this(Guid.NewGuid())
+        : this(id)
     {
         ArgumentNullException.ThrowIfNull(title);
 
@@ -32,18 +33,24 @@ public partial class Assignment : IEntity<Guid>
     }
 
     public string Title { get; set; }
+
     public string ShortName { get; set; }
+
     public int Order { get; set; }
+
     public Points MinPoints { get; protected set; }
+
     public Points MaxPoints { get; protected set; }
+
     public virtual SubjectCourse SubjectCourse { get; protected init; }
+
     public virtual IReadOnlyCollection<GroupAssignment> GroupAssignments => _groupAssignments;
 
     public void UpdateMinPoints(Points value)
     {
         if (value > MaxPoints)
         {
-            var message = $"New minimal points ({value}) are greater than maximal points ({MaxPoints})";
+            string message = $"New minimal points ({value}) are greater than maximal points ({MaxPoints})";
             throw new DomainInvalidOperationException(message);
         }
 
@@ -54,7 +61,7 @@ public partial class Assignment : IEntity<Guid>
     {
         if (value < MinPoints)
         {
-            var message = $"New maximal points ({value}) are less than minimal points ({MinPoints})";
+            string message = $"New maximal points ({value}) are less than minimal points ({MinPoints})";
             throw new DomainInvalidOperationException(message);
         }
 
@@ -77,7 +84,7 @@ public partial class Assignment : IEntity<Guid>
             throw new DomainInvalidOperationException($"Assignment {assignment} cannot be removed");
     }
 
-    public override String ToString()
+    public override string ToString()
     {
         return $"Id: {Id}, Title: {ShortName}";
     }

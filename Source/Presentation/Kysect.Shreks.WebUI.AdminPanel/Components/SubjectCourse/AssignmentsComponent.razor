@@ -1,7 +1,5 @@
-@using Kysect.Shreks.WebApi.Sdk
-@using Kysect.Shreks.WebUI.AdminPanel.Components.Assignments
 @using Kysect.Shreks.Application.Dto.Study
-
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Assignments
 @if (Assignments is not null)
 {
     @foreach (var assignment in Assignments.OrderBy(x => x.Order))

@@ -14,5 +14,7 @@ public class SubjectGroupAssociationSeeder : IDatabaseSeeder
     }
 
     public void Seed(IShreksDatabaseContext context)
-        => context.SubjectCourseAssociations.AddRange(_generator.GeneratedEntities);
+    {
+        context.SubjectCourseAssociations.AddRange(_generator.GeneratedEntities);
+    }
 }

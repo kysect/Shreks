@@ -1,21 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Kysect.CommonLib" Version="0.0.5" />
-		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Kysect.CommonLib"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions"/>
+    </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\Kysect.Shreks.Application.Commands\Kysect.Shreks.Application.Commands.csproj" />
-		<ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj" />
-		<ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj" />
-		<ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Kysect.Shreks.Application.GithubWorkflow.Abstractions\Kysect.Shreks.Application.GithubWorkflow.Abstractions.csproj"/>
+        <ProjectReference Include="..\Kysect.Shreks.Application\Kysect.Shreks.Application.csproj"/>
+        <ProjectReference Include="..\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj"/>
+    </ItemGroup>
 
 </Project>

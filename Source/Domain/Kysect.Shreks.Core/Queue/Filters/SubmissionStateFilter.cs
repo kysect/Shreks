@@ -16,5 +16,7 @@ public class SubmissionStateFilter : IQueueFilter
     public IReadOnlyCollection<ISubmissionState> States { get; }
 
     public IQueryable<Submission> Filter(IQueryable<Submission> query)
-        => query.Where(x => States.Any(xx => xx.Equals(x.State)));
+    {
+        return query.Where(x => States.Any(xx => xx.Equals(x.State)));
+    }
 }

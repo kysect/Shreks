@@ -1,29 +1,30 @@
-﻿using System.Drawing;
-using FluentSpreadsheets;
+﻿using FluentSpreadsheets;
 using FluentSpreadsheets.Tables;
 using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Tables;
+using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Integration.Google.Extensions;
 using Kysect.Shreks.Integration.Google.Providers;
+using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using static FluentSpreadsheets.ComponentFactory;
 
 namespace Kysect.Shreks.Integration.Google.Tables;
 
 public class QueueTable : RowTable<SubmissionsQueueDto>
 {
-    private static readonly IRowComponent Header = Row
-    (
+    private static readonly IRowComponent Header = Row(
         Label("ФИО").WithColumnWidth(2).WithFrozenRows(),
         Label("Группа"),
         Label("Лабораторная работа").WithColumnWidth(1.2),
         Label("Дата").WithColumnWidth(1.2),
         Label("Статус"),
-        Label("GitHub").WithColumnWidth(3.2).WithTrailingMediumBorder()
-    );
+        Label("GitHub").WithColumnWidth(3.2).WithTrailingMediumBorder());
+
+    private readonly ICultureInfoProvider _cultureInfoProvider;
 
     private readonly IUserFullNameFormatter _userFullNameFormatter;
-    private readonly ICultureInfoProvider _cultureInfoProvider;
 
     public QueueTable(IUserFullNameFormatter userFullNameFormatter, ICultureInfoProvider cultureInfoProvider)
     {
@@ -36,6 +37,9 @@ public class QueueTable : RowTable<SubmissionsQueueDto>
         return component.WithDefaultStyle();
     }
 
+    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1110:Opening parenthesis or bracket should be on declaration line", Justification = "FluentSpreadsheets components setup readability is messy with this rule applied")]
+    [SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1111:Closing parenthesis should be on line of last parameter", Justification = "FluentSpreadsheets components setup readability is messy with this rule applied")]
+    [SuppressMessage("StyleCop.CSharp.SpacingRules", "SA1009:Closing parenthesis should be spaced correctly", Justification = "FluentSpreadsheets components setup readability is messy with this rule applied")]
     protected override IEnumerable<IRowComponent> RenderRows(SubmissionsQueueDto model)
     {
         yield return Header;
@@ -44,7 +48,7 @@ public class QueueTable : RowTable<SubmissionsQueueDto>
 
         for (int i = 0; i < submissions.Count; i++)
         {
-            (Application.Dto.Users.StudentDto student, SubmissionDto submission) = submissions[i];
+            (StudentDto student, SubmissionDto submission) = submissions[i];
 
             IRowComponent row = Row
             (

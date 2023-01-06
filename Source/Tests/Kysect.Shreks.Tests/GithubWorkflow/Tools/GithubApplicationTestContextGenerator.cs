@@ -11,11 +11,11 @@ namespace Kysect.Shreks.Tests.GithubWorkflow.Tools;
 
 public class GithubApplicationTestContextGenerator
 {
-    private readonly Faker _faker;
     private readonly IShreksDatabaseContext _context;
-    private readonly IEntityGenerator<User> _userGenerator;
+    private readonly Faker _faker;
     private readonly IEntityGenerator<StudentGroup> _studentGroupGenerator;
     private readonly IEntityGenerator<Subject> _subjectGenerator;
+    private readonly IEntityGenerator<User> _userGenerator;
 
     public GithubApplicationTestContextGenerator(
         Faker faker,
@@ -44,10 +44,29 @@ public class GithubApplicationTestContextGenerator
         _context.StudentGroups.Add(group);
 
         Subject subject = _subjectGenerator.Generate();
-        var subjectCourse = new SubjectCourse(subject, _faker.Commerce.ProductName(), SubmissionStateWorkflowType.ReviewOnly);
-        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(subjectCourse, _faker.Company.CompanyName(), _faker.Commerce.ProductName());
+        var subjectCourse = new SubjectCourse(
+            _faker.Random.Guid(),
+            subject,
+            _faker.Commerce.ProductName(),
+            SubmissionStateWorkflowType.ReviewOnly);
+
+        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(
+            _faker.Random.Guid(),
+            subjectCourse,
+            _faker.Company.CompanyName(),
+            _faker.Commerce.ProductName());
+
         var subjectCourseGroup = new SubjectCourseGroup(subjectCourse, group);
-        var assignment = new Assignment(_faker.Hacker.Verb(), "task-0", 1, new Points(0), new Points(10), subjectCourse);
+
+        var assignment = new Assignment(
+            _faker.Random.Guid(),
+            _faker.Hacker.Verb(),
+            "task-0",
+            1,
+            new Points(0),
+            new Points(10),
+            subjectCourse);
+
         subjectCourse.AddAssignment(assignment);
         var groupAssignment = new GroupAssignment(group, assignment, DateOnly.FromDateTime(DateTime.Now));
 
@@ -56,7 +75,7 @@ public class GithubApplicationTestContextGenerator
         _context.SubjectCourseGroups.Add(subjectCourseGroup);
         _context.Assignments.Add(assignment);
         _context.GroupAssignments.Add(groupAssignment);
-        
+
         await _context.SaveChangesAsync(CancellationToken.None);
 
         return new GithubApplicationTestContext(githubSubjectCourseAssociation, student);

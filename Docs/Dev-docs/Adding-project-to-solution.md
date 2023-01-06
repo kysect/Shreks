@@ -1,6 +1,7 @@
 # Adding project to solution
 
-Правила структуры солюшена в первую очередь соответствуют общим правилам Kysect - https://github.com/kysect/CodeRules/blob/master/Guides/SolutionStructure.md.
+Правила структуры солюшена в первую очередь соответствуют общим правилам
+Kysect - https://github.com/kysect/CodeRules/blob/master/Guides/SolutionStructure.md.
 
 При добавлении нового проекта в солюшен нужно:
 

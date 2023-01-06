@@ -1,9 +1,6 @@
-@using Kysect.Shreks.WebApi.Sdk
-@using Kysect.Shreks.WebUI.AdminPanel.Components.Students
-@using Microsoft.AspNetCore.Components
 @using Kysect.Shreks.Application.Dto.Users
-@using Kysect.Shreks.Application.Dto.Study
 @using Kysect.Shreks.WebApi.Abstractions.Models.StudyGroups
+@using Kysect.Shreks.Application.Dto.Study
 @inject IStudentClient StudentClient
 @inject IStudyGroupClient GroupClient
 
@@ -45,7 +42,9 @@
     public StudyGroupDto? Group { get; set; }
 
     protected override Task OnInitializedAsync()
-        => ReloadStudents(false);
+    {
+        return ReloadStudents(false);
+    }
 
     public async Task ReloadStudents(bool notify = true)
     {
@@ -61,7 +60,9 @@
     }
 
     private Task ButtonClicked()
-        => _component?.Show() ?? Task.CompletedTask;
+    {
+        return _component?.Show() ?? Task.CompletedTask;
+    }
 
     private Task SendAsync(CancellationToken cancellationToken)
     {

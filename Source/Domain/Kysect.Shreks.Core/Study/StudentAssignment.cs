@@ -10,7 +10,7 @@ namespace Kysect.Shreks.Core.Study;
 public partial class StudentAssignment : IEntity
 {
     public StudentAssignment(Student student, GroupAssignment assignment)
-        : this(groupId: assignment.GroupId, assignmentId: assignment.AssignmentId, userId: student.UserId)
+        : this(assignment.GroupId, assignment.AssignmentId, student.UserId)
     {
         if (assignment.Group.Students.Contains(student) is false)
         {
@@ -38,10 +38,7 @@ public partial class StudentAssignment : IEntity
             .Where(x => x.State.IsTerminalEffectiveState);
 
         (Submission submission, Points? points, bool isBanned) = submissions
-            .Select(s =>
-            (
-                submission: s, points: s.EffectivePoints, isBanned: s.State.Kind is SubmissionStateKind.Banned
-            ))
+            .Select(s => (submission: s, points: s.EffectivePoints, isBanned: s.State.Kind is SubmissionStateKind.Banned))
             .OrderByDescending(x => x.isBanned)
             .ThenByDescending(x => x.points)
             .FirstOrDefault();
