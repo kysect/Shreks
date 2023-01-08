@@ -9,6 +9,7 @@ using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Common.Resources;
 using Kysect.Shreks.Core.Submissions;
+using Kysect.Shreks.Core.Submissions.States;
 using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -133,9 +134,16 @@ public class ReviewWithDefenceSubmissionWorkflow : ISubmissionWorkflow
         ISubmissionFactory submissionFactory,
         CancellationToken cancellationToken)
     {
+        ISubmissionState[] acceptedStates =
+        {
+            new ActiveSubmissionState(),
+            new ReviewedSubmissionState(),
+        };
+
         Submission? submission = await _context.Submissions
             .Where(x => x.Student.UserId.Equals(userId))
             .Where(x => x.GroupAssignment.Assignment.Id.Equals(assignmentId))
+            .Where(submission => acceptedStates.Any(x => x.Equals(submission.State)))
             .OrderByDescending(x => x.Code)
             .FirstOrDefaultAsync(cancellationToken);
 
