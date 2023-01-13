@@ -25,6 +25,7 @@ internal class GetSubmissionByCodeHandler : IRequestHandler<Query, Response>
         Submission? submission = await _context.Submissions
             .Where(x => x.Student.UserId.Equals(request.StudentId))
             .Where(x => x.GroupAssignment.Assignment.Id.Equals(request.AssignmentId))
+            .Where(x => x.Code.Equals(request.Code))
             .SingleOrDefaultAsync(cancellationToken);
 
         if (submission is null)
