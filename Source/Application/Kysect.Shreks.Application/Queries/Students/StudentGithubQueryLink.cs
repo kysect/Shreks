@@ -1,6 +1,5 @@
 using Kysect.Shreks.Application.Abstractions.Tools;
 using Kysect.Shreks.Application.Dto.Querying;
-using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 
@@ -22,9 +21,8 @@ public class StudentGithubQueryLink : QueryLinkBase<Student, StudentQueryParamet
         if (parameter.Type is not StudentQueryParameter.GithubUsername)
             return null;
 
+        // Possible NRE if there is no GH User Association.
 #pragma warning disable CS8602
-
-        // TODO: Possible NRE if there is no GH User Association.
         return query.Where(_matcher.Match(
             x => x.User.Associations.OfType<GithubUserAssociation>().FirstOrDefault().GithubUsername,
             parameter.Pattern));

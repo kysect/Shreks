@@ -7,31 +7,12 @@
 @inject IStudyGroupClient StudyGroupClient
 @inject ISafeExecutor SafeExecutor
 
-@if (_groups is not null)
-{
-    <Heading Size="HeadingSize.Is2">
-        Groups
-    </Heading>
+<Heading Size="HeadingSize.Is2">
+    Groups
+</Heading>
 
-    <Div>
-        @foreach (var group in _groups.OrderBy(x => x.Name))
-        {
-            <StudyGroupInfoComponent Group="group"/>
-        }
-    </Div>
-}
-else
-{
-    <LoaderComponent/>
-}
+<GroupQueryComponent/>
 
 @code {
-    private IReadOnlyCollection<StudyGroupDto>? _groups;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await using ISafeExecutionBuilder<IReadOnlyCollection<StudyGroupDto>> builder =
-            SafeExecutor.Execute(async () => _groups = await StudyGroupClient.GetAsync());
-    }
 
 }

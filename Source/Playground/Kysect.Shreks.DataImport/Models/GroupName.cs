@@ -1,4 +1,4 @@
-namespace Kysect.Shreks.DataImport;
+namespace Kysect.Shreks.DataImport.Models;
 
 public readonly record struct GroupName(string Name)
 {

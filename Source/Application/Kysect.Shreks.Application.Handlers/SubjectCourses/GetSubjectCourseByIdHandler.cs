@@ -6,7 +6,7 @@ using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using static Kysect.Shreks.Application.Contracts.Study.Queries.GetSubjectCourseById;
 
-namespace Kysect.Shreks.Application.Handlers.Study;
+namespace Kysect.Shreks.Application.Handlers.SubjectCourses;
 
 internal class GetSubjectCourseByIdHandler : IRequestHandler<Query, Response>
 {

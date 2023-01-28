@@ -1,6 +1,8 @@
 ﻿using Kysect.Shreks.Application.Contracts.Students.Queries;
 using Kysect.Shreks.Application.Contracts.Study.Commands;
 using Kysect.Shreks.Application.Contracts.Study.Queries;
+using Kysect.Shreks.Application.Contracts.StudyGroups.Queries;
+using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Identity.Entities;
@@ -93,5 +95,15 @@ public class StudyGroupController : ControllerBase
         FindStudyGroupByName.Response response = await _mediator.Send(query);
 
         return Ok(response.Group);
+    }
+
+    [HttpPost("query")]
+    public async Task<ActionResult<IReadOnlyCollection<StudyGroupDto>>> Query(
+        QueryConfiguration<GroupQueryParameter> configuration)
+    {
+        var query = new FindGroupsByQuery.Query(configuration);
+        FindGroupsByQuery.Response response = await _mediator.Send(query);
+
+        return Ok(response.Groups);
     }
 }

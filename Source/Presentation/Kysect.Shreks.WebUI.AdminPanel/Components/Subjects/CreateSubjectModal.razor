@@ -1,0 +1,67 @@
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebApi.Abstractions.Models.Subjects
+@using Kysect.Shreks.Application.Dto.Study
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
+@using Kysect.Shreks.WebUI.AdminPanel.Extensions
+@inject ISubjectClient SubjectClient
+@inject ISafeExecutor SafeExecutor
+
+<Modal @ref="_modal">
+    <ModalContent>
+        <ModalHeader>
+            <ModalTitle>Create subject</ModalTitle>
+            <CloseButton/>
+        </ModalHeader>
+
+        <MediaBody>
+            <Div Padding="Padding.Is4">
+                <Field>
+                    <FieldLabel>Subject name</FieldLabel>
+                    <TextEdit Placeholder="Name" @bind-text="@_subjectName"></TextEdit>
+                </Field>
+
+                <Div Flex="Flex.JustifyContent.Center">
+                    <Button Clicked="CreateSubject"
+                            Background="Background.Primary"
+                            TextColor="TextColor.White">
+                        Create
+                    </Button>
+                </Div>
+            </Div>
+        </MediaBody>
+    </ModalContent>
+</Modal>
+
+@code {
+
+    private string? _subjectName = null;
+    private Modal? _modal;
+
+    private bool ButtonEnabled => string.IsNullOrEmpty(_subjectName) is false;
+    
+    [Parameter]
+    public EventCallback<SubjectDto> OnSuccess { get; set; }
+
+    public Task ShowAsync()
+        => _modal?.Show() ?? Task.CompletedTask;
+
+    private async Task CreateSubject()
+    {
+        if (string.IsNullOrEmpty(_subjectName))
+            return;
+
+        await using ISafeExecutionBuilder<SubjectDto> builder = SafeExecutor.Execute( async () =>
+        {
+            var request = new CreateSubjectRequest(_subjectName);
+            var subject = await SubjectClient.CreateAsync(request);
+
+            await (_modal?.Hide() ?? Task.CompletedTask);
+
+            return subject;
+        });
+
+        builder.Title = "Failed to create subject";
+        builder.OnSuccessAsync(OnSuccess.InvokeAsync);
+    }
+
+}

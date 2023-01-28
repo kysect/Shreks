@@ -23,7 +23,7 @@ else
     private IReadOnlyCollection<ExtendedSubjectCourseGroupDto>? _groups;
 
     [Parameter]
-    public IReadOnlyCollection<SubjectCourseGroupDto>? SubjectCourseGroups { get; set; }
+    public IEnumerable<SubjectCourseGroupDto>? SubjectCourseGroups { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {

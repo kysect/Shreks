@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.WebApi.Abstractions.Models.StudyGroups;
@@ -82,5 +83,17 @@ internal class StudyGroupClient : IStudyGroupClient
         };
 
         return await _handler.SendAsync<StudyGroupDto>(message, cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<StudyGroupDto>> QueryAsync(
+        QueryConfiguration<GroupQueryParameter> configuration,
+        CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/StudyGroup/query")
+        {
+            Content = JsonContent.Create(configuration),
+        };
+
+        return await _handler.SendAsync<IReadOnlyCollection<StudyGroupDto>>(message, cancellationToken);
     }
 }

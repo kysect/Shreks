@@ -32,10 +32,10 @@ public static class ServiceCollectionExtensions
 
         collection.AddScoped<IIdentityService, IdentityService>();
 
-        collection.AddSingleton<ExceptionManager>();
-        collection.AddSingleton<IExceptionSink>(x => x.GetRequiredService<ExceptionManager>());
-        collection.AddSingleton<IExceptionStore>(x => x.GetRequiredService<ExceptionManager>());
-        collection.AddSingleton<ISafeExecutor, SafeExecutor>();
+        collection.AddScoped<ExceptionManager>();
+        collection.AddScoped<IExceptionSink>(x => x.GetRequiredService<ExceptionManager>());
+        collection.AddScoped<IExceptionStore>(x => x.GetRequiredService<ExceptionManager>());
+        collection.AddScoped<ISafeExecutor, SafeExecutor>();
 
         collection.AddOptions();
         collection.AddAuthorizationCore();

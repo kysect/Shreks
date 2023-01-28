@@ -5,7 +5,7 @@ using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
 using static Kysect.Shreks.Application.Contracts.Study.Commands.DeleteSubjectCourseGroup;
 
-namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroup;
+namespace Kysect.Shreks.Application.Handlers.SubjectCourseGroups;
 
 internal class DeleteSubjectCourseGroupHandler : IRequestHandler<Command>
 {
