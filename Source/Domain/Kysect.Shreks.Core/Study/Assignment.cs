@@ -68,12 +68,14 @@ public partial class Assignment : IEntity<Guid>
         MaxPoints = value;
     }
 
-    public void AddGroupAssignment(GroupAssignment assignment)
+    public GroupAssignment AddGroup(StudentGroup group, DateOnly deadline)
     {
-        ArgumentNullException.ThrowIfNull(assignment);
+        var assignment = new GroupAssignment(group, this, deadline);
 
         if (!_groupAssignments.Add(assignment))
             throw new DomainInvalidOperationException($"Assignment {assignment} already exists");
+
+        return assignment;
     }
 
     public void RemoveGroupAssignment(GroupAssignment assignment)

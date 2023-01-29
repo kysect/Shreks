@@ -1,5 +1,8 @@
 @using Kysect.Shreks.Application.Dto.Users
 @using Kysect.Shreks.Application.Dto.Querying
+@typeparam TParameter where TParameter : struct, Enum
+@typeparam TValue
+
 @if (Parameter is not null)
 {
     <Card Padding="Padding.Is2"
@@ -9,9 +12,9 @@
         <Addons>
 
             <Addon AddonType="AddonType.Start">
-                <DropdownList TItem="StudentQueryParameter"
-                              TValue="StudentQueryParameter"
-                              Data="@(Parent?.AvailableParameters ?? Array.Empty<StudentQueryParameter>())"
+                <DropdownList TItem="TParameter"
+                              TValue="TParameter"
+                              Data="@(Parent?.AvailableParameters ?? Array.Empty<TParameter>())"
                               TextField="x => x.ToString()"
                               ValueField="x => x"
                               @bind-SelectedValue="@Parameter.Type"
@@ -43,10 +46,10 @@
 @code
 {
     [Parameter]
-    public QueryParameter<StudentQueryParameter>? Parameter { get; set; }
+    public QueryParameter<TParameter>? Parameter { get; set; }
 
     [Parameter]
-    public StudentQueryComponent? Parent { get; set; }
+    public QueryComponent<TParameter, TValue>? Parent { get; set; }
 
     private void OnRemoveClicked()
     {

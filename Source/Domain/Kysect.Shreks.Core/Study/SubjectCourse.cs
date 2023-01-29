@@ -26,7 +26,12 @@ public partial class SubjectCourse : IEntity<Guid>
         _assignments = new HashSet<Assignment>();
         _associations = new HashSet<SubjectCourseAssociation>();
         _mentors = new HashSet<Mentor>();
-        _deadlinePolicies = new HashSet<DeadlinePolicy>();
+
+        // TODO: change when deadline policy customization is implemented
+        _deadlinePolicies = Enumerable
+            .Range(0, 5)
+            .Select<int, DeadlinePolicy>(i => new FractionDeadlinePolicy(TimeSpan.FromDays(7) * i, 1 - (0.2 * (i + 1))))
+            .ToHashSet();
     }
 
     public virtual Subject Subject { get; protected init; }

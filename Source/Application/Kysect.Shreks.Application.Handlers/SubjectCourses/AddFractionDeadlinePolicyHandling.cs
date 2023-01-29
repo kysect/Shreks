@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Contracts.Study.Commands.AddFractionDeadlinePolicy;
 
-namespace Kysect.Shreks.Application.Handlers.Study;
+namespace Kysect.Shreks.Application.Handlers.SubjectCourses;
 
 internal class AddFractionDeadlinePolicyHandling : IRequestHandler<Command>
 {

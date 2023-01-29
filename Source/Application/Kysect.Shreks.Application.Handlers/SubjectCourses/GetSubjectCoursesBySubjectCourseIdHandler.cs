@@ -1,19 +1,19 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Contracts.Study.Queries.GetSubjectCourses;
+using static Kysect.Shreks.Application.Contracts.Study.Queries.GetSubjectCoursesBySubjectCourseId;
 
-namespace Kysect.Shreks.Application.Handlers.Study;
+namespace Kysect.Shreks.Application.Handlers.SubjectCourses;
 
-internal class GetSubjectCoursesHandler : IRequestHandler<Query, Response>
+internal class GetSubjectCoursesBySubjectCourseIdHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IMapper _mapper;
 
-    public GetSubjectCoursesHandler(IShreksDatabaseContext context, IMapper mapper)
+    public GetSubjectCoursesBySubjectCourseIdHandler(IShreksDatabaseContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
@@ -21,11 +21,11 @@ internal class GetSubjectCoursesHandler : IRequestHandler<Query, Response>
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
     {
-        List<SubjectCourse> subjectCourse = await _context
-            .SubjectCourses
+        List<SubjectCourse> courses = await _context.SubjectCourses
+            .Where(x => x.Subject.Id.Equals(request.SubjectCourseId))
             .ToListAsync(cancellationToken);
 
-        SubjectCourseDto[] dto = subjectCourse
+        SubjectCourseDto[] dto = courses
             .Select(_mapper.Map<SubjectCourseDto>)
             .ToArray();
 

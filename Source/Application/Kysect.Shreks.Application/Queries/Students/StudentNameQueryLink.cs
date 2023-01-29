@@ -1,6 +1,5 @@
 using Kysect.Shreks.Application.Abstractions.Tools;
 using Kysect.Shreks.Application.Dto.Querying;
-using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Core.Users;
 

@@ -1,0 +1,34 @@
+<Tab Name="@Name" Style="z-index: 2!important;">
+    <div @onclick:stopPropagation="true">
+        <Dropdown>
+            <Button Clicked="@(() => Name is not null ? OnClick.InvokeAsync(Name) : Task.CompletedTask)">
+                @ButtonContent
+            </Button>
+
+            <DropdownToggle Split
+                            Color="Color.Default"
+                            Background="Background.Transparent"
+                            Border="Border.Is0"/>
+
+            <DropdownMenu Padding="Padding.Is0">
+                @DropdownContent
+            </DropdownMenu>
+        </Dropdown>
+    </div>
+</Tab>
+
+@code {
+
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public RenderFragment? ButtonContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? DropdownContent { get; set; }
+
+}

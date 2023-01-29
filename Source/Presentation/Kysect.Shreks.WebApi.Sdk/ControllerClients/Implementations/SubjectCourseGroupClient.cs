@@ -26,6 +26,18 @@ internal class SubjectCourseGroupClient : ISubjectCourseGroupClient
         return await _handler.SendAsync<SubjectCourseGroupDto>(message, cancellationToken);
     }
 
+    public async Task<IReadOnlyCollection<SubjectCourseGroupDto>> BulkCreateAsync(
+        BulkCreateSubjectCourseGroupsRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/SubjectCourseGroup/bulk")
+        {
+            Content = JsonContent.Create(request),
+        };
+
+        return await _handler.SendAsync<IReadOnlyCollection<SubjectCourseGroupDto>>(message, cancellationToken);
+    }
+
     public async Task DeleteAsync(
         DeleteSubjectCourseGroupRequest request,
         CancellationToken cancellationToken = default)

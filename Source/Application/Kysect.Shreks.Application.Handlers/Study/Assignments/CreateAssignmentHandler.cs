@@ -22,8 +22,8 @@ internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        SubjectCourse subjectCourse =
-            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
+        SubjectCourse subjectCourse = await _context.SubjectCourses
+            .GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
         var assignment = new Assignment(
             Guid.NewGuid(),
@@ -33,6 +33,11 @@ internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
             new Points(request.MinPoints),
             new Points(request.MaxPoints),
             subjectCourse);
+
+        foreach (SubjectCourseGroup group in subjectCourse.Groups)
+        {
+            assignment.AddGroup(group.StudentGroup, DateOnly.FromDateTime(DateTime.UnixEpoch));
+        }
 
         _context.Assignments.Add(assignment);
         await _context.SaveChangesAsync(cancellationToken);

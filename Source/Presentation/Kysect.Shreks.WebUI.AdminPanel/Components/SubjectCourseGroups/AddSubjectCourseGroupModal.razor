@@ -1,0 +1,119 @@
+@using Kysect.Shreks.Application.Dto.Querying
+@using Kysect.Shreks.Application.Dto.Study
+@using Kysect.Shreks.Application.Dto.SubjectCourses
+@using Kysect.Shreks.WebApi.Abstractions.Models.SubjectCourseGroups
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Query
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.Models
+
+@inject IStudyGroupClient StudyGroupClient
+@inject ISubjectCourseGroupClient SubjectCourseGroupClient
+@inject ISafeExecutor SafeExecutor
+
+<Modal @ref="_modal">
+    <ModalContent Size="ModalSize.Large">
+        <ModalHeader>
+            <ModalTitle>Add groups</ModalTitle>
+            <CloseButton/>
+        </ModalHeader>
+        <ModalBody>
+            <Div Flex="Flex.Row" Padding="Padding.Is3.FromBottom" Width="Width.Is100">
+                <CreateButton Clicked="() => _component?.Show() ?? Task.CompletedTask"
+                              Disabled="ButtonEnabled is false"
+                              FitContent="false">
+                    Add
+                </CreateButton>
+            </Div>
+
+            <QueryComponent TParameter="@GroupQueryParameter"
+                            TValue="@StudyGroupDto"
+                            QueryExecutor="QueryAsync"
+                            OnValuesUpdates="OnQueryExecuted"/>
+
+            @if (_groups is not null)
+            {
+                IEnumerable<SelectableStudyGroup> groups = _groups
+                    .OrderByDescending(x => x.IsSelected)
+                    .ThenBy(x => x.Group.Name);
+
+                <Div Padding="Padding.Is4.FromTop">
+                    @foreach (var group in groups)
+                    {
+                        <Card Padding="Padding.Is2" Margin="Margin.Is2.FromBottom">
+                            <Check TValue="bool" @bind-Checked="@group.IsSelected">
+                                @group.Group.Name
+                            </Check>
+                        </Card>
+                    }
+                </Div>
+            }
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+<ConfirmationComponent @ref="_component"
+                       Action="AddAsync"
+                       ActionName="add selected groups to course"/>
+
+@code {
+
+    private Modal? _modal;
+    private ConfirmationComponent? _component;
+
+    private IReadOnlyCollection<SelectableStudyGroup>? _groups;
+
+    private bool ButtonEnabled => _groups?.Any(x => x.IsSelected) ?? false;
+
+    [Parameter]
+    public SubjectCourseDto? SubjectCourse { get; set; }
+
+    [Parameter]
+    public ICollection<SubjectCourseGroupDto>? ExistingGroups { get; set; }
+
+    [Parameter]
+    public EventCallback<IReadOnlyCollection<SubjectCourseGroupDto>> OnStudyGroupsAdded { get; set; }
+
+    public Task ShowAsync()
+        => _modal?.Show() ?? Task.CompletedTask;
+
+    private Task<IReadOnlyCollection<StudyGroupDto>> QueryAsync(QueryConfiguration<GroupQueryParameter> configuration)
+        => StudyGroupClient.QueryAsync(configuration);
+
+    private async Task AddAsync(CancellationToken cancellationToken)
+    {
+        if (SubjectCourse is null || _groups is null)
+            return;
+
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            Guid[] groupIds = _groups
+                .Where(x => x.IsSelected)
+                .Select(x => x.Group.Id)
+                .ToArray();
+
+            var request = new BulkCreateSubjectCourseGroupsRequest(SubjectCourse.Id, groupIds);
+
+            IReadOnlyCollection<SubjectCourseGroupDto> groups = await SubjectCourseGroupClient.BulkCreateAsync(request, cancellationToken);
+
+            await OnStudyGroupsAdded.InvokeAsync(groups);
+            await (_modal?.Hide() ?? Task.CompletedTask);
+        });
+
+        builder.Title = "Failed to add groups";
+    }
+
+    public void OnQueryExecuted(IReadOnlyCollection<StudyGroupDto> groups)
+    {
+        IEnumerable<StudyGroupDto> groupsEnumerable = groups;
+
+        if (ExistingGroups is not null)
+        {
+            groupsEnumerable = groupsEnumerable
+                .Where(sg => ExistingGroups.Any(x => x.StudentGroupId.Equals(sg.Id)) is false);
+        }
+
+        _groups = groupsEnumerable.Select(x => new SelectableStudyGroup(x, false)).ToArray();
+    }
+
+}

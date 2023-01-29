@@ -1,0 +1,21 @@
+<Tab Clicked="@(() => Name is not null ? OnClick.InvokeAsync(Name) : Task.CompletedTask)"
+     Name="@Name"
+     Height="Height.Is100">
+
+    <Button>
+        @ChildContent
+    </Button>
+</Tab>
+
+@code {
+
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    [Parameter]
+    public string? Name { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+}

@@ -38,6 +38,11 @@ public class SafeExecutionBuilder : ISafeExecutionBuilder
         _errorHandlers.Add(new ExceptionHandler<TException>(action));
     }
 
+    public void OnFailAsync(Func<Exception, Task> action)
+    {
+        _errorHandlers.Add(new ExceptionHandler<Exception>(action));
+    }
+
     public void OnSuccessAsync(Func<Task> action)
     {
         _successHandlers.Add(action);
@@ -111,9 +116,19 @@ public class SafeExecutionBuilder<T> : ISafeExecutionBuilder<T>
         _errorHandlers.Add(new ExceptionHandler<TException>(action));
     }
 
+    public void OnFailAsync(Func<Exception, Task> action)
+    {
+        _errorHandlers.Add(new ExceptionHandler<Exception>(action));
+    }
+
     public void OnSuccessAsync(Func<T, Task> action)
     {
         _successHandlers.Add(action);
+    }
+
+    public void OnSuccessAsync(Func<Task> action)
+    {
+        _successHandlers.Add(_ => action());
     }
 
     public async ValueTask DisposeAsync()

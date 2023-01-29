@@ -10,9 +10,15 @@
 @if (_courses is not null)
 {
     <Div Display="Display.Flex" Flex="Flex.Column.AlignContent.Start">
-        <Heading Size="HeadingSize.Is1">
-            Courses
-        </Heading>
+        <Div Flex="Flex.Row.JustifyContent.Between.AlignContent.Center">
+            <Heading Size="HeadingSize.Is1">
+                Courses
+            </Heading>
+
+            <Div Flex="Flex.Column.JustifyContent.Center">
+                <CreateButton Clicked="@(() => _createSubjectCourseModal?.ShowAsync() ?? Task.CompletedTask)"/>
+            </Div>
+        </Div>
 
         <Div>
             @foreach (var course in _courses)
@@ -21,6 +27,11 @@
             }
         </Div>
     </Div>
+
+
+    <CreateSubjectCourseModal @ref="_createSubjectCourseModal"
+                              SubjectId="SubjectId"
+                              OnSuccess="OnSubjectCourseCreated"/>
 }
 else
 {
@@ -29,14 +40,19 @@ else
 
 @code {
 
+    private ICollection<SubjectCourseDto>? _courses;
+    private CreateSubjectCourseModal? _createSubjectCourseModal;
+
     [Parameter]
     public Guid SubjectId { get; set; }
 
-    private IReadOnlyCollection<SubjectCourseDto>? _courses;
-
     protected override async Task OnInitializedAsync()
     {
-        await using var builder = SafeExecutor.Execute(async () => { _courses = await SubjectClient.GetCoursesAsync(SubjectId); });
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            IReadOnlyCollection<SubjectCourseDto> courses = await SubjectClient.GetCoursesAsync(SubjectId);
+            _courses = courses.ToList();
+        });
 
         builder.Title = "Failed to load subject course";
 
@@ -45,6 +61,12 @@ else
             NavigationManager.NavigateTo("/");
             return Task.CompletedTask;
         });
+    }
+
+    private Task OnSubjectCourseCreated(SubjectCourseDto course)
+    {
+        _courses?.Add(course);
+        return Task.CompletedTask;
     }
 
 }

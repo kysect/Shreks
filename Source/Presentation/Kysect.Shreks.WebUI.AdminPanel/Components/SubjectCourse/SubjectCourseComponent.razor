@@ -1,4 +1,7 @@
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Tabs
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Assignments
+@using Kysect.Shreks.WebUI.AdminPanel.Components.SubjectCourseGroups
 @using Kysect.Shreks.Application.Dto.SubjectCourses
 @using Kysect.Shreks.Application.Dto.Study
 @inject ISubjectCourseClient Client
@@ -7,37 +10,7 @@
 <Card Margin="Margin.Is2">
     <CardBody>
         <CardTitle>
-            <Bar Padding="Padding.Is0"
-                 Mode="BarMode.Horizontal"
-                 Breakpoint="Breakpoint.Desktop"
-                 Background="Background.Transparent">
-
-                <BarBrand>
-                    <Heading Size="HeadingSize.Is2">
-                        @SubjectCourse?.Title
-                    </Heading>
-                </BarBrand>
-
-                <BarMenu>
-                    <BarEnd>
-                        <BarItem Margin="Margin.Is2">
-                            <ForceSyncGoogle SubjectCourseId="SubjectCourse?.Id"/>
-                        </BarItem>
-
-                        @{
-                            var organizationName = GithubOrganizationName;
-                        }
-
-                        @if (organizationName is not null)
-                        {
-                            <BarItem Margin="Margin.Is2">
-                                <ForceSyncGitHubMentors OrganizationName="@organizationName"/>
-                            </BarItem>
-                        }
-
-                    </BarEnd>
-                </BarMenu>
-            </Bar>
+            <SubjectCourseHeaderComponent SubjectCourse="SubjectCourse"/>
         </CardTitle>
 
         @if (SubjectCourse is not null)
@@ -49,13 +22,35 @@
 
         <Tabs SelectedTab="@_selectedTab">
             <Items>
-                <Tab Clicked="() => OnSelectedTabChanged(nameof(_assignments))" Name="@nameof(_assignments)">
-                    Assignments
-                </Tab>
+                <DropdownTabTitleComponent OnClick="OnSelectedTabChanged" Name="@nameof(_assignments)">
+                    <ButtonContent>
+                        Assignments
+                    </ButtonContent>
+                    <DropdownContent>
+                        <DropdownItem>
+                            <CreateButton Clicked="@(() => _createAssignmentModal?.ShowAsync() ?? Task.CompletedTask)"
+                                          Background="Background.Transparent"
+                                          TextColor="TextColor.Body"
+                                          FitContent="false"/>
+                        </DropdownItem>
+                    </DropdownContent>
+                </DropdownTabTitleComponent>
 
-                <Tab Clicked="() => OnSelectedTabChanged(nameof(_subjectCourseGroups))" Name="@nameof(_subjectCourseGroups)">
-                    Groups
-                </Tab>
+                <DropdownTabTitleComponent OnClick="OnSelectedTabChanged" Name="@nameof(_subjectCourseGroups)">
+                    <ButtonContent>
+                        Groups
+                    </ButtonContent>
+                    <DropdownContent>
+                        <DropdownItem>
+                            <CreateButton Clicked="ShowAddSubjectCourseGroupsAsync"
+                                          Background="Background.Transparent"
+                                          TextColor="TextColor.Body"
+                                          FitContent="false">
+                                Add
+                            </CreateButton>
+                        </DropdownItem>
+                    </DropdownContent>
+                </DropdownTabTitleComponent>
             </Items>
 
             <Content>
@@ -72,21 +67,29 @@
     </CardBody>
 </Card>
 
+
+<CreateAssignmentModal @ref="_createAssignmentModal"
+                       SubjectCourseId="@SubjectCourse?.Id"
+                       OnSuccess="AddAssignmentAsync"/>
+
+<AddSubjectCourseGroupModal @ref="_addSubjectCourseGroupModal"
+                            SubjectCourse="SubjectCourse"
+                            OnStudyGroupsAdded="AddSubjectCourseGroups"
+                            ExistingGroups="_subjectCourseGroups"/>
+
 @code
 {
+
+    private CreateAssignmentModal? _createAssignmentModal;
+    private AddSubjectCourseGroupModal? _addSubjectCourseGroupModal;
+
+    private ICollection<AssignmentDto>? _assignments;
+    private ICollection<SubjectCourseGroupDto>? _subjectCourseGroups;
 
     [Parameter]
     public SubjectCourseDto? SubjectCourse { get; set; }
 
-    private IReadOnlyCollection<AssignmentDto>? _assignments;
-    private IReadOnlyCollection<SubjectCourseGroupDto>? _subjectCourseGroups;
-
     private string? _selectedTab;
-
-    private string? GithubOrganizationName => SubjectCourse?
-        .Associations
-        .FirstOrDefault(x => x.Type is "GithubSubjectCourseAssociation")?
-        .Value;
 
     private Task OnSelectedTabChanged(string arg)
     {
@@ -105,7 +108,11 @@
         if (SubjectCourse is null || _assignments is not null)
             return;
 
-        await using var builder = SafeExecutor.Execute(async () => { _assignments = await Client.GetAssignmentsAsync(SubjectCourse.Id); });
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            IReadOnlyCollection<AssignmentDto> assignments = await Client.GetAssignmentsAsync(SubjectCourse.Id);
+            _assignments = assignments.ToList();
+        });
     }
 
     private async Task ProcessSubjectCourseGroupsSelected()
@@ -113,7 +120,33 @@
         if (SubjectCourse is null || _subjectCourseGroups is not null)
             return;
 
-        await using var builder = SafeExecutor.Execute(async () => { _subjectCourseGroups = await Client.GetGroupsAsync(SubjectCourse.Id); });
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            IReadOnlyCollection<SubjectCourseGroupDto> subjectCourseGroups = await Client.GetGroupsAsync(SubjectCourse.Id);
+            _subjectCourseGroups = subjectCourseGroups.ToList();
+        });
     }
 
+    private Task AddAssignmentAsync(AssignmentDto assignment)
+    {
+        _assignments?.Add(assignment);
+        return Task.CompletedTask;
+    }
+
+    private void AddSubjectCourseGroups(IReadOnlyCollection<SubjectCourseGroupDto> groups)
+    {
+        foreach (var group in groups)
+        {
+            _subjectCourseGroups?.Add(group);
+        }
+    }
+
+    private async Task ShowAddSubjectCourseGroupsAsync()
+    {
+        if (_addSubjectCourseGroupModal is null)
+            return;
+
+        await ProcessSubjectCourseGroupsSelected();
+        await _addSubjectCourseGroupModal.ShowAsync();
+    }
 }
