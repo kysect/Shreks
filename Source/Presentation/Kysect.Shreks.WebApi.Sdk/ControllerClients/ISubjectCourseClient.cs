@@ -22,8 +22,7 @@ public interface ISubjectCourseClient
 
     Task<IReadOnlyCollection<StudentDto>> GetStudentsAsync(Guid id, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyCollection<AssignmentDto>>
-        GetAssignmentsAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IReadOnlyCollection<AssignmentDto>> GetAssignmentsAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyCollection<SubjectCourseGroupDto>> GetGroupsAsync(
         Guid id,

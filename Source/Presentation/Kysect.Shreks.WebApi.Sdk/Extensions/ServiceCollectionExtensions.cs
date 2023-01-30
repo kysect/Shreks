@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Dto.Extensions;
 using Kysect.Shreks.WebApi.Sdk.ControllerClients;
 using Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 using Kysect.Shreks.WebApi.Sdk.Identity;
@@ -32,6 +33,8 @@ public static class ServiceCollectionExtensions
         AddClient<ISubjectClient, SubjectClient>();
         AddClient<ISubjectCourseClient, SubjectCourseClient>();
         AddClient<ISubjectCourseGroupClient, SubjectCourseGroupClient>();
+
+        collection.AddDtoConfiguration();
 
         return collection;
     }

@@ -28,6 +28,7 @@
 
         await using ISafeExecutionBuilder<IReadOnlyCollection<GroupAssignmentDto>> builder = SafeExecutor
             .Execute(async () => _groupAssignments = await Client.GetGroupAssignmentsAsync(Assignment.Id));
+
         builder.Title = "Failed to load group assignments";
     }
 

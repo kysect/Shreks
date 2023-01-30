@@ -1,17 +1,21 @@
+using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.WebApi.Abstractions.Models.StudyGroups;
+using Kysect.Shreks.WebApi.Sdk.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Tools;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 
 internal class StudyGroupClient : IStudyGroupClient
 {
     private readonly ClientRequestHandler _handler;
+    private readonly JsonSerializerSettings _serializerSettings;
 
-    public StudyGroupClient(HttpClient client)
+    public StudyGroupClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
+        _serializerSettings = serializerSettings;
         _handler = new ClientRequestHandler(client);
     }
 
@@ -21,7 +25,7 @@ internal class StudyGroupClient : IStudyGroupClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/StudyGroup")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<StudyGroupDto>(message, cancellationToken);
@@ -78,9 +82,21 @@ internal class StudyGroupClient : IStudyGroupClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Put, $"api/StudyGroup/{id}")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<StudyGroupDto>(message, cancellationToken);
+    }
+
+    public async Task<IReadOnlyCollection<StudyGroupDto>> QueryAsync(
+        QueryConfiguration<GroupQueryParameter> configuration,
+        CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(HttpMethod.Post, "api/StudyGroup/query")
+        {
+            Content = configuration.ToContent(_serializerSettings),
+        };
+
+        return await _handler.SendAsync<IReadOnlyCollection<StudyGroupDto>>(message, cancellationToken);
     }
 }

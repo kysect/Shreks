@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.WebApi.Abstractions.Models.StudyGroups;
@@ -27,5 +28,9 @@ public interface IStudyGroupClient
     Task<StudyGroupDto> UpdateAsync(
         Guid id,
         UpdateStudyGroupRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyCollection<StudyGroupDto>> QueryAsync(
+        QueryConfiguration<GroupQueryParameter> configuration,
         CancellationToken cancellationToken = default);
 }

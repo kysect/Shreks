@@ -9,7 +9,7 @@ public partial class GithubSubjectCourseAssociation : SubjectCourseAssociation
         SubjectCourse subjectCourse,
         string githubOrganizationName,
         string templateRepositoryName)
-        : base(id)
+        : base(id, subjectCourse)
     {
         GithubOrganizationName = githubOrganizationName;
         TemplateRepositoryName = templateRepositoryName;

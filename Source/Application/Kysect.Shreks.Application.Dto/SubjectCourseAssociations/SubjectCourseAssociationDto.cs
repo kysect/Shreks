@@ -1,0 +1,3 @@
+namespace Kysect.Shreks.Application.Dto.SubjectCourseAssociations;
+
+public abstract record SubjectCourseAssociationDto;

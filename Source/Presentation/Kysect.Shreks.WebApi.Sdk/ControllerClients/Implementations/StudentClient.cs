@@ -1,17 +1,20 @@
 using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.WebApi.Abstractions.Models.Students;
+using Kysect.Shreks.WebApi.Sdk.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Tools;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 
 internal class StudentClient : IStudentClient
 {
     private readonly ClientRequestHandler _handler;
+    private readonly JsonSerializerSettings _serializerSettings;
 
-    public StudentClient(HttpClient client)
+    public StudentClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
+        _serializerSettings = serializerSettings;
         _handler = new ClientRequestHandler(client);
     }
 
@@ -21,7 +24,7 @@ internal class StudentClient : IStudentClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/Student")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<StudentDto>(message, cancellationToken);
@@ -57,12 +60,12 @@ internal class StudentClient : IStudentClient
     }
 
     public async Task<IReadOnlyCollection<StudentDto>> QueryAsync(
-        QueryConfiguration<StudentQueryParameter> query,
+        QueryConfiguration<StudentQueryParameter> configuration,
         CancellationToken cancellationToken = default)
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/Student/query")
         {
-            Content = JsonContent.Create(query),
+            Content = configuration.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<IReadOnlyCollection<StudentDto>>(message, cancellationToken);

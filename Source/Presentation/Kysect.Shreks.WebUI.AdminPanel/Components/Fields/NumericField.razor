@@ -1,0 +1,40 @@
+@typeparam T where T : struct
+
+<Field>
+    <FieldLabel>@Label</FieldLabel>
+    <NumericEdit TValue="@T"
+                 Value="@(Value ?? default)"
+                 ValueChanged="@ValueChanged"
+                 Placeholder="@Placeholder"
+                 Min="@MinValue"
+                 Max="@MaxValue"
+                 Step="@Step"/>
+</Field>
+
+@code {
+    public T? Value { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public T MinValue { get; set; }
+
+    [Parameter]
+    public T MaxValue { get; set; }
+    
+    [Parameter]
+    public decimal? Step { get; set; }
+
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+
+    private async Task ValueChanged(T value)
+    {
+        Value = value;
+        await OnStateChanged.InvokeAsync();
+    }
+}

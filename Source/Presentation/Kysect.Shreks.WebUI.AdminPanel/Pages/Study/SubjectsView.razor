@@ -1,6 +1,5 @@
 @page "/adminpanel/subjects"
 @using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
-@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
 @using Kysect.Shreks.Application.Dto.Study
 @using Kysect.Shreks.WebUI.AdminPanel.Components.Subjects
 @using Kysect.Shreks.WebUI.AdminPanel.Components
@@ -9,9 +8,14 @@
 
 @if (_subjects is not null)
 {
-    <Heading Size="HeadingSize.Is2">
-        Subjects
-    </Heading>
+    <Div Flex="Flex.Row.JustifyContent.Between">
+        <Heading Size="HeadingSize.Is2">
+            Subjects
+        </Heading>
+
+        <CreateButton Clicked="@(() => _createSubjectModal?.ShowAsync() ?? Task.CompletedTask)"/>
+
+    </Div>
 
     <Div>
         @foreach (var subject in _subjects.OrderBy(x => x.Title.Length))
@@ -19,6 +23,8 @@
             <SubjectInfoComponent Subject=@subject/>
         }
     </Div>
+
+    <CreateSubjectModal @ref="_createSubjectModal" OnSuccess="OnSubjectCreated"/>
 }
 else
 {
@@ -27,14 +33,25 @@ else
 
 
 @code {
-    private IReadOnlyCollection<SubjectDto>? _subjects;
+    private ICollection<SubjectDto>? _subjects;
+    private CreateSubjectModal? _createSubjectModal;
 
     protected override async Task OnInitializedAsync()
     {
-        await using ISafeExecutionBuilder<IReadOnlyCollection<SubjectDto>> builder =
-            SafeExecutor.Execute(async () => _subjects = await SubjectClient.GetAsync());
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            IReadOnlyCollection<SubjectDto> subjects = await SubjectClient.GetAsync();
+            _subjects = subjects.ToList();
+        });
+
         builder.Title = "Failed to load subjects";
         builder.ShowExceptionDetails = true;
+    }
+
+    private Task OnSubjectCreated(SubjectDto subject)
+    {
+        _subjects?.Add(subject);
+        return Task.CompletedTask;
     }
 
 }

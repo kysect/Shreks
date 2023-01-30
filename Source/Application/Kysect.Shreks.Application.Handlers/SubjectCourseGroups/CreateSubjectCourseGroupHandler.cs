@@ -4,9 +4,10 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateSubjectCourseGroup;
+using Microsoft.EntityFrameworkCore;
+using static Kysect.Shreks.Application.Contracts.SubjectCourseGroups.Commands.CreateSubjectCourseGroup;
 
-namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroup;
+namespace Kysect.Shreks.Application.Handlers.SubjectCourseGroups;
 
 internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Response>
 {
@@ -21,13 +22,20 @@ internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Respon
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        SubjectCourse subjectCourse =
-            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
+        SubjectCourse subjectCourse = await _context.SubjectCourses
+            .Include(x => x.Assignments)
+            .ThenInclude(x => x.GroupAssignments)
+            .GetByIdAsync(request.SubjectCourseId, cancellationToken);
 
-        StudentGroup studentGroup =
-            await _context.StudentGroups.GetByIdAsync(request.StudentGroupId, cancellationToken);
+        StudentGroup studentGroup = await _context.StudentGroups
+            .GetByIdAsync(request.StudentGroupId, cancellationToken);
 
-        Core.Study.SubjectCourseGroup subjectCourseGroup = subjectCourse.AddGroup(studentGroup);
+        SubjectCourseGroup subjectCourseGroup = subjectCourse.AddGroup(studentGroup);
+
+        foreach (Assignment assignment in subjectCourse.Assignments)
+        {
+            assignment.AddGroup(studentGroup, DateOnly.FromDateTime(DateTime.UnixEpoch));
+        }
 
         await _context.SubjectCourseGroups.AddAsync(subjectCourseGroup, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

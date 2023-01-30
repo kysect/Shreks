@@ -1,6 +1,6 @@
 // See https://aka.ms/new-console-template for more information
 
-using Kysect.Shreks.DataImport;
+using Kysect.Shreks.DataImport.Models;
 using Newtonsoft.Json;
 using Shreks.ApiClient;
 

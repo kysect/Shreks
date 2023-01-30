@@ -1,15 +1,18 @@
 using Kysect.Shreks.WebApi.Abstractions.Models.Identity;
+using Kysect.Shreks.WebApi.Sdk.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Tools;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 
 internal class IdentityClient : IIdentityClient
 {
     private readonly ClientRequestHandler _handler;
+    private readonly JsonSerializerSettings _serializerSettings;
 
-    public IdentityClient(HttpClient client)
+    public IdentityClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
+        _serializerSettings = serializerSettings;
         _handler = new ClientRequestHandler(client);
     }
 
@@ -17,7 +20,7 @@ internal class IdentityClient : IIdentityClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/identity/login")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<LoginResponse>(message, cancellationToken);
@@ -36,7 +39,7 @@ internal class IdentityClient : IIdentityClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/identity/register")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<LoginResponse>(message, cancellationToken);

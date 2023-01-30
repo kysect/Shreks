@@ -1,0 +1,38 @@
+<Button Clicked="@Clicked"
+        Background="@(Background ?? Background.Primary)"
+        TextColor="@(TextColor ?? TextColor.White)"
+        Display="@(FitContent ? Display.InlineBlock : Display.Block)"
+        Style="@(FitContent ? "height: fit-content!important;" : "width: 100%;")"
+        Disabled="@Disabled">
+
+    @if (ChildContent is null)
+    {
+        <Text>Create</Text>
+    }
+    else
+    {
+        @ChildContent
+    }
+</Button>
+
+@code {
+
+    [Parameter]
+    public EventCallback Clicked { get; set; }
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter]
+    public Background? Background { get; set; }
+
+    [Parameter]
+    public TextColor? TextColor { get; set; }
+
+    [Parameter]
+    public bool FitContent { get; set; } = true;
+
+}

@@ -1,6 +1,8 @@
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.WebApi.Abstractions.Models.GroupAssignments;
+using Kysect.Shreks.WebApi.Sdk.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Tools;
+using Newtonsoft.Json;
 using System.Net.Http.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
@@ -8,9 +10,11 @@ namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 internal class GroupAssignmentClient : IGroupAssignmentClient
 {
     private readonly ClientRequestHandler _handler;
+    private readonly JsonSerializerSettings _serializerSettings;
 
-    public GroupAssignmentClient(HttpClient client)
+    public GroupAssignmentClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
+        _serializerSettings = serializerSettings;
         _handler = new ClientRequestHandler(client);
     }
 
@@ -20,7 +24,7 @@ internal class GroupAssignmentClient : IGroupAssignmentClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/GroupAssignment")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<GroupAssignmentDto>(message, cancellationToken);
