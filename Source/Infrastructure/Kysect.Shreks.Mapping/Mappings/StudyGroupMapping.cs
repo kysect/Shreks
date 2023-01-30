@@ -6,5 +6,7 @@ namespace Kysect.Shreks.Mapping.Mappings;
 public static class StudyGroupMapping
 {
     public static StudyGroupDto ToDto(this StudentGroup group)
-        => new StudyGroupDto(group.Id, group.Name);
+    {
+        return new StudyGroupDto(group.Id, group.Name);
+    }
 }

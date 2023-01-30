@@ -6,5 +6,7 @@ namespace Kysect.Shreks.Mapping.Mappings;
 public static class IdentityMapping
 {
     public static IdentityUserDto ToDto(this ShreksIdentityUser user)
-        => new IdentityUserDto(user.UserName);
+    {
+        return new IdentityUserDto(user.UserName);
+    }
 }

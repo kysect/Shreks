@@ -6,5 +6,7 @@ namespace Kysect.Shreks.Mapping.Mappings;
 public static class SubjectMapping
 {
     public static SubjectDto ToDto(this Subject subject)
-        => new SubjectDto(subject.Id, subject.Title);
+    {
+        return new SubjectDto(subject.Id, subject.Title);
+    }
 }

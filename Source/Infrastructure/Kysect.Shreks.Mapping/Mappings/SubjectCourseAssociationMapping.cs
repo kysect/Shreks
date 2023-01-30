@@ -7,10 +7,16 @@ namespace Kysect.Shreks.Mapping.Mappings;
 public static class SubjectCourseAssociationMapping
 {
     public static GithubSubjectCourseAssociationDto ToDto(this GithubSubjectCourseAssociation association)
-        => new GithubSubjectCourseAssociationDto(association.GithubOrganizationName, association.TemplateRepositoryName);
+    {
+        return new GithubSubjectCourseAssociationDto(
+            association.GithubOrganizationName,
+            association.TemplateRepositoryName);
+    }
 
     public static GoogleSubjectCourseAssociationDto ToDto(this GoogleTableSubjectCourseAssociation association)
-        => new GoogleSubjectCourseAssociationDto(association.SpreadsheetId);
+    {
+        return new GoogleSubjectCourseAssociationDto(association.SpreadsheetId);
+    }
 
     public static SubjectCourseAssociationDto ToDto(this SubjectCourseAssociation entity)
     {

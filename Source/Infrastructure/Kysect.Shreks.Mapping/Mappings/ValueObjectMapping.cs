@@ -8,16 +8,19 @@ namespace Kysect.Shreks.Mapping.Mappings;
 public static class ValueObjectMapping
 {
     public static DateTime AsDateTime(this DateOnly date)
-        => date.ToDateTime(new TimeOnly(0));
-
-    public static DateOnly AsDateOnly(this DateTime date)
-        => DateOnly.FromDateTime(date);
+    {
+        return date.ToDateTime(new TimeOnly(0));
+    }
 
     public static DateTime AsDateTime(this SpbDateTime date)
-        => date.Value;
+    {
+        return date.Value;
+    }
 
-    public static SpbDateTime AsSpbDateTime(this DateTime date)
-        => new SpbDateTime(date);
+    public static DateOnly AsDateOnly(this DateTime date)
+    {
+        return DateOnly.FromDateTime(date);
+    }
 
     public static SubmissionStateWorkflowTypeDto AsDto(this SubmissionStateWorkflowType type)
     {
@@ -26,16 +29,6 @@ public static class ValueObjectMapping
             SubmissionStateWorkflowType.ReviewOnly => SubmissionStateWorkflowTypeDto.ReviewOnly,
             SubmissionStateWorkflowType.ReviewWithDefense => SubmissionStateWorkflowTypeDto.ReviewWithDefense,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
-        };
-    }
-
-    public static SubmissionStateWorkflowType AsValueObject(this SubmissionStateWorkflowTypeDto dto)
-    {
-        return dto switch
-        {
-            SubmissionStateWorkflowTypeDto.ReviewOnly => SubmissionStateWorkflowType.ReviewOnly,
-            SubmissionStateWorkflowTypeDto.ReviewWithDefense => SubmissionStateWorkflowType.ReviewWithDefense,
-            _ => throw new ArgumentOutOfRangeException(nameof(dto), dto, null),
         };
     }
 
@@ -51,5 +44,20 @@ public static class ValueObjectMapping
             SubmissionStateKind.Banned => SubmissionStateDto.Banned,
             _ => throw new ArgumentOutOfRangeException(nameof(stateKind), stateKind, null),
         };
+    }
+
+    public static SubmissionStateWorkflowType AsValueObject(this SubmissionStateWorkflowTypeDto dto)
+    {
+        return dto switch
+        {
+            SubmissionStateWorkflowTypeDto.ReviewOnly => SubmissionStateWorkflowType.ReviewOnly,
+            SubmissionStateWorkflowTypeDto.ReviewWithDefense => SubmissionStateWorkflowType.ReviewWithDefense,
+            _ => throw new ArgumentOutOfRangeException(nameof(dto), dto, null),
+        };
+    }
+
+    public static SpbDateTime AsSpbDateTime(this DateTime date)
+    {
+        return new SpbDateTime(date);
     }
 }

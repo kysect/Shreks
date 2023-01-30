@@ -5,14 +5,22 @@ namespace Kysect.Shreks.Mapping.Mappings;
 public static class FractionMapping
 {
     public static double AsDto(this Fraction fraction)
-        => fraction.Value;
-
-    public static Fraction AsFraction(this double fraction)
-        => new Fraction(fraction);
+    {
+        return fraction.Value;
+    }
 
     public static double? AsDto(this Fraction? fraction)
-        => fraction?.Value;
+    {
+        return fraction?.Value;
+    }
+
+    public static Fraction AsFraction(this double fraction)
+    {
+        return new Fraction(fraction);
+    }
 
     public static Fraction? AsFraction(this double? fraction)
-        => fraction == null ? null : new Fraction(fraction.Value);
+    {
+        return fraction == null ? null : new Fraction(fraction.Value);
+    }
 }

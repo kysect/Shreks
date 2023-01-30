@@ -13,7 +13,7 @@ public static class AssignmentMapping
             assignment.Title,
             assignment.ShortName,
             assignment.Order,
-            assignment.MinPoints.Value,
-            assignment.MaxPoints.Value);
+            assignment.MinPoints.AsDto(),
+            assignment.MaxPoints.AsDto());
     }
 }

@@ -18,8 +18,4 @@
         <ProjectReference Include="..\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Extensions" />
-    </ItemGroup>
-
 </Project>
