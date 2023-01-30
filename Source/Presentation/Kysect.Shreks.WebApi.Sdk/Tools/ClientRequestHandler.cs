@@ -1,16 +1,18 @@
 using Kysect.Shreks.WebApi.Sdk.Exceptions;
+using Newtonsoft.Json;
 using System.Net;
-using System.Net.Http.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.Tools;
 
 public class ClientRequestHandler
 {
     private readonly HttpClient _client;
+    private readonly JsonSerializerSettings _serializerSettings;
 
-    public ClientRequestHandler(HttpClient client)
+    public ClientRequestHandler(HttpClient client, JsonSerializerSettings serializerSettings)
     {
         _client = client;
+        _serializerSettings = serializerSettings;
     }
 
     public async Task<T> SendAsync<T>(HttpRequestMessage message, CancellationToken cancellationToken)
@@ -23,9 +25,10 @@ public class ClientRequestHandler
         if (response.IsSuccessStatusCode is false)
             throw RequestFailedException.Create("Failed to get sessions", response.StatusCode);
 
-        T? content = await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken);
+        string content = await response.Content.ReadAsStringAsync(cancellationToken);
+        T? value = JsonConvert.DeserializeObject<T>(content, _serializerSettings);
 
-        return content ?? throw RequestFailedException.Create("Failed to parse sessions", response.StatusCode);
+        return value ?? throw RequestFailedException.Create("Failed to parse sessions", response.StatusCode);
     }
 
     public async Task SendAsync(HttpRequestMessage message, CancellationToken cancellationToken)

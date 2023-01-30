@@ -13,7 +13,7 @@ internal class IdentityClient : IIdentityClient
     public IdentityClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
         _serializerSettings = serializerSettings;
-        _handler = new ClientRequestHandler(client);
+        _handler = new ClientRequestHandler(client, serializerSettings);
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
