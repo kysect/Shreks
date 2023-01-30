@@ -17,6 +17,8 @@ using ConfigurationBuilder = FluentSerialization.ConfigurationBuilder;
 
 namespace Kysect.Shreks.WebApi.Extensions;
 
+#pragma warning disable CA1506
+
 internal static class ServiceCollectionExtensions
 {
     internal static IServiceCollection ConfigureServiceCollection(
