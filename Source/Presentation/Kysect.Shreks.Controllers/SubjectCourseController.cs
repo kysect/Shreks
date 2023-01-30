@@ -28,9 +28,12 @@ public class SubjectCourseController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<SubjectCourseDto>> Create(CreateSubjectCourseRequest request)
     {
-        (Guid subjectId, string name, SubmissionStateWorkflowTypeDto workflowType) = request;
+        var command = new CreateSubjectCourse.Command(
+            request.SubjectId,
+            request.Name,
+            request.WorkflowType,
+            request.Associations);
 
-        var command = new CreateSubjectCourse.Command(subjectId, name, workflowType);
         CreateSubjectCourse.Response response = await _mediator.Send(command);
 
         return Ok(response.SubjectCourse);

@@ -2,8 +2,10 @@
 @using Kysect.Shreks.Application.Dto.SubjectCourses
 @using Kysect.Shreks.WebApi.Abstractions.Models.SubjectCourses
 @using Kysect.Shreks.Application.Dto.Study
+@using Kysect.Shreks.Application.Dto.SubjectCourseAssociations
 @using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
 @using Kysect.Shreks.WebUI.AdminPanel.Extensions
+@using SubjectCourseAssociationDto = Kysect.Shreks.Application.Dto.SubjectCourseAssociations.SubjectCourseAssociationDto
 @inject ISubjectCourseClient SubjectCourseClient
 @inject ISafeExecutor SafeExecutor
 
@@ -87,15 +89,15 @@
 
         await using ISafeExecutionBuilder<SubjectCourseDto> builder = SafeExecutor.Execute(async () =>
         {
-            var createRequest = new CreateSubjectCourseRequest(SubjectId.Value, _courseName, _workflowType.Value);
+            SubjectCourseAssociationDto[] associations = CreateAssociations().ToArray();
+
+            var createRequest = new CreateSubjectCourseRequest(
+                SubjectId.Value,
+                _courseName,
+                _workflowType.Value,
+                associations);
+
             var course = await SubjectCourseClient.CreateAsync(createRequest);
-
-            if (string.IsNullOrEmpty(_github) ||
-                string.IsNullOrEmpty(_templateRepository))
-                return course;
-
-            var githubRequest = new AddSubjectCourseGithubAssociationRequest(_github, _templateRepository);
-            course = await SubjectCourseClient.AddGithubAssociationAsync(course.Id, githubRequest);
 
             await (_modal?.Hide() ?? Task.CompletedTask);
 
@@ -104,6 +106,15 @@
 
         builder.Title = "Failed to create subject course";
         builder.OnSuccessAsync(OnSuccess.InvokeAsync);
+    }
+
+    private IEnumerable<SubjectCourseAssociationDto> CreateAssociations()
+    {
+        if (string.IsNullOrEmpty(_github) is false &&
+            string.IsNullOrEmpty(_templateRepository) is false)
+        {
+            yield return new GithubSubjectCourseAssociationDto(_github, _templateRepository);
+        }
     }
 
 }

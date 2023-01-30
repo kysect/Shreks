@@ -1,17 +1,20 @@
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.WebApi.Abstractions.Models.Subjects;
+using Kysect.Shreks.WebApi.Sdk.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Tools;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 
 internal class SubjectClient : ISubjectClient
 {
     private readonly ClientRequestHandler _handler;
+    private readonly JsonSerializerSettings _serializerSettings;
 
-    public SubjectClient(HttpClient client)
+    public SubjectClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
+        _serializerSettings = serializerSettings;
         _handler = new ClientRequestHandler(client);
     }
 
@@ -21,7 +24,7 @@ internal class SubjectClient : ISubjectClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/Subject")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<SubjectDto>(message, cancellationToken);
@@ -45,7 +48,7 @@ internal class SubjectClient : ISubjectClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Put, "api/Subject")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<SubjectDto>(message, cancellationToken);

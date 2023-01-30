@@ -2,17 +2,20 @@ using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.WebApi.Abstractions.Models.SubjectCourses;
+using Kysect.Shreks.WebApi.Sdk.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Tools;
-using System.Net.Http.Json;
+using Newtonsoft.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 
 internal class SubjectCourseClient : ISubjectCourseClient
 {
     private readonly ClientRequestHandler _handler;
+    private readonly JsonSerializerSettings _serializerSettings;
 
-    public SubjectCourseClient(HttpClient client)
+    public SubjectCourseClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
+        _serializerSettings = serializerSettings;
         _handler = new ClientRequestHandler(client);
     }
 
@@ -22,7 +25,7 @@ internal class SubjectCourseClient : ISubjectCourseClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/SubjectCourse")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<SubjectCourseDto>(message, cancellationToken);
@@ -47,7 +50,7 @@ internal class SubjectCourseClient : ISubjectCourseClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Put, $"api/SubjectCourse/{id}")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<SubjectCourseDto>(message, cancellationToken);
@@ -84,7 +87,7 @@ internal class SubjectCourseClient : ISubjectCourseClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, $"api/SubjectCourse/{id}/association/github")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<SubjectCourseDto>(message, cancellationToken);
@@ -105,7 +108,7 @@ internal class SubjectCourseClient : ISubjectCourseClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, $"api/SubjectCourse/{id}/deadline/fraction")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         await _handler.SendAsync(message, cancellationToken);

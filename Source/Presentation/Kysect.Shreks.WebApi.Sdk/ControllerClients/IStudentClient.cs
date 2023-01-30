@@ -17,6 +17,6 @@ public interface IStudentClient
     Task RemoveGithubAssociationAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyCollection<StudentDto>> QueryAsync(
-        QueryConfiguration<StudentQueryParameter> query,
+        QueryConfiguration<StudentQueryParameter> configuration,
         CancellationToken cancellationToken = default);
 }
