@@ -16,7 +16,7 @@ internal class SubjectCourseClient : ISubjectCourseClient
     public SubjectCourseClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
         _serializerSettings = serializerSettings;
-        _handler = new ClientRequestHandler(client);
+        _handler = new ClientRequestHandler(client, serializerSettings);
     }
 
     public async Task<SubjectCourseDto> CreateAsync(

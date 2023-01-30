@@ -9,6 +9,10 @@ public class DtoSerializationConfiguration : ISerializationConfiguration
     {
         configurationBuilder
             .Type<GithubSubjectCourseAssociationDto>()
-            .HasTypeKey("GithubAssociation");
+            .HasTypeKey("GithubSubjectCourseAssociation");
+
+        configurationBuilder
+            .Type<GoogleSubjectCourseAssociationDto>()
+            .HasTypeKey("GoogleSubjectCourseAssociation");
     }
 }
