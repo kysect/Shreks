@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Kysect.Shreks.Application.Dto.SubjectCourses;
-using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -14,18 +12,16 @@ namespace Kysect.Shreks.Application.Handlers.SubjectCourses;
 internal class CreateSubjectCourseHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
 
-    public CreateSubjectCourseHandler(IShreksDatabaseContext context, IMapper mapper)
+    public CreateSubjectCourseHandler(IShreksDatabaseContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
         Subject subject = await _context.Subjects.GetByIdAsync(request.SubjectId, cancellationToken);
-        SubmissionStateWorkflowType workflowType = _mapper.Map<SubmissionStateWorkflowType>(request.WorkflowType);
+        SubmissionStateWorkflowType workflowType = request.WorkflowType.AsValueObject();
 
         var subjectCourse = new SubjectCourse(
             Guid.NewGuid(),
@@ -45,6 +41,6 @@ internal class CreateSubjectCourseHandler : IRequestHandler<Command, Response>
         _context.SubjectCourses.Add(subjectCourse);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new Response(_mapper.Map<SubjectCourseDto>(subjectCourse));
+        return new Response(subjectCourse.ToDto());
     }
 }

@@ -7,7 +7,6 @@ using Kysect.Shreks.Controllers;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Identity.Extensions;
 using Kysect.Shreks.Integration.Github.Extensions;
-using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Presentation.GitHub.Extensions;
 using Kysect.Shreks.WebApi.Configuration;
 using Kysect.Shreks.WebApi.Filters;
@@ -46,7 +45,6 @@ internal static class ServiceCollectionExtensions
             .AddApplicationConfiguration()
             .AddHandlers()
             .AddGithubPresentation()
-            .AddMappingConfiguration()
             .AddDatabaseContext(o => o
                 .UseNpgsql(webApiConfiguration.PostgresConfiguration.ToConnectionString(webApiConfiguration
                     .DbNamesConfiguration.ApplicationDbName))

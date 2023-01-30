@@ -1,8 +1,7 @@
-﻿using AutoMapper;
-using Kysect.Shreks.Application.Dto.Study;
-using Kysect.Shreks.Core.Study;
+﻿using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateGroupAssignment;
 
@@ -11,12 +10,10 @@ namespace Kysect.Shreks.Application.Handlers.Study;
 internal class CreateGroupAssignmentHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
 
-    public CreateGroupAssignmentHandler(IShreksDatabaseContext context, IMapper mapper)
+    public CreateGroupAssignmentHandler(IShreksDatabaseContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -28,6 +25,6 @@ internal class CreateGroupAssignmentHandler : IRequestHandler<Command, Response>
         _context.GroupAssignments.Add(groupAssignment);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new Response(_mapper.Map<GroupAssignmentDto>(groupAssignment));
+        return new Response(groupAssignment.ToDto());
     }
 }

@@ -1,4 +1,3 @@
-using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Abstractions.Google.Notifications;
 using Kysect.Shreks.Application.Abstractions.Google.Sheets;
@@ -9,6 +8,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -19,7 +19,6 @@ internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<Subj
 {
     private readonly IShreksDatabaseContext _context;
     private readonly ILogger<SubjectCourseGroupQueueUpdatedHandler> _logger;
-    private readonly IMapper _mapper;
     private readonly IQueryExecutor _queryExecutor;
     private readonly ISheet<SubmissionsQueueDto> _sheet;
     private readonly ISubjectCourseTableService _subjectCourseTableService;
@@ -27,14 +26,12 @@ internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<Subj
     public SubjectCourseGroupQueueUpdatedHandler(
         IShreksDatabaseContext context,
         IQueryExecutor queryExecutor,
-        IMapper mapper,
         ISheet<SubmissionsQueueDto> sheet,
         ISubjectCourseTableService subjectCourseTableService,
         ILogger<SubjectCourseGroupQueueUpdatedHandler> logger)
     {
         _context = context;
         _queryExecutor = queryExecutor;
-        _mapper = mapper;
         _sheet = sheet;
         _subjectCourseTableService = subjectCourseTableService;
         _logger = logger;
@@ -69,7 +66,7 @@ internal class SubjectCourseGroupQueueUpdatedHandler : INotificationHandler<Subj
             _context.Submissions, _queryExecutor, cancellationToken);
 
         QueueSubmissionDto[] submissionsDto = submissions
-            .Select(_mapper.Map<QueueSubmissionDto>)
+            .Select(x => x.ToQueueDto())
             .ToArray();
 
         string groupName = await _context.StudentGroups

@@ -16,7 +16,7 @@ public class CreateStudentTest : TestBase
             .FirstAsync();
 
         var command = new CreateStudent.Command("A", "B", "C", groupId);
-        var handler = new CreateStudentHandler(Context, Mapper);
+        var handler = new CreateStudentHandler(Context);
 
         CreateStudent.Response response = await handler.Handle(command, default);
 

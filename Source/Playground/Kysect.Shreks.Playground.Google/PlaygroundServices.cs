@@ -3,7 +3,6 @@ using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Google.Extensions;
 using Kysect.Shreks.Application.Google.Workers;
 using Kysect.Shreks.Application.Handlers.Extensions;
-using Kysect.Shreks.Mapping.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
@@ -21,7 +20,6 @@ internal static class PlaygroundServices
                 .ConfigureGoogleCredentials(googleCredentials)
                 .ConfigureDriveId("17CfXw__b4nnPp7VEEgWGe-N8VptaL1hP"))
             .AddHandlers()
-            .AddMappingConfiguration()
             .AddLogging(o => o.AddSerilog())
             .AddSingleton<GoogleTableUpdateWorker>()
             .AddGooglePlaygroundDatabase()
