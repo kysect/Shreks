@@ -2,21 +2,26 @@ using Blazored.LocalStorage;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Kysect.Shreks.Application.Dto.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Identity;
 using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling;
 using Kysect.Shreks.WebUI.AdminPanel.Identity;
 using Kysect.Shreks.WebUI.AdminPanel.Tools;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace Kysect.Shreks.WebUI.AdminPanel.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static void AddAdminPanel(this IServiceCollection collection, Uri baseUrl)
+    public static void AddAdminPanel(this IServiceCollection collection, IWebAssemblyHostEnvironment environment)
     {
         collection.AddBlazoredLocalStorage();
         collection.AddBlazorise();
+
+        collection.AddDtoConfiguration();
+        collection.AddSingleton(new EnvironmentConfiguration(environment.IsDevelopment()));
 
         collection
             .AddBlazorise(options => options.Immediate = true)
@@ -42,6 +47,6 @@ public static class ServiceCollectionExtensions
         collection.AddScoped<IdentityStateProvider>();
         collection.AddScoped<AuthenticationStateProvider>(x => x.GetRequiredService<IdentityStateProvider>());
 
-        collection.AddShreksSdk(baseUrl);
+        collection.AddShreksSdk(new Uri(environment.BaseAddress));
     }
 }

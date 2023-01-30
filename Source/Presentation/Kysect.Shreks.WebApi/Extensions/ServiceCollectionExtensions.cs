@@ -1,4 +1,6 @@
-﻿using Kysect.Shreks.Application.Extensions;
+﻿using FluentSerialization.Extensions.NewtonsoftJson;
+using Kysect.Shreks.Application.Dto.Tools;
+using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.GithubWorkflow.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
 using Kysect.Shreks.Controllers;
@@ -11,6 +13,7 @@ using Kysect.Shreks.WebApi.Configuration;
 using Kysect.Shreks.WebApi.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ConfigurationBuilder = FluentSerialization.ConfigurationBuilder;
 
 namespace Kysect.Shreks.WebApi.Extensions;
 
@@ -27,7 +30,12 @@ internal static class ServiceCollectionExtensions
 
         serviceCollection
             .AddControllers(x => x.Filters.Add<AuthenticationFilter>())
-            .AddNewtonsoftJson()
+            .AddNewtonsoftJson(x =>
+            {
+                ConfigurationBuilder
+                    .Build(new DtoSerializationConfiguration())
+                    .ApplyToSerializationSettings(x.SerializerSettings);
+            })
             .AddApplicationPart(typeof(IControllerProjectMarker).Assembly)
             .AddControllersAsServices();
 
