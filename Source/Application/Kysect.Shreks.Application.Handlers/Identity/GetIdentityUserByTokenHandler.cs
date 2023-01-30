@@ -1,7 +1,6 @@
-using AutoMapper;
-using Kysect.Shreks.Application.Dto.Identity;
 using Kysect.Shreks.Identity.Entities;
 using Kysect.Shreks.Identity.Tools;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -15,17 +14,14 @@ namespace Kysect.Shreks.Application.Handlers.Identity;
 internal class GetIdentityUserByTokenHandler : IRequestHandler<Query, Response>
 {
     private readonly IdentityConfiguration _configuration;
-    private readonly IMapper _mapper;
     private readonly UserManager<ShreksIdentityUser> _userManager;
 
     public GetIdentityUserByTokenHandler(
         IdentityConfiguration configuration,
-        UserManager<ShreksIdentityUser> userManager,
-        IMapper mapper)
+        UserManager<ShreksIdentityUser> userManager)
     {
         _configuration = configuration;
         _userManager = userManager;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -47,8 +43,7 @@ internal class GetIdentityUserByTokenHandler : IRequestHandler<Query, Response>
         string username = jwtToken.Claims.Single(x => x.Type.Equals(ClaimTypes.Name, StringComparison.Ordinal)).Value;
 
         ShreksIdentityUser? user = await _userManager.FindByNameAsync(username);
-        IdentityUserDto? userDto = _mapper.Map<IdentityUserDto>(user);
 
-        return new Response(userDto);
+        return new Response(user.ToDto());
     }
 }

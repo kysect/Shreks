@@ -31,7 +31,7 @@ public class GetLastPullRequestSubmissionHandlerTests : TestBase
             .PrNumber;
 
         var query = new GetLastPullRequestSubmission.Query(userId, assignmentId, pullRequestNumber);
-        var handler = new GetLastPullRequestSubmissionHandler(Context, Mapper);
+        var handler = new GetLastPullRequestSubmissionHandler(Context);
 
         GetLastPullRequestSubmission.Response response = await handler.Handle(query, default);
 

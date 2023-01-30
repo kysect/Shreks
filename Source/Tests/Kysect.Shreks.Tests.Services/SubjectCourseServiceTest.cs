@@ -14,7 +14,7 @@ public class SubjectCourseServiceTest : TestBase
 
     public SubjectCourseServiceTest()
     {
-        _service = new SubjectCourseService(Context, Mapper);
+        _service = new SubjectCourseService(Context);
     }
 
     [Fact]

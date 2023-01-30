@@ -1,4 +1,5 @@
 @using Kysect.Shreks.Application.Dto.SubjectCourses
+@using Kysect.Shreks.Application.Dto.SubjectCourseAssociations
 @if (Associations is not null)
 {
     <Div>
@@ -6,24 +7,21 @@
         {
             <Text>
                 <Heading Size="HeadingSize.Is6" Display="Display.Inline">
-                    @FormatAssociationType(association.Type)
+                    @FormatAssociationType(association)
                 </Heading>
                 :
                 @{
-                    switch (association.Type)
+                    switch (association)
                     {
-                        case "GithubSubjectCourseAssociation":
-                            <Anchor To="@($"https://github.com/{association.Value}")">
+                        case GithubSubjectCourseAssociationDto githubAssociation:
+                            <Anchor To="@($"https://github.com/{githubAssociation.GithubOrganizationName}")">
                                 Organization
                             </Anchor>
                             break;
-                        case "GoogleTableSubjectCourseAssociation":
-                            <Anchor To="@($"https://docs.google.com/spreadsheets/d/{association.Value}")">
+                        case GoogleSubjectCourseAssociationDto googleAssociation:
+                            <Anchor To="@($"https://docs.google.com/spreadsheets/d/{googleAssociation.SpreadsheetId}")">
                                 Table
                             </Anchor>
-                            break;
-                        default:
-                            @association.Value
                             break;
                     }
                 }
@@ -38,14 +36,11 @@
     [Parameter]
     public IReadOnlyCollection<SubjectCourseAssociationDto>? Associations { get; set; }
 
-    private string FormatAssociationType(string type)
+    private string FormatAssociationType(SubjectCourseAssociationDto association) => association switch
     {
-        return type switch
-        {
-            "GithubSubjectCourseAssociation" => "Github",
-            "GoogleTableSubjectCourseAssociation" => "Google",
-            _ => type,
-            };
-    }
+        GithubSubjectCourseAssociationDto  => "GitHub",
+        GoogleSubjectCourseAssociationDto  => "Google",
+        _ => throw new ArgumentOutOfRangeException(nameof(association)),
+        };
 
 }

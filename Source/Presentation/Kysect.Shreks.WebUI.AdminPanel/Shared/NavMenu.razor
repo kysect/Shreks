@@ -74,8 +74,7 @@
 
     private void HandleLocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        Console.WriteLine(NavigationManager.Uri);
-        var uri = new Uri(NavigationManager.Uri, UriKind.Relative);
+        var uri = new Uri(NavigationManager.Uri);
 
         BaseComponent? component = uri.AbsolutePath switch
         {

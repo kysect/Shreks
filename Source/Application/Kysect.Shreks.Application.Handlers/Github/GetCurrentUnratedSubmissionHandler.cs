@@ -1,9 +1,8 @@
-using AutoMapper;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Contracts.Github.Queries.GetCurrentUnratedSubmission;
@@ -13,12 +12,10 @@ namespace Kysect.Shreks.Application.Handlers.Github;
 internal class GetCurrentUnratedSubmissionHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
 
-    public GetCurrentUnratedSubmissionHandler(IShreksDatabaseContext context, IMapper mapper)
+    public GetCurrentUnratedSubmissionHandler(IShreksDatabaseContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -37,8 +34,6 @@ internal class GetCurrentUnratedSubmissionHandler : IRequestHandler<Query, Respo
         if (submission is null)
             throw EntityNotFoundException.NoUnratedSubmissionInPullRequest(request.Payload);
 
-        SubmissionDto dto = _mapper.Map<SubmissionDto>(submission);
-
-        return new Response(dto);
+        return new Response(submission.ToDto());
     }
 }

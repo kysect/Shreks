@@ -1,4 +1,3 @@
-using AutoMapper;
 using Kysect.Shreks.Application.Abstractions.SubjectCourses;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
@@ -8,6 +7,7 @@ using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.Mapping.Mappings;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Application.Services;
@@ -15,12 +15,10 @@ namespace Kysect.Shreks.Application.Services;
 public class SubjectCourseService : ISubjectCourseService
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
 
-    public SubjectCourseService(IShreksDatabaseContext context, IMapper mapper)
+    public SubjectCourseService(IShreksDatabaseContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<SubjectCoursePointsDto> CalculatePointsAsync(
@@ -48,13 +46,13 @@ public class SubjectCourseService : ISubjectCourseService
             .Select(MapToStudentPoints)
             .ToArray();
 
-        AssignmentDto[] assignmentsDto = assignments.Select(_mapper.Map<AssignmentDto>).ToArray();
+        AssignmentDto[] assignmentsDto = assignments.Select(x => x.ToDto()).ToArray();
         return new SubjectCoursePointsDto(assignmentsDto, studentPoints);
     }
 
     private StudentPointsDto MapToStudentPoints(IGrouping<Student, StudentAssignment> grouping)
     {
-        StudentDto studentDto = _mapper.Map<StudentDto>(grouping.Key);
+        StudentDto studentDto = grouping.Key.ToDto();
 
         AssignmentPointsDto[] pointsDto = grouping
             .Select(x => x.Points)

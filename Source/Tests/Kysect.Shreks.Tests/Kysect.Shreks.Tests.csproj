@@ -10,14 +10,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="Serilog.Extensions.Logging"/>
-        <PackageReference Include="Serilog.Sinks.Console"/>
-        <PackageReference Include="Serilog.Sinks.XUnit"/>
-        <PackageReference Include="xunit"/>
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Sinks.Console" />
+        <PackageReference Include="Serilog.Sinks.XUnit" />
+        <PackageReference Include="xunit" />
         <PackageReference Include="xunit.runner.visualstudio">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -29,12 +29,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj"/>
-        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj"/>
-        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj"/>
-        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj"/>
-        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj"/>
-        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj"/>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.GithubWorkflow\Kysect.Shreks.Application.GithubWorkflow.csproj" />
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Handlers\Kysect.Shreks.Application.Handlers.csproj" />
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Google\Kysect.Shreks.Application.Google.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.DataAccess\Kysect.Shreks.DataAccess.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Mapping\Kysect.Shreks.Mapping.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Kysect.Shreks.Seeding\Kysect.Shreks.Seeding.csproj" />
     </ItemGroup>
 
 </Project>

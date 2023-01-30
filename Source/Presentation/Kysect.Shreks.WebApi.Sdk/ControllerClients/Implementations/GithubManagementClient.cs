@@ -1,4 +1,5 @@
 using Kysect.Shreks.WebApi.Sdk.Tools;
+using Newtonsoft.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 
@@ -6,9 +7,9 @@ internal class GithubManagementClient : IGithubManagementClient
 {
     private readonly ClientRequestHandler _handler;
 
-    public GithubManagementClient(HttpClient client)
+    public GithubManagementClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
-        _handler = new ClientRequestHandler(client);
+        _handler = new ClientRequestHandler(client, serializerSettings);
     }
 
     public async Task ForceOrganizationUpdateAsync(CancellationToken cancellationToken = default)

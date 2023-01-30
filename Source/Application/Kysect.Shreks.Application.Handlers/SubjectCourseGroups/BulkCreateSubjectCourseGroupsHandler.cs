@@ -1,8 +1,8 @@
-using AutoMapper;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Contracts.SubjectCourseGroups.Commands.BulkCreateSubjectCourseGroups;
@@ -12,12 +12,10 @@ namespace Kysect.Shreks.Application.Handlers.SubjectCourseGroups;
 internal class BulkCreateSubjectCourseGroupsHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
 
-    public BulkCreateSubjectCourseGroupsHandler(IShreksDatabaseContext context, IMapper mapper)
+    public BulkCreateSubjectCourseGroupsHandler(IShreksDatabaseContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -59,7 +57,7 @@ internal class BulkCreateSubjectCourseGroupsHandler : IRequestHandler<Command, R
         _context.SubjectCourses.Update(values.Course);
         await _context.SaveChangesAsync(cancellationToken);
 
-        SubjectCourseGroupDto[] groups = subjectCourseGroups.Select(_mapper.Map<SubjectCourseGroupDto>).ToArray();
+        SubjectCourseGroupDto[] groups = subjectCourseGroups.Select(x => x.ToDto()).ToArray();
 
         return new Response(groups);
     }

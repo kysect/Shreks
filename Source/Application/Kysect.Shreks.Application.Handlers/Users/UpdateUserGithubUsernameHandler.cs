@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Providers;
+﻿using Kysect.Shreks.Application.GithubWorkflow.Abstractions.Providers;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Contracts.Users.Commands.UpdateUserGithubUsername;
@@ -16,15 +15,12 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IGithubUserProvider _githubUserProvider;
-    private readonly IMapper _mapper;
 
     public UpdateUserGithubUsernameHandler(
         IShreksDatabaseContext context,
-        IMapper mapper,
         IGithubUserProvider githubUserProvider)
     {
         _context = context;
-        _mapper = mapper;
         _githubUserProvider = githubUserProvider;
     }
 
@@ -54,8 +50,6 @@ internal class UpdateUserGithubUsernameHandler : IRequestHandler<Command, Respon
         await _context.UserAssociations.AddAsync(association, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        UserDto? dto = _mapper.Map<UserDto>(user);
-
-        return new Response(dto);
+        return new Response(user.ToDto());
     }
 }

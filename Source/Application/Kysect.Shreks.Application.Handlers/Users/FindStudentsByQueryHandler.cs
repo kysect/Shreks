@@ -1,9 +1,9 @@
-using AutoMapper;
 using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Users;
 using Kysect.Shreks.Application.Queries;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Contracts.Users.Queries.FindStudentsByQuery;
@@ -13,17 +13,14 @@ namespace Kysect.Shreks.Application.Handlers.Users;
 internal class FindStudentsByQueryHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
     private readonly IEntityQuery<Student, StudentQueryParameter> _query;
 
     public FindStudentsByQueryHandler(
         IEntityQuery<Student, StudentQueryParameter> query,
-        IShreksDatabaseContext context,
-        IMapper mapper)
+        IShreksDatabaseContext context)
     {
         _query = query;
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -32,7 +29,7 @@ internal class FindStudentsByQueryHandler : IRequestHandler<Query, Response>
         query = _query.Apply(query, request.Configuration);
 
         List<Student> students = await query.ToListAsync(cancellationToken);
-        StudentDto[] dto = students.Select(_mapper.Map<StudentDto>).ToArray();
+        StudentDto[] dto = students.Select(x => x.ToDto()).ToArray();
 
         return new Response(dto);
     }
