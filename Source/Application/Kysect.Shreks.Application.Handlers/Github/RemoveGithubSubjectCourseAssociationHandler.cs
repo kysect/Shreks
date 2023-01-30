@@ -1,8 +1,6 @@
-using Kysect.Shreks.Application.Factories;
-using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
 using Kysect.Shreks.DataAccess.Abstractions;
-using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Contracts.Github.Commands.RemoveGithubSubjectCourseAssociation;
@@ -22,15 +20,14 @@ internal class RemoveGithubSubjectCourseAssociationHandler : IRequestHandler<Com
     {
         GithubSubjectCourseAssociation subjectCourseAssociation = await _context
             .SubjectCourseAssociations
-            .OfType<GithubSubjectCourseAssociation>()
+            .Include(x => x.SubjectCourse)
             .Where(gsa => gsa.SubjectCourse.Id == request.SubjectCourseId)
+            .OfType<GithubSubjectCourseAssociation>()
             .FirstAsync(cancellationToken);
 
         _context.SubjectCourseAssociations.Remove(subjectCourseAssociation);
         await _context.SaveChangesAsync(cancellationToken);
 
-        SubjectCourse subjectCourse =
-            await _context.SubjectCourses.GetByIdAsync(request.SubjectCourseId, cancellationToken);
-        return new Response(SubjectCourseDtoFactory.CreateFrom(subjectCourse));
+        return new Response(subjectCourseAssociation.SubjectCourse.ToDto());
     }
 }

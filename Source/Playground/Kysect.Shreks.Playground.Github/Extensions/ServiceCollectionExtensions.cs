@@ -1,7 +1,6 @@
 ﻿using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Google.Extensions;
 using Kysect.Shreks.Application.Handlers.Extensions;
-using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Presentation.GitHub.Extensions;
 using Serilog;
 
@@ -12,7 +11,6 @@ internal static class ServiceCollectionExtensions
     internal static IServiceCollection AddPlaygroundDependencies(this IServiceCollection servicesCollection)
     {
         return servicesCollection.AddApplicationConfiguration()
-            .AddMappingConfiguration()
             .AddHandlers()
             .AddGithubPresentation()
             .AddDummyGoogleIntegration()

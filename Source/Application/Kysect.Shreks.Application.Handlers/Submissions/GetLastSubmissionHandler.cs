@@ -1,8 +1,7 @@
-using AutoMapper;
-using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Contracts.Submissions.Queries.GetLastSubmission;
@@ -12,12 +11,10 @@ namespace Kysect.Shreks.Application.Handlers.Submissions;
 internal class GetLastSubmissionHandler : IRequestHandler<Query, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
 
-    public GetLastSubmissionHandler(IShreksDatabaseContext context, IMapper mapper)
+    public GetLastSubmissionHandler(IShreksDatabaseContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Query request, CancellationToken cancellationToken)
@@ -34,8 +31,6 @@ internal class GetLastSubmissionHandler : IRequestHandler<Query, Response>
             throw new EntityNotFoundException(message);
         }
 
-        SubmissionDto dto = _mapper.Map<SubmissionDto>(submission);
-
-        return new Response(dto);
+        return new Response(submission.ToDto());
     }
 }

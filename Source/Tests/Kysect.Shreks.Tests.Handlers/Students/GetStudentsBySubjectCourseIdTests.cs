@@ -15,7 +15,7 @@ public class GetStudentsBySubjectCourseIdTests : TestBase
             .First(sc => sc.Groups.Any(g => g.StudentGroup.Students.Any()));
 
         var query = new GetStudentsBySubjectCourseId.Query(subjectCourse.Id);
-        var handler = new GetStudentsBySubjectCourseIdHandler(Context, Mapper);
+        var handler = new GetStudentsBySubjectCourseIdHandler(Context);
 
         GetStudentsBySubjectCourseId.Response handle = await handler.Handle(query, CancellationToken.None);
 

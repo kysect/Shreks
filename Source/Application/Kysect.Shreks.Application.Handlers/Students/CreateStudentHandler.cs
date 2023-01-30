@@ -1,9 +1,8 @@
-﻿using AutoMapper;
-using Kysect.Shreks.Application.Dto.Users;
-using Kysect.Shreks.Common.Exceptions;
+﻿using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using static Kysect.Shreks.Application.Contracts.Students.Commands.CreateStudent;
@@ -13,12 +12,10 @@ namespace Kysect.Shreks.Application.Handlers.Students;
 internal class CreateStudentHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly IMapper _mapper;
 
-    public CreateStudentHandler(IShreksDatabaseContext context, IMapper mapper)
+    public CreateStudentHandler(IShreksDatabaseContext context)
     {
         _context = context;
-        _mapper = mapper;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -36,8 +33,6 @@ internal class CreateStudentHandler : IRequestHandler<Command, Response>
         _context.Students.Add(student);
         await _context.SaveChangesAsync(cancellationToken);
 
-        StudentDto dto = _mapper.Map<StudentDto>(student);
-
-        return new Response(dto);
+        return new Response(student.ToDto());
     }
 }

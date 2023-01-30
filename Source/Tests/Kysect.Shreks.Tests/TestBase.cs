@@ -1,4 +1,3 @@
-using AutoMapper;
 using Bogus;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.SubjectCourseAssociations;
@@ -7,7 +6,6 @@ using Kysect.Shreks.Core.UserAssociations;
 using Kysect.Shreks.Core.Users;
 using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
-using Kysect.Shreks.Mapping.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.Seeding.Options;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +38,6 @@ public class TestBase : IDisposable
         });
 
         collection.AddDatabaseSeeders();
-        collection.AddMappingConfiguration();
 
         // TODO: Do not call virtual methods in constructor
 #pragma warning disable CA2214
@@ -54,14 +51,10 @@ public class TestBase : IDisposable
         Context = Provider.GetRequiredService<ShreksDatabaseContext>();
         Context.Database.EnsureCreated();
 
-        Mapper = Provider.GetRequiredService<IMapper>();
-
         Provider.UseDatabaseSeeders().GetAwaiter().GetResult();
     }
 
     protected ShreksDatabaseContext Context { get; }
-
-    protected IMapper Mapper { get; }
 
     protected IServiceProvider Provider { get; }
 
