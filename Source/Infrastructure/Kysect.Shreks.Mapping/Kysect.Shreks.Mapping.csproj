@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     </ItemGroup>
 
@@ -17,6 +16,10 @@
         <ProjectReference Include="..\..\Application\Kysect.Shreks.Application.Dto\Kysect.Shreks.Application.Dto.csproj" />
         <ProjectReference Include="..\..\Domain\Kysect.Shreks.Core\Kysect.Shreks.Core.csproj" />
         <ProjectReference Include="..\Kysect.Shreks.Identity\Kysect.Shreks.Identity.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Extensions" />
     </ItemGroup>
 
 </Project>
