@@ -26,7 +26,7 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
 
         int assignmentOrder = index + 1;
 
-        var assignment = new Assignment(
+        return new Assignment(
             _faker.Random.Guid(),
             _faker.Commerce.Product(),
             $"lab-{assignmentOrder}",
@@ -34,9 +34,5 @@ public class AssignmentGenerator : EntityGeneratorBase<Assignment>
             _faker.Random.Points(0, 5),
             _faker.Random.Points(5, 10),
             subjectCourse);
-
-        subjectCourse.AddAssignment(assignment);
-
-        return assignment;
     }
 }
