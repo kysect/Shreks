@@ -202,8 +202,8 @@ internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
         string username,
         CancellationToken cancellationToken)
     {
-        var query = new GetUserByGithubUsername.Query(username);
-        GetUserByGithubUsername.Response response = await _mediator.Send(query, cancellationToken);
+        var query = new GetGithubUser.Query(username);
+        GetGithubUser.Response response = await _mediator.Send(query, cancellationToken);
 
         return response.User;
     }
@@ -213,8 +213,8 @@ internal class ShreksWebhookEventHandler : IShreksWebhookEventHandler
         string branchName,
         CancellationToken cancellationToken)
     {
-        var query = new GetAssignment.Query(organizationName, branchName);
-        GetAssignment.Response response = await _mediator.Send(query, cancellationToken);
+        var query = new GetGitHubAssignment.Query(organizationName, branchName);
+        GetGitHubAssignment.Response response = await _mediator.Send(query, cancellationToken);
 
         return response.Assignment;
     }

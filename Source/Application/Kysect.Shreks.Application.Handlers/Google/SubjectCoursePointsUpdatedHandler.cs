@@ -49,15 +49,15 @@ internal class SubjectCoursePointsUpdatedHandler : INotificationHandler<SubjectC
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "Start updating for points sheet of course {SubjectCourseId}.",
+            "Start updating for points sheet of course {SubjectCourseId}",
             notification.SubjectCourseId);
 
-        _logger.LogInformation("Started to collecting all course {courseId} points", notification.SubjectCourseId);
+        _logger.LogInformation("Started to collecting all course {CourseId} points", notification.SubjectCourseId);
 
         SubjectCoursePointsDto points = await _service.CalculatePointsAsync(
             notification.SubjectCourseId, cancellationToken);
 
-        _logger.LogInformation("Finished to collect all course {courseId} points", notification.SubjectCourseId);
+        _logger.LogInformation("Finished to collect all course {CourseId} points", notification.SubjectCourseId);
 
         if (_logger.IsEnabled(LogLevel.Trace))
         {
