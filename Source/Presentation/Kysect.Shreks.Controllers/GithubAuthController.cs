@@ -40,8 +40,8 @@ public class GithubAuthController : Controller
             return Unauthorized();
 
         // TODO: use real UserId here
-        var command = new UpdateUserGithubUsername.Command(Guid.NewGuid(), githubUsername);
-        UpdateUserGithubUsername.Response response = await _mediator.Send(command);
+        var command = new UpdateGithubUser.Command(Guid.NewGuid(), githubUsername);
+        UpdateGithubUser.Response response = await _mediator.Send(command);
 
         return Ok(response);
     }

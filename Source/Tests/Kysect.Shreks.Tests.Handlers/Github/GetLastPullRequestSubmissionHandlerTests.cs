@@ -1,6 +1,6 @@
 using FluentAssertions;
 using Kysect.Shreks.Application.Contracts.Github.Queries;
-using Kysect.Shreks.Application.Handlers.Github;
+using Kysect.Shreks.Application.Handlers.Github.Submissions;
 using Kysect.Shreks.Core.SubmissionAssociations;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.SubmissionStateWorkflows;

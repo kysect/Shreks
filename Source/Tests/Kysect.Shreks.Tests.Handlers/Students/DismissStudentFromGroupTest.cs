@@ -1,5 +1,5 @@
 using Kysect.Shreks.Application.Contracts.Users.Commands;
-using Kysect.Shreks.Application.Handlers.Users;
+using Kysect.Shreks.Application.Handlers.Students;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
