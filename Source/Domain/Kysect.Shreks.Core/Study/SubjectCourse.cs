@@ -63,8 +63,13 @@ public partial class SubjectCourse : IEntity<Guid>
             throw new DomainInvalidOperationException($"Group {group} is already assigned to this course");
 
         var subjectCourseGroup = new SubjectCourseGroup(this, group);
-
         _groups.Add(subjectCourseGroup);
+
+        foreach (Assignment assignment in Assignments)
+        {
+            assignment.AddGroup(group, DateOnly.FromDateTime(DateTime.UnixEpoch));
+        }
+
         return subjectCourseGroup;
     }
 
@@ -82,6 +87,11 @@ public partial class SubjectCourse : IEntity<Guid>
 
         if (!_assignments.Add(assignment))
             throw new DomainInvalidOperationException($"Assignment {assignment} is already assigned to this course");
+
+        foreach (SubjectCourseGroup group in Groups)
+        {
+            assignment.AddGroup(group.StudentGroup, DateOnly.FromDateTime(DateTime.UnixEpoch));
+        }
     }
 
     public void RemoveAssignment(Assignment assignment)

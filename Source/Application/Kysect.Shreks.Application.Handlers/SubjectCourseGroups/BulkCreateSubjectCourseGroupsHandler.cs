@@ -46,14 +46,6 @@ internal class BulkCreateSubjectCourseGroupsHandler : IRequestHandler<Command, R
             .Select(x => values.Course.AddGroup(x))
             .ToArray();
 
-        IEnumerable<(Assignment Assignment, StudentGroup Group)> groupAssignments = values.Course.Assignments
-            .SelectMany(_ => values.Groups, (a, g) => (a, g));
-
-        foreach ((Assignment assignment, StudentGroup group) in groupAssignments)
-        {
-            assignment.AddGroup(group, DateOnly.FromDateTime(DateTime.UnixEpoch));
-        }
-
         _context.SubjectCourses.Update(values.Course);
         await _context.SaveChangesAsync(cancellationToken);
 

@@ -30,6 +30,8 @@ public partial class Assignment : IEntity<Guid>
         MaxPoints = maxPoints;
         SubjectCourse = subjectCourse;
         _groupAssignments = new HashSet<GroupAssignment>();
+
+        subjectCourse.AddAssignment(this);
     }
 
     public string Title { get; set; }

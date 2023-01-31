@@ -29,11 +29,6 @@ internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Respon
 
         SubjectCourseGroup subjectCourseGroup = subjectCourse.AddGroup(studentGroup);
 
-        foreach (Assignment assignment in subjectCourse.Assignments)
-        {
-            assignment.AddGroup(studentGroup, DateOnly.FromDateTime(DateTime.UnixEpoch));
-        }
-
         await _context.SubjectCourseGroups.AddAsync(subjectCourseGroup, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
