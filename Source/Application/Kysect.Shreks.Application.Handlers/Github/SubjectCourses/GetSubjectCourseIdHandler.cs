@@ -21,13 +21,12 @@ internal class GetSubjectCourseIdHandler : IRequestHandler<Query, Response>
     {
         SubjectCourse? subjectCourse = await _context.SubjectCourseAssociations
             .OfType<GithubSubjectCourseAssociation>()
-            .Where(x => x.GithubOrganizationName.Equals(request.OrganizationName))
+            .Where(x => x.GithubOrganizationName.ToLower().Equals(request.OrganizationName.ToLower()))
             .Select(x => x.SubjectCourse)
             .SingleOrDefaultAsync(cancellationToken);
 
-        if (subjectCourse is null)
-            throw new EntityNotFoundException("SubjectCourse not found");
-
-        return new Response(subjectCourse.Id);
+        return subjectCourse is null
+            ? throw new EntityNotFoundException("SubjectCourse not found")
+            : new Response(subjectCourse.Id);
     }
 }

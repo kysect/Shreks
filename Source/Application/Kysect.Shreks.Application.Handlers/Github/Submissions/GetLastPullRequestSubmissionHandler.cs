@@ -30,9 +30,8 @@ internal class GetLastPullRequestSubmissionHandler : IRequestHandler<Query, Resp
             .OrderByDescending(x => x.Code)
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (submission is null)
-            throw new EntityNotFoundException("Submission not found");
-
-        return new Response(submission.ToDto());
+        return submission is null
+            ? throw new EntityNotFoundException("Submission not found")
+            : new Response(submission.ToDto());
     }
 }

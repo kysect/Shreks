@@ -26,9 +26,8 @@ internal class GetGithubUserHandler : IRequestHandler<Query, Response>
             .Select(x => x.User)
             .SingleOrDefaultAsync(cancellationToken);
 
-        if (user is null)
-            throw DomainInvalidOperationException.UserNotFoundByGithubUsername(request.Username);
-
-        return new Response(user.ToDto());
+        return user is null
+            ? throw DomainInvalidOperationException.UserNotFoundByGithubUsername(request.Username)
+            : new Response(user.ToDto());
     }
 }

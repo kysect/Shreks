@@ -31,9 +31,8 @@ internal class GetCurrentUnratedGitHubSubmissionHandler : IRequestHandler<Query,
             .Select(a => a.Submission)
             .FirstOrDefaultAsync(cancellationToken);
 
-        if (submission is null)
-            throw EntityNotFoundException.NoUnratedSubmissionInPullRequest(request.Payload);
-
-        return new Response(submission.ToDto());
+        return submission is null
+            ? throw EntityNotFoundException.NoUnratedSubmissionInPullRequest(request.Payload)
+            : new Response(submission.ToDto());
     }
 }

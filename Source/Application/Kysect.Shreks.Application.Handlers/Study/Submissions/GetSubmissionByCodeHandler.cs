@@ -25,9 +25,8 @@ internal class GetSubmissionByCodeHandler : IRequestHandler<Query, Response>
             .Where(x => x.Code.Equals(request.Code))
             .SingleOrDefaultAsync(cancellationToken);
 
-        if (submission is null)
-            throw new EntityNotFoundException($"Couldn't find submission with code ${request.Code}");
-
-        return new Response(submission.ToDto());
+        return submission is null
+            ? throw new EntityNotFoundException($"Couldn't find submission with code ${request.Code}")
+            : new Response(submission.ToDto());
     }
 }

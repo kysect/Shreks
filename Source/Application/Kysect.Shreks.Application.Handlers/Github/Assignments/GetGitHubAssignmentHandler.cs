@@ -24,9 +24,9 @@ internal class GetGitHubAssignmentHandler : IRequestHandler<Query, Response>
     {
         Assignment? assignment = await _context.SubjectCourseAssociations
             .OfType<GithubSubjectCourseAssociation>()
-            .Where(x => x.GithubOrganizationName.Equals(request.OrganizationName))
+            .Where(x => x.GithubOrganizationName.ToLower().Equals(request.OrganizationName.ToLower()))
             .SelectMany(x => x.SubjectCourse.Assignments)
-            .Where(x => x.ShortName.Equals(request.BranchName))
+            .Where(x => x.ShortName.ToLower().Equals(request.BranchName.ToLower()))
             .SingleOrDefaultAsync(cancellationToken);
 
         if (assignment is not null)
@@ -39,7 +39,7 @@ internal class GetGitHubAssignmentHandler : IRequestHandler<Query, Response>
             .Include(x => x.SubjectCourse)
             .ThenInclude(x => x.Assignments)
             .OfType<GithubSubjectCourseAssociation>()
-            .Where(x => x.GithubOrganizationName.Equals(request.OrganizationName))
+            .Where(x => x.GithubOrganizationName.ToLower().Equals(request.OrganizationName.ToLower()))
             .Select(x => x.SubjectCourse)
             .SingleOrDefaultAsync(cancellationToken);
 
