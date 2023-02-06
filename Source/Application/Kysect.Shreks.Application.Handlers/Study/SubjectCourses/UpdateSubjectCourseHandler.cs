@@ -3,7 +3,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
-using static Kysect.Shreks.Application.Contracts.Study.Commands.UpdateSubjectCourse;
+using static Kysect.Shreks.Application.Contracts.Study.SubjectCourses.Commands.UpdateSubjectCourse;
 
 namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourses;
 

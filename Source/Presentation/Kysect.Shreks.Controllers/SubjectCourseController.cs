@@ -1,7 +1,9 @@
 ﻿using Kysect.Shreks.Application.Contracts.Github.Commands;
 using Kysect.Shreks.Application.Contracts.Students.Queries;
-using Kysect.Shreks.Application.Contracts.Study.Commands;
-using Kysect.Shreks.Application.Contracts.Study.Queries;
+using Kysect.Shreks.Application.Contracts.Study.Assignments.Queries;
+using Kysect.Shreks.Application.Contracts.Study.SubjectCourseGroups.Queries;
+using Kysect.Shreks.Application.Contracts.Study.SubjectCourses.Commands;
+using Kysect.Shreks.Application.Contracts.Study.SubjectCourses.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Application.Dto.Users;

@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.GithubEvents;
 
-public static class PullRequestApproved
+internal static class PullRequestApproved
 {
     public record Command(Guid IssuerId, Guid SubmissionId) : IRequest<Response>;
 

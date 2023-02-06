@@ -18,6 +18,7 @@
     <ItemGroup>
         <InternalsVisibleTo Include="Kysect.Shreks.Controllers" />
         <InternalsVisibleTo Include="Kysect.Shreks.Commands" />
+        <InternalsVisibleTo Include="Kysect.Shreks.Application" />
         <InternalsVisibleTo Include="Kysect.Shreks.Presentation.GitHub" />
         <InternalsVisibleTo Include="Kysect.Shreks.WebApi" />
         <InternalsVisibleTo Include="Kysect.Shreks.Application.Handlers" />

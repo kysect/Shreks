@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Contracts.Study.SubjectCourseGroups.Notifications;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
@@ -6,19 +6,19 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Contracts.SubjectCourseGroups.Commands.BulkCreateSubjectCourseGroups;
+using static Kysect.Shreks.Application.Contracts.Study.SubjectCourseGroups.Commands.BulkCreateSubjectCourseGroups;
 
 namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroups;
 
 internal class BulkCreateSubjectCourseGroupsHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly ITableUpdateQueue _tableUpdateQueue;
+    private readonly IPublisher _publisher;
 
-    public BulkCreateSubjectCourseGroupsHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue)
+    public BulkCreateSubjectCourseGroupsHandler(IShreksDatabaseContext context, IPublisher publisher)
     {
         _context = context;
-        _tableUpdateQueue = tableUpdateQueue;
+        _publisher = publisher;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -54,10 +54,11 @@ internal class BulkCreateSubjectCourseGroupsHandler : IRequestHandler<Command, R
 
         SubjectCourseGroupDto[] groups = subjectCourseGroups.Select(x => x.ToDto()).ToArray();
 
-        foreach (SubjectCourseGroupDto group in groups)
-        {
-            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(group.SubjectCourseId, group.StudentGroupId);
-        }
+        IEnumerable<SubjectCourseGroupCreated.Notification> notifications = groups
+            .Select(g => new SubjectCourseGroupCreated.Notification(g));
+
+        IEnumerable<Task> tasks = notifications.Select(x => _publisher.PublishAsync(x, cancellationToken));
+        await Task.WhenAll(tasks);
 
         return new Response(groups);
     }

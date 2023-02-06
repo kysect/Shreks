@@ -1,4 +1,4 @@
-using Kysect.Shreks.Application.Contracts.Submissions.Queries;
+using Kysect.Shreks.Application.Contracts.Study.Submissions.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using MediatR;
 

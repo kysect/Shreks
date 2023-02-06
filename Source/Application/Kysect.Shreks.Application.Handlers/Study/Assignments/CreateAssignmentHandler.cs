@@ -1,4 +1,5 @@
-using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Contracts.Study.Assignments.Notifications;
+using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -6,19 +7,19 @@ using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateAssignment;
+using static Kysect.Shreks.Application.Contracts.Study.Assignments.Commands.CreateAssignment;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
 
 internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly ITableUpdateQueue _tableUpdateQueue;
+    private readonly IPublisher _publisher;
 
-    public CreateAssignmentHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue)
+    public CreateAssignmentHandler(IShreksDatabaseContext context, IPublisher publisher)
     {
         _context = context;
-        _tableUpdateQueue = tableUpdateQueue;
+        _publisher = publisher;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -40,8 +41,11 @@ internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
         _context.Assignments.Add(assignment);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _tableUpdateQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
+        AssignmentDto dto = assignment.ToDto();
 
-        return new Response(assignment.ToDto());
+        var notification = new AssignmentCreated.Notification(dto);
+        await _publisher.PublishAsync(notification, cancellationToken);
+
+        return new Response(dto);
     }
 }
