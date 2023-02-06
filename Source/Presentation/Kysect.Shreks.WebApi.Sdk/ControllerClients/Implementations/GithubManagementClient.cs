@@ -20,7 +20,7 @@ internal class GithubManagementClient : IGithubManagementClient
 
     public async Task ForceMentorsSyncAsync(string organizationName, CancellationToken cancellationToken = default)
     {
-        string uri = $"api/GithubManagement/force-sync?organizationName={organizationName}";
+        string uri = $"api/GithubManagement/force-mentor-sync?organizationName={organizationName}";
         using var message = new HttpRequestMessage(HttpMethod.Post, uri);
 
         await _handler.SendAsync(message, cancellationToken);
