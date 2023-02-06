@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
@@ -12,10 +13,12 @@ namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
 internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly ITableUpdateQueue _tableUpdateQueue;
 
-    public CreateAssignmentHandler(IShreksDatabaseContext context)
+    public CreateAssignmentHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue)
     {
         _context = context;
+        _tableUpdateQueue = tableUpdateQueue;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -36,6 +39,8 @@ internal class CreateAssignmentHandler : IRequestHandler<Command, Response>
 
         _context.Assignments.Add(assignment);
         await _context.SaveChangesAsync(cancellationToken);
+
+        _tableUpdateQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
 
         return new Response(assignment.ToDto());
     }
