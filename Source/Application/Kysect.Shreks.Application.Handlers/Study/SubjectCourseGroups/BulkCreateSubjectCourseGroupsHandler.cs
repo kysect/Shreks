@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Study;
@@ -12,10 +13,12 @@ namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroups;
 internal class BulkCreateSubjectCourseGroupsHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly ITableUpdateQueue _tableUpdateQueue;
 
-    public BulkCreateSubjectCourseGroupsHandler(IShreksDatabaseContext context)
+    public BulkCreateSubjectCourseGroupsHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue)
     {
         _context = context;
+        _tableUpdateQueue = tableUpdateQueue;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -50,6 +53,11 @@ internal class BulkCreateSubjectCourseGroupsHandler : IRequestHandler<Command, R
         await _context.SaveChangesAsync(cancellationToken);
 
         SubjectCourseGroupDto[] groups = subjectCourseGroups.Select(x => x.ToDto()).ToArray();
+
+        foreach (SubjectCourseGroupDto group in groups)
+        {
+            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(group.SubjectCourseId, group.StudentGroupId);
+        }
 
         return new Response(groups);
     }

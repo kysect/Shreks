@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
@@ -11,10 +12,12 @@ namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroups;
 internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly ITableUpdateQueue _tableUpdateQueue;
 
-    public CreateSubjectCourseGroupHandler(IShreksDatabaseContext context)
+    public CreateSubjectCourseGroupHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue)
     {
         _context = context;
+        _tableUpdateQueue = tableUpdateQueue;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -27,11 +30,13 @@ internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Respon
         StudentGroup studentGroup = await _context.StudentGroups
             .GetByIdAsync(request.StudentGroupId, cancellationToken);
 
-        SubjectCourseGroup subjectCourseGroup = subjectCourse.AddGroup(studentGroup);
+        SubjectCourseGroup group = subjectCourse.AddGroup(studentGroup);
 
-        await _context.SubjectCourseGroups.AddAsync(subjectCourseGroup, cancellationToken);
+        await _context.SubjectCourseGroups.AddAsync(group, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new Response(subjectCourseGroup.ToDto());
+        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(group.SubjectCourseId, group.StudentGroupId);
+
+        return new Response(group.ToDto());
     }
 }
