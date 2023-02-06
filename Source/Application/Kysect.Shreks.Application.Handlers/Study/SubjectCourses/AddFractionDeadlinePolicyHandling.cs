@@ -3,7 +3,7 @@ using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Contracts.Study.Commands.AddFractionDeadlinePolicy;
+using static Kysect.Shreks.Application.Contracts.Study.SubjectCourses.Commands.AddFractionDeadlinePolicy;
 
 namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourses;
 

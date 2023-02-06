@@ -3,7 +3,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
-using static Kysect.Shreks.Application.Contracts.Study.Queries.GetAssignmentById;
+using static Kysect.Shreks.Application.Contracts.Study.Assignments.Queries.GetAssignmentById;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Assignments;
 

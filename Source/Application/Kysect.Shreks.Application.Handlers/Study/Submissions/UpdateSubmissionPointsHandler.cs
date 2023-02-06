@@ -1,5 +1,5 @@
-using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Abstractions.Permissions;
+using Kysect.Shreks.Application.Contracts.Study.Submissions.Notifications;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Factories;
@@ -7,9 +7,10 @@ using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
+using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Contracts.Submissions.Commands.UpdateSubmissionPoints;
+using static Kysect.Shreks.Application.Contracts.Study.Submissions.Commands.UpdateSubmissionPoints;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Submissions;
 
@@ -17,22 +18,24 @@ internal class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IPermissionValidator _permissionValidator;
-    private readonly ITableUpdateQueue _tableUpdateQueue;
+    private readonly IPublisher _publisher;
 
     public UpdateSubmissionPointsHandler(
         IPermissionValidator permissionValidator,
         IShreksDatabaseContext context,
-        ITableUpdateQueue tableUpdateQueue)
+        IPublisher publisher)
     {
         _permissionValidator = permissionValidator;
         _context = context;
-        _tableUpdateQueue = tableUpdateQueue;
+        _publisher = publisher;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
         await _permissionValidator.EnsureSubmissionMentorAsync(
-            request.IssuerId, request.SubmissionId, cancellationToken);
+            request.IssuerId,
+            request.SubmissionId,
+            cancellationToken);
 
         Submission? submission = await _context.Submissions
             .IncludeSubjectCourse()
@@ -52,9 +55,10 @@ internal class UpdateSubmissionPointsHandler : IRequestHandler<Command, Response
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _tableUpdateQueue.EnqueueCoursePointsUpdate(submission.GetSubjectCourseId());
-
         SubmissionRateDto dto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
+
+        var notification = new SubmissionPointsUpdated.Notification(submission.ToDto());
+        await _publisher.PublishAsync(notification, cancellationToken);
 
         return new Response(dto);
     }

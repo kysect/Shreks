@@ -1,23 +1,24 @@
-using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Contracts.Study.SubjectCourseGroups.Notifications;
+using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Core.Study;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Contracts.SubjectCourseGroups.Commands.CreateSubjectCourseGroup;
+using static Kysect.Shreks.Application.Contracts.Study.SubjectCourseGroups.Commands.CreateSubjectCourseGroup;
 
 namespace Kysect.Shreks.Application.Handlers.Study.SubjectCourseGroups;
 
 internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Response>
 {
     private readonly IShreksDatabaseContext _context;
-    private readonly ITableUpdateQueue _tableUpdateQueue;
+    private readonly IPublisher _publisher;
 
-    public CreateSubjectCourseGroupHandler(IShreksDatabaseContext context, ITableUpdateQueue tableUpdateQueue)
+    public CreateSubjectCourseGroupHandler(IShreksDatabaseContext context, IPublisher publisher)
     {
         _context = context;
-        _tableUpdateQueue = tableUpdateQueue;
+        _publisher = publisher;
     }
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
@@ -35,8 +36,11 @@ internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Respon
         await _context.SubjectCourseGroups.AddAsync(group, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(group.SubjectCourseId, group.StudentGroupId);
+        SubjectCourseGroupDto dto = group.ToDto();
 
-        return new Response(group.ToDto());
+        var notification = new SubjectCourseGroupCreated.Notification(dto);
+        await _publisher.PublishAsync(notification, cancellationToken);
+
+        return new Response(dto);
     }
 }

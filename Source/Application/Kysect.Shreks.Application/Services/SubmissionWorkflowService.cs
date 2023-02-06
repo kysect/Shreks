@@ -1,4 +1,3 @@
-using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Abstractions.Permissions;
 using Kysect.Shreks.Application.Abstractions.Submissions;
 using Kysect.Shreks.Application.Submissions.Workflows;
@@ -8,6 +7,7 @@ using Kysect.Shreks.Core.Submissions;
 using Kysect.Shreks.Core.SubmissionStateWorkflows;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Application.Services;
@@ -16,16 +16,16 @@ public class SubmissionWorkflowService : ISubmissionWorkflowService
 {
     private readonly IShreksDatabaseContext _context;
     private readonly IPermissionValidator _permissionValidator;
-    private readonly ITableUpdateQueue _tableUpdateQueue;
+    private readonly IPublisher _publisher;
 
     public SubmissionWorkflowService(
         IShreksDatabaseContext context,
         IPermissionValidator permissionValidator,
-        ITableUpdateQueue tableUpdateQueue)
+        IPublisher publisher)
     {
         _context = context;
         _permissionValidator = permissionValidator;
-        _tableUpdateQueue = tableUpdateQueue;
+        _publisher = publisher;
     }
 
     public async Task<ISubmissionWorkflow> GetSubmissionWorkflowAsync(
@@ -52,10 +52,10 @@ public class SubmissionWorkflowService : ISubmissionWorkflowService
         return subjectCourse.WorkflowType switch
         {
             null or SubmissionStateWorkflowType.ReviewOnly
-                => new ReviewOnlySubmissionWorkflow(_context, _permissionValidator, _tableUpdateQueue),
+                => new ReviewOnlySubmissionWorkflow(_context, _permissionValidator, _publisher),
 
             SubmissionStateWorkflowType.ReviewWithDefense
-                => new ReviewWithDefenceSubmissionWorkflow(_permissionValidator, _context, _tableUpdateQueue),
+                => new ReviewWithDefenceSubmissionWorkflow(_permissionValidator, _context, _publisher),
 
             _ => throw new ArgumentOutOfRangeException(
                 nameof(subjectCourseId),

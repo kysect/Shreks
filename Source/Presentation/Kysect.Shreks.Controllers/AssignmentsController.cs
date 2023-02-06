@@ -1,5 +1,7 @@
-using Kysect.Shreks.Application.Contracts.Study.Commands;
-using Kysect.Shreks.Application.Contracts.Study.Queries;
+using Kysect.Shreks.Application.Contracts.Study.Assignments.Commands;
+using Kysect.Shreks.Application.Contracts.Study.Assignments.Queries;
+using Kysect.Shreks.Application.Contracts.Study.GroupAssignments.Commands;
+using Kysect.Shreks.Application.Contracts.Study.GroupAssignments.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Identity.Entities;
 using Kysect.Shreks.WebApi.Abstractions.Models;

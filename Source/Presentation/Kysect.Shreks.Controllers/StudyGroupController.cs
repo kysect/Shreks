@@ -1,7 +1,7 @@
 ﻿using Kysect.Shreks.Application.Contracts.Students.Queries;
-using Kysect.Shreks.Application.Contracts.Study.Commands;
-using Kysect.Shreks.Application.Contracts.Study.Queries;
-using Kysect.Shreks.Application.Contracts.StudyGroups.Queries;
+using Kysect.Shreks.Application.Contracts.Study.GroupAssignments.Queries;
+using Kysect.Shreks.Application.Contracts.Study.StudyGroups.Commands;
+using Kysect.Shreks.Application.Contracts.Study.StudyGroups.Queries;
 using Kysect.Shreks.Application.Dto.Querying;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Users;

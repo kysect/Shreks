@@ -1,17 +1,19 @@
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.WebApi.Abstractions.Models;
+using Kysect.Shreks.WebApi.Sdk.Extensions;
 using Kysect.Shreks.WebApi.Sdk.Tools;
 using Newtonsoft.Json;
-using System.Net.Http.Json;
 
 namespace Kysect.Shreks.WebApi.Sdk.ControllerClients.Implementations;
 
 internal class AssignmentClient : IAssignmentClient
 {
     private readonly ClientRequestHandler _handler;
+    private readonly JsonSerializerSettings _serializerSettings;
 
     public AssignmentClient(HttpClient client, JsonSerializerSettings serializerSettings)
     {
+        _serializerSettings = serializerSettings;
         _handler = new ClientRequestHandler(client, serializerSettings);
     }
 
@@ -21,7 +23,7 @@ internal class AssignmentClient : IAssignmentClient
     {
         using var message = new HttpRequestMessage(HttpMethod.Post, "api/Assignments/")
         {
-            Content = JsonContent.Create(request),
+            Content = request.ToContent(_serializerSettings),
         };
 
         return await _handler.SendAsync<AssignmentDto>(message, cancellationToken);

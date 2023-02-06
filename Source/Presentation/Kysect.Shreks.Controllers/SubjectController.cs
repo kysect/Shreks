@@ -1,5 +1,6 @@
-﻿using Kysect.Shreks.Application.Contracts.Study.Commands;
-using Kysect.Shreks.Application.Contracts.Study.Queries;
+﻿using Kysect.Shreks.Application.Contracts.Study.SubjectCourses.Queries;
+using Kysect.Shreks.Application.Contracts.Study.Subjects.Commands;
+using Kysect.Shreks.Application.Contracts.Study.Subjects.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Identity.Entities;
@@ -61,8 +62,8 @@ public class SubjectController : ControllerBase
     [HttpGet("{id:guid}/courses")]
     public async Task<ActionResult<IReadOnlyCollection<SubjectCourseDto>>> GetSubjectCourses(Guid id)
     {
-        var request = new GetSubjectCoursesBySubjectCourseId.Query(id);
-        GetSubjectCoursesBySubjectCourseId.Response
+        var request = new GetSubjectCoursesBySubjectId.Query(id);
+        GetSubjectCoursesBySubjectId.Response
             response = await _mediator.Send(request, HttpContext.RequestAborted);
 
         return Ok(response.Courses);
