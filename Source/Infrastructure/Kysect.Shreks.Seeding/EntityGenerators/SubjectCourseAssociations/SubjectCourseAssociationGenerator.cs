@@ -38,8 +38,6 @@ public class SubjectCourseAssociationGenerator : EntityGeneratorBase<GithubSubje
             _faker.Random.Guid().ToString(),
             _faker.Internet.UserName());
 
-        subjectCourse.AddAssociation(association);
-
         return association;
     }
 }
