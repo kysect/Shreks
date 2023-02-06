@@ -39,7 +39,7 @@ internal class CreateSubjectCourseGroupHandler : IRequestHandler<Command, Respon
         SubjectCourseGroupDto dto = group.ToDto();
 
         var notification = new SubjectCourseGroupCreated.Notification(dto);
-        await _publisher.Publish(notification, cancellationToken);
+        await _publisher.PublishAsync(notification, cancellationToken);
 
         return new Response(dto);
     }

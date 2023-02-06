@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Github.Queries;
 
-public static class GetLastPullRequestSubmission
+internal static class GetLastPullRequestSubmission
 {
     public record Query(Guid UserId, Guid AssignmentId, long PullRequestNumber) : IRequest<Response>;
 

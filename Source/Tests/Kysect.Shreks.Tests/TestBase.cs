@@ -8,6 +8,7 @@ using Kysect.Shreks.DataAccess.Context;
 using Kysect.Shreks.DataAccess.Extensions;
 using Kysect.Shreks.Seeding.Extensions;
 using Kysect.Shreks.Seeding.Options;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -38,6 +39,7 @@ public class TestBase : IDisposable
         });
 
         collection.AddDatabaseSeeders();
+        collection.AddMediatR(typeof(TestBase));
 
         // TODO: Do not call virtual methods in constructor
 #pragma warning disable CA2214

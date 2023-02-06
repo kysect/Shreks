@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.SubjectCourseGroups.Notifications;
 
-public static class SubjectCourseGroupCreated
+internal static class SubjectCourseGroupCreated
 {
     public record Notification(SubjectCourseGroupDto Group) : INotification;
 }

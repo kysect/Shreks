@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Kysect.Shreks.Application.Contracts.Study.StudyGroups.Queries;
 
-public static class FindGroupsByQuery
+internal static class FindGroupsByQuery
 {
     public record Query(QueryConfiguration<GroupQueryParameter> Configuration) : IRequest<Response>;
 

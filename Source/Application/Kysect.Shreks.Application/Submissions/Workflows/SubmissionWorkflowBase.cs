@@ -1,10 +1,9 @@
-using Kysect.Shreks.Application.Abstractions.Google;
 using Kysect.Shreks.Application.Abstractions.Permissions;
 using Kysect.Shreks.Application.Abstractions.Submissions;
 using Kysect.Shreks.Application.Abstractions.Submissions.Models;
+using Kysect.Shreks.Application.Contracts.Study.Submissions.Notifications;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.Submissions;
-using Kysect.Shreks.Application.Extensions;
 using Kysect.Shreks.Application.Factories;
 using Kysect.Shreks.Common.Exceptions;
 using Kysect.Shreks.Common.Resources;
@@ -14,27 +13,28 @@ using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
+using Kysect.Shreks.Mapping.Mappings;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Kysect.Shreks.Application.Submissions.Workflows;
 
 public abstract class SubmissionWorkflowBase : ISubmissionWorkflow
 {
+    private readonly IShreksDatabaseContext _context;
+    private readonly IPublisher _publisher;
+
     protected SubmissionWorkflowBase(
         IPermissionValidator permissionValidator,
         IShreksDatabaseContext context,
-        ITableUpdateQueue updateQueue)
+        IPublisher publisher)
     {
         PermissionValidator = permissionValidator;
-        Context = context;
-        UpdateQueue = updateQueue;
+        _context = context;
+        _publisher = publisher;
     }
 
-    protected IShreksDatabaseContext Context { get; }
-
     protected IPermissionValidator PermissionValidator { get; }
-
-    protected ITableUpdateQueue UpdateQueue { get; }
 
     public abstract Task<SubmissionActionMessageDto> SubmissionApprovedAsync(
         Guid issuerId,
@@ -145,14 +145,14 @@ public abstract class SubmissionWorkflowBase : ISubmissionWorkflow
             new ReviewedSubmissionState(),
         };
 
-        Submission? submission = await Context.Submissions
+        Submission? submission = await _context.Submissions
             .Where(x => x.Student.UserId.Equals(userId))
             .Where(x => x.GroupAssignment.Assignment.Id.Equals(assignmentId))
             .Where(submission => acceptedStates.Any(x => x.Equals(submission.State)))
             .OrderByDescending(x => x.Code)
             .FirstOrDefaultAsync(cancellationToken);
 
-        bool triggeredByMentor = await Context.Assignments
+        bool triggeredByMentor = await _context.Assignments
             .Where(x => x.Id.Equals(assignmentId))
             .SelectMany(x => x.SubjectCourse.Mentors)
             .AnyAsync(x => x.UserId.Equals(issuerId), cancellationToken);
@@ -169,10 +169,10 @@ public abstract class SubmissionWorkflowBase : ISubmissionWorkflow
 
             submission = await submissionFactory.CreateAsync(userId, assignmentId, cancellationToken);
 
-            Context.Submissions.Add(submission);
-            await Context.SaveChangesAsync(cancellationToken);
+            _context.Submissions.Add(submission);
+            await _context.SaveChangesAsync(cancellationToken);
 
-            await UpdatePointsSheetAsync(submission.Id, cancellationToken);
+            await UpdatePointsSheetAsync(submission, cancellationToken);
 
             SubmissionRateDto rateDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 
@@ -183,10 +183,10 @@ public abstract class SubmissionWorkflowBase : ISubmissionWorkflow
         {
             submission.UpdateDate(Calendar.CurrentDateTime);
 
-            Context.Submissions.Update(submission);
-            await Context.SaveChangesAsync(cancellationToken);
+            _context.Submissions.Update(submission);
+            await _context.SaveChangesAsync(cancellationToken);
 
-            await UpdatePointsSheetAsync(submission.Id, cancellationToken);
+            await UpdatePointsSheetAsync(submission, cancellationToken);
 
             if (triggeredByAnotherUser)
                 throw new UnauthorizedException("Submission updated by another user");
@@ -206,28 +206,21 @@ public abstract class SubmissionWorkflowBase : ISubmissionWorkflow
         CancellationToken cancellationToken,
         Action<Submission> action)
     {
-        Submission submission = await Context.Submissions.GetByIdAsync(submissionId, cancellationToken);
+        Submission submission = await _context.Submissions.GetByIdAsync(submissionId, cancellationToken);
         action(submission);
 
-        Context.Submissions.Update(submission);
-        await Context.SaveChangesAsync(cancellationToken);
+        _context.Submissions.Update(submission);
+        await _context.SaveChangesAsync(cancellationToken);
 
-        UpdateQueue.EnqueueCoursePointsUpdate(submission.GetSubjectCourseId());
-        UpdateQueue.EnqueueSubmissionsQueueUpdate(submission.GetSubjectCourseId(), submission.GetGroupId());
+        var notification = new SubmissionUpdated.Notification(submission.ToDto());
+        await _publisher.Publish(notification, cancellationToken);
 
         return submission;
     }
 
-    protected async Task UpdatePointsSheetAsync(Guid submissionId, CancellationToken cancellationToken)
+    protected async Task UpdatePointsSheetAsync(Submission submission, CancellationToken cancellationToken)
     {
-        var submissionData = await Context.Submissions
-            .Where(x => x.Id.Equals(submissionId))
-            .Select(x => new { x.GroupAssignment.Assignment.SubjectCourse, x.Student.Group })
-            .SingleOrDefaultAsync(cancellationToken);
-
-        if (submissionData is { SubjectCourse: not null, Group: not null })
-        {
-            UpdateQueue.EnqueueSubmissionsQueueUpdate(submissionData.SubjectCourse.Id, submissionData.Group.Id);
-        }
+        var notification = new SubmissionPointsUpdated.Notification(submission.ToDto());
+        await _publisher.Publish(notification, cancellationToken);
     }
 }
