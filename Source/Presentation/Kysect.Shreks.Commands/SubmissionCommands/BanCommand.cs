@@ -1,6 +1,6 @@
 using CommandLine;
-using Kysect.Shreks.Application.Contracts.Submissions.Commands;
-using Kysect.Shreks.Application.Contracts.Submissions.Queries;
+using Kysect.Shreks.Application.Contracts.Study.Submissions.Commands;
+using Kysect.Shreks.Application.Contracts.Study.Submissions.Queries;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Commands.CommandVisitors;
 using Kysect.Shreks.Commands.Contexts;

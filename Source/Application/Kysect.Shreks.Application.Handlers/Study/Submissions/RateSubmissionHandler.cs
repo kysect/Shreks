@@ -8,7 +8,7 @@ using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Contracts.Submissions.Commands.RateSubmission;
+using static Kysect.Shreks.Application.Contracts.Study.Submissions.Commands.RateSubmission;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Submissions;
 

@@ -5,7 +5,7 @@ using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
-using static Kysect.Shreks.Application.Contracts.Submissions.Commands.ActivateSubmission;
+using static Kysect.Shreks.Application.Contracts.Study.Submissions.Commands.ActivateSubmission;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Submissions;
 

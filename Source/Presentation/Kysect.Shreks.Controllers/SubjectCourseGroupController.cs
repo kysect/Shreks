@@ -1,5 +1,4 @@
-using Kysect.Shreks.Application.Contracts.Study.Commands;
-using Kysect.Shreks.Application.Contracts.SubjectCourseGroups.Commands;
+using Kysect.Shreks.Application.Contracts.Study.SubjectCourseGroups.Commands;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Identity.Entities;
 using Kysect.Shreks.WebApi.Abstractions.Models.SubjectCourseGroups;

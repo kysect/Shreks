@@ -2,7 +2,7 @@
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.Mapping.Mappings;
 using MediatR;
-using static Kysect.Shreks.Application.Contracts.Study.Commands.CreateSubject;
+using static Kysect.Shreks.Application.Contracts.Study.Subjects.Commands.CreateSubject;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Subjects;
 

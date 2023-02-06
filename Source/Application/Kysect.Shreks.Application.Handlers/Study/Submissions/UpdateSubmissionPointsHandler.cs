@@ -9,7 +9,7 @@ using Kysect.Shreks.Core.ValueObject;
 using Kysect.Shreks.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using static Kysect.Shreks.Application.Contracts.Submissions.Commands.UpdateSubmissionPoints;
+using static Kysect.Shreks.Application.Contracts.Study.Submissions.Commands.UpdateSubmissionPoints;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Submissions;
 

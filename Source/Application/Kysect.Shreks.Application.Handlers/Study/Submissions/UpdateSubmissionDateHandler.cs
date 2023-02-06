@@ -8,7 +8,7 @@ using Kysect.Shreks.Core.Tools;
 using Kysect.Shreks.DataAccess.Abstractions;
 using Kysect.Shreks.DataAccess.Abstractions.Extensions;
 using MediatR;
-using static Kysect.Shreks.Application.Contracts.Submissions.Commands.UpdateSubmissionDate;
+using static Kysect.Shreks.Application.Contracts.Study.Submissions.Commands.UpdateSubmissionDate;
 
 namespace Kysect.Shreks.Application.Handlers.Study.Submissions;
 
