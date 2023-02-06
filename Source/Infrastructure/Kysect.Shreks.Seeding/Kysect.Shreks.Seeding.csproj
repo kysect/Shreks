@@ -7,13 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference
-                Include="..\..\Application\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj"/>
+        <ProjectReference Include="..\..\Application\Kysect.Shreks.DataAccess.Abstractions\Kysect.Shreks.DataAccess.Abstractions.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Bogus"/>
-        <PackageReference Include="FluentScanning.DependencyInjection"/>
+        <PackageReference Include="Bogus" />
+        <PackageReference Include="FluentScanning.DependencyInjection" />
     </ItemGroup>
 
 </Project>

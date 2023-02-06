@@ -83,8 +83,9 @@ public class StudyGroupController : ControllerBase
     [HttpGet("{groupId:guid}/assignments")]
     public async Task<ActionResult<GroupAssignmentDto>> GetAssignmentsAsync(Guid groupId)
     {
-        GetGroupAssignmentsByStudyGroupId.Response response =
-            await _mediator.Send(new GetGroupAssignmentsByStudyGroupId.Query(groupId));
+        var query = new GetGroupAssignmentsByStudyGroupId.Query(groupId);
+        GetGroupAssignmentsByStudyGroupId.Response response = await _mediator.Send(query);
+
         return Ok(response.GroupAssignments);
     }
 

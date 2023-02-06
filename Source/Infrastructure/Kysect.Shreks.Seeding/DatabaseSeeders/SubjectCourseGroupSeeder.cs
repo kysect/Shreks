@@ -8,6 +8,8 @@ public class SubjectCourseGroupSeeder : IDatabaseSeeder
 {
     private readonly IEntityGenerator<SubjectCourseGroup> _generator;
 
+    public int Priority => 1;
+
     public SubjectCourseGroupSeeder(IEntityGenerator<SubjectCourseGroup> generator)
     {
         _generator = generator;

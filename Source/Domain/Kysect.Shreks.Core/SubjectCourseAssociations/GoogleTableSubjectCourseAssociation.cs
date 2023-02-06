@@ -4,7 +4,8 @@ namespace Kysect.Shreks.Core.SubjectCourseAssociations;
 
 public partial class GoogleTableSubjectCourseAssociation : SubjectCourseAssociation
 {
-    public GoogleTableSubjectCourseAssociation(Guid id, SubjectCourse subjectCourse, string spreadsheetId) : base(id)
+    public GoogleTableSubjectCourseAssociation(Guid id, SubjectCourse subjectCourse, string spreadsheetId)
+        : base(id, subjectCourse)
     {
         SpreadsheetId = spreadsheetId;
     }
