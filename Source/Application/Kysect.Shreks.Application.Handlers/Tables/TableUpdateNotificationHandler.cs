@@ -1,4 +1,5 @@
 using Kysect.Shreks.Application.Abstractions.Google;
+using Kysect.Shreks.Application.Contracts.Students.Notifications;
 using Kysect.Shreks.Application.Contracts.Study.Assignments.Notifications;
 using Kysect.Shreks.Application.Contracts.Study.GroupAssignments.Notifications;
 using Kysect.Shreks.Application.Contracts.Study.StudyGroups.Notifications;
@@ -23,7 +24,8 @@ internal class TableUpdateNotificationHandler :
     INotificationHandler<DeadlinePolicyAdded.Notification>,
     INotificationHandler<SubmissionPointsUpdated.Notification>,
     INotificationHandler<SubmissionStateUpdated.Notification>,
-    INotificationHandler<SubmissionUpdated.Notification>
+    INotificationHandler<SubmissionUpdated.Notification>,
+    INotificationHandler<StudentTransferred.Notification>
 {
     private readonly ITableUpdateQueue _tableUpdateQueue;
     private readonly IShreksDatabaseContext _context;
@@ -124,5 +126,34 @@ internal class TableUpdateNotificationHandler :
 
         _tableUpdateQueue.EnqueueCoursePointsUpdate(subjectCourse.Id);
         _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(subjectCourse.Id, group.Id);
+    }
+
+    public async Task Handle(StudentTransferred.Notification notification, CancellationToken cancellationToken)
+    {
+        var subjectCoursesQuery = _context.SubjectCourses
+            .Where(sc => sc.Groups.Any(g => g.StudentGroupId.Equals(notification.NewGroupId)))
+            .Select(x => new { x.Id, GroupId = notification.NewGroupId });
+
+        if (notification.OldGroupId is not null)
+        {
+            var oldGroupSubjectCourses = _context.SubjectCourses
+                .Where(sc => sc.Groups.Any(g => g.StudentGroupId.Equals(notification.OldGroupId)))
+                .Select(x => new { x.Id, GroupId = notification.OldGroupId.Value });
+
+            subjectCoursesQuery = subjectCoursesQuery.Union(oldGroupSubjectCourses);
+        }
+
+        var pairs = await subjectCoursesQuery.ToListAsync(cancellationToken);
+        IEnumerable<Guid> subjectCourses = pairs.Select(x => x.Id).Distinct();
+
+        foreach (Guid subjectCourse in subjectCourses)
+        {
+            _tableUpdateQueue.EnqueueCoursePointsUpdate(subjectCourse);
+        }
+
+        foreach (var pair in pairs)
+        {
+            _tableUpdateQueue.EnqueueSubmissionsQueueUpdate(pair.Id, pair.GroupId);
+        }
     }
 }

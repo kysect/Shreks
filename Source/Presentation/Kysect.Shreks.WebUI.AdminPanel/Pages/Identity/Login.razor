@@ -9,13 +9,15 @@
 
 <Div Flex="Flex.Column.JustifyContent.Center.AlignItems.Center" Height="Height.Is100">
     <Form Padding="Padding.Is5.FromTop" style="width: 30%">
-        <Field>
-            <TextEdit Placeholder="Username" @bind-Text="_username"/>
-        </Field>
+        <FocusTrap Active="true">
+            <Field>
+                <TextEdit Placeholder="Username" @bind-Text="_username"/>
+            </Field>
 
-        <Field>
-            <TextEdit Placeholder="Password" Role="@TextRole.Password" @bind-Text="_password"/>
-        </Field>
+            <Field>
+                <TextEdit Placeholder="Password" Role="@TextRole.Password" @bind-Text="_password"/>
+            </Field>
+        </FocusTrap>
 
         <Div Flex="Flex.JustifyContent.Center">
             <Button Color="Color.Primary"

@@ -56,6 +56,15 @@ public class StudentController : ControllerBase
         return Ok();
     }
 
+    [HttpPut("{id:guid}/group")]
+    public async Task<ActionResult<StudentDto>> TransferStudentAsync(Guid id, TransferStudentRequest request)
+    {
+        var command = new TransferStudent.Command(id, request.NewGroupId);
+        TransferStudent.Response response = await _mediator.Send(command);
+
+        return Ok(response.Student);
+    }
+
     [HttpPost("{id:guid}/association/github")]
     public async Task<ActionResult> AddGithubAssociation(Guid id, string githubUsername)
     {

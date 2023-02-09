@@ -12,6 +12,11 @@ public interface IStudentClient
 
     Task DismissFromGroupAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task<StudentDto> TransferStudentAsync(
+        Guid id,
+        TransferStudentRequest request,
+        CancellationToken cancellationToken = default);
+
     Task AddGithubAssociationAsync(Guid id, string githubUsername, CancellationToken cancellationToken = default);
 
     Task RemoveGithubAssociationAsync(Guid id, CancellationToken cancellationToken = default);
