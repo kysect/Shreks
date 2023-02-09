@@ -1,8 +1,12 @@
-<TopLevelModal @ref="_modal" Style="z-index: 999999;">
+@inject IJSRuntime JsRuntime
+
+@typeparam T
+
+<TopLevelModal @ref="_modal">
     <ModalContent Size="Size">
         <ModalHeader>
             <ModalTitle>
-                Confirm @(ActionName ?? string.Empty)
+                Confirm @(_value is null ? string.Empty : ActionName?.Invoke(_value) ?? string.Empty)
             </ModalTitle>
             <CloseButton Display="@(Executing ? Display.None : Display.InlineBlock)"/>
         </ModalHeader>
@@ -34,10 +38,10 @@
 @code {
 
     [Parameter]
-    public string? ActionName { get; set; }
+    public Func<T, string>? ActionName { get; set; }
 
     [Parameter]
-    public Func<CancellationToken, Task>? Action { get; set; }
+    public Func<T, CancellationToken, Task>? Action { get; set; }
 
     [Parameter]
     public ModalSize Size { get; set; }
@@ -48,14 +52,27 @@
     private Modal? _modal;
     private CancellationTokenSource _cts = new CancellationTokenSource();
 
-    public Task Show()
-        => _modal?.Show() ?? Task.CompletedTask;
+    private T? _value;
+
+    public async Task Show(T value)
+    {
+        if (_modal is null)
+            return;
+
+        _value = value;
+        await _modal.Show();
+    }
 
     private Task Dismiss()
-        => _modal?.Hide() ?? Task.CompletedTask;
+    {
+        return _modal?.Hide() ?? Task.CompletedTask;
+    }
 
     private async Task Execute()
     {
+        if (_value is null)
+            return;
+
         if (Executing)
             return;
 
@@ -63,7 +80,7 @@
 
         try
         {
-            await (Action?.Invoke(_cts.Token) ?? Task.CompletedTask);
+            await (Action?.Invoke(_value, _cts.Token) ?? Task.CompletedTask);
         }
         catch (OperationCanceledException)
         {

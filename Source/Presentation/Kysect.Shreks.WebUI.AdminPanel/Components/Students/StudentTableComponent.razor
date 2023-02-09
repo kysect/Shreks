@@ -1,4 +1,5 @@
 @using Kysect.Shreks.Application.Dto.Users
+@using Kysect.Shreks.WebUI.AdminPanel.Extensions
 @if (Students is not null)
 {
     <Table>
@@ -56,7 +57,7 @@
                     @if (ShowName)
                     {
                         <TableRowCell>
-                            @($"{student.User.LastName} {student.User.FirstName} {student.User.MiddleName}")
+                            @student.FullName()
                         </TableRowCell>
                     }
 

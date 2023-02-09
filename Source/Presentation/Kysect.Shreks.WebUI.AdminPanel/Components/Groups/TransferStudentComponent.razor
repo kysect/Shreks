@@ -1,0 +1,82 @@
+@using Kysect.Shreks.WebUI.AdminPanel.Components.Students
+@using Kysect.Shreks.Application.Dto.Study
+@using Kysect.Shreks.Application.Dto.Users
+@using Kysect.Shreks.WebApi.Abstractions.Models.Students
+@using Kysect.Shreks.WebUI.AdminPanel.ExceptionHandling
+@using Kysect.Shreks.WebUI.AdminPanel.Extensions
+@using Kysect.Shreks.WebUI.AdminPanel.SafeExecution
+@inject IStudentClient StudentClient
+@inject ISafeExecutor SafeExecutor
+
+@if (Group is not null)
+{
+    <Modal @ref="_modal">
+        <ModalContent Centered Size="ModalSize.Large">
+            <ModalHeader>
+                <ModalTitle>Select student</ModalTitle>
+                <CloseButton/>
+            </ModalHeader>
+            <MediaBody>
+                <StudentQueryComponent>
+                    <StudentTable Context="students">
+                        <Div Margin="Margin.Is3.FromStart.Is3.FromEnd">
+                            @foreach (var student in students)
+                            {
+                                <Card Margin="Margin.Is3.FromBottom.Is3.FromTop.Is0.FromStart.Is0.FromEnd"
+                                      Padding="Padding.Is3"
+                                      type="button"
+                                      onclick="@(() => ExecuteAsync(student))"
+                                      Class="btn-light">
+
+                                    <Heading Size="HeadingSize.Is4">
+                                        @student.DisplayString()
+                                    </Heading>
+                                </Card>
+                            }
+                        </Div>
+                    </StudentTable>
+                </StudentQueryComponent>
+            </MediaBody>
+        </ModalContent>
+    </Modal>
+
+    <GenericConfirmationComponent T="@StudentDto"
+                                  @ref="_confirmation"
+                                  Size="ModalSize.Large"
+                                  Action="TransferStudentAsync"
+                                  ActionName="@(s => $"add student {s.DisplayString()} to {Group.Name}")"/>
+}
+
+@code {
+
+    private Modal? _modal;
+    private GenericConfirmationComponent<StudentDto>? _confirmation;
+
+    [Parameter]
+    public StudyGroupDto? Group { get; set; }
+
+    [Parameter]
+    public EventCallback<StudentDto> OnStudentTransferred { get; set; }
+
+    public Task ShowAsync()
+        => _modal?.Show() ?? Task.CompletedTask;
+
+    private Task ExecuteAsync(StudentDto student)
+        => _confirmation?.Show(student) ?? Task.CompletedTask;
+
+    private async Task TransferStudentAsync(StudentDto student, CancellationToken cancellationToken)
+    {
+        if (Group is null)
+            return;
+
+        await using ISafeExecutionBuilder<StudentDto> builder = SafeExecutor.Execute(() =>
+        {
+            var request = new TransferStudentRequest(Group.Id);
+            return StudentClient.TransferStudentAsync(student.User.Id, request, cancellationToken);
+        });
+
+        builder.Title = "Student transfer failed";
+        builder.OnSuccessAsync(() => OnStudentTransferred.InvokeAsync(student));
+    }
+
+}

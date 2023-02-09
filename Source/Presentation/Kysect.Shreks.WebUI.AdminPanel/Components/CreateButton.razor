@@ -3,7 +3,10 @@
         TextColor="@(TextColor ?? TextColor.White)"
         Display="@(FitContent ? Display.InlineBlock : Display.Block)"
         Style="@(FitContent ? "height: fit-content!important;" : "width: 100%;")"
-        Disabled="@Disabled">
+        Disabled="@Disabled"
+        Type="@Type"
+        PreventDefaultOnSubmit="@PreventDefaultOnSubmit"
+        Margin="Margin">
 
     @if (ChildContent is null)
     {
@@ -34,5 +37,14 @@
 
     [Parameter]
     public bool FitContent { get; set; } = true;
+    
+    [Parameter]
+    public ButtonType Type { get; set; } = ButtonType.Button;
+
+    [Parameter]
+    public bool PreventDefaultOnSubmit { get; set; }
+
+    [Parameter]
+    public IFluentSpacing? Margin { get; set; }
 
 }

@@ -7,9 +7,7 @@
 @if (Group is not null)
 {
     <Div>
-
-        <Div Flex="Flex.Column">
-
+        <Div Flex="Flex.Column" Margin="Margin.Is3.FromBottom">
             <Fields>
                 <Field>
                     <FieldLabel>Name</FieldLabel>
@@ -17,12 +15,23 @@
                 </Field>
             </Fields>
 
-            <Button Color="Color.Primary"
-                    Clicked="ButtonClicked"
-                    Type="@ButtonType.Submit"
-                    PreventDefaultOnSubmit>
-                Update
-            </Button>
+            <Div Flex="Flex.Row.JustifyContent.Between">
+                <CreateButton Background="Background.Success"
+                              Clicked="ShowAddStudent"
+                              FitContent="false"
+                              Margin="Margin.Is2.FromEnd">
+                    Add student
+                </CreateButton>
+
+                <CreateButton Background="Background.Primary"
+                              Clicked="UpdateClicked"
+                              FitContent="false"
+                              Margin="Margin.Is2.FromStart"
+                              Type="ButtonType.Submit"
+                              PreventDefaultOnSubmit>
+                    Update
+                </CreateButton>
+            </Div>
         </Div>
 
         <StudyGroupStudentsComponent Students="_students" Parent="this"/>
@@ -31,27 +40,31 @@
     <ConfirmationComponent @ref="_component"
                            Action="SendAsync"
                            ActionName="@($"change group name to {Group?.Name ?? string.Empty}")"/>
+
+    <TransferStudentComponent @ref="_transferStudentComponent"
+                              Group="Group"
+                              OnStudentTransferred="AddStudent"/>
 }
 
 @code {
 
-    private IReadOnlyCollection<StudentDto>? _students;
+    private ICollection<StudentDto>? _students;
     private ConfirmationComponent? _component;
+    private TransferStudentComponent? _transferStudentComponent;
 
     [Parameter]
     public StudyGroupDto? Group { get; set; }
 
-    protected override Task OnInitializedAsync()
-    {
-        return ReloadStudents(false);
-    }
+    protected override Task OnInitializedAsync() 
+        => ReloadStudents(false);
 
     public async Task ReloadStudents(bool notify = true)
     {
         if (Group is null)
             return;
 
-        _students = await GroupClient.GetStudentsAsync(Group.Id);
+        IReadOnlyCollection<StudentDto> students = await GroupClient.GetStudentsAsync(Group.Id);
+        _students = students.ToList();
 
         if (notify)
         {
@@ -59,10 +72,8 @@
         }
     }
 
-    private Task ButtonClicked()
-    {
-        return _component?.Show() ?? Task.CompletedTask;
-    }
+    private Task UpdateClicked() 
+        => _component?.Show() ?? Task.CompletedTask;
 
     private Task SendAsync(CancellationToken cancellationToken)
     {
@@ -72,5 +83,11 @@
         var request = new UpdateStudyGroupRequest(Group.Name);
         return GroupClient.UpdateAsync(Group.Id, request, cancellationToken);
     }
+
+    private Task ShowAddStudent()
+        => _transferStudentComponent?.ShowAsync() ?? Task.CompletedTask;
+
+    private void AddStudent(StudentDto student)
+        => _students?.Add(student);
 
 }
