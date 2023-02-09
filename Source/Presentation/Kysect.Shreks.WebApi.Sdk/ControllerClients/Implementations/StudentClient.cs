@@ -42,6 +42,19 @@ internal class StudentClient : IStudentClient
         await _handler.SendAsync(message, cancellationToken);
     }
 
+    public async Task<StudentDto> TransferStudentAsync(
+        Guid id,
+        TransferStudentRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(HttpMethod.Put, $"api/Student/{id}/group")
+        {
+            Content = request.ToContent(_serializerSettings),
+        };
+
+        return await _handler.SendAsync<StudentDto>(message, cancellationToken);
+    }
+
     public async Task AddGithubAssociationAsync(
         Guid id,
         string githubUsername,
