@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.SubjectCourses;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
 using Kysect.Shreks.Application.Services;
@@ -14,7 +15,7 @@ public class SubjectCourseServiceTest : TestBase
 
     public SubjectCourseServiceTest()
     {
-        _service = new SubjectCourseService(Context);
+        _service = new SubjectCourseService(Context, new UserFullNameFormatter());
     }
 
     [Fact]
