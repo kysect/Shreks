@@ -2,4 +2,4 @@
 
 namespace Kysect.Shreks.Integration.Google.Models;
 
-public record struct CourseStudentsDto(IReadOnlyCollection<StudentPointsDto> StudentsPoints);
+public record struct CourseStudentsDto(IReadOnlyList<StudentPointsDto> StudentsPoints);

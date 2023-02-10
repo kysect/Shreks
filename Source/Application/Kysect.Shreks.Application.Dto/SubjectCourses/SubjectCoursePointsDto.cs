@@ -5,4 +5,4 @@ namespace Kysect.Shreks.Application.Dto.SubjectCourses;
 
 public record struct SubjectCoursePointsDto(
     IReadOnlyCollection<AssignmentDto> Assignments,
-    IReadOnlyCollection<StudentPointsDto> StudentsPoints);
+    IReadOnlyList<StudentPointsDto> StudentsPoints);

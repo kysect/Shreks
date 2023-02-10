@@ -65,7 +65,7 @@ public class LabsTable : RowTable<SubjectCoursePointsDto>
 
         CultureInfo currentCulture = _cultureInfoProvider.GetCultureInfo();
 
-        IReadOnlyList<StudentPointsDto> studentPoints = model.StudentsPoints.ToArray();
+        IReadOnlyList<StudentPointsDto> studentPoints = model.StudentsPoints;
 
         for (int i = 0; i < studentPoints.Count; i++)
         {
@@ -79,9 +79,8 @@ public class LabsTable : RowTable<SubjectCoursePointsDto>
                 Label(student.UniversityId),
                 Label(_userFullNameFormatter.GetFullName(student.User)),
                 Label(student.GroupName),
-                Label(student.GitHubUsername!),
-                ForEach(model.Assignments, a =>
-                    BuildAssignmentPointsCell(a, assignmentPoints, currentCulture)),
+                Label(student.GitHubUsername ?? string.Empty),
+                ForEach(model.Assignments, a => BuildAssignmentPointsCell(a, assignmentPoints, currentCulture)),
                 Label(roundedPoints, currentCulture).WithTrailingMediumBorder()
             ).WithDefaultStyle(i, studentPoints.Count).WithGroupSeparators(i, studentPoints);
 
