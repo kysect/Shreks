@@ -1,0 +1,31 @@
+@inherits Blazorise.Modal
+
+<CascadingValue Value="@this" IsFixed>
+    <CascadingValue Value="@State">
+        <div @ref="@ElementRef"
+             id="@ElementId"
+             class="@ClassNames"
+             style="@StyleNames;z-index: 99999"
+             role="dialog"
+             @attributes="@Attributes">
+            
+            @if (ShouldRenderContent)
+            {
+                @ChildContent
+            }
+        </div>
+        @if (ShowBackdrop && BackdropVisible)
+        {
+            <_ModalBackdrop Style="z-index: 99998"/>
+        }
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+
+    protected bool ShouldRenderContent =>
+        RenderMode == ModalRenderMode.Default ||
+        (RenderMode == ModalRenderMode.LazyReload && IsVisible) ||
+        (RenderMode == ModalRenderMode.LazyLoad && lazyLoaded);
+
+}
