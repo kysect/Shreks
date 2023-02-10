@@ -1,3 +1,4 @@
+using Kysect.Shreks.Application.Abstractions.Formatters;
 using Kysect.Shreks.Application.Abstractions.SubjectCourses;
 using Kysect.Shreks.Application.Dto.Study;
 using Kysect.Shreks.Application.Dto.SubjectCourses;
@@ -15,10 +16,12 @@ namespace Kysect.Shreks.Application.Services;
 public class SubjectCourseService : ISubjectCourseService
 {
     private readonly IShreksDatabaseContext _context;
+    private readonly IUserFullNameFormatter _userFullNameFormatter;
 
-    public SubjectCourseService(IShreksDatabaseContext context)
+    public SubjectCourseService(IShreksDatabaseContext context, IUserFullNameFormatter userFullNameFormatter)
     {
         _context = context;
+        _userFullNameFormatter = userFullNameFormatter;
     }
 
     public async Task<SubjectCoursePointsDto> CalculatePointsAsync(
@@ -35,6 +38,7 @@ public class SubjectCourseService : ISubjectCourseService
             .ThenInclude(x => x.Submissions)
             .AsSplitQuery()
             .Where(x => x.SubjectCourse.Id.Equals(subjectCourseId))
+            .OrderBy(x => x.Order)
             .ToListAsync(cancellationToken);
 
         IEnumerable<StudentAssignment> studentAssignmentPoints = assignments
@@ -44,6 +48,8 @@ public class SubjectCourseService : ISubjectCourseService
         StudentPointsDto[] studentPoints = studentAssignmentPoints
             .GroupBy(x => x.Student)
             .Select(MapToStudentPoints)
+            .OrderBy(x => x.Student.GroupName)
+            .ThenBy(x => _userFullNameFormatter.GetFullName(x.Student.User))
             .ToArray();
 
         AssignmentDto[] assignmentsDto = assignments.Select(x => x.ToDto()).ToArray();

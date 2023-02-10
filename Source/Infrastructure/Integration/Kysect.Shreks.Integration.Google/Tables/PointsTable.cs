@@ -37,7 +37,7 @@ public class PointsTable : RowTable<CourseStudentsDto>
     {
         yield return Header;
 
-        IReadOnlyList<StudentPointsDto> studentPoints = model.StudentsPoints.ToArray();
+        IReadOnlyList<StudentPointsDto> studentPoints = model.StudentsPoints;
 
         for (int i = 0; i < studentPoints.Count; i++)
         {

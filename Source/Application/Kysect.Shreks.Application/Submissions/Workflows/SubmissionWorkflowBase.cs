@@ -172,7 +172,7 @@ public abstract class SubmissionWorkflowBase : ISubmissionWorkflow
             _context.Submissions.Add(submission);
             await _context.SaveChangesAsync(cancellationToken);
 
-            await UpdatePointsSheetAsync(submission, cancellationToken);
+            await NotifySubmissionUpdated(submission, cancellationToken);
 
             SubmissionRateDto rateDto = SubmissionRateDtoFactory.CreateFromSubmission(submission);
 
@@ -186,7 +186,7 @@ public abstract class SubmissionWorkflowBase : ISubmissionWorkflow
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync(cancellationToken);
 
-            await UpdatePointsSheetAsync(submission, cancellationToken);
+            await NotifySubmissionUpdated(submission, cancellationToken);
 
             if (triggeredByAnotherUser)
                 throw new UnauthorizedException("Submission updated by another user");
@@ -212,15 +212,14 @@ public abstract class SubmissionWorkflowBase : ISubmissionWorkflow
         _context.Submissions.Update(submission);
         await _context.SaveChangesAsync(cancellationToken);
 
-        var notification = new SubmissionUpdated.Notification(submission.ToDto());
-        await _publisher.Publish(notification, cancellationToken);
+        await NotifySubmissionUpdated(submission, cancellationToken);
 
         return submission;
     }
 
-    protected async Task UpdatePointsSheetAsync(Submission submission, CancellationToken cancellationToken)
+    protected async Task NotifySubmissionUpdated(Submission submission, CancellationToken cancellationToken)
     {
-        var notification = new SubmissionPointsUpdated.Notification(submission.ToDto());
+        var notification = new SubmissionUpdated.Notification(submission.ToDto());
         await _publisher.Publish(notification, cancellationToken);
     }
 }
