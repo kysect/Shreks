@@ -17,25 +17,27 @@
                 <CloseButton/>
             </ModalHeader>
             <MediaBody>
-                <StudentQueryComponent>
-                    <StudentTable Context="students">
-                        <Div Margin="Margin.Is3.FromStart.Is3.FromEnd">
-                            @foreach (var student in students)
-                            {
-                                <Card Margin="Margin.Is3.FromBottom.Is3.FromTop.Is0.FromStart.Is0.FromEnd"
-                                      Padding="Padding.Is3"
-                                      type="button"
-                                      onclick="@(() => ExecuteAsync(student))"
-                                      Class="btn-light">
+                <Div Margin="Margin.Is3">
+                    <StudentQueryComponent>
+                        <StudentTable Context="students">
+                            <Div>
+                                @foreach (var student in students)
+                                {
+                                    <Card Margin="Margin.Is3.FromBottom.Is3.FromTop.Is0.FromStart.Is0.FromEnd"
+                                          Padding="Padding.Is3"
+                                          type="button"
+                                          onclick="@(() => ExecuteAsync(student))"
+                                          Class="btn-light">
 
-                                    <Heading Size="HeadingSize.Is4">
-                                        @student.DisplayString()
-                                    </Heading>
-                                </Card>
-                            }
-                        </Div>
-                    </StudentTable>
-                </StudentQueryComponent>
+                                        <Heading Size="HeadingSize.Is4">
+                                            @student.DisplayString()
+                                        </Heading>
+                                    </Card>
+                                }
+                            </Div>
+                        </StudentTable>
+                    </StudentQueryComponent>
+                </Div>
             </MediaBody>
         </ModalContent>
     </Modal>
