@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="client_secrets.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies"/>
+        <PackageReference Include="Serilog.AspNetCore"/>
+        <PackageReference Include="Serilog.Sinks.Console"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application.Google\ITMO.Dev.ASAP.Application.Google.csproj"/>
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application.Handlers\ITMO.Dev.ASAP.Application.Handlers.csproj"/>
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application\ITMO.Dev.ASAP.Application.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Integration\ITMO.Dev.ASAP.Integration.Google\ITMO.Dev.ASAP.Integration.Google.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.DataAccess\ITMO.Dev.ASAP.DataAccess.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Mapping\ITMO.Dev.ASAP.Mapping.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Seeding\ITMO.Dev.ASAP.Seeding.csproj"/>
+    </ItemGroup>
+
+</Project>

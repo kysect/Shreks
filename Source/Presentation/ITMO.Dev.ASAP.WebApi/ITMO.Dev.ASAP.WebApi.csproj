@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dcb623c6-ceae-4ac4-9f2c-a7bfc6535dcb</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
+        <PackageReference Include="Serilog"/>
+        <PackageReference Include="Serilog.AspNetCore"/>
+        <PackageReference Include="Serilog.Extensions.Hosting"/>
+        <PackageReference Include="Serilog.Sinks.Console"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application.GithubWorkflow\ITMO.Dev.ASAP.Application.GithubWorkflow.csproj"/>
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application.Google\ITMO.Dev.ASAP.Application.Google.csproj"/>
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application.Handlers\ITMO.Dev.ASAP.Application.Handlers.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Integration\ITMO.Dev.ASAP.Integration.Github\ITMO.Dev.ASAP.Integration.Github.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Integration\ITMO.Dev.ASAP.Integration.Google\ITMO.Dev.ASAP.Integration.Google.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.DataAccess\ITMO.Dev.ASAP.DataAccess.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Mapping\ITMO.Dev.ASAP.Mapping.csproj"/>
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Controllers\ITMO.Dev.ASAP.Controllers.csproj"/>
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Presentation.GitHub\ITMO.Dev.ASAP.Presentation.GitHub.csproj"/>
+        <ProjectReference Include="..\ITMO.Dev.ASAP.WebUI.AdminPanel\ITMO.Dev.ASAP.WebUI.AdminPanel.csproj"/>
+    </ItemGroup>
+
+</Project>

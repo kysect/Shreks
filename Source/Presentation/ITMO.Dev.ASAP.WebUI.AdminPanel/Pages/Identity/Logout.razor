@@ -1,0 +1,14 @@
+@page "/logout"
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Identity
+@inject IdentityStateProvider StateProvider
+@inject NavigationManager NavigationManager
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        await StateProvider.LogoutAsync(default);
+        NavigationManager.NavigateTo("/", true);
+    }
+
+}

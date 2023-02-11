@@ -1,0 +1,44 @@
+@using ITMO.Dev.ASAP.Application.Dto.Study
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Extensions;
+
+<Dropdown>
+    <DropdownToggle>
+        @(Selected?.AsString() ?? "Workflow type")
+    </DropdownToggle>
+
+    <DropdownMenu>
+        @foreach (var (type, i) in _workflowTypes.Select((x, i) => (x, i)))
+        {
+            <DropdownItem Clicked="Clicked" Value="type">
+                @type.AsString()
+            </DropdownItem>
+
+            @if (i != _workflowTypes.Count - 1)
+            {
+                <DropdownDivider/>
+            }
+        }
+    </DropdownMenu>
+</Dropdown>
+
+@code {
+
+    private readonly IReadOnlyCollection<SubmissionStateWorkflowTypeDto> _workflowTypes = Enum
+        .GetValues<SubmissionStateWorkflowTypeDto>();
+
+    [Parameter]
+    public SubmissionStateWorkflowTypeDto? Selected { get; set; }
+
+    [Parameter]
+    public EventCallback<SubmissionStateWorkflowTypeDto> OnValueChanged { get; set; }
+
+    private Task Clicked(object arg)
+    {
+        if (arg is not SubmissionStateWorkflowTypeDto type)
+            return Task.CompletedTask;
+
+        Selected = type;
+        return OnValueChanged.InvokeAsync(type);
+    }
+
+}

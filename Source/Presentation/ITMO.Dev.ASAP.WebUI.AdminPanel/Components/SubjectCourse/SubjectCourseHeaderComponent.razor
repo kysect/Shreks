@@ -1,0 +1,46 @@
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourses
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourseAssociations
+<Bar Padding="Padding.Is0"
+     Mode="BarMode.Horizontal"
+     Breakpoint="Breakpoint.Desktop"
+     Background="Background.Transparent">
+
+    <BarBrand>
+        <Heading Size="HeadingSize.Is2">
+            @SubjectCourse?.Title
+        </Heading>
+    </BarBrand>
+
+    <BarMenu>
+        <BarEnd>
+            <BarItem Margin="Margin.Is2">
+                <ForceSyncGoogle SubjectCourseId="SubjectCourse?.Id"/>
+            </BarItem>
+
+            @{
+                var organizationName = GithubOrganizationName;
+            }
+
+            @if (organizationName is not null)
+            {
+                <BarItem Margin="Margin.Is2">
+                    <ForceSyncGitHubMentors OrganizationName="@organizationName"/>
+                </BarItem>
+            }
+
+        </BarEnd>
+    </BarMenu>
+</Bar>
+
+@code {
+
+    private string? GithubOrganizationName => SubjectCourse?
+        .Associations
+        .OfType<GithubSubjectCourseAssociationDto>()
+        .FirstOrDefault()?
+        .GithubOrganizationName;
+
+    [Parameter]
+    public SubjectCourseDto? SubjectCourse { get; set; }
+
+}

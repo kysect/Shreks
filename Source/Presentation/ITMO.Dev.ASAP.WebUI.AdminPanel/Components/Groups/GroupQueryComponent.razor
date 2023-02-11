@@ -1,0 +1,30 @@
+@using ITMO.Dev.ASAP.Application.Dto.Querying;
+@using ITMO.Dev.ASAP.Application.Dto.Study
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Components.Query;
+
+@inject IStudyGroupClient StudyGroupClient
+
+<QueryComponent TParameter="@GroupQueryParameter"
+                TValue="@StudyGroupDto"
+                QueryExecutor="QueryAsync">
+    <Table Context="groups">
+
+        <Div>
+            @foreach (var group in groups.OrderBy(x => x.Name))
+            {
+                <StudyGroupInfoComponent Group="group"/>
+            }
+        </Div>
+    </Table>
+</QueryComponent>
+
+
+@code
+{
+
+    [Parameter]
+    public RenderFragment<IReadOnlyCollection<StudyGroupDto>?>? StudentTable { get; set; }
+
+    private Task<IReadOnlyCollection<StudyGroupDto>> QueryAsync(QueryConfiguration<GroupQueryParameter> configuration)
+        => StudyGroupClient.QueryAsync(configuration);
+}

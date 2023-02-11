@@ -1,0 +1,6 @@
+namespace ITMO.Dev.ASAP.WebUI.AdminPanel.ExceptionHandling;
+
+public interface IExceptionSink
+{
+    ValueTask ConsumeAsync(Exception exception, string? title, string? message);
+}

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Domain\ITMO.Dev.ASAP.Common\ITMO.Dev.ASAP.Common.csproj" />
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Application.Dto\ITMO.Dev.ASAP.Application.Dto.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Octokit" />
+    </ItemGroup>
+
+</Project>

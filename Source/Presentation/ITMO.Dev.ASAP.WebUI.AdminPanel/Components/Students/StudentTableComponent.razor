@@ -1,0 +1,119 @@
+@using ITMO.Dev.ASAP.Application.Dto.Users
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Extensions
+@if (Students is not null)
+{
+    <Table>
+        <TableHeader>
+            <TableRow>
+                @if (ShowIsu)
+                {
+                    <TableHeaderCell>Isu</TableHeaderCell>
+                }
+
+                @if (ShowGroup)
+                {
+                    <TableHeaderCell>Group</TableHeaderCell>
+                }
+
+                @if (ShowName)
+                {
+                    <TableHeaderCell>Name</TableHeaderCell>
+                }
+
+                @if (ShowGitHub)
+                {
+                    <TableHeaderCell>GitHub</TableHeaderCell>
+                }
+
+                @if (ShowLinks)
+                {
+                    <TableHeaderCell>Links</TableHeaderCell>
+                }
+
+                @if (AdditionalHeaderContent is not null)
+                {
+                    @AdditionalHeaderContent
+                }
+
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+
+            @foreach (var student in Students)
+            {
+                <TableRow>
+                    @if (ShowIsu)
+                    {
+                        <TableRowHeader>
+                            @(student.UniversityId?.ToString() ?? string.Empty)
+                        </TableRowHeader>
+                    }
+
+                    @if (ShowGroup)
+                    {
+                        <TableRowCell>@student.GroupName</TableRowCell>
+                    }
+
+                    @if (ShowName)
+                    {
+                        <TableRowCell>
+                            @student.FullName()
+                        </TableRowCell>
+                    }
+
+                    @if (ShowGitHub)
+                    {
+                        <TableRowCell>@student.GitHubUsername</TableRowCell>
+                    }
+
+                    @if (ShowLinks)
+                    {
+                        <TableRowCell>
+                            @if (string.IsNullOrEmpty(student.GitHubUsername) is false)
+                            {
+                                <Anchor To="@($"https://github.com/{student.GitHubUsername}")">
+                                    <img class="github-image"
+                                         src="github.png"
+                                         alt="@($"{student.GitHubUsername}'s GitHub")"/>
+                                </Anchor>
+                            }
+                        </TableRowCell>
+                    }
+
+                    @if (AdditionalRowContent is not null)
+                    {
+                        @AdditionalRowContent.Invoke(student)
+                    }
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+}
+
+@code {
+
+    [Parameter]
+    public IReadOnlyCollection<StudentDto>? Students { get; set; }
+
+    [Parameter]
+    public bool ShowIsu { get; set; } = true;
+
+    [Parameter]
+    public bool ShowGroup { get; set; } = true;
+
+    [Parameter]
+    public bool ShowName { get; set; } = true;
+
+    [Parameter]
+    public bool ShowGitHub { get; set; } = true;
+
+    [Parameter]
+    public bool ShowLinks { get; set; } = true;
+
+    [Parameter]
+    public RenderFragment? AdditionalHeaderContent { get; set; }
+
+    [Parameter]
+    public RenderFragment<StudentDto>? AdditionalRowContent { get; set; }
+
+}
