@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITMO.Dev.ASAP.Tests.Extensions;
 
-public static class DatabaseContextExtensions
+public static class DatabaseContextTestExtensions
 {
     public static Task<Submission> GetGithubSubmissionAsync(
         this IDatabaseContext context,
