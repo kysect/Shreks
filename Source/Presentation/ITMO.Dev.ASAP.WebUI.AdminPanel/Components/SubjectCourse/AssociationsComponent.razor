@@ -1,0 +1,46 @@
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourses
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourseAssociations
+@if (Associations is not null)
+{
+    <Div>
+        @foreach (var association in Associations)
+        {
+            <Text>
+                <Heading Size="HeadingSize.Is6" Display="Display.Inline">
+                    @FormatAssociationType(association)
+                </Heading>
+                :
+                @{
+                    switch (association)
+                    {
+                        case GithubSubjectCourseAssociationDto githubAssociation:
+                            <Anchor To="@($"https://github.com/{githubAssociation.GithubOrganizationName}")">
+                                Organization
+                            </Anchor>
+                            break;
+                        case GoogleSubjectCourseAssociationDto googleAssociation:
+                            <Anchor To="@($"https://docs.google.com/spreadsheets/d/{googleAssociation.SpreadsheetId}")">
+                                Table
+                            </Anchor>
+                            break;
+                    }
+                }
+                <br/>
+            </Text>
+        }
+    </Div>
+}
+
+@code {
+
+    [Parameter]
+    public IReadOnlyCollection<SubjectCourseAssociationDto>? Associations { get; set; }
+
+    private string FormatAssociationType(SubjectCourseAssociationDto association) => association switch
+    {
+        GithubSubjectCourseAssociationDto  => "GitHub",
+        GoogleSubjectCourseAssociationDto  => "Google",
+        _ => throw new ArgumentOutOfRangeException(nameof(association)),
+        };
+
+}

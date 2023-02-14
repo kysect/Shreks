@@ -1,0 +1,34 @@
+@using ITMO.Dev.ASAP.Application.Dto.Study
+@inject NavigationManager NavigationManager
+
+@if (Subject is not null)
+{
+    <Card Margin="Margin.Is2"
+          Width="Width.Max100"
+          type="button"
+          onclick=@Clicked
+          Class="btn-light">
+
+        <CardBody Flex="Flex.JustifyContent.Start">
+            <Heading Margin="Margin.Is0.FromBottom">
+                @Subject.Title
+            </Heading>
+        </CardBody>
+
+    </Card>
+}
+
+@code {
+
+    [Parameter]
+    public SubjectDto? Subject { get; set; }
+
+    private void Clicked()
+    {
+        if (Subject is null)
+            return;
+
+        NavigationManager.NavigateTo($"adminpanel/subjects/{Subject.Id}");
+    }
+
+}

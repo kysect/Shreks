@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <AnalysisLevel>latest</AnalysisLevel>
+        <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application.Abstractions\ITMO.Dev.ASAP.Application.Abstractions.csproj" />
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application.Contracts\ITMO.Dev.ASAP.Application.Contracts.csproj" />
+        <ProjectReference Include="..\..\Application\ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions\ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.csproj" />
+        <ProjectReference Include="..\..\DeveloperEnvironment\ITMO.Dev.ASAP.DeveloperEnvironment\ITMO.Dev.ASAP.DeveloperEnvironment.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Identity\ITMO.Dev.ASAP.Identity.csproj" />
+        <ProjectReference Include="..\ITMO.Dev.ASAP.WebApi.Abstractions\ITMO.Dev.ASAP.WebApi.Abstractions.csproj" />
+    </ItemGroup>
+
+</Project>
