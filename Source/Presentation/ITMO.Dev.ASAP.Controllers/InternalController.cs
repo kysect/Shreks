@@ -30,6 +30,7 @@ public class InternalController : ControllerBase
             environment,
             _testEnvironmentConfiguration.Organization,
             _testEnvironmentConfiguration.TemplateRepository,
+            _testEnvironmentConfiguration.MentorTeamName,
             _testEnvironmentConfiguration.Users);
 
         try

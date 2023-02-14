@@ -1,0 +1,78 @@
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourseAssociations
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourses
+@using ITMO.Dev.ASAP.WebApi.Abstractions.Models.SubjectCourses
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.ExceptionHandling
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Extensions
+@using Microsoft.AspNetCore.Components
+
+@inject ISafeExecutor SafeExecutor
+@inject ISubjectCourseClient SubjectCourseClient
+
+@if (Association is not null)
+{
+    <Anchor To="@($"https://github.com/{Association.GithubOrganizationName}")">
+        Organization
+    </Anchor>
+
+    <Div Flex="Flex.Row.AlignContent.Center.JustifyContent.Start" Style="gap: 10px">
+        <Div Flex="Flex.Column.AlignContent.Center.JustifyContent.Center">
+            Mentors team name
+        </Div>
+
+        <TextEdit @bind-Text="_mentorTeamName" Style="min-width: 100px; width: 20%"/>
+
+        <CreateButton Disabled="@(MentorTeamUpdateButtonEnabled is false)"
+                      Clicked="UpdateMentorsTeamClicked">
+            Update
+        </CreateButton>
+    </Div>
+
+    <ConfirmationComponent @ref="_mentorTeamUpdateConfirmation"
+                           ActionName="@UpdateActionName"
+                           Action="UpdateMentorsTeamAsync"/>
+}
+
+@code {
+
+    private string? _mentorTeamName;
+    private ConfirmationComponent? _mentorTeamUpdateConfirmation;
+
+    private bool MentorTeamUpdateButtonEnabled =>
+        SubjectCourse is not null &&
+        Association is not null &&
+        _mentorTeamName?.Equals(Association?.MentorTeamName) is false && 
+        string.IsNullOrEmpty(_mentorTeamName) is false;
+
+    private string UpdateActionName => $"update subject course mentors team name to '{_mentorTeamName}'";
+
+    [Parameter]
+    public SubjectCourseDto? SubjectCourse { get; set; }
+
+    [Parameter]
+    public GithubSubjectCourseAssociationDto? Association { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _mentorTeamName = Association?.MentorTeamName;
+    }
+
+    private async Task UpdateMentorsTeamAsync(CancellationToken cancellationToken)
+    {
+        if (SubjectCourse is null ||
+            Association is null ||
+            _mentorTeamName is null)
+            return;
+
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            var request = new UpdateMentorsTeamNameRequest(_mentorTeamName);
+            await SubjectCourseClient.UpdateMentorsTeamNameAsync(SubjectCourse.Id, request, cancellationToken);
+        });
+
+        builder.OnSuccess(() => Association = Association with { MentorTeamName = _mentorTeamName });
+    }
+
+    private Task UpdateMentorsTeamClicked()
+        => _mentorTeamUpdateConfirmation?.Show() ?? Task.CompletedTask;
+
+}

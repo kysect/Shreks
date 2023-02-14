@@ -26,7 +26,8 @@ internal class AddGithubSubjectCourseAssociationHandler : IRequestHandler<Comman
             Guid.NewGuid(),
             subjectCourse,
             request.Organization,
-            request.TemplateRepository);
+            request.TemplateRepository,
+            request.MentorTeamName);
 
         _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
         await _context.SaveChangesAsync(cancellationToken);

@@ -37,64 +37,98 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
 
         foreach (GithubSubjectCourseAssociation subjectAssociation in githubSubjectCourseAssociations)
         {
-            IReadOnlyCollection<GithubUserAssociation> githubUserAssociations =
-                await _context.SubjectCourses.GetAllGithubUsers(subjectAssociation.SubjectCourse.Id);
-            var usernames = githubUserAssociations.Select(a => a.GithubUsername).ToList();
+            IReadOnlyCollection<GithubUserAssociation> githubUserAssociations = await _context.SubjectCourses
+                .GetAllGithubUsers(subjectAssociation.SubjectCourse.Id);
+
+            string[] usernames = githubUserAssociations.Select(a => a.GithubUsername).ToArray();
+
             await _inviteSender.Invite(subjectAssociation.GithubOrganizationName, usernames);
-            await GenerateRepositories(
-                _repositoryManager,
-                usernames,
-                subjectAssociation.GithubOrganizationName,
-                subjectAssociation.TemplateRepositoryName);
+
+            await GenerateRepositories(usernames, subjectAssociation);
         }
     }
 
-    private async Task GenerateRepositories(
-        ISubjectCourseGithubOrganizationRepositoryManager repositoryManager,
+    private async ValueTask GenerateRepositories(
         IReadOnlyCollection<string> usernames,
-        string organizationName,
-        string templateName)
+        GithubSubjectCourseAssociation association)
     {
-        IReadOnlyCollection<string> repositories = await repositoryManager.GetRepositories(organizationName);
+        string organizationName = association.GithubOrganizationName;
+        string templateName = association.TemplateRepositoryName;
+        string mentorTeamName = association.MentorTeamName;
 
-        if (!repositories.Contains(templateName))
+        IReadOnlyCollection<string> repositories = await _repositoryManager.GetRepositories(organizationName);
+
+        if (repositories.Contains(templateName) is false)
         {
-            string message = $"No template repository found for organization {organizationName}";
-            _logger.LogWarning(message);
+            _logger.LogWarning("No template repository found for organization {OrganizationName}", organizationName);
             return;
         }
 
+        Team team = await _repositoryManager.GetTeam(organizationName, mentorTeamName);
+
         foreach (string username in usernames)
         {
-            string newRepositoryName = username;
-
-            if (repositories.Any(r => r.Equals(newRepositoryName, StringComparison.OrdinalIgnoreCase)))
-                continue;
-
-            try
+            if (repositories.Any(r => r.Equals(username, StringComparison.OrdinalIgnoreCase)))
             {
-                await repositoryManager.CreateRepositoryFromTemplate(organizationName, newRepositoryName, templateName);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Failed to create repo for {username}");
-            }
-
-            try
-            {
-                await repositoryManager.AddUserPermission(
-                    organizationName,
-                    newRepositoryName,
-                    username,
-                    Permission.Push);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Failed to add user {username} as repo admin.");
+                await ResendInviteIfNeeded(organizationName, username);
                 continue;
             }
+
+            if (await TryCreateRepositoryFromTemplateAsync(organizationName, templateName, username) is false)
+                continue;
+
+            await _repositoryManager.AddTeamPermission(organizationName, username, team, Permission.Maintain);
+
+            if (await TryAddUserPermissionsAsync(organizationName, username) is false)
+                continue;
 
             _logger.LogInformation("Successfully created repository for user {User}", username);
+        }
+    }
+
+    private async Task ResendInviteIfNeeded(string organizationName, string repositoryName)
+    {
+        if (await _repositoryManager.IsRepositoryCollaborator(organizationName, repositoryName, repositoryName))
+            return;
+
+        await TryAddUserPermissionsAsync(organizationName, repositoryName);
+    }
+
+    private async Task<bool> TryCreateRepositoryFromTemplateAsync(
+        string organizationName,
+        string templateName,
+        string username)
+    {
+        try
+        {
+            await _repositoryManager.CreateRepositoryFromTemplate(organizationName, username, templateName);
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to create repo for {Username}", username);
+            return false;
+        }
+    }
+
+    private async Task<bool> TryAddUserPermissionsAsync(
+        string organizationName,
+        string username)
+    {
+        try
+        {
+            await _repositoryManager.AddUserPermission(
+                organizationName,
+                username,
+                username,
+                Permission.Push);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Failed to add user {Username} to repo", username);
+            return false;
         }
     }
 }

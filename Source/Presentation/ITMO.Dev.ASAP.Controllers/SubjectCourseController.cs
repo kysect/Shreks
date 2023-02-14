@@ -27,6 +27,8 @@ public class SubjectCourseController : ControllerBase
         _mediator = mediator;
     }
 
+    public CancellationToken CancellationToken => HttpContext.RequestAborted;
+
     [HttpPost]
     public async Task<ActionResult<SubjectCourseDto>> Create(CreateSubjectCourseRequest request)
     {
@@ -36,7 +38,7 @@ public class SubjectCourseController : ControllerBase
             request.WorkflowType,
             request.Associations);
 
-        CreateSubjectCourse.Response response = await _mediator.Send(command);
+        CreateSubjectCourse.Response response = await _mediator.Send(command, CancellationToken);
 
         return Ok(response.SubjectCourse);
     }
@@ -45,7 +47,7 @@ public class SubjectCourseController : ControllerBase
     public async Task<ActionResult<IReadOnlyCollection<SubjectCourseDto>>> Get()
     {
         var query = new GetSubjectCourses.Query();
-        GetSubjectCourses.Response response = await _mediator.Send(query);
+        GetSubjectCourses.Response response = await _mediator.Send(query, CancellationToken);
 
         return Ok(response.Subjects);
     }
@@ -54,7 +56,7 @@ public class SubjectCourseController : ControllerBase
     public async Task<ActionResult<SubjectCourseDto>> GetById(Guid id)
     {
         var query = new GetSubjectCourseById.Query(id);
-        GetSubjectCourseById.Response response = await _mediator.Send(query);
+        GetSubjectCourseById.Response response = await _mediator.Send(query, CancellationToken);
 
         return Ok(response.SubjectCourse);
     }
@@ -63,7 +65,7 @@ public class SubjectCourseController : ControllerBase
     public async Task<ActionResult<SubjectCourseDto>> Update(Guid id, UpdateSubjectCourseRequest request)
     {
         var command = new UpdateSubjectCourse.Command(id, request.Name);
-        UpdateSubjectCourse.Response response = await _mediator.Send(command);
+        UpdateSubjectCourse.Response response = await _mediator.Send(command, CancellationToken);
 
         return Ok(response.SubjectCourse);
     }
@@ -72,7 +74,7 @@ public class SubjectCourseController : ControllerBase
     public async Task<ActionResult<IReadOnlyCollection<StudentDto>>> GetStudentsAsync(Guid id)
     {
         var query = new GetStudentsBySubjectCourseId.Query(id);
-        GetStudentsBySubjectCourseId.Response response = await _mediator.Send(query);
+        GetStudentsBySubjectCourseId.Response response = await _mediator.Send(query, CancellationToken);
 
         return Ok(response.Students);
     }
@@ -81,7 +83,7 @@ public class SubjectCourseController : ControllerBase
     public async Task<ActionResult<IReadOnlyCollection<AssignmentDto>>> GetAssignmentsBySubjectCourseId(Guid id)
     {
         var query = new GetAssignmentsBySubjectCourse.Query(id);
-        GetAssignmentsBySubjectCourse.Response response = await _mediator.Send(query);
+        GetAssignmentsBySubjectCourse.Response response = await _mediator.Send(query, CancellationToken);
 
         return Ok(response.Assignments);
     }
@@ -90,7 +92,7 @@ public class SubjectCourseController : ControllerBase
     public async Task<ActionResult<IReadOnlyCollection<SubjectCourseGroupDto>>> GetSubjectCourseGroups(Guid id)
     {
         var query = new GetSubjectCourseGroupsBySubjectCourseId.Query(id);
-        GetSubjectCourseGroupsBySubjectCourseId.Response result = await _mediator.Send(query);
+        GetSubjectCourseGroupsBySubjectCourseId.Response result = await _mediator.Send(query, CancellationToken);
 
         return Ok(result.Groups);
     }
@@ -100,10 +102,13 @@ public class SubjectCourseController : ControllerBase
         Guid id,
         AddSubjectCourseGithubAssociationRequest request)
     {
-        (string organizationName, string templateRepositoryName) = request;
+        var command = new AddGithubSubjectCourseAssociation.Command(
+            id,
+            request.OrganizationName,
+            request.TemplateRepositoryName,
+            request.MentorTeamName);
 
-        var command = new AddGithubSubjectCourseAssociation.Command(id, organizationName, templateRepositoryName);
-        AddGithubSubjectCourseAssociation.Response response = await _mediator.Send(command);
+        AddGithubSubjectCourseAssociation.Response response = await _mediator.Send(command, CancellationToken);
 
         return Ok(response.SubjectCourse);
     }
@@ -112,7 +117,7 @@ public class SubjectCourseController : ControllerBase
     public async Task<ActionResult<SubjectCourseDto>> RemoveGithubAssociation(Guid id)
     {
         var command = new RemoveGithubSubjectCourseAssociation.Command(id);
-        RemoveGithubSubjectCourseAssociation.Response response = await _mediator.Send(command);
+        RemoveGithubSubjectCourseAssociation.Response response = await _mediator.Send(command, CancellationToken);
 
         return Ok(response.SubjectCourse);
     }
@@ -123,7 +128,16 @@ public class SubjectCourseController : ControllerBase
         (TimeSpan spanBeforeActivation, double fraction) = request;
 
         var command = new AddFractionDeadlinePolicy.Command(id, spanBeforeActivation, fraction);
-        await _mediator.Send(command);
+        await _mediator.Send(command, CancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPut("{id:guid}/github/mentor-team")]
+    public async Task<ActionResult> UpdateMentorsTeamNameAsync(Guid id, UpdateMentorsTeamNameRequest request)
+    {
+        var command = new UpdateSubjectCourseMentorTeam.Command(id, request.TeamName);
+        await _mediator.Send(command, CancellationToken);
 
         return Ok();
     }

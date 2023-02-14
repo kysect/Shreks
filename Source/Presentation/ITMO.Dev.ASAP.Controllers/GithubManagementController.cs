@@ -29,7 +29,7 @@ public class GithubManagementController : ControllerBase
     [HttpPost("force-mentor-sync")]
     public async Task<ActionResult> ForceMentorsSync(string organizationName)
     {
-        var command = new SyncGithubAdminWithMentors.Command(organizationName);
+        var command = new SyncGithubMentors.Command(organizationName);
 
         await _mediator.Send(command);
 

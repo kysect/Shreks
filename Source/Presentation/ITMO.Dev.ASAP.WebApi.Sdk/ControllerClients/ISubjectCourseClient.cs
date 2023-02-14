@@ -41,4 +41,9 @@ public interface ISubjectCourseClient
         Guid id,
         AddFractionPolicyRequest request,
         CancellationToken cancellationToken = default);
+
+    Task UpdateMentorsTeamNameAsync(
+        Guid id,
+        UpdateMentorsTeamNameRequest request,
+        CancellationToken cancellationToken = default);
 }

@@ -17,9 +17,16 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
     {
         GitHubClient client = await _clientProvider.GetClient(organization);
         IReadOnlyList<Repository> repositories = await client.Repository.GetAllForOrg(organization);
-        return repositories
-            .Select(repository => repository.Name)
-            .ToList();
+
+        return repositories.Select(repository => repository.Name).ToArray();
+    }
+
+    public async Task<Team> GetTeam(string organization, string teamName)
+    {
+        GitHubClient client = await _clientProvider.GetClient(organization);
+        IReadOnlyList<Team> teams = await client.Organization.Team.GetAll(organization);
+
+        return teams.Single(x => teamName.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
     }
 
     public async Task CreateRepositoryFromTemplate(string organization, string newRepositoryName, string templateName)
@@ -50,5 +57,28 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
             repositoryName,
             username,
             new CollaboratorRequest(permission));
+    }
+
+    public async Task AddTeamPermission(
+        string organization,
+        string repositoryName,
+        Team team,
+        Permission permission)
+    {
+        GitHubClient client = await _clientProvider.GetClient(organization);
+
+        await client.Organization.Team.AddRepository(
+            team.Id,
+            organization,
+            repositoryName,
+            new RepositoryPermissionRequest(permission));
+    }
+
+    public async Task<bool> IsRepositoryCollaborator(string organization, string repositoryName, string userName)
+    {
+        GitHubClient client = await _clientProvider.GetClient(organization);
+        Repository repository = await client.Repository.Get(organization, repositoryName);
+
+        return await client.Repository.Collaborator.IsCollaborator(repository.Id, userName);
     }
 }
