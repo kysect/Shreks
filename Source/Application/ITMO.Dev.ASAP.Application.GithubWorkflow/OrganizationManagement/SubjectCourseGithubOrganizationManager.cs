@@ -5,6 +5,7 @@ using ITMO.Dev.ASAP.Core.UserAssociations;
 using ITMO.Dev.ASAP.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Octokit;
 
 namespace ITMO.Dev.ASAP.Application.GithubWorkflow.OrganizationManagement;
 
@@ -81,7 +82,11 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
 
             try
             {
-                await repositoryManager.AddAdminPermission(organizationName, newRepositoryName, username);
+                await repositoryManager.AddUserPermission(
+                    organizationName,
+                    newRepositoryName,
+                    username,
+                    Permission.Push);
             }
             catch (Exception e)
             {

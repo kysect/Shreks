@@ -37,7 +37,11 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
             userRepositoryFromTemplate);
     }
 
-    public async Task AddAdminPermission(string organization, string repositoryName, string username)
+    public async Task AddUserPermission(
+        string organization,
+        string repositoryName,
+        string username,
+        Permission permission)
     {
         GitHubClient client = await _clientProvider.GetClient(organization);
 
@@ -45,6 +49,6 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
             organization,
             repositoryName,
             username,
-            new CollaboratorRequest(Permission.Admin));
+            new CollaboratorRequest(permission));
     }
 }
