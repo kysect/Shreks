@@ -54,6 +54,7 @@ public class GithubApplicationTestContextGenerator
             _faker.Random.Guid(),
             subjectCourse,
             _faker.Company.CompanyName(),
+            _faker.Commerce.ProductName(),
             _faker.Commerce.ProductName());
 
         var subjectCourseGroup = new SubjectCourseGroup(subjectCourse, group);

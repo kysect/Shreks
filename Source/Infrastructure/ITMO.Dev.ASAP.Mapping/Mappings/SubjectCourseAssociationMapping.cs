@@ -10,7 +10,8 @@ public static class SubjectCourseAssociationMapping
     {
         return new GithubSubjectCourseAssociationDto(
             association.GithubOrganizationName,
-            association.TemplateRepositoryName);
+            association.TemplateRepositoryName,
+            association.MentorTeamName);
     }
 
     public static GoogleSubjectCourseAssociationDto ToDto(this GoogleTableSubjectCourseAssociation association)
@@ -36,7 +37,8 @@ public static class SubjectCourseAssociationMapping
             Guid.NewGuid(),
             subjectCourse,
             dto.GithubOrganizationName,
-            dto.TemplateRepositoryName);
+            dto.TemplateRepositoryName,
+            dto.MentorTeamName);
     }
 
     public static GoogleTableSubjectCourseAssociation ToEntity(

@@ -1,4 +1,4 @@
-<Field>
+<Field Display="@(IsDisplayed ? Display.Block : Display.None)">
     <FieldLabel>@Label</FieldLabel>
     <TextEdit Text="@Value"
               Placeholder="@Placeholder"
@@ -13,9 +13,12 @@
 
     [Parameter]
     public string? Placeholder { get; set; }
-    
+
     [Parameter]
     public EventCallback OnStateChanged { get; set; }
+
+    [Parameter]
+    public bool IsDisplayed { get; set; } = true;
 
     private async Task ValueChanged(string value)
     {

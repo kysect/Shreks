@@ -113,4 +113,17 @@ internal class SubjectCourseClient : ISubjectCourseClient
 
         await _handler.SendAsync(message, cancellationToken);
     }
+
+    public async Task UpdateMentorsTeamNameAsync(
+        Guid id,
+        UpdateMentorsTeamNameRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        using var message = new HttpRequestMessage(HttpMethod.Put, $"api/SubjectCourse/{id}/github/mentor-team")
+        {
+            Content = request.ToContent(_serializerSettings),
+        };
+
+        await _handler.SendAsync(message, cancellationToken);
+    }
 }

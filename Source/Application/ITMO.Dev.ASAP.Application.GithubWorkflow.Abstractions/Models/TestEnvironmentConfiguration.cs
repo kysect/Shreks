@@ -7,4 +7,6 @@ public class TestEnvironmentConfiguration
     public string TemplateRepository { get; init; } = string.Empty;
 
     public IReadOnlyList<string> Users { get; init; } = new List<string>();
+
+    public string MentorTeamName { get; set; } = string.Empty;
 }

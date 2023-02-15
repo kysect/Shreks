@@ -73,7 +73,8 @@ public static class TestEnvExtensions
             Guid.NewGuid(),
             subjectCourse,
             config.Organization,
-            config.TemplateRepository);
+            config.TemplateRepository,
+            config.MentorTeamName);
 
         dbContext.SubjectCourseAssociations.Add(association);
 

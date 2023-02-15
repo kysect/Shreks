@@ -5,6 +5,7 @@
 @using ITMO.Dev.ASAP.Application.Dto.SubjectCourseAssociations
 @using ITMO.Dev.ASAP.WebUI.AdminPanel.SafeExecution
 @using ITMO.Dev.ASAP.WebUI.AdminPanel.Extensions
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Components.Fields
 @using SubjectCourseAssociationDto = ITMO.Dev.ASAP.Application.Dto.SubjectCourseAssociations.SubjectCourseAssociationDto
 @inject ISubjectCourseClient SubjectCourseClient
 @inject ISafeExecutor SafeExecutor
@@ -38,11 +39,17 @@
                               TextChanged="x => _github = x"/>
                 </Field>
 
-                <Field Display="@(ShowTemplateRepositoryField ? Display.Block : Display.None)">
+                <Field Display="@(ShowGithubFields ? Display.Block : Display.None)">
                     <FieldLabel>Template repository</FieldLabel>
                     <TextEdit Text="@_templateRepository"
                               TextChanged="x => _templateRepository = x"/>
                 </Field>
+
+                <TextField @ref="_mentorTeam"
+                           Label="Mentor team name"
+                           Placeholder="Mentor team name"
+                           IsDisplayed="@ShowGithubFields"
+                           OnStateChanged="StateHasChanged"/>
 
                 <Div Flex="Flex.Row.JustifyContent.Center">
                     <Button Clicked="CreateAsync"
@@ -62,9 +69,11 @@
     private SubmissionStateWorkflowTypeDto? _workflowType = SubmissionStateWorkflowTypeDto.ReviewWithDefense;
     private string? _github = null;
     private string? _templateRepository = null;
+    private TextField? _mentorTeam;
+
     private Modal? _modal;
 
-    private bool ShowTemplateRepositoryField => string.IsNullOrEmpty(_github) is false;
+    private bool ShowGithubFields => string.IsNullOrEmpty(_github) is false;
 
     private bool ButtonEnabled =>
         string.IsNullOrEmpty(_courseName) is false &&
@@ -111,9 +120,10 @@
     private IEnumerable<SubjectCourseAssociationDto> CreateAssociations()
     {
         if (string.IsNullOrEmpty(_github) is false &&
-            string.IsNullOrEmpty(_templateRepository) is false)
+            string.IsNullOrEmpty(_templateRepository) is false &&
+            _mentorTeam?.Value is not null)
         {
-            yield return new GithubSubjectCourseAssociationDto(_github, _templateRepository);
+            yield return new GithubSubjectCourseAssociationDto(_github, _templateRepository, _mentorTeam.Value);
         }
     }
 

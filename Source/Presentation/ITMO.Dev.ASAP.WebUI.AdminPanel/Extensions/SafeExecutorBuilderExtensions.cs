@@ -9,4 +9,22 @@ public static class SafeExecutorBuilderExtensions
 
     public static void OnFailAsync(this ISafeExecutionBuilder builder, Func<Task> action)
         => builder.OnFailAsync(_ => action.Invoke());
+
+    public static void OnFail(this ISafeExecutionBuilder builder, Action action)
+    {
+        builder.OnFailAsync(() =>
+        {
+            action.Invoke();
+            return Task.CompletedTask;
+        });
+    }
+
+    public static void OnSuccess(this ISafeExecutionBuilder builder, Action action)
+    {
+        builder.OnSuccessAsync(() =>
+        {
+            action.Invoke();
+            return Task.CompletedTask;
+        });
+    }
 }

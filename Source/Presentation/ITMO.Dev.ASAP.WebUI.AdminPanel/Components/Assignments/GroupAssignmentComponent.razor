@@ -68,7 +68,8 @@
 
         var request = new UpdateGroupAssignmentRequest(Group.Deadline);
 
-        await using ISafeExecutionBuilder<GroupAssignmentDto> builder = SafeExecutor.Execute(async () => { return await Client.UpdateGroupAssignmentAsync(Group.AssignmentId, Group.GroupId, request, cancellationToken); });
+        await using ISafeExecutionBuilder<GroupAssignmentDto> builder = SafeExecutor
+            .Execute(async () => await Client.UpdateGroupAssignmentAsync(Group.AssignmentId, Group.GroupId, request, cancellationToken));
 
         builder.Title = "Failed to update deadline";
         builder.ShowExceptionDetails = true;
