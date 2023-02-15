@@ -1,3 +1,4 @@
+using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.Models;
 using Octokit;
 
 namespace ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions;
@@ -10,7 +11,7 @@ public interface ISubjectCourseGithubOrganizationRepositoryManager
 
     Task CreateRepositoryFromTemplate(string organization, string newRepositoryName, string templateName);
 
-    Task AddUserPermission(string organization, string repositoryName, string username, Permission permission);
+    Task<AddPermissionResult> AddUserPermission(string organization, string repositoryName, string username, Permission permission);
 
     Task AddTeamPermission(string organization, string repositoryName, Team team, Permission permission);
 

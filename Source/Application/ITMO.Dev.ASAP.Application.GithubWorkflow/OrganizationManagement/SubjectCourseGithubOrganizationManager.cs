@@ -1,5 +1,6 @@
 using ITMO.Dev.ASAP.Application.DatabaseContextExtensions;
 using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions;
+using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.Models;
 using ITMO.Dev.ASAP.Core.SubjectCourseAssociations;
 using ITMO.Dev.ASAP.Core.UserAssociations;
 using ITMO.Dev.ASAP.DataAccess.Abstractions;
@@ -69,7 +70,7 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
         {
             if (repositories.Any(r => r.Equals(username, StringComparison.OrdinalIgnoreCase)))
             {
-                await ResendInviteIfNeeded(organizationName, username);
+                await TryAddUserPermissionsAsync(organizationName, username);
                 continue;
             }
 
@@ -97,21 +98,6 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
             username);
 
         await _repositoryManager.AddTeamPermission(organizationName, username, team, Permission.Maintain);
-    }
-
-    private async Task ResendInviteIfNeeded(string organizationName, string repositoryName)
-    {
-        if (await _repositoryManager.IsRepositoryCollaborator(organizationName, repositoryName, repositoryName))
-        {
-            _logger.LogInformation(
-                "{OrganizationName}/{RepositoryName} already has a designated collaborator",
-                organizationName,
-                repositoryName);
-
-            return;
-        }
-
-        await TryAddUserPermissionsAsync(organizationName, repositoryName);
     }
 
     private async Task<bool> TryCreateRepositoryFromTemplateAsync(
@@ -151,13 +137,21 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
                 organizationName,
                 username);
 
-            await _repositoryManager.AddUserPermission(
+            AddPermissionResult result = await _repositoryManager.AddUserPermission(
                 organizationName,
                 username,
                 username,
                 permission);
 
-            return true;
+            if (result is AddPermissionResult.Pending)
+            {
+                _logger.LogInformation(
+                    "{OrganizationName}/{RepositoryName} already has a designated collaborator",
+                    organizationName,
+                    username);
+            }
+
+            return result is AddPermissionResult.Invited;
         }
         catch (Exception e)
         {
