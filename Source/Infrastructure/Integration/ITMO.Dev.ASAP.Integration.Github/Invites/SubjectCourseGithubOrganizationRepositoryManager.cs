@@ -52,6 +52,18 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
     {
         GitHubClient client = await _clientProvider.GetClient(organization);
 
+        RepositoryInvitation invitation = await client.Repository.Collaborator.Invite(
+            organization,
+            repositoryName,
+            username,
+            new CollaboratorRequest(permission));
+
+        if (DateTimeOffset.UtcNow.Subtract(invitation.CreatedAt) < TimeSpan.FromDays(7))
+            return;
+
+        Repository repository = await client.Repository.Get(organization, repositoryName);
+        await client.Repository.Invitation.Delete(repository.Id, invitation.Id);
+
         await client.Repository.Collaborator.Add(
             organization,
             repositoryName,
