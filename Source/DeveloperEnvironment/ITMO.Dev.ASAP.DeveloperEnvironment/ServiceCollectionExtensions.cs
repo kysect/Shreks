@@ -7,7 +7,8 @@ public static class ServiceCollectionExtensions
         if (builder.Environment.IsDevelopment() || builder.Environment.IsStaging())
         {
             builder.Services.AddScoped<DeveloperEnvironmentSeeder>();
-            builder.Services.AddMvc().AddApplicationPart(typeof(IAssemblyMarker).Assembly);
         }
+
+        builder.Services.AddMvc().AddApplicationPart(typeof(IAssemblyMarker).Assembly);
     }
 }

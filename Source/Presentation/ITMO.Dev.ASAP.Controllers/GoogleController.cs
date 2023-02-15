@@ -1,10 +1,13 @@
 using ITMO.Dev.ASAP.Application.Abstractions.Google;
+using ITMO.Dev.ASAP.Identity.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ITMO.Dev.ASAP.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = AsapIdentityRole.AdminRoleName)]
 public class GoogleController : ControllerBase
 {
     private readonly ITableUpdateQueue _tableUpdate;
