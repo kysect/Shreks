@@ -14,6 +14,7 @@
 
     <ItemGroup>
       <PackageReference Include="MediatR" />
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     </ItemGroup>
 
 </Project>
