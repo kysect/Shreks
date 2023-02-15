@@ -26,6 +26,7 @@ public partial class Student : IEntity
         if (Group is null)
             throw new DomainInvalidOperationException("Student is not in any group");
 
+        Group.RemoveStudent(this);
         Group = null;
     }
 
