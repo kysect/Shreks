@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Identity\ITMO.Dev.ASAP.Identity.csproj" />
         <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Seeding\ITMO.Dev.ASAP.Seeding.csproj" />
     </ItemGroup>
 
