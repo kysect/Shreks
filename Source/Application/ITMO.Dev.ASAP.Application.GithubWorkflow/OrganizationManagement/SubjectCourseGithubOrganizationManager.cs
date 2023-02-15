@@ -30,8 +30,7 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
 
     public async Task UpdateOrganizations(CancellationToken cancellationToken)
     {
-        List<GithubSubjectCourseAssociation> githubSubjectCourseAssociations = await _context
-            .SubjectCourseAssociations
+        List<GithubSubjectCourseAssociation> githubSubjectCourseAssociations = await _context.SubjectCourseAssociations
             .OfType<GithubSubjectCourseAssociation>()
             .ToListAsync(cancellationToken);
 
@@ -77,7 +76,7 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
             if (await TryCreateRepositoryFromTemplateAsync(organizationName, templateName, username) is false)
                 continue;
 
-            await _repositoryManager.AddTeamPermission(organizationName, username, team, Permission.Maintain);
+            await AddTeamPermissionAsync(organizationName, username, team);
 
             if (await TryAddUserPermissionsAsync(organizationName, username) is false)
                 continue;
@@ -86,10 +85,31 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
         }
     }
 
+    private async Task AddTeamPermissionAsync(string organizationName, string username, Team team)
+    {
+        const Permission permission = Permission.Maintain;
+
+        _logger.LogInformation(
+            "Adding permission {Permission} for {Team} in {OrganizationName}/{RepositoryName}",
+            permission,
+            team.Name,
+            organizationName,
+            username);
+
+        await _repositoryManager.AddTeamPermission(organizationName, username, team, Permission.Maintain);
+    }
+
     private async Task ResendInviteIfNeeded(string organizationName, string repositoryName)
     {
         if (await _repositoryManager.IsRepositoryCollaborator(organizationName, repositoryName, repositoryName))
+        {
+            _logger.LogInformation(
+                "{OrganizationName}/{RepositoryName} already has a designated collaborator",
+                organizationName,
+                repositoryName);
+
             return;
+        }
 
         await TryAddUserPermissionsAsync(organizationName, repositoryName);
     }
@@ -101,6 +121,11 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
     {
         try
         {
+            _logger.LogInformation(
+                "Creating repository {OrganizationName}/{RepositoryName}",
+                organizationName,
+                username);
+
             await _repositoryManager.CreateRepositoryFromTemplate(organizationName, username, templateName);
             return true;
         }
@@ -115,13 +140,22 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
         string organizationName,
         string username)
     {
+        const Permission permission = Permission.Push;
+
         try
         {
+            _logger.LogInformation(
+                "Adding permission {Permission} for {Username} in {OrganizationName}/{RepositoryName}",
+                permission,
+                username,
+                organizationName,
+                username);
+
             await _repositoryManager.AddUserPermission(
                 organizationName,
                 username,
                 username,
-                Permission.Push);
+                permission);
 
             return true;
         }
