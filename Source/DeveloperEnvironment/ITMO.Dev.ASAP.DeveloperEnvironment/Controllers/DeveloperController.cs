@@ -17,6 +17,7 @@ public class DeveloperController : Controller
 
     public CancellationToken CancellationToken => HttpContext.RequestAborted;
 
+    [HttpDelete("subjects/{subjectId:guid}")]
     public async Task<IActionResult> DeleteSubjectAsync(Guid subjectId)
     {
         var command = new DeleteSubject.Command(subjectId);
