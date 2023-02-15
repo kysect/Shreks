@@ -1,3 +1,5 @@
+using MediatR;
+
 namespace ITMO.Dev.ASAP.DeveloperEnvironment;
 
 public static class ServiceCollectionExtensions
@@ -10,5 +12,6 @@ public static class ServiceCollectionExtensions
         }
 
         builder.Services.AddMvc().AddApplicationPart(typeof(IAssemblyMarker).Assembly);
+        builder.Services.AddMediatR(typeof(IAssemblyMarker));
     }
 }
