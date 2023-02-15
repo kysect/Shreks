@@ -4,7 +4,6 @@ using ITMO.Dev.ASAP.Core.SubjectCourseAssociations;
 using ITMO.Dev.ASAP.Core.Submissions;
 using ITMO.Dev.ASAP.Core.UserAssociations;
 using ITMO.Dev.ASAP.Core.Users;
-using ITMO.Dev.ASAP.DeveloperEnvironment;
 using ITMO.Dev.ASAP.Seeding.Extensions;
 
 namespace ITMO.Dev.ASAP.WebApi.Extensions;
@@ -27,7 +26,6 @@ internal static class TestEnvironmentExtensions
                 o.ConfigureEntityGenerator<SubjectCourse>(o => o.Count = 1);
                 o.ConfigureEntityGenerator<SubjectCourseAssociation>(o => o.Count = 0);
             })
-            .AddDatabaseSeeders()
-            .AddDeveloperEnvironmentSeeding();
+            .AddDatabaseSeeders();
     }
 }

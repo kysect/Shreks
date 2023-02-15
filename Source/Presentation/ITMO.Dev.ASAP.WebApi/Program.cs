@@ -1,4 +1,5 @@
 using ITMO.Dev.ASAP.DataAccess.Extensions;
+using ITMO.Dev.ASAP.DeveloperEnvironment;
 using ITMO.Dev.ASAP.WebApi.Configuration;
 using ITMO.Dev.ASAP.WebApi.Extensions;
 using ITMO.Dev.ASAP.WebApi.Helpers;
@@ -11,6 +12,8 @@ internal class Program
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
         builder.Host.UseSerilogForAppLogs(builder.Configuration);
+
+        builder.AddDeveloperEnvironment();
 
         var webApiConfiguration = new WebApiConfiguration(builder.Configuration);
         IConfigurationSection identityConfigurationSection =
