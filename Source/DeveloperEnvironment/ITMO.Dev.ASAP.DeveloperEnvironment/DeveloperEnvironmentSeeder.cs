@@ -1,0 +1,70 @@
+using ITMO.Dev.ASAP.Core.Study;
+using ITMO.Dev.ASAP.Core.SubjectCourseAssociations;
+using ITMO.Dev.ASAP.Core.UserAssociations;
+using ITMO.Dev.ASAP.Core.Users;
+using ITMO.Dev.ASAP.DataAccess.Abstractions;
+using ITMO.Dev.ASAP.Seeding.EntityGenerators;
+
+namespace ITMO.Dev.ASAP.DeveloperEnvironment;
+
+public class DeveloperEnvironmentSeeder
+{
+    private const string ExceptedEnvironment = "Testing";
+
+    private readonly IDatabaseContext _context;
+    private readonly IEntityGenerator<SubjectCourse> _subjectCourseGenerator;
+    private readonly IEntityGenerator<User> _userGenerator;
+
+    public DeveloperEnvironmentSeeder(
+        IDatabaseContext context,
+        IEntityGenerator<User> userGenerator,
+        IEntityGenerator<SubjectCourse> subjectCourseGenerator)
+    {
+        _context = context;
+        _userGenerator = userGenerator;
+        _subjectCourseGenerator = subjectCourseGenerator;
+    }
+
+    public async Task Handle(DeveloperEnvironmentSeedingRequest request, CancellationToken cancellationToken = default)
+    {
+        EnsureUserAcknowledgedEnvironment(request);
+        AddUsers(request);
+        AddGithubUserAssociations(request);
+
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    private static void EnsureUserAcknowledgedEnvironment(DeveloperEnvironmentSeedingRequest request)
+    {
+        if (!request.Environment.Equals(ExceptedEnvironment, StringComparison.OrdinalIgnoreCase))
+            throw new UserNotAcknowledgedEnvironmentException();
+    }
+
+    private void AddGithubUserAssociations(DeveloperEnvironmentSeedingRequest request)
+    {
+        SubjectCourse subjectCourse = _subjectCourseGenerator.GeneratedEntities[0];
+        _context.SubjectCourses.Attach(subjectCourse);
+
+        var githubSubjectCourseAssociation = new GithubSubjectCourseAssociation(
+            Guid.NewGuid(),
+            subjectCourse,
+            request.Organization,
+            request.TemplateRepository,
+            request.MentorTeamName);
+
+        _context.SubjectCourseAssociations.Add(githubSubjectCourseAssociation);
+    }
+
+    private void AddUsers(DeveloperEnvironmentSeedingRequest request)
+    {
+        IReadOnlyList<User> users = _userGenerator.GeneratedEntities;
+        _context.Users.AttachRange(users);
+
+        for (int index = 0; index < request.Users.Count; index++)
+        {
+            User user = users[index];
+            string login = request.Users[index];
+            _context.UserAssociations.Add(new GithubUserAssociation(Guid.NewGuid(), user, login));
+        }
+    }
+}

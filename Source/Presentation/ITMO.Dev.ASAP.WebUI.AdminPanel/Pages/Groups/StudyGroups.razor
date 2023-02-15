@@ -1,0 +1,15 @@
+@page "/adminpanel/groups"
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.ExceptionHandling
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Components.Groups
+@inject IStudyGroupClient StudyGroupClient
+@inject ISafeExecutor SafeExecutor
+
+<Heading Size="HeadingSize.Is2">
+    Groups
+</Heading>
+
+<GroupQueryComponent/>
+
+@code {
+
+}

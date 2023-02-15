@@ -1,0 +1,29 @@
+<Field Display="@(IsDisplayed ? Display.Block : Display.None)">
+    <FieldLabel>@Label</FieldLabel>
+    <TextEdit Text="@Value"
+              Placeholder="@Placeholder"
+              TextChanged="@ValueChanged"/>
+</Field>
+
+@code {
+    public string? Value { get; set; }
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public string? Placeholder { get; set; }
+
+    [Parameter]
+    public EventCallback OnStateChanged { get; set; }
+
+    [Parameter]
+    public bool IsDisplayed { get; set; } = true;
+
+    private async Task ValueChanged(string value)
+    {
+        Value = value;
+        await OnStateChanged.InvokeAsync();
+    }
+
+}

@@ -1,0 +1,153 @@
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.ExceptionHandling
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Components.Tabs
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Components.Assignments
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Components.SubjectCourseGroups
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourses
+@using ITMO.Dev.ASAP.Application.Dto.Study
+@inject ISubjectCourseClient Client
+@inject ISafeExecutor SafeExecutor
+
+<Card Margin="Margin.Is2">
+    <CardBody>
+        <CardTitle>
+            <SubjectCourseHeaderComponent SubjectCourse="SubjectCourse"/>
+        </CardTitle>
+
+        @if (SubjectCourse is not null)
+        {
+            <AssociationsComponent Associations="SubjectCourse.Associations"
+                                   SubjectCourse="SubjectCourse"/>
+        }
+
+        <Divider/>
+
+        <Tabs SelectedTab="@_selectedTab">
+            <Items>
+                <DropdownTabTitleComponent OnClick="OnSelectedTabChanged" Name="@nameof(_assignments)">
+                    <ButtonContent>
+                        Assignments
+                    </ButtonContent>
+                    <DropdownContent>
+                        <DropdownItem>
+                            <CreateButton Clicked="@(() => _createAssignmentModal?.ShowAsync() ?? Task.CompletedTask)"
+                                          Background="Background.Transparent"
+                                          TextColor="TextColor.Body"
+                                          FitContent="false"/>
+                        </DropdownItem>
+                    </DropdownContent>
+                </DropdownTabTitleComponent>
+
+                <DropdownTabTitleComponent OnClick="OnSelectedTabChanged" Name="@nameof(_subjectCourseGroups)">
+                    <ButtonContent>
+                        Groups
+                    </ButtonContent>
+                    <DropdownContent>
+                        <DropdownItem>
+                            <CreateButton Clicked="ShowAddSubjectCourseGroupsAsync"
+                                          Background="Background.Transparent"
+                                          TextColor="TextColor.Body"
+                                          FitContent="false">
+                                Add
+                            </CreateButton>
+                        </DropdownItem>
+                    </DropdownContent>
+                </DropdownTabTitleComponent>
+            </Items>
+
+            <Content>
+                <TabPanel Name="@nameof(_assignments)">
+                    <AssignmentsComponent Assignments="_assignments"/>
+                </TabPanel>
+
+                <TabPanel Name="@nameof(_subjectCourseGroups)">
+                    <SubjectCourseGroupsComponent SubjectCourseGroups="_subjectCourseGroups"/>
+                </TabPanel>
+            </Content>
+        </Tabs>
+
+    </CardBody>
+</Card>
+
+
+<CreateAssignmentModal @ref="_createAssignmentModal"
+                       SubjectCourseId="@SubjectCourse?.Id"
+                       OnSuccess="AddAssignmentAsync"/>
+
+<AddSubjectCourseGroupModal @ref="_addSubjectCourseGroupModal"
+                            SubjectCourse="SubjectCourse"
+                            OnStudyGroupsAdded="AddSubjectCourseGroups"
+                            ExistingGroups="_subjectCourseGroups"/>
+
+@code
+{
+
+    private CreateAssignmentModal? _createAssignmentModal;
+    private AddSubjectCourseGroupModal? _addSubjectCourseGroupModal;
+
+    private ICollection<AssignmentDto>? _assignments;
+    private ICollection<SubjectCourseGroupDto>? _subjectCourseGroups;
+
+    [Parameter]
+    public SubjectCourseDto? SubjectCourse { get; set; }
+
+    private string? _selectedTab;
+
+    private Task OnSelectedTabChanged(string arg)
+    {
+        _selectedTab = _selectedTab == arg ? null : arg;
+
+        return _selectedTab switch
+        {
+            nameof(_assignments) => ProcessAssignmentsSelected(),
+            nameof(_subjectCourseGroups) => ProcessSubjectCourseGroupsSelected(),
+            _ => Task.CompletedTask,
+            };
+    }
+
+    private async Task ProcessAssignmentsSelected()
+    {
+        if (SubjectCourse is null || _assignments is not null)
+            return;
+
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            IReadOnlyCollection<AssignmentDto> assignments = await Client.GetAssignmentsAsync(SubjectCourse.Id);
+            _assignments = assignments.ToList();
+        });
+    }
+
+    private async Task ProcessSubjectCourseGroupsSelected()
+    {
+        if (SubjectCourse is null || _subjectCourseGroups is not null)
+            return;
+
+        await using var builder = SafeExecutor.Execute(async () =>
+        {
+            IReadOnlyCollection<SubjectCourseGroupDto> subjectCourseGroups = await Client.GetGroupsAsync(SubjectCourse.Id);
+            _subjectCourseGroups = subjectCourseGroups.ToList();
+        });
+    }
+
+    private Task AddAssignmentAsync(AssignmentDto assignment)
+    {
+        _assignments?.Add(assignment);
+        return Task.CompletedTask;
+    }
+
+    private void AddSubjectCourseGroups(IReadOnlyCollection<SubjectCourseGroupDto> groups)
+    {
+        foreach (var group in groups)
+        {
+            _subjectCourseGroups?.Add(group);
+        }
+    }
+
+    private async Task ShowAddSubjectCourseGroupsAsync()
+    {
+        if (_addSubjectCourseGroupModal is null)
+            return;
+
+        await ProcessSubjectCourseGroupsSelected();
+        await _addSubjectCourseGroupModal.ShowAsync();
+    }
+}

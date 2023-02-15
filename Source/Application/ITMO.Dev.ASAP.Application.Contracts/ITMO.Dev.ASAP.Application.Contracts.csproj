@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Application.Abstractions\ITMO.Dev.ASAP.Application.Abstractions.csproj" />
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Application.Dto\ITMO.Dev.ASAP.Application.Dto.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MediatR.Contracts" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="ITMO.Dev.ASAP.Controllers" />
+        <InternalsVisibleTo Include="ITMO.Dev.ASAP.Commands" />
+        <InternalsVisibleTo Include="ITMO.Dev.ASAP.Application" />
+        <InternalsVisibleTo Include="ITMO.Dev.ASAP.Presentation.GitHub" />
+        <InternalsVisibleTo Include="ITMO.Dev.ASAP.WebApi" />
+        <InternalsVisibleTo Include="ITMO.Dev.ASAP.Application.Handlers" />
+        <InternalsVisibleTo Include="ITMO.Dev.ASAP.Tests.Handlers" />
+    </ItemGroup>
+
+</Project>

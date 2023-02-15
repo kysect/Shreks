@@ -17,8 +17,8 @@ jobs:
         with:
           dotnet-version: 6.0.x
       - name: Install dependencies
-        run: dotnet restore Source/Kysect.Shreks.sln
+        run: dotnet restore Source/ITMO.Dev.ASAP.sln
       - name: Build
-        run: dotnet build Source/Kysect.Shreks.sln --configuration Release --no-restore
+        run: dotnet build Source/ITMO.Dev.ASAP.sln --configuration Release --no-restore
       - name: Test
-        run: dotnet test Source/Kysect.Shreks.sln --no-restore --verbosity normal
+        run: dotnet test Source/ITMO.Dev.ASAP.sln --no-restore --verbosity normal

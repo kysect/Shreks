@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Identity\ITMO.Dev.ASAP.Identity.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Seeding\ITMO.Dev.ASAP.Seeding.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" />
+    </ItemGroup>
+
+</Project>

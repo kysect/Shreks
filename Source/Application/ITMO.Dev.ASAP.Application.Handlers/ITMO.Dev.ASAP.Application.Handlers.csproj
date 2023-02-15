@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Identity\ITMO.Dev.ASAP.Identity.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\ITMO.Dev.ASAP.Mapping\ITMO.Dev.ASAP.Mapping.csproj" />
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions\ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.csproj" />
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Application.Contracts\ITMO.Dev.ASAP.Application.Contracts.csproj" />
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Application.GithubWorkflow\ITMO.Dev.ASAP.Application.GithubWorkflow.csproj" />
+        <ProjectReference Include="..\ITMO.Dev.ASAP.Application\ITMO.Dev.ASAP.Application.csproj" />
+        <ProjectReference Include="..\ITMO.Dev.ASAP.DataAccess.Abstractions\ITMO.Dev.ASAP.DataAccess.Abstractions.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Kysect.CommonLib" />
+        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="ITMO.Dev.ASAP.Tests.Handlers" />
+    </ItemGroup>
+
+</Project>

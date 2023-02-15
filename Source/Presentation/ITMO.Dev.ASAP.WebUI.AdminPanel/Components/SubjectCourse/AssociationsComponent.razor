@@ -1,0 +1,54 @@
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourses
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourseAssociations
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.Components.SubjectCourseAssociations
+
+@if (Associations is not null)
+{
+    <Div>
+        @foreach (var association in SortedAssociations)
+        {
+            <Text>
+                <Heading Size="HeadingSize.Is6" Display="Display.Inline">
+                    @FormatAssociationType(association)
+                </Heading>
+                :
+                @{
+                    switch (association)
+                    {
+                        case GithubSubjectCourseAssociationDto githubAssociation:
+                            <SubjectCourseGithubAssociationComponent Association="githubAssociation"
+                                                                     SubjectCourse="SubjectCourse"/>
+                            break;
+                        case GoogleSubjectCourseAssociationDto googleAssociation:
+                            <Anchor To="@($"https://docs.google.com/spreadsheets/d/{googleAssociation.SpreadsheetId}")">
+                                Table
+                            </Anchor>
+                            break;
+                    }
+                }
+                <br/>
+            </Text>
+        }
+    </Div>
+}
+
+@code {
+
+    private IEnumerable<SubjectCourseAssociationDto> SortedAssociations =>
+        Associations?.OrderBy(x => x is GithubSubjectCourseAssociationDto ? 1 : 0)
+        ?? Enumerable.Empty<SubjectCourseAssociationDto>();
+
+    [Parameter]
+    public SubjectCourseDto? SubjectCourse { get; set; }
+
+    [Parameter]
+    public IReadOnlyCollection<SubjectCourseAssociationDto>? Associations { get; set; }
+
+    private string FormatAssociationType(SubjectCourseAssociationDto association) => association switch
+    {
+        GithubSubjectCourseAssociationDto  => "GitHub",
+        GoogleSubjectCourseAssociationDto  => "Google",
+        _ => throw new ArgumentOutOfRangeException(nameof(association)),
+        };
+
+}

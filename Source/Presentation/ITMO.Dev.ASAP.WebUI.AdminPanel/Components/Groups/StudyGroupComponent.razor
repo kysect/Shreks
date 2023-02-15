@@ -1,0 +1,93 @@
+@using ITMO.Dev.ASAP.Application.Dto.Users
+@using ITMO.Dev.ASAP.WebApi.Abstractions.Models.StudyGroups
+@using ITMO.Dev.ASAP.Application.Dto.Study
+@inject IStudentClient StudentClient
+@inject IStudyGroupClient GroupClient
+
+@if (Group is not null)
+{
+    <Div>
+        <Div Flex="Flex.Column" Margin="Margin.Is3.FromBottom">
+            <Fields>
+                <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <TextEdit @bind-Text="Group.Name"/>
+                </Field>
+            </Fields>
+
+            <Div Flex="Flex.Row.JustifyContent.Between">
+                <CreateButton Background="Background.Success"
+                              Clicked="ShowAddStudent"
+                              FitContent="false"
+                              Margin="Margin.Is2.FromEnd">
+                    Add student
+                </CreateButton>
+
+                <CreateButton Background="Background.Primary"
+                              Clicked="UpdateClicked"
+                              FitContent="false"
+                              Margin="Margin.Is2.FromStart"
+                              Type="ButtonType.Submit"
+                              PreventDefaultOnSubmit>
+                    Update
+                </CreateButton>
+            </Div>
+        </Div>
+
+        <StudyGroupStudentsComponent Students="_students" Parent="this"/>
+    </Div>
+
+    <ConfirmationComponent @ref="_component"
+                           Action="SendAsync"
+                           ActionName="@($"change group name to {Group?.Name ?? string.Empty}")"/>
+
+    <TransferStudentComponent @ref="_transferStudentComponent"
+                              Group="Group"
+                              OnStudentTransferred="AddStudent"/>
+}
+
+@code {
+
+    private ICollection<StudentDto>? _students;
+    private ConfirmationComponent? _component;
+    private TransferStudentComponent? _transferStudentComponent;
+
+    [Parameter]
+    public StudyGroupDto? Group { get; set; }
+
+    protected override Task OnInitializedAsync() 
+        => ReloadStudents(false);
+
+    public async Task ReloadStudents(bool notify = true)
+    {
+        if (Group is null)
+            return;
+
+        IReadOnlyCollection<StudentDto> students = await GroupClient.GetStudentsAsync(Group.Id);
+        _students = students.ToList();
+
+        if (notify)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private Task UpdateClicked() 
+        => _component?.Show() ?? Task.CompletedTask;
+
+    private Task SendAsync(CancellationToken cancellationToken)
+    {
+        if (Group is null)
+            return Task.CompletedTask;
+
+        var request = new UpdateStudyGroupRequest(Group.Name);
+        return GroupClient.UpdateAsync(Group.Id, request, cancellationToken);
+    }
+
+    private Task ShowAddStudent()
+        => _transferStudentComponent?.ShowAsync() ?? Task.CompletedTask;
+
+    private void AddStudent(StudentDto student)
+        => _students?.Add(student);
+
+}

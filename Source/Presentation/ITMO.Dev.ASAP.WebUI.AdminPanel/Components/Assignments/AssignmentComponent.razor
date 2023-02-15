@@ -1,0 +1,36 @@
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.ExceptionHandling
+@using ITMO.Dev.ASAP.WebUI.AdminPanel.SafeExecution
+@using ITMO.Dev.ASAP.Application.Dto.Study
+@inject IAssignmentClient Client
+@inject ISafeExecutor SafeExecutor
+
+@if (_groupAssignments is not null)
+{
+    <Div>
+        @foreach (var group in _groupAssignments.OrderBy(x => x.GroupName))
+        {
+            <GroupAssignmentComponent Assignment="Assignment" Group="group"/>
+        }
+    </Div>
+}
+
+@code {
+
+    [Parameter]
+    public AssignmentDto? Assignment { get; set; }
+
+    private IReadOnlyCollection<GroupAssignmentDto>? _groupAssignments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Assignment is null)
+            return;
+
+        await using ISafeExecutionBuilder<IReadOnlyCollection<GroupAssignmentDto>> builder = SafeExecutor
+            .Execute(async () => _groupAssignments = await Client.GetGroupAssignmentsAsync(Assignment.Id));
+
+        builder.Title = "Failed to load group assignments";
+    }
+
+
+}
