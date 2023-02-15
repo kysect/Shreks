@@ -1,5 +1,6 @@
 using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions;
 using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.Client;
+using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.Models;
 using Octokit;
 
 namespace ITMO.Dev.ASAP.Integration.Github.Invites;
@@ -44,7 +45,7 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
             userRepositoryFromTemplate);
     }
 
-    public async Task AddUserPermission(
+    public async Task<AddPermissionResult> AddUserPermission(
         string organization,
         string repositoryName,
         string username,
@@ -58,8 +59,19 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
             username,
             new CollaboratorRequest(permission));
 
+        if (invitation is null)
+        {
+            await client.Repository.Collaborator.Add(
+                organization,
+                repositoryName,
+                username,
+                new CollaboratorRequest(permission));
+
+            return AddPermissionResult.Invited;
+        }
+
         if (DateTimeOffset.UtcNow.Subtract(invitation.CreatedAt) < TimeSpan.FromDays(7))
-            return;
+            return AddPermissionResult.Pending;
 
         Repository repository = await client.Repository.Get(organization, repositoryName);
         await client.Repository.Invitation.Delete(repository.Id, invitation.Id);
@@ -69,6 +81,8 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
             repositoryName,
             username,
             new CollaboratorRequest(permission));
+
+        return AddPermissionResult.ReInvited;
     }
 
     public async Task AddTeamPermission(
