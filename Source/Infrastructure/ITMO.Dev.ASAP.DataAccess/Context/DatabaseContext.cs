@@ -1,3 +1,4 @@
+using ITMO.Dev.ASAP.Core.DeadlinePolicies;
 using ITMO.Dev.ASAP.Core.Study;
 using ITMO.Dev.ASAP.Core.SubjectCourseAssociations;
 using ITMO.Dev.ASAP.Core.SubmissionAssociations;
@@ -11,6 +12,7 @@ using ITMO.Dev.ASAP.DataAccess.Abstractions;
 using ITMO.Dev.ASAP.DataAccess.ValueConverters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ITMO.Dev.ASAP.DataAccess.Context;
 
@@ -45,6 +47,11 @@ public class DatabaseContext : DbContext, IDatabaseContext
 
     public DbSet<SubjectCourseAssociation> SubjectCourseAssociations { get; protected init; } = null!;
 
+    public DbSet<DeadlinePolicy> DeadlinePolicies { get; protected init; } = null!;
+
+    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken)
+        => Database.BeginTransactionAsync(cancellationToken);
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // TODO: WI-228
@@ -58,6 +65,8 @@ public class DatabaseContext : DbContext, IDatabaseContext
         }
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(IAssemblyMarker).Assembly);
+
+        modelBuilder.Entity<DeadlinePolicy>().ToTable("DeadlinePolicy");
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

@@ -1,13 +1,13 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ITMO.Dev.ASAP.DeveloperEnvironment;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddDeveloperEnvironmentSeeding(this IServiceCollection services)
+    public static void AddDeveloperEnvironment(this WebApplicationBuilder builder)
     {
-        services.AddScoped<DeveloperEnvironmentSeeder>();
-
-        return services;
+        if (builder.Environment.IsDevelopment() || builder.Environment.IsStaging())
+        {
+            builder.Services.AddScoped<DeveloperEnvironmentSeeder>();
+            builder.Services.AddMvc().AddApplicationPart(typeof(IAssemblyMarker).Assembly);
+        }
     }
 }
