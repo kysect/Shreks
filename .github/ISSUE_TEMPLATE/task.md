@@ -1,7 +1,7 @@
 ---
 name: Task
 about: An issue describing task
-title: "[TASK]"
+title: "–– [TASK]"
 labels: type:task
 assignees: ''
 

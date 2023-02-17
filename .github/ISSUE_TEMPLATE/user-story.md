@@ -1,7 +1,7 @@
 ---
 name: User Story
 about: An issue describing user story
-title: "[USER-STORY]"
+title: "– [USER-STORY]"
 labels: type:user-story
 assignees: ''
 
