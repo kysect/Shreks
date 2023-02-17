@@ -2,7 +2,7 @@
 name: New command\query request
 about: Issue for requesting new command or query
 title: ''
-labels: task
+labels: ''
 assignees: ''
 
 ---
