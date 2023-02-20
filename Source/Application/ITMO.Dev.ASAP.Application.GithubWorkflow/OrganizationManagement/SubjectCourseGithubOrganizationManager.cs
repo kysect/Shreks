@@ -89,15 +89,7 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
     private async Task AddTeamPermissionAsync(string organizationName, string username, Team team)
     {
         const Permission permission = Permission.Maintain;
-
-        _logger.LogInformation(
-            "Adding permission {Permission} for {Team} in {OrganizationName}/{RepositoryName}",
-            permission,
-            team.Name,
-            organizationName,
-            username);
-
-        await _repositoryManager.AddTeamPermission(organizationName, username, team, Permission.Maintain);
+        await _repositoryManager.AddTeamPermission(organizationName, username, team, permission);
     }
 
     private async Task<bool> TryCreateRepositoryFromTemplateAsync(
@@ -107,11 +99,6 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
     {
         try
         {
-            _logger.LogInformation(
-                "Creating repository {OrganizationName}/{RepositoryName}",
-                organizationName,
-                username);
-
             await _repositoryManager.CreateRepositoryFromTemplate(organizationName, username, templateName);
             return true;
         }
@@ -130,26 +117,11 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
 
         try
         {
-            _logger.LogInformation(
-                "Adding permission {Permission} for {Username} in {OrganizationName}/{RepositoryName}",
-                permission,
-                username,
-                organizationName,
-                username);
-
             AddPermissionResult result = await _repositoryManager.AddUserPermission(
                 organizationName,
                 username,
                 username,
                 permission);
-
-            if (result is AddPermissionResult.Pending)
-            {
-                _logger.LogInformation(
-                    "{OrganizationName}/{RepositoryName} already has a designated collaborator",
-                    organizationName,
-                    username);
-            }
 
             return result is AddPermissionResult.Invited;
         }

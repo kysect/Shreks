@@ -5,4 +5,5 @@ public enum AddPermissionResult
     Invited,
     ReInvited,
     Pending,
+    AlreadyCollaborator,
 }
