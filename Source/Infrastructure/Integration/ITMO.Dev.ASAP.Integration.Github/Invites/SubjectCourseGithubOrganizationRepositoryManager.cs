@@ -1,6 +1,7 @@
 using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions;
 using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.Client;
 using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.Models;
+using Microsoft.Extensions.Logging;
 using Octokit;
 
 namespace ITMO.Dev.ASAP.Integration.Github.Invites;
@@ -8,10 +9,14 @@ namespace ITMO.Dev.ASAP.Integration.Github.Invites;
 public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGithubOrganizationRepositoryManager
 {
     private readonly IOrganizationGithubClientProvider _clientProvider;
+    private readonly ILogger<SubjectCourseGithubOrganizationRepositoryManager> _logger;
 
-    public SubjectCourseGithubOrganizationRepositoryManager(IOrganizationGithubClientProvider clientProvider)
+    public SubjectCourseGithubOrganizationRepositoryManager(
+        IOrganizationGithubClientProvider clientProvider,
+        ILogger<SubjectCourseGithubOrganizationRepositoryManager> logger)
     {
         _clientProvider = clientProvider;
+        _logger = logger;
     }
 
     public async Task<IReadOnlyCollection<string>> GetRepositories(string organization)
@@ -39,6 +44,12 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
             Owner = organization, Description = null, Private = true,
         };
 
+        _logger.LogInformation(
+            "Creating repository {OrganizationName}/{RepositoryName} from {Template}",
+            organization,
+            newRepositoryName,
+            templateName);
+
         await client.Repository.Generate(
             organization,
             templateName,
@@ -61,6 +72,21 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
 
         if (invitation is null)
         {
+            bool isCollaborator = await client.Repository.Collaborator.IsCollaborator(
+                organization,
+                repositoryName,
+                username);
+
+            if (isCollaborator)
+                return AddPermissionResult.AlreadyCollaborator;
+
+            _logger.LogInformation(
+                "Adding permission {Permission} for {Username} in {OrganizationName}/{RepositoryName}",
+                permission,
+                username,
+                organization,
+                username);
+
             await client.Repository.Collaborator.Add(
                 organization,
                 repositoryName,
@@ -72,6 +98,12 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
 
         if (DateTimeOffset.UtcNow.Subtract(invitation.CreatedAt) < TimeSpan.FromDays(7))
             return AddPermissionResult.Pending;
+
+        _logger.LogInformation(
+            "Invitation for {Username} in {OrganizationName}/{RepositoryName} is expired, renewing",
+            username,
+            organization,
+            repositoryName);
 
         Repository repository = await client.Repository.Get(organization, repositoryName);
         await client.Repository.Invitation.Delete(repository.Id, invitation.Id);
@@ -92,6 +124,13 @@ public class SubjectCourseGithubOrganizationRepositoryManager : ISubjectCourseGi
         Permission permission)
     {
         GitHubClient client = await _clientProvider.GetClient(organization);
+
+        _logger.LogInformation(
+            "Adding permission {Permission} for {Team} in {OrganizationName}/{RepositoryName}",
+            permission,
+            team.Name,
+            organization,
+            repositoryName);
 
         await client.Organization.Team.AddRepository(
             team.Id,
