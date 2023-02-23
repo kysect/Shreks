@@ -10,10 +10,14 @@ assignees: ''
 ## Parent
 -
 
+```[tasklist]
 ## Blocked by
--
+- [ ]
+```
 
 # User goal
 
+```[tasklist]
 ## Children
--
+- [ ]
+```
