@@ -49,7 +49,7 @@ public class SheetManagementService : ISheetManagementService
             AddSheet = new AddSheetRequest { Properties = new SheetProperties { Title = sheetTitle } },
         };
 
-        _logger.LogDebug("Create sheet with title {sheetTitle}.", sheetTitle);
+        _logger.LogDebug("Create sheet with title {SheetTitle}", sheetTitle);
 
         BatchUpdateSpreadsheetResponse batchUpdateResponse =
             await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, addSheetRequest, token);
@@ -97,7 +97,7 @@ public class SheetManagementService : ISheetManagementService
 
         if (updateSheetIndexRequests.Length is not 0)
         {
-            _logger.LogDebug("Reorder sheets in spreadsheet {spreadsheetId}.", spreadsheetId);
+            _logger.LogDebug("Reorder sheets in spreadsheet {SpreadsheetId}", spreadsheetId);
 
             await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, updateSheetIndexRequests, token);
         }
@@ -114,15 +114,32 @@ public class SheetManagementService : ISheetManagementService
 
         var unmergeCellsRequest = new Request { UnmergeCells = new UnmergeCellsRequest { Range = allFieldsGridRange } };
 
-        var requests = new List<Request> { updateCellsRequest, unmergeCellsRequest };
+        var deleteFreezeRequest = new Request
+        {
+            UpdateSheetProperties = new UpdateSheetPropertiesRequest
+            {
+                Fields = "gridProperties.frozenColumnCount,gridProperties.frozenRowCount",
+                Properties = new SheetProperties
+                {
+                    SheetId = sheetId,
+                    GridProperties = new GridProperties
+                    {
+                        FrozenColumnCount = 0,
+                        FrozenRowCount = 0,
+                    },
+                },
+            },
+        };
 
-        _logger.LogDebug("Clear sheet with id {sheetId}.", sheetId);
+        var requests = new List<Request> { updateCellsRequest, unmergeCellsRequest, deleteFreezeRequest };
+
+        _logger.LogDebug("Clear sheet with id {SheetId}", sheetId);
         await _sheetsService.ExecuteBatchUpdateAsync(spreadsheetId, requests, token);
     }
 
     private async Task<IList<Sheet>> GetSheetsAsync(string spreadsheetId, CancellationToken token)
     {
-        _logger.LogDebug("Request spreadsheet with id {spreadsheetId}.", spreadsheetId);
+        _logger.LogDebug("Request spreadsheet with id {SpreadsheetId}", spreadsheetId);
 
         Spreadsheet spreadsheet = await _sheetsService.Spreadsheets
             .Get(spreadsheetId)
