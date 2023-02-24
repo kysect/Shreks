@@ -22,13 +22,24 @@ public class ClientRequestHandler
         if (response.StatusCode is HttpStatusCode.Unauthorized)
             throw new UnauthorizedException();
 
+        if (response.StatusCode is HttpStatusCode.NoContent)
+            return default!;
+
         if (response.IsSuccessStatusCode is false)
-            throw RequestFailedException.Create("Failed to get sessions", response.StatusCode);
+        {
+            throw RequestFailedException.Create(
+                "Failed to get response",
+                response.StatusCode,
+                await response.Content.ReadAsStringAsync(default));
+        }
 
         string content = await response.Content.ReadAsStringAsync(cancellationToken);
         T? value = JsonConvert.DeserializeObject<T>(content, _serializerSettings);
 
-        return value ?? throw RequestFailedException.Create("Failed to parse sessions", response.StatusCode);
+        return value ?? throw RequestFailedException.Create(
+            "Failed to parse response",
+            response.StatusCode,
+            await response.Content.ReadAsStringAsync(default));
     }
 
     public async Task SendAsync(HttpRequestMessage message, CancellationToken cancellationToken)
@@ -39,6 +50,11 @@ public class ClientRequestHandler
             throw new UnauthorizedException();
 
         if (response.IsSuccessStatusCode is false)
-            throw RequestFailedException.Create("Failed to get sessions", response.StatusCode);
+        {
+            throw RequestFailedException.Create(
+                "Failed to get response",
+                response.StatusCode,
+                await response.Content.ReadAsStringAsync(default));
+        }
     }
 }
