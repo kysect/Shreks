@@ -1,6 +1,8 @@
 using ITMO.Dev.ASAP.Application.DatabaseContextExtensions;
 using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions;
 using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions.Models;
+using ITMO.Dev.ASAP.Common.Exceptions;
+using ITMO.Dev.ASAP.Core.Study;
 using ITMO.Dev.ASAP.Core.SubjectCourseAssociations;
 using ITMO.Dev.ASAP.Core.UserAssociations;
 using ITMO.Dev.ASAP.DataAccess.Abstractions;
@@ -29,7 +31,7 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
         _logger = logger;
     }
 
-    public async Task UpdateOrganizations(CancellationToken cancellationToken)
+    public async Task UpdateOrganizationsAsync(CancellationToken cancellationToken)
     {
         List<GithubSubjectCourseAssociation> githubSubjectCourseAssociations = await _context.SubjectCourseAssociations
             .OfType<GithubSubjectCourseAssociation>()
@@ -37,15 +39,41 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
 
         foreach (GithubSubjectCourseAssociation subjectAssociation in githubSubjectCourseAssociations)
         {
-            IReadOnlyCollection<GithubUserAssociation> githubUserAssociations = await _context.SubjectCourses
-                .GetAllGithubUsers(subjectAssociation.SubjectCourse.Id);
-
-            string[] usernames = githubUserAssociations.Select(a => a.GithubUsername).ToArray();
-
-            await _inviteSender.Invite(subjectAssociation.GithubOrganizationName, usernames);
-
-            await GenerateRepositories(usernames, subjectAssociation);
+            await UpdateOrganizationAsync(subjectAssociation);
         }
+    }
+
+    public async Task UpdateSubjectCourseOrganizationAsync(Guid subjectCourseId, CancellationToken cancellationToken)
+    {
+        GithubSubjectCourseAssociation? association = await _context.SubmissionAssociations
+            .OfType<GithubSubjectCourseAssociation>()
+            .Where(x => x.SubjectCourse.Id.Equals(subjectCourseId))
+            .SingleOrDefaultAsync(cancellationToken);
+
+        if (association is null)
+            throw EntityNotFoundException.For<SubjectCourse>(subjectCourseId);
+
+        await UpdateOrganizationAsync(association);
+    }
+
+    private async Task UpdateOrganizationAsync(GithubSubjectCourseAssociation subjectAssociation)
+    {
+        IReadOnlyCollection<GithubUserAssociation> githubUserAssociations = await _context.SubjectCourses
+            .GetAllGithubUsers(subjectAssociation.SubjectCourse.Id);
+
+        string[] usernames = githubUserAssociations.Select(a => a.GithubUsername).ToArray();
+
+        await _inviteSender.Invite(subjectAssociation.GithubOrganizationName, usernames);
+
+        _logger.LogInformation(
+            "Started repository generation for organization {OrganizationName}",
+            subjectAssociation.GithubOrganizationName);
+
+        await GenerateRepositories(usernames, subjectAssociation);
+
+        _logger.LogInformation(
+            "Finished repository generation for organization {OrganizationName}",
+            subjectAssociation.GithubOrganizationName);
     }
 
     private async ValueTask GenerateRepositories(

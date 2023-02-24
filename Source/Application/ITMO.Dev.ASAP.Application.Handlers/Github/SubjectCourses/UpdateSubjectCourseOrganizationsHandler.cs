@@ -2,7 +2,7 @@ using ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions;
 using MediatR;
 using static ITMO.Dev.ASAP.Application.Contracts.Github.Commands.UpdateSubjectCourseOrganizations;
 
-namespace ITMO.Dev.ASAP.Application.Handlers.Github;
+namespace ITMO.Dev.ASAP.Application.Handlers.Github.SubjectCourses;
 
 internal class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command, Response>
 {
@@ -16,7 +16,7 @@ internal class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command
 
     public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
     {
-        await _subjectCourseGithubOrganizationManager.UpdateOrganizations(cancellationToken);
+        await _subjectCourseGithubOrganizationManager.UpdateOrganizationsAsync(cancellationToken);
 
         return new Response();
     }

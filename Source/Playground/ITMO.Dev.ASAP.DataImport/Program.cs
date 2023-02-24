@@ -1,50 +1,64 @@
 // See https://aka.ms/new-console-template for more information
 
+#pragma warning disable CA1506
+
+using ITMO.Dev.ASAP.Application.Dto.Querying;
+using ITMO.Dev.ASAP.Application.Dto.Study;
+using ITMO.Dev.ASAP.Application.Dto.Users;
+using ITMO.Dev.ASAP.DataImport;
 using ITMO.Dev.ASAP.DataImport.Models;
+using ITMO.Dev.ASAP.WebApi.Abstractions.Models.Identity;
+using ITMO.Dev.ASAP.WebApi.Abstractions.Models.Students;
+using ITMO.Dev.ASAP.WebApi.Abstractions.Models.StudyGroups;
+using ITMO.Dev.ASAP.WebApi.Sdk.ControllerClients;
+using ITMO.Dev.ASAP.WebApi.Sdk.Extensions;
+using ITMO.Dev.ASAP.WebApi.Sdk.Identity;
+using ITMO.Dev.ASAP.WebApi.Sdk.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Shreks.ApiClient;
 
-Console.WriteLine();
-#pragma warning disable CS0162
-
-const string baseUrl = "https://localhost:7188";
-using var client = new HttpClient();
-
-string? stringData = await File.ReadAllTextAsync("student_info.json");
+string stringData = await File.ReadAllTextAsync("student_info.json");
 StudentInfo[]? data = JsonConvert.DeserializeObject<StudentInfo[]>(stringData);
 
 _ = data ?? throw new Exception("Deserialization failed");
 
-IEnumerable<GroupName>? groupNames = Enumerable.Range(0, 14)
-    .Select(GroupName.FromShortName);
+Console.WriteLine();
 
-var identityClient = new IdentityClient(baseUrl, client);
+string baseUrl = ReadLabeled("Uri: ");
 
-LoginResponse? loginResponse = await identityClient.LoginAsync(new LoginRequest
-{
-    Username = string.Empty,
-    Password = string.Empty,
-});
+var identityProvider = new IdentityProvider();
 
-client.DefaultRequestHeaders.Add("Authorization", $"Bearer {loginResponse.Token}");
+var collection = new ServiceCollection();
+collection.AddAsapSdk(new Uri(baseUrl));
+collection.AddSingleton<IIdentityProvider>(identityProvider);
 
-var studyGroupClient = new StudyGroupClient(baseUrl, client);
-var studentClient = new StudentClient(baseUrl, client);
-var userClient = new UserClient(baseUrl, client)
-{
-    ReadResponseAsString = true,
-};
+ServiceProvider provider = collection.BuildServiceProvider();
 
-ICollection<StudyGroupDto>? createdGroups = await studyGroupClient.StudyGroupGetAsync();
-IEnumerable<GroupName>? createdGroupNames = createdGroups.Select(x => new GroupName(x.Name));
+IEnumerable<GroupName> groupNames = data.Select(x => new GroupName(x.Group)).Distinct();
 
+IIdentityClient identityClient = provider.GetRequiredService<IIdentityClient>();
+IStudyGroupClient studyGroupClient = provider.GetRequiredService<IStudyGroupClient>();
+IStudentClient studentClient = provider.GetRequiredService<IStudentClient>();
+IUserClient userClient = provider.GetRequiredService<IUserClient>();
+
+string username = ReadLabeled("Username: ");
+string password = ReadLabeled("Password: ");
+
+var loginRequest = new LoginRequest(username, password);
+LoginResponse loginResponse = await identityClient.LoginAsync(loginRequest);
+identityProvider.UserIdentity = new UserIdentity(loginResponse.Token, loginResponse.Expires);
+
+IReadOnlyCollection<StudyGroupDto> createdGroups = await studyGroupClient.QueryAsync(
+    new QueryConfiguration<GroupQueryParameter>(ArraySegment<QueryParameter<GroupQueryParameter>>.Empty));
+
+IEnumerable<GroupName> createdGroupNames = createdGroups.Select(x => new GroupName(x.Name));
 groupNames = groupNames.Except(createdGroupNames);
 
 var groups = new Dictionary<GroupName, StudyGroupDto>();
 
 foreach (GroupName groupName in groupNames)
 {
-    StudyGroupDto group = await studyGroupClient.StudyGroupPostAsync(groupName.Name);
+    StudyGroupDto group = await studyGroupClient.CreateAsync(new CreateStudyGroupRequest(groupName.Name));
     groups[groupName] = group;
 }
 
@@ -55,97 +69,30 @@ foreach (StudyGroupDto? group in createdGroups)
 
 foreach (StudentInfo studentInfo in data)
 {
-    try
-    {
-        UserDto? user = await userClient.UserAsync(studentInfo.IsuNumber);
-        continue;
-        await studentClient.GithubDeleteAsync(user.Id);
-        await studentClient.GithubPostAsync(user.Id, studentInfo.GithubUsername);
-    }
-    catch (ApiException e) when (e.StatusCode is 204)
+    UserDto? user = await userClient.FindUserByUniversityIdAsync(studentInfo.IsuNumber);
+
+    if (user is null)
     {
         (string? firstName, string? middleName, string? lastName) = StudentName.FromString(studentInfo.FullName);
-        StudyGroupDto? group = groups[GroupName.FromShortName(int.Parse(studentInfo.Group))];
-        StudentDto? student = await studentClient.StudentPostAsync(firstName, middleName, lastName, group.Id);
-        await userClient.UpdateAsync(student.User.Id, studentInfo.IsuNumber);
-        await studentClient.GithubPostAsync(student.User.Id, studentInfo.GithubUsername);
+        StudyGroupDto group = groups[new GroupName(studentInfo.Group)];
+
+        var createStudentRequest = new CreateStudentRequest(firstName, middleName, lastName, group.Id);
+        StudentDto student = await studentClient.CreateAsync(createStudentRequest);
+
+        await userClient.UpdateUniversityIdAsync(student.User.Id, studentInfo.IsuNumber);
+        await studentClient.AddGithubAssociationAsync(student.User.Id, studentInfo.GithubUsername);
+    }
+    else
+    {
+        await studentClient.RemoveGithubAssociationAsync(user.Id);
+        await studentClient.AddGithubAssociationAsync(user.Id, studentInfo.GithubUsername);
     }
 }
 
 return;
 
-var subjectClient = new SubjectClient(baseUrl, client);
-var subjectCourseController = new SubjectCourseClient(baseUrl, client);
-var assignmentClient = new AssignmentsClient(baseUrl, client);
-var subjectCourseGroupClient = new SubjectCourseGroupClient(baseUrl, client);
-var groupAssignmentClient = new GroupAssignmentClient(baseUrl, client);
-
-SubjectDto? subject = await subjectClient.SubjectPostAsync("ООП");
-SubjectCourseDto? subjectCourse = await subjectCourseController.SubjectCoursePostAsync(subject.Id, "is-oop-y25");
-
-var subjectCourseGroups = new List<SubjectCourseGroupDto>();
-var assignments = new List<AssignmentDto>();
-
-foreach (StudyGroupDto? group in groups.Values)
+static string ReadLabeled(string label)
 {
-    SubjectCourseGroupDto? subjectCourseGroup =
-        await subjectCourseGroupClient.SubjectCourseGroupPostAsync(subjectCourse.Id, group.Id);
-    subjectCourseGroups.Add(subjectCourseGroup);
-}
-
-LabConfig[]? labs = new[]
-{
-    new LabConfig("Isu", 0, 4, CreateDateTime(9, 10)),
-    new LabConfig("Shops", 1, 8, CreateDateTime(9, 24)),
-    new LabConfig("Isu.Extra", 2, 10, CreateDateTime(10, 8)),
-    new LabConfig("Backups", 3, 14, CreateDateTime(10, 22)),
-    new LabConfig("Banks", 4, 14, CreateDateTime(11, 5)),
-    new LabConfig("Backups.Extra", 5, 14, CreateDateTime(11, 19)),
-    new LabConfig("Messaging Service", 6, 16, CreateDateTime(12, 3)),
-};
-
-IEnumerable<CreateAssignmentRequest> assignmentRequests = labs.Select(x => new CreateAssignmentRequest
-{
-    SubjectCourseId = subjectCourse.Id,
-    Order = x.Index,
-    ShortName = $"lab-{x.Index}",
-    MinPoints = 0,
-    MaxPoints = x.MaxPoints,
-    Title = x.Title,
-});
-
-foreach (CreateAssignmentRequest? assignmentRequest in assignmentRequests)
-{
-    AssignmentDto? assignment = await assignmentClient.AssignmentsPostAsync(assignmentRequest);
-    assignments.Add(assignment);
-}
-
-IEnumerable<Task<GroupAssignmentDto>>? groupAssignments = groups.Values
-    .SelectMany(_ => assignments, (a, b) => (group: a, assignment: b))
-    .Select(x =>
-    {
-        LabConfig lab = labs.Single(xx => xx.Index.Equals(x.assignment.Order));
-        return groupAssignmentClient.GroupAssignmentPostAsync(
-            x.group.Id,
-            x.assignment.Id,
-            new DateTimeOffset(lab.Deadline));
-    });
-
-foreach (Task<GroupAssignmentDto> task in groupAssignments)
-    await task;
-
-IEnumerable<Task>? tasks = Enumerable.Range(1, 5).Select(x =>
-{
-    var span = TimeSpan.FromDays(x * 7);
-    return subjectCourseController.FractionAsync(subjectCourse.Id, span, x * 0.2);
-});
-
-foreach (Task? task in tasks)
-{
-    await task;
-}
-
-DateTime CreateDateTime(int month, int day)
-{
-    return new DateTime(2022, month, day);
+    Console.Write(label);
+    return Console.ReadLine() ?? string.Empty;
 }

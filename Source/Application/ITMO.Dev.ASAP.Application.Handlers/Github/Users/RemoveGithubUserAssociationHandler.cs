@@ -20,12 +20,15 @@ internal class RemoveGithubUserAssociationHandler : IRequestHandler<Command>
     {
         Student student = await _context.Students.GetByIdAsync(request.UserId, cancellationToken);
 
-        GithubUserAssociation githubUserAssociation =
-            student.User.Associations.OfType<GithubUserAssociation>().Single();
-        student.User.RemoveAssociation(githubUserAssociation);
-        _context.UserAssociations.Remove(githubUserAssociation);
+        GithubUserAssociation? githubUserAssociation = student.User.FindAssociation<GithubUserAssociation>();
 
-        await _context.SaveChangesAsync(cancellationToken);
+        if (githubUserAssociation is not null)
+        {
+            student.User.RemoveAssociation(githubUserAssociation);
+            _context.UserAssociations.Remove(githubUserAssociation);
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
 
         return Unit.Value;
     }

@@ -22,8 +22,7 @@ public class GithubUserProvider : IGithubUserProvider
         try
         {
             User user = await client.User.Get(username);
-
-            return user.Login.Equals(username, StringComparison.Ordinal);
+            return user.Login.Equals(username, StringComparison.OrdinalIgnoreCase);
         }
         catch (NotFoundException)
         {
