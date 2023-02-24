@@ -33,6 +33,7 @@ public static class ServiceCollectionExtensions
         AddClient<ISubjectClient, SubjectClient>();
         AddClient<ISubjectCourseClient, SubjectCourseClient>();
         AddClient<ISubjectCourseGroupClient, SubjectCourseGroupClient>();
+        AddClient<IUserClient, UserClient>();
 
         collection.AddDtoConfiguration();
 

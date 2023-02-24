@@ -2,5 +2,7 @@ namespace ITMO.Dev.ASAP.Application.GithubWorkflow.Abstractions;
 
 public interface ISubjectCourseGithubOrganizationManager
 {
-    Task UpdateOrganizations(CancellationToken cancellationToken);
+    Task UpdateOrganizationsAsync(CancellationToken cancellationToken);
+
+    Task UpdateSubjectCourseOrganizationAsync(Guid subjectCourseId, CancellationToken cancellationToken);
 }

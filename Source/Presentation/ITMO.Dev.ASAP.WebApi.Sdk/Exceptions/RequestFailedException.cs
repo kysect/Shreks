@@ -4,16 +4,19 @@ namespace ITMO.Dev.ASAP.WebApi.Sdk.Exceptions;
 
 public class RequestFailedException : AsapSdkException
 {
-    private RequestFailedException(string message, HttpStatusCode code)
+    private RequestFailedException(string message, HttpStatusCode code, string content)
         : base(message)
     {
         Code = code;
+        Content = content;
     }
 
     public HttpStatusCode Code { get; }
 
-    internal static RequestFailedException Create(string message, HttpStatusCode code)
+    public string Content { get; }
+
+    internal static RequestFailedException Create(string message, HttpStatusCode code, string content)
     {
-        return new RequestFailedException($"[{code}] Request failed: {message}", code);
+        return new RequestFailedException($"[{code}] Request failed: {message}", code, content);
     }
 }

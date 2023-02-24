@@ -37,7 +37,7 @@ public class GithubInvitingWorker : BackgroundService
 
                 ISubjectCourseGithubOrganizationManager subjectCourseGithubOrganizationManager =
                     scope.ServiceProvider.GetRequiredService<ISubjectCourseGithubOrganizationManager>();
-                await subjectCourseGithubOrganizationManager.UpdateOrganizations(stoppingToken);
+                await subjectCourseGithubOrganizationManager.UpdateOrganizationsAsync(stoppingToken);
             }
             catch (Exception ex)
             {

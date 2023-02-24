@@ -1,0 +1,27 @@
+@using ITMO.Dev.ASAP.Application.Dto.SubjectCourses
+@inject IGithubManagementClient Client
+
+<Button Clicked="OnClickedAsync" Color="Color.Secondary" Disabled="@(_component?.Executing ?? false)">
+    Sync GitHub Organization
+</Button>
+
+<ConfirmationComponent @ref="_component" Action="SyncAsync" ActionName="github organization sync"/>
+
+@code {
+
+    [Parameter]
+    public SubjectCourseDto? SubjectCourse { get; set; }
+
+    private ConfirmationComponent? _component;
+
+    private Task SyncAsync(CancellationToken cancellationToken)
+    {
+        return SubjectCourse is null
+            ? Task.CompletedTask
+            : Client.ForceOrganizationUpdateAsync(SubjectCourse.Id, cancellationToken);
+    }
+
+    private Task OnClickedAsync() 
+        => _component?.Show() ?? Task.CompletedTask;
+
+}

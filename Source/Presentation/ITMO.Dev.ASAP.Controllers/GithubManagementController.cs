@@ -18,11 +18,22 @@ public class GithubManagementController : ControllerBase
         _mediator = mediator;
     }
 
+    public CancellationToken CancellationToken => HttpContext.RequestAborted;
+
     [HttpPost("force-update")]
     public async Task<ActionResult> ForceOrganizationUpdate()
     {
-        var updateOrganizationCommand = new UpdateSubjectCourseOrganizations.Command();
-        await _mediator.Send(updateOrganizationCommand);
+        var command = new UpdateSubjectCourseOrganizations.Command();
+        await _mediator.Send(command, CancellationToken);
+        return Ok();
+    }
+
+    [HttpPost("force-update")]
+    public async Task<IActionResult> ForceOrganizationUpdateAsync(Guid subjectCourseId)
+    {
+        var command = new UpdateSubjectCourseOrganization.Command(subjectCourseId);
+        await _mediator.Send(command, CancellationToken);
+
         return Ok();
     }
 
@@ -31,7 +42,7 @@ public class GithubManagementController : ControllerBase
     {
         var command = new SyncGithubMentors.Command(organizationName);
 
-        await _mediator.Send(command);
+        await _mediator.Send(command, CancellationToken);
 
         return Ok();
     }
