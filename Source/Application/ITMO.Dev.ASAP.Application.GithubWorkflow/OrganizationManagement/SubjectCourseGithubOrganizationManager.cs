@@ -45,7 +45,7 @@ public class SubjectCourseGithubOrganizationManager : ISubjectCourseGithubOrgani
 
     public async Task UpdateSubjectCourseOrganizationAsync(Guid subjectCourseId, CancellationToken cancellationToken)
     {
-        GithubSubjectCourseAssociation? association = await _context.SubmissionAssociations
+        GithubSubjectCourseAssociation? association = await _context.SubjectCourseAssociations
             .OfType<GithubSubjectCourseAssociation>()
             .Where(x => x.SubjectCourse.Id.Equals(subjectCourseId))
             .SingleOrDefaultAsync(cancellationToken);
