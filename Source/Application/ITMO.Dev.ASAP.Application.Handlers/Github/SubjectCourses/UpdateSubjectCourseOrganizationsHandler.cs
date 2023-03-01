@@ -4,7 +4,7 @@ using static ITMO.Dev.ASAP.Application.Contracts.Github.Commands.UpdateSubjectCo
 
 namespace ITMO.Dev.ASAP.Application.Handlers.Github.SubjectCourses;
 
-internal class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command, Response>
+internal class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command>
 {
     private readonly ISubjectCourseGithubOrganizationManager _subjectCourseGithubOrganizationManager;
 
@@ -14,10 +14,10 @@ internal class UpdateSubjectCourseOrganizationsHandler : IRequestHandler<Command
         _subjectCourseGithubOrganizationManager = subjectCourseGithubOrganizationManager;
     }
 
-    public async Task<Response> Handle(Command request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
     {
         await _subjectCourseGithubOrganizationManager.UpdateOrganizationsAsync(cancellationToken);
 
-        return new Response();
+        return Unit.Value;
     }
 }

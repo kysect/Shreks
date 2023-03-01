@@ -73,6 +73,7 @@ foreach (StudentInfo studentInfo in data)
 
     if (user is null)
     {
+        Console.WriteLine($"Creating: {studentInfo}");
         (string? firstName, string? middleName, string? lastName) = StudentName.FromString(studentInfo.FullName);
         StudyGroupDto group = groups[new GroupName(studentInfo.Group)];
 
@@ -84,8 +85,8 @@ foreach (StudentInfo studentInfo in data)
     }
     else
     {
-        await studentClient.RemoveGithubAssociationAsync(user.Id);
-        await studentClient.AddGithubAssociationAsync(user.Id, studentInfo.GithubUsername);
+        // await studentClient.RemoveGithubAssociationAsync(user.Id);
+        // await studentClient.AddGithubAssociationAsync(user.Id, studentInfo.GithubUsername);
     }
 }
 
