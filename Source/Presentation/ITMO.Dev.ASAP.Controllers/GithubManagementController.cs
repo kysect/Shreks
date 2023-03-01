@@ -21,18 +21,13 @@ public class GithubManagementController : ControllerBase
     public CancellationToken CancellationToken => HttpContext.RequestAborted;
 
     [HttpPost("force-update")]
-    public async Task<ActionResult> ForceOrganizationUpdate()
+    public async Task<IActionResult> ForceOrganizationUpdateAsync([FromQuery] Guid? subjectCourseId)
     {
-        var command = new UpdateSubjectCourseOrganizations.Command();
-        await _mediator.Send(command, CancellationToken);
-        return Ok();
-    }
+        IRequest request = subjectCourseId is null
+            ? new UpdateSubjectCourseOrganizations.Command()
+            : new UpdateSubjectCourseOrganization.Command(subjectCourseId.Value);
 
-    [HttpPost("force-update")]
-    public async Task<IActionResult> ForceOrganizationUpdateAsync(Guid subjectCourseId)
-    {
-        var command = new UpdateSubjectCourseOrganization.Command(subjectCourseId);
-        await _mediator.Send(command, CancellationToken);
+        await _mediator.Send(request, CancellationToken);
 
         return Ok();
     }
