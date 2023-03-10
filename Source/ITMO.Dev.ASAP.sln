@@ -83,6 +83,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMO.Dev.ASAP.Commands", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMO.Dev.ASAP.Presentation.GitHub", "Presentation\ITMO.Dev.ASAP.Presentation.GitHub\ITMO.Dev.ASAP.Presentation.GitHub.csproj", "{BF75E2BC-16BD-4520-BD16-F4270F7158D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITMO.Dev.ASAP.Rpc", "Presentation\ITMO.Dev.ASAP.Rpc\ITMO.Dev.ASAP.Rpc.csproj", "{912497E4-EA9F-4BF4-8587-038E021F62DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -217,6 +219,10 @@ Global
 		{BF75E2BC-16BD-4520-BD16-F4270F7158D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF75E2BC-16BD-4520-BD16-F4270F7158D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF75E2BC-16BD-4520-BD16-F4270F7158D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{912497E4-EA9F-4BF4-8587-038E021F62DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{912497E4-EA9F-4BF4-8587-038E021F62DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{912497E4-EA9F-4BF4-8587-038E021F62DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{912497E4-EA9F-4BF4-8587-038E021F62DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -255,6 +261,7 @@ Global
 		{BC102022-FC92-41B7-946D-ABE6225ECAE7} = {7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}
 		{148D6229-91DD-41C9-9087-29109A847FA2} = {7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}
 		{BF75E2BC-16BD-4520-BD16-F4270F7158D8} = {7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}
+		{912497E4-EA9F-4BF4-8587-038E021F62DF} = {7A93BF5E-D7A6-4D8A-AC22-9D5AF09C4880}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CD5C67DB-70F8-4C47-A3F4-7C94BECE1657}
